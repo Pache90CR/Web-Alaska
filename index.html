@@ -93,11 +93,15 @@
             flex-direction: column;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
-        .card-image-container { position: relative; height: 210px; width: 100%; background: #222; }
-        .card-image-container img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* SOLUCIÓN FOTO COMPLETA: Cambiado a 'contain' y fondo uniforme para que no se corte nunca */
+        .card-image-container { position: relative; height: 210px; width: 100%; background: #181818; display: flex; align-items: center; justify-content: center; }
+        .card-image-container img { width: 100%; height: 100%; object-fit: contain; }
+        
         .badge {
             position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.75); color: var(--color-principal);
             padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 20px; border: 1px solid var(--border-color);
+            z-index: 2;
         }
         .card-content { padding: 18px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; }
         .card-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
@@ -293,7 +297,7 @@
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
         .modal-content { background: var(--card-bg); width: 100%; max-width: 480px; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color); display: flex; flex-direction: column; max-height: 85vh; color: var(--text-main); }
-        .modal-img { height: 190px; width: 100%; object-fit: cover; }
+        .modal-img { height: 190px; width: 100%; object-fit: contain; background: #181818; }
         .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
         .modal-footer { padding: 16px 20px; background: #181818; border-top: 1px solid var(--border-color); display: flex; gap: 10px; }
         .btn-accion { background: #333; border: none; padding: 4px 8px; border-radius: 6px; cursor: pointer; color: white; font-size: 11px; }
@@ -612,7 +616,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE LEALTAD MEJORADO CON REGISTRO RÁPIDO (NOMBRE Y TELÉFONO) -->
     <div id="modal-lealtad" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -731,7 +734,6 @@
         let adminAutenticado = false;
         let totalPedidosPrevios = null;
 
-        // Gestión de sesión de cliente activo en el navegador
         window.clienteActualId = localStorage.getItem('alaska_cliente_doc_id') || null;
         window.clienteActualSellos = Number(localStorage.getItem('alaska_cliente_sellos') || 0);
         window.clienteActualNombre = localStorage.getItem('alaska_cliente_nombre') || '';
@@ -811,15 +813,18 @@
             document.getElementById('sidebar-overlay').style.display = 'none';
         }
 
+        // OPTIMIZACIÓN DE RENDIMIENTO: Carga perezosa (lazy load) por sección para evitar congelamientos en móviles
         window.seleccionarSeccionAdmin = function(seccion) {
             document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
             event.currentTarget.classList.add('active');
             document.querySelectorAll('.admin-section-tab').forEach(el => el.classList.remove('active-admin-tab'));
             document.getElementById(`admin-tab-${seccion}`).classList.add('active-admin-tab');
+            
             if (seccion === 'pedidos') cargarPedidosAdmin();
-            if (seccion === 'platos') cargarAdminPlatosDashboard();
-            if (seccion === 'categorias') renderizarTablaCategoriasAdmin();
-            if (seccion === 'clientes') cargarBaseClientesAdmin();
+            else if (seccion === 'platos') cargarAdminPlatosDashboard();
+            else if (seccion === 'categorias') renderizarTablaCategoriasAdmin();
+            else if (seccion === 'clientes') cargarBaseClientesAdmin();
+            
             cerrarSidebar();
         }
 
@@ -899,7 +904,6 @@
             } catch(e) { alert("Error al generar."); }
         }
 
-        // --- GESTIÓN DE CLIENTES Y LEALTAD EN FIREBASE ---
         function actualizarUILealtadPublica() {
             document.getElementById('loyalty-counter-text').textContent = `${window.clienteActualSellos} / 5 Sellos`;
             let gridHTML = "", modalGridHTML = "";
@@ -937,7 +941,6 @@
             if (!nombre || !telefono) { alert("Por favor ingresa tu nombre y teléfono."); return; }
 
             try {
-                // Buscamos si ya existe un cliente con ese número de teléfono en Firebase
                 const q = query(collection(db, "clientes"), where("telefono", "==", telefono));
                 const querySnapshot = await getDocs(q);
 
@@ -945,12 +948,10 @@
                 let sellos = 0;
 
                 if (!querySnapshot.empty) {
-                    // Ya existe, recuperamos sus datos
                     let docRef = querySnapshot.docs[0];
                     clienteId = docRef.id;
                     sellos = docRef.data().sellos || 0;
                 } else {
-                    // Es nuevo, lo registramos en Firebase
                     const nuevoDoc = await addDoc(collection(db, "clientes"), {
                         nombre: nombre,
                         telefono: telefono,
@@ -1005,7 +1006,6 @@
                         alert("⭐ ¡Sello añadido! Faltan " + (5 - window.clienteActualSellos) + " sellos.");
                     }
 
-                    // Actualizar en Firebase
                     await updateDoc(doc(db, "clientes", window.clienteActualId), {
                         sellos: window.clienteActualSellos
                     });
@@ -1022,7 +1022,6 @@
             }
         }
 
-        // Panel Admin de Clientes Registrados
         async function cargarBaseClientesAdmin() {
             const tbody = document.getElementById('admin-tabla-clientes-body');
             try {
@@ -1105,9 +1104,8 @@
                 cargarMenu();
             } else if (vista === 'admin') {
                 document.getElementById('view-admin').classList.add('active-view');
-                cargarAdminPlatosDashboard();
+                cargarPedidosAdmin(); // Carga únicamente pedidos al entrar para máxima velocidad
                 renderizarTablaCategoriasAdmin();
-                cargarPedidosAdmin();
                 cargarCodigoActivoAdmin();
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1639,7 +1637,7 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnGuardar');
-            btn.textContent = "Guardando..."; btn.disabled = true;
+            btn.textContent = "Guardando... Prohibido salir"; btn.disabled = true;
 
             const nombre = document.getElementById('nombre').value;
             const categoria = document.getElementById('categoria').value;
