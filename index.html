@@ -26,7 +26,7 @@
             --border-color: #333333;
         }
         
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-dark); margin: 0; padding: 0; color: var(--text-main); }
         
         .app-container { max-width: 1200px; margin: 0 auto; padding: 20px; padding-bottom: 140px; }
@@ -439,28 +439,35 @@
                     </div>
                 </div>
 
-                <!-- NUEVA SECCIÓN: Control de Stock Oculto -->
+                <!-- CONTROL DE STOCK OCULTO (CON PRECIOS Y BALANCE) -->
                 <div id="admin-tab-stock" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">📦 Control de Stock (Oculto al Público)</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Gestión de inventario interno bajo la categoría "Stock_Interno". No aparece en el menú web.</p>
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">📦 Control de Stock Interno</h2>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Gestión de inventario privado, control de unidades, precios de compra, venta y balance financiero.</p>
+                    
+                    <div class="stats-cards-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom:20px;">
+                        <div class="stat-card total"><div class="stat-title">Inversión Total Stock</div><div class="stat-value" id="stock-stat-inversion">₡0</div></div>
+                        <div class="stat-card visibles"><div class="stat-title">Valor Venta Estimado</div><div class="stat-value" id="stock-stat-venta">₡0</div></div>
+                    </div>
+
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
                                 <tr>
-                                    <th>Artículo / Insumo</th>
-                                    <th>Cantidad Stock</th>
-                                    <th>Costo / Precio</th>
+                                    <th>Artículo</th>
+                                    <th>Stock</th>
+                                    <th>Compra (₡)</th>
+                                    <th>Venta (₡)</th>
+                                    <th>Ganancia/Unid</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="admin-tabla-stock-body">
-                                <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>
+                                <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- NUEVA SECCIÓN: Cierre de Caja y Reportes de Ventas -->
                 <div id="admin-tab-caja" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">💰 Cierre de Caja y Reportes de Ventas</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Estadísticas generales de ingresos y resumen del negocio.</p>
@@ -498,7 +505,7 @@
 
                 <div id="admin-tab-nuevo-plato" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">➕ Registrar Nuevo Ítem / Stock</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Añade platos al menú o selecciona "Stock_Interno" para inventario privado.</p>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Añade platos al menú o selecciona "Stock_Interno" para inventario privado con precios de compra y venta.</p>
                     <form id="productForm">
                         <div class="form-group">
                             <label>Nombre del Ítem:</label>
@@ -507,7 +514,7 @@
                         <div style="display:flex; gap:10px;">
                             <div class="form-group" style="flex:1;">
                                 <label>Categoría:</label>
-                                <select id="categoria" required>
+                                <select id="categoria" required onchange="toggleCamposStock(this.value)">
                                     <option value="Bocas">Bocas</option>
                                     <option value="Comidas Rápidas">Comidas Rápidas</option>
                                     <option value="Arroces">Arroces</option>
@@ -517,17 +524,32 @@
                                     <option value="Stock_Interno">📦 Stock Interno (Oculto)</option>
                                 </select>
                             </div>
-                            <div class="form-group" style="flex:1;">
-                                <label>Precio / Valor (₡):</label>
+                            <div class="form-group" style="flex:1;" id="group-precio-venta">
+                                <label>Precio de Venta (₡):</label>
                                 <input type="number" id="precio" required placeholder="5000">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label>Descripción / Cantidad en Stock:</label>
-                            <input type="text" id="descripcion" placeholder="Detalles o cantidad disponible...">
+
+                        <!-- CAMPOS EXCLUSIVOS PARA STOCK -->
+                        <div id="campos-stock-extra" style="display:none; background:#181818; padding:12px; border-radius:10px; border:1px solid var(--border-color); margin-bottom:16px;">
+                            <div style="display:flex; gap:10px;">
+                                <div class="form-group" style="flex:1; margin-bottom:0;">
+                                    <label>Cantidad en Stock:</label>
+                                    <input type="number" id="stock-cantidad" placeholder="Ej. 24">
+                                </div>
+                                <div class="form-group" style="flex:1; margin-bottom:0;">
+                                    <label>Precio de Compra (₡):</label>
+                                    <input type="number" id="stock-compra" placeholder="Ej. 3500">
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="form-group" style="background:#222; padding:12px; border-radius:10px; border:1px solid var(--border-color);">
+                        <div class="form-group">
+                            <label>Descripción:</label>
+                            <input type="text" id="descripcion" placeholder="Detalles o ingredientes...">
+                        </div>
+
+                        <div class="form-group" id="group-variantes" style="background:#222; padding:12px; border-radius:10px; border:1px solid var(--border-color);">
                             <label>Acompañamientos / Extras (Opcional):</label>
                             <div style="display:flex; gap:6px; margin-bottom:8px;">
                                 <input type="text" id="input-nombre-var" placeholder="Ej. Papas Gajo" style="flex:2;">
@@ -538,7 +560,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Fotografía (Opcional para stock interno):</label>
+                            <label>Fotografía (Opcional):</label>
                             <input type="file" id="imagenFile" accept="image/*">
                         </div>
                         <button type="submit" id="btnGuardar" class="btn-admin-action">Guardar Ítem</button>
@@ -618,7 +640,7 @@
                 <div style="display:flex; gap:10px;">
                     <div class="form-group" style="flex:1;">
                         <label>Categoría</label>
-                        <select id="edit-plato-categoria">
+                        <select id="edit-plato-categoria" onchange="toggleCamposStockEdicion(this.value)">
                             <option value="Bocas">Bocas</option>
                             <option value="Comidas Rápidas">Comidas Rápidas</option>
                             <option value="Arroces">Arroces</option>
@@ -629,12 +651,26 @@
                         </select>
                     </div>
                     <div class="form-group" style="flex:1;">
-                        <label>Precio / Valor (₡)</label>
+                        <label>Precio Venta (₡)</label>
                         <input type="number" id="edit-plato-precio">
                     </div>
                 </div>
+
+                <div id="edit-campos-stock-extra" style="display:none; background:#181818; padding:12px; border-radius:10px; border:1px solid var(--border-color); margin-bottom:16px;">
+                    <div style="display:flex; gap:10px;">
+                        <div class="form-group" style="flex:1; margin-bottom:0;">
+                            <label>Stock:</label>
+                            <input type="number" id="edit-stock-cantidad">
+                        </div>
+                        <div class="form-group" style="flex:1; margin-bottom:0;">
+                            <label>Compra (₡):</label>
+                            <input type="number" id="edit-stock-compra">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <label>Descripción / Stock</label>
+                    <label>Descripción</label>
                     <input type="text" id="edit-plato-desc">
                 </div>
                 <div class="form-group">
@@ -1100,7 +1136,6 @@
             }
         }
 
-        // FUNCIONES DE ESTADÍSTICAS Y CAJA
         async function cargarEstadisticasCaja() {
             try {
                 const qsPedidos = await getDocs(collection(db, "pedidos"));
@@ -1154,31 +1189,71 @@
             }
         }
 
-        // FUNCIÓN DE STOCK OCULTO
+        // MOSTRAR/OCULTAR CAMPOS EXCLUSIVOS DE STOCK EN REGISTRO NUEVO
+        window.toggleCamposStock = function(valorCat) {
+            const extrasStock = document.getElementById('campos-stock-extra');
+            const groupVariantes = document.getElementById('group-variantes');
+            if (valorCat === 'Stock_Interno') {
+                extrasStock.style.display = 'block';
+                groupVariantes.style.display = 'none';
+            } else {
+                extrasStock.style.display = 'none';
+                groupVariantes.style.display = 'block';
+            }
+        }
+
+        window.toggleCamposStockEdicion = function(valorCat) {
+            const extrasStock = document.getElementById('edit-campos-stock-extra');
+            if (valorCat === 'Stock_Interno') {
+                extrasStock.style.display = 'block';
+            } else {
+                extrasStock.style.display = 'none';
+            }
+        }
+
+        // CONTROL DE STOCK COMPLETO Y BALANCE ESTADÍSTICO
         async function cargarAdminStock() {
             const tbody = document.getElementById('admin-tabla-stock-body');
             try {
                 const qs = await getDocs(collection(db, "menu"));
                 let stockItems = [];
+                let inversionTotal = 0;
+                let valorVentaTotal = 0;
+
                 qs.forEach(d => {
                     let dat = d.data();
                     if (dat.categoria === 'Stock_Interno') {
                         stockItems.push({ id: d.id, ...dat });
+                        let cant = Number(dat.stockCantidad || 0);
+                        let compra = Number(dat.stockCompra || 0);
+                        let venta = Number(dat.precio || 0);
+                        inversionTotal += (cant * compra);
+                        valorVentaTotal += (cant * venta);
                     }
                 });
 
+                document.getElementById('stock-stat-inversion').textContent = `₡${inversionTotal.toLocaleString()}`;
+                document.getElementById('stock-stat-venta').textContent = `₡${valorVentaTotal.toLocaleString()}`;
+
                 if (stockItems.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No hay ítems en stock interno. Añade uno seleccionando la categoría "Stock Interno".</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No hay ítems en stock interno. Registra uno seleccionando "Stock Interno".</td></tr>`;
                     return;
                 }
 
                 tbody.innerHTML = "";
                 stockItems.forEach(s => {
+                    let cant = Number(s.stockCantidad || 0);
+                    let compra = Number(s.stockCompra || 0);
+                    let venta = Number(s.precio || 0);
+                    let gananciaUnit = venta - compra;
+
                     tbody.innerHTML += `
                         <tr>
                             <td style="font-weight:700;">${s.nombre}</td>
-                            <td style="color:var(--color-principal); font-weight:800;">${s.descripcion || '0'}</td>
-                            <td>₡${s.precio.toLocaleString()}</td>
+                            <td style="font-weight:800; color:var(--color-principal);">${cant} unids</td>
+                            <td>₡${compra.toLocaleString()}</td>
+                            <td>₡${venta.toLocaleString()}</td>
+                            <td style="color:${gananciaUnit >= 0 ? '#4ade80':'#ef4444'}; font-weight:bold;">₡${gananciaUnit.toLocaleString()}</td>
                             <td>
                                 <button class="btn-accion-tabla" onclick='abrirModalEditarPlato(${JSON.stringify(s)})'>✏️</button>
                                 <button class="btn-accion-tabla eliminar" onclick="delPlatoDashboard('${s.id}')">🗑️</button>
@@ -1187,7 +1262,7 @@
                     `;
                 });
             } catch(e) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;">Error al cargar stock.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#ef4444;">Error al cargar stock.</td></tr>`;
             }
         }
 
@@ -1287,6 +1362,7 @@
             `).join('');
         }
 
+        // CARGA DE MENÚ OPTIMIZADA PARA EVITAR CONGELAMIENTOS
         async function cargarMenu() {
             const menuGrid = document.getElementById("menu-grid");
             try {
@@ -1301,7 +1377,6 @@
             const menuGrid = document.getElementById("menu-grid");
             menuGrid.innerHTML = "";
             
-            // FILTRO DE SEGURIDAD: Excluye por completo la categoría Stock_Interno del menú público
             const disponibles = platos.filter(p => {
                 let esStockInterno = p.categoria === 'Stock_Interno';
                 let platoVisible = p.disponible !== false;
@@ -1573,7 +1648,7 @@
             const categoriaFiltro = document.getElementById('select-filtro-categoria').value;
 
             let filtrados = listaPlatos.filter(p => {
-                if (p.categoria === 'Stock_Interno') return false; // Ocultar stock en gestión de platos normal si se prefiere
+                if (p.categoria === 'Stock_Interno') return false;
                 let coincideNombre = p.nombre.toLowerCase().includes(busqueda);
                 let coincideCat = (categoriaFiltro === 'todos' || p.categoria === categoriaFiltro);
                 return coincideNombre && coincideCat;
@@ -1648,7 +1723,13 @@
             document.getElementById('edit-plato-file').value = "";
             
             const selCat = document.getElementById('edit-plato-categoria');
-            if (selCat) selCat.value = plato.categoria || 'Bocas';
+            if (selCat) {
+                selCat.value = plato.categoria || 'Bocas';
+                toggleCamposStockEdicion(selCat.value);
+            }
+
+            document.getElementById('edit-stock-cantidad').value = plato.stockCantidad || '';
+            document.getElementById('edit-stock-compra').value = plato.stockCompra || '';
 
             variantesEdicionActuales = plato.variantes ? JSON.parse(JSON.stringify(plato.variantes)) : [];
             actualizarListaVariantesEdicionUI();
@@ -1701,6 +1782,11 @@
             const fileInput = document.getElementById('edit-plato-file');
 
             let dataUpdate = { nombre, categoria, precio, descripcion, variantes: variantesEdicionActuales };
+
+            if (categoria === 'Stock_Interno') {
+                dataUpdate.stockCantidad = Number(document.getElementById('edit-stock-cantidad').value || 0);
+                dataUpdate.stockCompra = Number(document.getElementById('edit-stock-compra').value || 0);
+            }
 
             const ejecutarActualizacion = async (urlFinal) => {
                 if (urlFinal !== undefined) {
@@ -1799,14 +1885,24 @@
             const descripcion = document.getElementById('descripcion').value;
             const file = document.getElementById('imagenFile').files[0];
 
+            let nuevoObjeto = {
+                nombre, categoria, precio, descripcion, variantes: variantesTemporales, disponible: true, imagenUrl: ""
+            };
+
+            if (categoria === 'Stock_Interno') {
+                nuevoObjeto.stockCantidad = Number(document.getElementById('stock-cantidad').value || 0);
+                nuevoObjeto.stockCompra = Number(document.getElementById('stock-compra').value || 0);
+            }
+
             const guardarEnBD = async (imgUrl) => {
                 try {
-                    await addDoc(collection(db, "menu"), {
-                        nombre, categoria, precio, descripcion, variantes: variantesTemporales, imagenUrl: imgUrl || "", disponible: true
-                    });
+                    if (imgUrl) nuevoObjeto.imagenUrl = imgUrl;
+                    await addDoc(collection(db, "menu"), nuevoObjeto);
                     alert("¡Ítem guardado con éxito!");
                     form.reset();
                     variantesTemporales = [];
+                    document.getElementById('campos-stock-extra').style.display = 'none';
+                    document.getElementById('group-variantes').style.display = 'block';
                     actualizarListaVariantesTempUI();
                     cargarAdminPlatosDashboard();
                     cargarAdminStock();
