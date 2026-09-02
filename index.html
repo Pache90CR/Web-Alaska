@@ -94,7 +94,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         
-        /* SOLUCIÓN FOTO COMPLETA: Cambiado a 'contain' y fondo uniforme para que no se corte nunca */
         .card-image-container { position: relative; height: 210px; width: 100%; background: #181818; display: flex; align-items: center; justify-content: center; }
         .card-image-container img { width: 100%; height: 100%; object-fit: contain; }
         
@@ -681,7 +680,7 @@
                 <p id="modal-descripcion" style="color:var(--text-muted); font-size:12px;"></p>
                 <p id="modal-precio-base" style="font-weight:800; color:var(--color-principal); font-size:16px;"></p>
                 
-                <h4 style="font-size:12px; border-bottom:1px solid var(--border-color); padding-bottom:4px; color:var(--text-muted);">Elige tus Acompañamientos:</h4>
+                <h4 style="font-size:12px; border-bottom:1px solid var(--border-color); padding-bottom:4px; color:var(--text-muted);">Elige tus Acompañamientos (Máximo 2):</h4>
                 <div id="modal-variantes-container"></div>
             </div>
             <div class="modal-footer">
@@ -813,7 +812,6 @@
             document.getElementById('sidebar-overlay').style.display = 'none';
         }
 
-        // OPTIMIZACIÓN DE RENDIMIENTO: Carga perezosa (lazy load) por sección para evitar congelamientos en móviles
         window.seleccionarSeccionAdmin = function(seccion) {
             document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
             event.currentTarget.classList.add('active');
@@ -1104,7 +1102,7 @@
                 cargarMenu();
             } else if (vista === 'admin') {
                 document.getElementById('view-admin').classList.add('active-view');
-                cargarPedidosAdmin(); // Carga únicamente pedidos al entrar para máxima velocidad
+                cargarPedidosAdmin();
                 renderizarTablaCategoriasAdmin();
                 cargarCodigoActivoAdmin();
             }
@@ -1229,7 +1227,7 @@
                         container.innerHTML += `
                             <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border-color); font-size:14px; align-items:center;">
                                 <label style="display:flex; gap:10px; cursor:pointer; align-items:center; width:100%;">
-                                    <input type="checkbox" class="check-variante" value="${v.precio}" data-nombre="${v.nombre}" onchange="calcularTotalModal()" style="width:18px; height:18px;">
+                                    <input type="checkbox" class="check-variante" value="${v.precio}" data-nombre="${v.nombre}" onchange="validarLimiteExtras(this)" style="width:18px; height:18px;">
                                     <span>${v.nombre}</span>
                                 </label>
                                 <span style="font-weight:800; color:var(--color-principal); white-space:nowrap;">+₡${v.precio.toLocaleString()}</span>
@@ -1241,6 +1239,16 @@
 
             calcularTotalModal();
             document.getElementById('modal-opciones').style.display = 'flex';
+        }
+
+        // NUEVA FUNCIÓN: Limita los acompañamientos a un máximo de 2 selecciones
+        window.validarLimiteExtras = function(checkbox) {
+            const seleccionados = document.querySelectorAll('.check-variante:checked');
+            if (seleccionados.length > 2) {
+                checkbox.checked = false;
+                alert("⚠️ Solo puedes escoger un máximo de 2 acompañamientos.");
+            }
+            calcularTotalModal();
         }
 
         window.cerrarModal = function() { document.getElementById('modal-opciones').style.display = 'none'; }
@@ -1544,30 +1552,35 @@
             `).join('');
         }
 
+        // CORRECCIÓN: Ahora procesa y guarda la foto correctamente sin atascarse si no se selecciona una nueva
         window.guardarPlatoEditado = async function() {
             const id = document.getElementById('edit-plato-id').value;
             const nombre = document.getElementById('edit-plato-nombre').value;
             const categoria = document.getElementById('edit-plato-categoria').value;
             const precio = Number(document.getElementById('edit-plato-precio').value);
             const descripcion = document.getElementById('edit-plato-desc').value;
-            const file = document.getElementById('edit-plato-file').files[0];
+            const fileInput = document.getElementById('edit-plato-file');
 
             let dataUpdate = { nombre, categoria, precio, descripcion, variantes: variantesEdicionActuales };
 
-            const realizarActualizacion = async (imageUrlFinal) => {
-                if (imageUrlFinal !== undefined) dataUpdate.imagenUrl = imageUrlFinal;
+            const ejecutarActualizacion = async (urlFinal) => {
+                if (urlFinal !== undefined) {
+                    dataUpdate.imagenUrl = urlFinal;
+                }
                 await updateDoc(doc(db, "menu", id), dataUpdate);
                 alert("¡Plato actualizado con éxito!");
                 cerrarModalEditarPlato();
                 cargarAdminPlatosDashboard();
             };
 
-            if (file) {
+            if (fileInput.files && fileInput.files[0]) {
                 const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = async function() { await realizarActualizacion(reader.result); }
+                reader.readAsDataURL(fileInput.files[0]);
+                reader.onload = async function() {
+                    await ejecutarActualizacion(reader.result);
+                };
             } else {
-                await realizarActualizacion(undefined);
+                await ejecutarActualizacion(undefined);
             }
         }
 
@@ -1637,7 +1650,7 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnGuardar');
-            btn.textContent = "Guardando... Prohibido salir"; btn.disabled = true;
+            btn.textContent = "Guardando..."; btn.disabled = true;
 
             const nombre = document.getElementById('nombre').value;
             const categoria = document.getElementById('categoria').value;
