@@ -439,14 +439,15 @@
                     </div>
                 </div>
 
-                <!-- CONTROL DE STOCK OCULTO (CON PRECIOS Y BALANCE) -->
+                <!-- CONTROL DE STOCK OCULTO (CON GANANCIA TOTAL Y BOTÓN DE VENTA) -->
                 <div id="admin-tab-stock" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">📦 Control de Stock Interno</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Gestión de inventario privado, control de unidades, precios de compra, venta y balance financiero.</p>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Inventario privado. Vende artículos aquí para rebajar stock y sumarlos automáticamente al cierre de caja.</p>
                     
-                    <div class="stats-cards-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom:20px;">
-                        <div class="stat-card total"><div class="stat-title">Inversión Total Stock</div><div class="stat-value" id="stock-stat-inversion">₡0</div></div>
-                        <div class="stat-card visibles"><div class="stat-title">Valor Venta Estimado</div><div class="stat-value" id="stock-stat-venta">₡0</div></div>
+                    <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:20px;">
+                        <div class="stat-card total"><div class="stat-title">Inversión Stock</div><div class="stat-value" id="stock-stat-inversion">₡0</div></div>
+                        <div class="stat-card visibles"><div class="stat-title">Valor Venta Est.</div><div class="stat-value" id="stock-stat-venta">₡0</div></div>
+                        <div class="stat-card oferta"><div class="stat-title">Ganancia Total Est.</div><div class="stat-value" id="stock-stat-ganancia" style="color:#4ade80;">₡0</div></div>
                     </div>
 
                     <div style="overflow-x:auto;">
@@ -457,7 +458,7 @@
                                     <th>Stock</th>
                                     <th>Compra (₡)</th>
                                     <th>Venta (₡)</th>
-                                    <th>Ganancia/Unid</th>
+                                    <th>Gan/Unid</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -480,7 +481,7 @@
 
                     <div style="background:#181818; padding:18px; border-radius:14px; border:1px solid var(--border-color);">
                         <h3 style="margin-top:0; font-size:15px; color:var(--color-principal);">🧾 Generar Corte de Caja</h3>
-                        <p style="font-size:13px; color:var(--text-muted);">Calcula el total recaudado según los pedidos registrados en la base de datos.</p>
+                        <p style="font-size:13px; color:var(--text-muted);">Calcula el total recaudado según los pedidos y ventas de stock registradas.</p>
                         <button type="button" class="btn-admin-action" onclick="calcularCorteCaja()">Calcular Ventas del Día</button>
                         <div id="resultado-corte-container" style="margin-top:15px; font-size:14px; color:white;"></div>
                     </div>
@@ -530,7 +531,6 @@
                             </div>
                         </div>
 
-                        <!-- CAMPOS EXCLUSIVOS PARA STOCK -->
                         <div id="campos-stock-extra" style="display:none; background:#181818; padding:12px; border-radius:10px; border:1px solid var(--border-color); margin-bottom:16px;">
                             <div style="display:flex; gap:10px;">
                                 <div class="form-group" style="flex:1; margin-bottom:0;">
@@ -1189,7 +1189,6 @@
             }
         }
 
-        // MOSTRAR/OCULTAR CAMPOS EXCLUSIVOS DE STOCK EN REGISTRO NUEVO
         window.toggleCamposStock = function(valorCat) {
             const extrasStock = document.getElementById('campos-stock-extra');
             const groupVariantes = document.getElementById('group-variantes');
@@ -1211,7 +1210,7 @@
             }
         }
 
-        // CONTROL DE STOCK COMPLETO Y BALANCE ESTADÍSTICO
+        // CONTROL DE STOCK Y REGISTRO DE VENTA AUTOMÁTICA EN CAJA
         async function cargarAdminStock() {
             const tbody = document.getElementById('admin-tabla-stock-body');
             try {
@@ -1232,8 +1231,11 @@
                     }
                 });
 
+                let gananciaTotalEstimada = valorVentaTotal - inversionTotal;
+
                 document.getElementById('stock-stat-inversion').textContent = `₡${inversionTotal.toLocaleString()}`;
                 document.getElementById('stock-stat-venta').textContent = `₡${valorVentaTotal.toLocaleString()}`;
+                document.getElementById('stock-stat-ganancia').textContent = `₡${gananciaTotalEstimada.toLocaleString()}`;
 
                 if (stockItems.length === 0) {
                     tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No hay ítems en stock interno. Registra uno seleccionando "Stock Interno".</td></tr>`;
@@ -1249,20 +1251,66 @@
 
                     tbody.innerHTML += `
                         <tr>
-                            <td style="font-weight:700;">${s.nombre}</td>
+                            <td style="font-weight:700;">${s.name || s.nombre}</td>
                             <td style="font-weight:800; color:var(--color-principal);">${cant} unids</td>
                             <td>₡${compra.toLocaleString()}</td>
                             <td>₡${venta.toLocaleString()}</td>
                             <td style="color:${gananciaUnit >= 0 ? '#4ade80':'#ef4444'}; font-weight:bold;">₡${gananciaUnit.toLocaleString()}</td>
                             <td>
-                                <button class="btn-accion-tabla" onclick='abrirModalEditarPlato(${JSON.stringify(s)})'>✏️</button>
-                                <button class="btn-accion-tabla eliminar" onclick="delPlatoDashboard('${s.id}')">🗑️</button>
+                                <div style="display:flex; gap:6px;">
+                                    <button class="btn-accion" style="background:#22c55e; color:white; font-weight:bold;" onclick='venderItemStock("${s.id}", "${s.nombre}", ${cant}, ${venta})' title="Vender unidades y rebajar stock">🛒 Vender</button>
+                                    <button class="btn-accion-tabla" onclick='abrirModalEditarPlato(${JSON.stringify(s)})'>✏️</button>
+                                    <button class="btn-accion-tabla eliminar" onclick="delPlatoDashboard('${s.id}')">🗑️</button>
+                                </div>
                             </td>
                         </tr>
                     `;
                 });
             } catch(e) {
                 tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#ef4444;">Error al cargar stock.</td></tr>`;
+            }
+        }
+
+        // NUEVA FUNCIÓN: Vender stock, rebajar cantidad y registrar venta en caja
+        window.venderItemStock = async function(id, nombre, stockActual, precioVenta) {
+            let cantidadVender = prompt(`¿Cuántas unidades de "${nombre}" deseas vender? (Stock actual: ${stockActual})`, "1");
+            if (cantidadVender === null) return;
+            let cant = Number(cantidadVender);
+
+            if (isNaN(cant) || cant <= 0) {
+                alert("Cantidad inválida.");
+                return;
+            }
+
+            if (cant > stockActual) {
+                alert("⚠️ No puedes vender más unidades de las que tienes en stock.");
+                return;
+            }
+
+            let nuevoStock = stockActual - cant;
+            let totalVenta = cant * precioVenta;
+
+            try {
+                // 1. Actualizar el stock en Firebase
+                await updateDoc(doc(db, "menu", id), {
+                    stockCantidad: nuevoStock
+                });
+
+                // 2. Registrar el ingreso automáticamente en la colección de "pedidos" para que sume al Cierre de Caja
+                await addDoc(collection(db, "pedidos"), {
+                    nombre: "Venta Barra / Stock",
+                    detalle: `${cant}x ${nombre}`,
+                    total: totalVenta,
+                    tipoEntrega: "Venta Directa",
+                    metodoPago: "Efectivo",
+                    estado: "Entregado ✅",
+                    fecha: new Date().toLocaleString()
+                });
+
+                alert(`✅ ¡Venta registrada con éxito!\n- Stock rebajado a: ${nuevoStock} unids\n- Ingreso sumado a caja: ₡${totalVenta.toLocaleString()}`);
+                cargarAdminStock();
+            } catch (e) {
+                alert("Error al procesar la venta de stock.");
             }
         }
 
@@ -1362,7 +1410,6 @@
             `).join('');
         }
 
-        // CARGA DE MENÚ OPTIMIZADA PARA EVITAR CONGELAMIENTOS
         async function cargarMenu() {
             const menuGrid = document.getElementById("menu-grid");
             try {
