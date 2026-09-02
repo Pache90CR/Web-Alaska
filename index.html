@@ -323,8 +323,10 @@
                 <span id="sidebar-pedidos-count" style="background:#ef4444; color:white; font-size:10px; padding:2px 6px; border-radius:10px; display:none;">0</span>
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('platos')">🍽️ <span>Gestión de Platos</span></a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('stock')">📦 <span>Control de Stock (Oculto)</span></a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('caja')">💰 <span>Cierre de Caja y Ventas</span></a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('categorias')">📁 <span>Gestión de Categorías</span></a>
-            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('nuevo-plato')">➕ <span>Nuevo Plato</span></a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('nuevo-plato')">➕ <span>Registrar Ítem</span></a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('lealtad')">🔐 <span>Generador de Sellos</span></a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('clientes')">👥 <span>Base de Clientes</span></a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('ajustes')">⚙️ <span>Ajustes y Logo</span></a>
@@ -437,6 +439,46 @@
                     </div>
                 </div>
 
+                <!-- NUEVA SECCIÓN: Control de Stock Oculto -->
+                <div id="admin-tab-stock" class="admin-section-tab">
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">📦 Control de Stock (Oculto al Público)</h2>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Gestión de inventario interno bajo la categoría "Stock_Interno". No aparece en el menú web.</p>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Artículo / Insumo</th>
+                                    <th>Cantidad Stock</th>
+                                    <th>Costo / Precio</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-tabla-stock-body">
+                                <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- NUEVA SECCIÓN: Cierre de Caja y Reportes de Ventas -->
+                <div id="admin-tab-caja" class="admin-section-tab">
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">💰 Cierre de Caja y Reportes de Ventas</h2>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Estadísticas generales de ingresos y resumen del negocio.</p>
+                    
+                    <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:20px;">
+                        <div class="stat-card total"><div class="stat-title">Ingresos Totales</div><div class="stat-value" id="stat-ingresos">₡0</div></div>
+                        <div class="stat-card visibles"><div class="stat-title">Total Pedidos</div><div class="stat-value" id="stat-total-pedidos">0</div></div>
+                        <div class="stat-card oferta"><div class="stat-title">Clientes Club</div><div class="stat-value" id="stat-total-clientes">0</div></div>
+                    </div>
+
+                    <div style="background:#181818; padding:18px; border-radius:14px; border:1px solid var(--border-color);">
+                        <h3 style="margin-top:0; font-size:15px; color:var(--color-principal);">🧾 Generar Corte de Caja</h3>
+                        <p style="font-size:13px; color:var(--text-muted);">Calcula el total recaudado según los pedidos registrados en la base de datos.</p>
+                        <button type="button" class="btn-admin-action" onclick="calcularCorteCaja()">Calcular Ventas del Día</button>
+                        <div id="resultado-corte-container" style="margin-top:15px; font-size:14px; color:white;"></div>
+                    </div>
+                </div>
+
                 <div id="admin-tab-categorias" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">📁 Gestión de Categorías</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Activa o desactiva las categorías principales para mostrarlas u ocultarlas en el menú.</p>
@@ -455,12 +497,12 @@
                 </div>
 
                 <div id="admin-tab-nuevo-plato" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">➕ Registrar Nuevo Plato</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Añade nuevos platillos o especialidades con sus respectivos extras.</p>
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">➕ Registrar Nuevo Ítem / Stock</h2>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Añade platos al menú o selecciona "Stock_Interno" para inventario privado.</p>
                     <form id="productForm">
                         <div class="form-group">
-                            <label>Nombre del Plato:</label>
-                            <input type="text" id="nombre" required placeholder="Ej. Costilla Cerdo">
+                            <label>Nombre del Ítem:</label>
+                            <input type="text" id="nombre" required placeholder="Ej. Costilla Cerdo o Botella guaro">
                         </div>
                         <div style="display:flex; gap:10px;">
                             <div class="form-group" style="flex:1;">
@@ -472,20 +514,21 @@
                                     <option value="Batidos">Batidos</option>
                                     <option value="Casados">Casados</option>
                                     <option value="Ofertas">Ofertas</option>
+                                    <option value="Stock_Interno">📦 Stock Interno (Oculto)</option>
                                 </select>
                             </div>
                             <div class="form-group" style="flex:1;">
-                                <label>Precio (₡):</label>
+                                <label>Precio / Valor (₡):</label>
                                 <input type="number" id="precio" required placeholder="5000">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Descripción:</label>
-                            <input type="text" id="descripcion" placeholder="Detalles de ingredientes...">
+                            <label>Descripción / Cantidad en Stock:</label>
+                            <input type="text" id="descripcion" placeholder="Detalles o cantidad disponible...">
                         </div>
 
                         <div class="form-group" style="background:#222; padding:12px; border-radius:10px; border:1px solid var(--border-color);">
-                            <label>Acompañamientos / Extras:</label>
+                            <label>Acompañamientos / Extras (Opcional):</label>
                             <div style="display:flex; gap:6px; margin-bottom:8px;">
                                 <input type="text" id="input-nombre-var" placeholder="Ej. Papas Gajo" style="flex:2;">
                                 <input type="number" id="input-precio-var" placeholder="₡ Extra" style="flex:1;">
@@ -495,10 +538,10 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Fotografía del Plato:</label>
-                            <input type="file" id="imagenFile" accept="image/*" required>
+                            <label>Fotografía (Opcional para stock interno):</label>
+                            <input type="file" id="imagenFile" accept="image/*">
                         </div>
-                        <button type="submit" id="btnGuardar" class="btn-admin-action">Guardar en el Menú</button>
+                        <button type="submit" id="btnGuardar" class="btn-admin-action">Guardar Ítem</button>
                     </form>
                 </div>
 
@@ -563,13 +606,13 @@
     <div id="modal-editar-plato" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-size:16px;">✏️ Editar Plato, Foto y Extras</h3>
+                <h3 style="margin:0; font-size:16px;">✏️ Editar Ítem / Stock</h3>
                 <button onclick="cerrarModalEditarPlato()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="edit-plato-id">
                 <div class="form-group">
-                    <label>Nombre del Plato</label>
+                    <label>Nombre</label>
                     <input type="text" id="edit-plato-nombre">
                 </div>
                 <div style="display:flex; gap:10px;">
@@ -582,15 +625,16 @@
                             <option value="Batidos">Batidos</option>
                             <option value="Casados">Casados</option>
                             <option value="Ofertas">Ofertas</option>
+                            <option value="Stock_Interno">📦 Stock Interno (Oculto)</option>
                         </select>
                     </div>
                     <div class="form-group" style="flex:1;">
-                        <label>Precio Base (₡)</label>
+                        <label>Precio / Valor (₡)</label>
                         <input type="number" id="edit-plato-precio">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Descripción</label>
+                    <label>Descripción / Stock</label>
                     <input type="text" id="edit-plato-desc">
                 </div>
                 <div class="form-group">
@@ -820,6 +864,8 @@
             
             if (seccion === 'pedidos') cargarPedidosAdmin();
             else if (seccion === 'platos') cargarAdminPlatosDashboard();
+            else if (seccion === 'stock') cargarAdminStock();
+            else if (seccion === 'caja') cargarEstadisticasCaja();
             else if (seccion === 'categorias') renderizarTablaCategoriasAdmin();
             else if (seccion === 'clientes') cargarBaseClientesAdmin();
             
@@ -1054,6 +1100,97 @@
             }
         }
 
+        // FUNCIONES DE ESTADÍSTICAS Y CAJA
+        async function cargarEstadisticasCaja() {
+            try {
+                const qsPedidos = await getDocs(collection(db, "pedidos"));
+                const qsClientes = await getDocs(collection(db, "clientes"));
+
+                let totalIngresos = 0;
+                let totalPedidos = qsPedidos.size;
+
+                qsPedidos.forEach(d => {
+                    let dat = d.data();
+                    totalIngresos += Number(dat.total || 0);
+                });
+
+                document.getElementById('stat-ingresos').textContent = `₡${totalIngresos.toLocaleString()}`;
+                document.getElementById('stat-total-pedidos').textContent = totalPedidos;
+                document.getElementById('stat-total-clientes').textContent = qsClientes.size;
+            } catch(e) {
+                console.log("Error cargando caja", e);
+            }
+        }
+
+        window.calcularCorteCaja = async function() {
+            const contenedor = document.getElementById('resultado-corte-container');
+            contenedor.innerHTML = "Calculando corte...";
+            try {
+                const qs = await getDocs(collection(db, "pedidos"));
+                let total = 0;
+                let contadoEfectivo = 0;
+                let contadoSinpe = 0;
+                let contadoTarjeta = 0;
+
+                qs.forEach(d => {
+                    let p = d.data();
+                    let monto = Number(p.total || 0);
+                    total += monto;
+                    if (p.metodoPago === 'Efectivo') contadoEfectivo += monto;
+                    else if (p.metodoPago === 'SINPE Móvil') contadoSinpe += monto;
+                    else if (p.metodoPago === 'Tarjeta') contadoTarjeta += monto;
+                });
+
+                contenedor.innerHTML = `
+                    <div style="background:#222; padding:12px; border-radius:8px; border:1px solid var(--border-color);">
+                        <strong>Total Recaudado:</strong> <span style="color:var(--color-principal); font-size:16px;">₡${total.toLocaleString()}</span><br><br>
+                        💵 Efectivo: ₡${contadoEfectivo.toLocaleString()}<br>
+                        📱 SINPE Móvil: ₡${contadoSinpe.toLocaleString()}<br>
+                        💳 Tarjeta (Datáfono): ₡${contadoTarjeta.toLocaleString()}
+                    </div>
+                `;
+            } catch(e) {
+                contenedor.innerHTML = "<p style='color:#ef4444;'>Error al calcular el corte.</p>";
+            }
+        }
+
+        // FUNCIÓN DE STOCK OCULTO
+        async function cargarAdminStock() {
+            const tbody = document.getElementById('admin-tabla-stock-body');
+            try {
+                const qs = await getDocs(collection(db, "menu"));
+                let stockItems = [];
+                qs.forEach(d => {
+                    let dat = d.data();
+                    if (dat.categoria === 'Stock_Interno') {
+                        stockItems.push({ id: d.id, ...dat });
+                    }
+                });
+
+                if (stockItems.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No hay ítems en stock interno. Añade uno seleccionando la categoría "Stock Interno".</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = "";
+                stockItems.forEach(s => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="font-weight:700;">${s.nombre}</td>
+                            <td style="color:var(--color-principal); font-weight:800;">${s.descripcion || '0'}</td>
+                            <td>₡${s.precio.toLocaleString()}</td>
+                            <td>
+                                <button class="btn-accion-tabla" onclick='abrirModalEditarPlato(${JSON.stringify(s)})'>✏️</button>
+                                <button class="btn-accion-tabla eliminar" onclick="delPlatoDashboard('${s.id}')">🗑️</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch(e) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;">Error al cargar stock.</td></tr>`;
+            }
+        }
+
         window.abrirSeguimientoModal = function(e) { e.preventDefault(); document.getElementById('modal-seguimiento').style.display = 'flex'; }
         window.cerrarSeguimientoModal = function() { document.getElementById('modal-seguimiento').style.display = 'none'; }
 
@@ -1164,10 +1301,12 @@
             const menuGrid = document.getElementById("menu-grid");
             menuGrid.innerHTML = "";
             
+            // FILTRO DE SEGURIDAD: Excluye por completo la categoría Stock_Interno del menú público
             const disponibles = platos.filter(p => {
+                let esStockInterno = p.categoria === 'Stock_Interno';
                 let platoVisible = p.disponible !== false;
                 let catVisible = categoriasEstado[p.categoria] !== false;
-                return platoVisible && catVisible;
+                return !esStockInterno && platoVisible && catVisible;
             });
 
             if (disponibles.length === 0) {
@@ -1241,7 +1380,6 @@
             document.getElementById('modal-opciones').style.display = 'flex';
         }
 
-        // NUEVA FUNCIÓN: Limita los acompañamientos a un máximo de 2 selecciones
         window.validarLimiteExtras = function(checkbox) {
             const seleccionados = document.querySelectorAll('.check-variante:checked');
             if (seleccionados.length > 2) {
@@ -1435,6 +1573,7 @@
             const categoriaFiltro = document.getElementById('select-filtro-categoria').value;
 
             let filtrados = listaPlatos.filter(p => {
+                if (p.categoria === 'Stock_Interno') return false; // Ocultar stock en gestión de platos normal si se prefiere
                 let coincideNombre = p.nombre.toLowerCase().includes(busqueda);
                 let coincideCat = (categoriaFiltro === 'todos' || p.categoria === categoriaFiltro);
                 return coincideNombre && coincideCat;
@@ -1445,17 +1584,18 @@
         function renderizarTablaAdminPlatos(platos) {
             const tbody = document.getElementById('admin-tabla-platos-body');
             
-            let total = listaPlatos.length;
-            let conImg = listaPlatos.filter(p => {
+            let platosVisiblesAdmin = platos.filter(p => p.categoria !== 'Stock_Interno');
+            let total = platosVisiblesAdmin.length;
+            let conImg = platosVisiblesAdmin.filter(p => {
                 if (p.imagenUrl === undefined || p.imagenUrl === null) return false;
                 let str = String(p.imagenUrl).trim().toLowerCase();
                 return str !== "" && str !== "null" && str !== "undefined";
             }).length;
             
             let sinImg = total - conImg;
-            let visibles = listaPlatos.filter(p => p.disponible !== false).length;
+            let visibles = platosVisiblesAdmin.filter(p => p.disponible !== false).length;
             let ocultos = total - visibles;
-            let enOferta = listaPlatos.filter(p => p.categoria === 'Ofertas').length;
+            let enOferta = platosVisiblesAdmin.filter(p => p.categoria === 'Ofertas').length;
 
             document.getElementById('stat-total').textContent = total;
             document.getElementById('stat-con-img').textContent = conImg;
@@ -1464,13 +1604,13 @@
             document.getElementById('stat-ocultos').textContent = ocultos;
             document.getElementById('stat-oferta').textContent = enOferta;
 
-            if (platos.length === 0) {
+            if (platosVisiblesAdmin.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">No se encontraron platos.</td></tr>`;
                 return;
             }
 
             tbody.innerHTML = "";
-            platos.forEach((p, idx) => {
+            platosVisiblesAdmin.forEach((p, idx) => {
                 let tieneFotoValida = p.imagenUrl !== undefined && p.imagenUrl !== null && String(p.imagenUrl).trim() !== "" && String(p.imagenUrl).trim().toLowerCase() !== "null";
                 
                 let imgHtml = tieneFotoValida ? `<img src="${p.imagenUrl}" style="width:36px; height:36px; border-radius:6px; object-fit:cover;">` : `<span style="font-size:11px; color:#ef4444; font-weight:bold;">Sin foto</span>`;
@@ -1491,7 +1631,7 @@
                         </td>
                         <td>
                             <div style="display:flex; gap:8px;">
-                                <button class="btn-accion-tabla" onclick='abrirModalEditarPlato(${JSON.stringify(p)})' title="Editar Completo (Foto, Precio, Extras)">✏️</button>
+                                <button class="btn-accion-tabla" onclick='abrirModalEditarPlato(${JSON.stringify(p)})' title="Editar Completo">✏️</button>
                                 <button class="btn-accion-tabla eliminar" onclick="delPlatoDashboard('${p.id}')" title="Eliminar">🗑️</button>
                             </div>
                         </td>
@@ -1552,7 +1692,6 @@
             `).join('');
         }
 
-        // CORRECCIÓN: Ahora procesa y guarda la foto correctamente sin atascarse si no se selecciona una nueva
         window.guardarPlatoEditado = async function() {
             const id = document.getElementById('edit-plato-id').value;
             const nombre = document.getElementById('edit-plato-nombre').value;
@@ -1568,9 +1707,10 @@
                     dataUpdate.imagenUrl = urlFinal;
                 }
                 await updateDoc(doc(db, "menu", id), dataUpdate);
-                alert("¡Plato actualizado con éxito!");
+                alert("¡Ítem actualizado con éxito!");
                 cerrarModalEditarPlato();
                 cargarAdminPlatosDashboard();
+                cargarAdminStock();
             };
 
             if (fileInput.files && fileInput.files[0]) {
@@ -1590,9 +1730,10 @@
         }
 
         window.delPlatoDashboard = async function(id) {
-            if (confirm("¿Estás seguro de eliminar este plato?")) {
+            if (confirm("¿Estás seguro de eliminar este ítem?")) {
                 await deleteDoc(doc(db, "menu", id));
                 cargarAdminPlatosDashboard();
+                cargarAdminStock();
             }
         }
 
@@ -1658,21 +1799,28 @@
             const descripcion = document.getElementById('descripcion').value;
             const file = document.getElementById('imagenFile').files[0];
 
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = async function() {
+            const guardarEnBD = async (imgUrl) => {
                 try {
                     await addDoc(collection(db, "menu"), {
-                        nombre, categoria, precio, descripcion, variantes: variantesTemporales, imagenUrl: reader.result, disponible: true
+                        nombre, categoria, precio, descripcion, variantes: variantesTemporales, imagenUrl: imgUrl || "", disponible: true
                     });
-                    alert("¡Guardado exitoso!");
+                    alert("¡Ítem guardado con éxito!");
                     form.reset();
                     variantesTemporales = [];
                     actualizarListaVariantesTempUI();
                     cargarAdminPlatosDashboard();
+                    cargarAdminStock();
                 } catch(err) { alert("Error al guardar."); }
-                finally { btn.textContent = "Guardar en el Menú"; btn.disabled = false; }
+                finally { btn.textContent = "Guardar Ítem"; btn.disabled = false; }
             };
+
+            if (file) {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = async function() { await guardarEnBD(reader.result); };
+            } else {
+                await guardarEnBD("");
+            }
         });
 
         actualizarUILealtadPublica();
