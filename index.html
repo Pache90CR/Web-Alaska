@@ -130,6 +130,7 @@
             font-weight: 700; font-size: 14px; text-align: center; transition: background 0.2s;
         }
         .order-btn:hover { background: rgba(212, 175, 55, 0.25); }
+        .order-btn.closed { background: rgba(239, 68, 68, 0.15); color: #ef4444; border-color: #ef4444; cursor: not-allowed; }
 
         .loyalty-banner {
             background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, #161616 100%);
@@ -898,6 +899,10 @@
                 let tieneFotoValida = plato.imagenUrl && typeof plato.imagenUrl === 'string' && plato.imagenUrl.trim() !== "";
                 const imagen = tieneFotoValida ? plato.imagenUrl : 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
                 
+                let btnClase = negocioAbiertoGlobal ? "order-btn" : "order-btn closed";
+                let btnTexto = negocioAbiertoGlobal ? "Pedir" : "Cerrado";
+                let accionClick = negocioAbiertoGlobal ? `abrirModalDetallePlato('${plato.id}')` : `mostrarToast('⚠️ El establecimiento está cerrado temporalmente.')`;
+
                 menuGrid.innerHTML += `
                     <div class="food-card">
                         <div class="card-image-container">
@@ -912,7 +917,7 @@
                                 </div>
                                 <div class="stars">★★★★★</div>
                             </div>
-                            <button class="order-btn" onclick="abrirModalDetallePlato('${plato.id}')">Pedir</button>
+                            <button class="${btnClase}" onclick="${accionClick}">${btnTexto}</button>
                         </div>
                     </div>
                 `;
@@ -1205,14 +1210,9 @@
 
         function verificarEstadoNegocioConHorarios(horariosObj) {
             const now = new Date();
-            const diaIndex = now.getDay(); // 0: Domingo, 1: Lunes, etc.
+            const diaIndex = now.getDay();
             const nombreDiaHoy = diasSemana[diaIndex];
             const infoHoy = horariosObj[nombreDiaHoy];
-
-            const dotEl = document.getElementById('floating-status-dot');
-            const textEl = document.getElementById('floating-status-text');
-            const sideDotEl = document.getElementById('sidebar-status-dot');
-            const sideTextEl = document.getElementById('sidebar-status-text');
 
             if (!infoHoy || infoHoy.cerrado) {
                 negocioAbiertoGlobal = false;
@@ -1252,6 +1252,8 @@
                 if (sideDotEl) { sideDotEl.className = "status-dot closed"; sideDotEl.style.background = "#ef4444"; sideDotEl.style.boxShadow = "0 0 6px #ef4444"; }
                 if (sideTextEl) sideTextEl.textContent = "NEGOCIO CERRADO";
             }
+            // Refrescar tarjetas del menú para actualizar los botones de pedido
+            if (listaPlatos.length > 0) mostrarPlatos(listaPlatos);
         }
 
         // AJUSTES Y PALETA DE COLORES
