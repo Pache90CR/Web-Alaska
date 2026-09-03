@@ -182,16 +182,16 @@
 
         .floating-bottom-bar {
             position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
-            width: 85%; max-width: 380px; background: #181818; border: 1px solid var(--border-color);
+            width: 90%; max-width: 400px; background: #181818; border: 1px solid var(--border-color);
             border-radius: 30px; padding: 8px 20px; display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 999;
         }
 
-        .status-pill { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: #a3e635; }
-        .status-dot { width: 7px; height: 7px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 6px #22c55e; }
+        .status-pill { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #a3e635; white-space: nowrap; }
+        .status-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 6px #22c55e; flex-shrink: 0; }
         .status-dot.closed { background: #ef4444; box-shadow: 0 0 6px #ef4444; }
         
-        .cart-icon-btn { background: var(--color-principal); color: #121212; border: none; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
+        .cart-icon-btn { background: var(--color-principal); color: #121212; border: none; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; flex-shrink: 0; }
         .cart-count-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 800; }
 
         .admin-top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; background: #181818; padding: 12px 18px; border-radius: 12px; border: 1px solid var(--border-color); }
@@ -426,6 +426,7 @@
                 </div>
             </div>
 
+            <!-- TARJETA DE LEALTAD INTERACTIVA -->
             <div class="loyalty-banner">
                 <h3 style="margin:0; color:var(--color-principal); font-size:17px; display:flex; align-items:center; gap:6px; justify-content:center;">
                     <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
@@ -674,6 +675,7 @@
 
     </div>
 
+    <!-- MODAL DETALLE DE PLATO Y SELECCIÓN DE EXTRAS (LÍMITE 2) -->
     <div id="modal-detalle-plato" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -687,11 +689,38 @@
             </div>
             <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
                 <div id="modal-detalle-precio-total" style="font-size:18px; font-weight:800; color:var(--color-principal);">₡0</div>
-                <button onclick="agregarPlatoConExtrasAlPedido()" class="btn-admin-action" id="btn-hacer-pedido" style="flex:1; margin-left:15px; padding:10px;">Agregar al Pedido 🛒</button>
+                <button onclick="agregarPlatoConExtrasAlCarrito()" class="btn-admin-action" id="btn-hacer-pedido" style="flex:1; margin-left:15px; padding:10px;">Agregar al Carrito 🛒</button>
             </div>
         </div>
     </div>
 
+    <!-- MODAL CARRITO DE COMPRAS / CHECKOUT -->
+    <div id="modal-carrito" class="modal-overlay">
+        <div class="modal-content">
+            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="margin:0; font-size:16px;">🛒 Tu Carrito de Pedidos</h3>
+                <button onclick="cerrarModalCarrito()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
+            </div>
+            <div class="modal-body">
+                <div id="carrito-items-container" style="margin-bottom:15px;">
+                    <p style="color:var(--text-muted); text-align:center;">Tu carrito está vacío.</p>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Nombre o Número de Mesa / Referencia:</label>
+                    <input type="text" id="carrito-nombre-cliente" placeholder="Ej. Mesa 4 o Juan Pérez">
+                </div>
+            </div>
+            <div class="modal-footer" style="display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                    <span style="font-size:13px; color:var(--text-muted);">Total a Pagar:</span>
+                    <span id="carrito-total-precio" style="font-size:18px; font-weight:800; color:var(--color-principal);">₡0</span>
+                </div>
+                <button onclick="enviarPedidoFinal()" class="btn-admin-action" style="width:100%;">Confirmar y Enviar Pedido 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR PLATO -->
     <div id="modal-editar-plato" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -746,6 +775,7 @@
         </div>
     </div>
 
+    <!-- MODAL EDITAR CATEGORÍA -->
     <div id="modal-editar-categoria" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -766,6 +796,7 @@
         </div>
     </div>
 
+    <!-- MODAL SELLO -->
     <div id="modal-sello-interactivo" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -782,12 +813,13 @@
         </div>
     </div>
 
+    <!-- BARRA FLOTANTE (EXCLUSIVA PARA MENÚ PÚBLICO) -->
     <div class="floating-bottom-bar" id="floating-bar">
         <div class="status-pill">
             <div class="status-dot" id="floating-status-dot"></div>
             <span id="floating-status-text">Abierto</span>
         </div>
-        <button class="cart-icon-btn" onclick="mostrarToast('Sistema operativo')" title="Estado">
+        <button class="cart-icon-btn" onclick="abrirModalCarrito()" title="Ver Carrito">
             <svg class="icon-svg-lg" style="color:#121212;" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             <span class="cart-count-badge" id="cart-count">0</span>
         </button>
@@ -850,6 +882,7 @@
         const db = getFirestore(app);
 
         let listaPlatos = [];
+        let carritoItems = [];
         let categoriasNube = {};
         const categoriasDefault = ["Bocas", "Comidas Rápidas", "Arroces", "Batidos", "Casados", "Ofertas"];
         const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
@@ -983,7 +1016,7 @@
             document.getElementById('modal-detalle-precio-total').textContent = `₡${total.toLocaleString()}`;
         }
 
-        window.agregarPlatoConExtrasAlPedido = async function() {
+        window.agregarPlatoConExtrasAlCarrito = function() {
             if (!negocioAbiertoGlobal) {
                 mostrarToast("⚠️ El establecimiento se encuentra cerrado temporalmente.");
                 return;
@@ -1001,18 +1034,81 @@
             let detalleTexto = extrasSeleccionados.length > 0 ? `Con: ${extrasSeleccionados.join(', ')}` : 'Sin extras';
             let precioTotal = platoSeleccionadoParaPedir.precio + adicionalPrecio;
 
+            carritoItems.push({
+                nombre: platoSeleccionadoParaPedir.nombre,
+                detalle: detalleTexto,
+                total: precioTotal
+            });
+
+            actualizarContadorCarrito();
+            mostrarToast(`✅ ¡${platoSeleccionadoParaPedir.nombre} agregado al carrito!`);
+            cerrarModalDetallePlato();
+        }
+
+        function actualizarContadorCarrito() {
+            const badge = document.getElementById('cart-count');
+            if (badge) badge.textContent = carritoItems.length;
+        }
+
+        window.abrirModalCarrito = function() {
+            const container = document.getElementById('carrito-items-container');
+            const totalEl = document.getElementById('carrito-total-precio');
+            if (!container) return;
+
+            if (carritoItems.length === 0) {
+                container.innerHTML = "<p style='color:var(--text-muted); text-align:center;'>Tu carrito está vacío.</p>";
+                totalEl.textContent = "₡0";
+                document.getElementById('modal-carrito').style.display = 'flex';
+                return;
+            }
+
+            let html = "";
+            let sumaTotal = 0;
+            carritoItems.forEach((item, index) => {
+                sumaTotal += item.total;
+                html += `
+                    <div style="background:#222; padding:12px; border-radius:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; border:1px solid var(--border-color);">
+                        <div>
+                            <strong style="color:white; font-size:14px;">${item.nombre}</strong><br>
+                            <span style="font-size:12px; color:var(--color-principal);">${item.detalle}</span><br>
+                            <strong style="color:white; font-size:13px;">₡${item.total.toLocaleString()}</strong>
+                        </div>
+                        <button onclick="carritoItems.splice(${index},1); abrirModalCarrito(); actualizarContadorCarrito();" style="background:none; border:none; color:#ff6b6b; cursor:pointer; font-size:16px;" title="Eliminar">✕</button>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            totalEl.textContent = `₡${sumaTotal.toLocaleString()}`;
+            document.getElementById('modal-carrito').style.display = 'flex';
+        }
+
+        window.cerrarModalCarrito = function() {
+            document.getElementById('modal-carrito').style.display = 'none';
+        }
+
+        window.enviarPedidoFinal = async function() {
+            if (carritoItems.length === 0) {
+                mostrarToast("El carrito está vacío.");
+                return;
+            }
+            const nombreCliente = document.getElementById('carrito-nombre-cliente').value.trim() || window.clienteActualNombre || "Cliente General";
+
             try {
-                await addDoc(collection(db, "pedidos"), {
-                    nombre: platoSeleccionadoParaPedir.nombre,
-                    detalle: detalleTexto,
-                    total: precioTotal,
-                    estado: 'Preparación',
-                    fecha: new Date().toLocaleString()
-                });
-                mostrarToast(`✅ ¡${platoSeleccionadoParaPedir.nombre} agregado al pedido!`);
-                cerrarModalDetallePlato();
+                for (let item of carritoItems) {
+                    await addDoc(collection(db, "pedidos"), {
+                        nombre: `${nombreCliente} - ${item.nombre}`,
+                        detalle: item.detalle,
+                        total: item.total,
+                        estado: 'Preparación',
+                        fecha: new Date().toLocaleString()
+                    });
+                }
+                mostrarToast("🎉 ¡Pedido enviado con éxito a cocina!");
+                carritoItems = [];
+                actualizarContadorCarrito();
+                cerrarModalCarrito();
             } catch(e) {
-                mostrarToast("Error al registrar pedido.");
+                mostrarToast("Error al enviar el pedido.");
             }
         }
 
@@ -1045,7 +1141,6 @@
             container.innerHTML = html;
         }
 
-        // CÓDIGO DE SELLO DE UN SOLO USO
         window.hacerClickCasillaSello = function(numeroCasilla) {
             if (!window.clienteActualId) {
                 abrirLealtadModalSimple();
@@ -1156,7 +1251,6 @@
             } catch(e) { mostrarToast("Error al registrar."); }
         }
 
-        // HORARIOS Y VERIFICADOR AUTOMÁTICO DE ESTADO
         function renderizarFormularioHorarios(horariosData = {}) {
             const container = document.getElementById('days-schedule-container');
             if (!container) return;
@@ -1249,7 +1343,6 @@
             if (listaPlatos.length > 0) mostrarPlatos(listaPlatos);
         }
 
-        // AJUSTES Y PALETA DE COLORES
         async function cargarConfiguracionVisualNube() {
             try {
                 const docRef = doc(db, "configuracion", "estilosGenerales");
@@ -1380,12 +1473,18 @@
 
         window.cambiarVista = function(vista) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active-view'));
-            if (vista === 'menu') document.getElementById('view-menu').classList.add('active-view');
-            else if (vista === 'admin') document.getElementById('view-admin').classList.add('active-view');
+            const floatingBar = document.getElementById('floating-bar');
+
+            if (vista === 'menu') {
+                document.getElementById('view-menu').classList.add('active-view');
+                if (floatingBar) floatingBar.style.display = 'flex'; // Mostrar barra en menú público
+            } else if (vista === 'admin') {
+                document.getElementById('view-admin').classList.add('active-view');
+                if (floatingBar) floatingBar.style.display = 'none'; // Ocultar barra en admin
+            }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // PEDIDOS EN VIVO CON ESTADOS
         async function cargarPedidosAdmin() {
             const contenedor = document.getElementById("admin-pedidos-container");
             if (!contenedor) return;
@@ -1431,7 +1530,6 @@
             }
         }
 
-        // GESTIÓN DE PLATOS CON DISPONIBLE/AGOTADO Y EDICIÓN COMPLETA
         async function cargarAdminPlatosDashboard() {
             try {
                 const qs = await getDocs(collection(db, "menu"));
@@ -1574,7 +1672,6 @@
             }
         }
 
-        // CONTROL DE STOCK INTERNO (AUMENTAR, DISMINUIR, VENDER)
         window.toggleCamposStock = function(val) {
             document.getElementById('campos-stock-extra').style.display = (val === 'Stock_Interno') ? 'block' : 'none';
         }
@@ -1665,7 +1762,6 @@
             } catch(e) { mostrarToast("Error al procesar venta."); }
         }
 
-        // CIERRE DE CAJA
         async function cargarEstadisticasCaja() {
             try {
                 const qs = await getDocs(collection(db, "pedidos"));
@@ -1690,7 +1786,6 @@
             } catch(e) { mostrarToast("Error al calcular."); }
         }
 
-        // REGISTRAR NUEVO ÍTEM CON IMAGEN Y VARIANTES
         window.agregarVarianteTemporal = function() {
             const nombreVar = document.getElementById('input-nombre-var').value.trim();
             const precioVar = Number(document.getElementById('input-precio-var').value || 0);
@@ -1744,7 +1839,6 @@
             } else { await guardarConImagen(null); }
         });
 
-        // BASE DE CLIENTES
         async function cargarBaseClientesAdmin() {
             const tbody = document.getElementById('admin-tabla-clientes-body');
             if (!tbody) return;
@@ -1775,7 +1869,6 @@
             }
         }
 
-        // CATEGORÍAS
         async function renderizarTablaCategoriasAdmin() {
             const tbody = document.getElementById('admin-tabla-categorias-body');
             if (!tbody) return;
@@ -1821,7 +1914,6 @@
             };
         }
 
-        // GENERADOR DE SELLOS
         async function cargarCodigoActivoAdmin() {
             try {
                 const docRef = doc(db, "configuracion", "selloActivo");
@@ -1844,7 +1936,6 @@
         window.abrirSeguimientoModal = function(e) { e.preventDefault(); document.getElementById('modal-seguimiento').style.display = 'flex'; }
         window.cerrarSeguimientoModal = function() { document.getElementById('modal-seguimiento').style.display = 'none'; }
 
-        // INICIALIZACIÓN
         cargarConfiguracionVisualNube();
         actualizarUILealtadPublica();
         cargarMenu();
