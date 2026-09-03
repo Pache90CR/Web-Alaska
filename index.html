@@ -286,7 +286,7 @@
             margin-bottom: 25px;
         }
         @media (min-width: 768px) {
-            .stats-cards-grid { grid-template-columns: repeat(6, 1fr); }
+            .stats-cards-grid { grid-template-columns: repeat(3, 1fr); }
         }
         .stat-card {
             background: #222;
@@ -296,10 +296,7 @@
             text-align: center;
         }
         .stat-card.total { border-left: 4px solid #3b82f6; }
-        .stat-card.img { border-left: 4px solid #6366f1; }
-        .stat-card.no-img { border-left: 4px solid #f43f5e; }
         .stat-card.visibles { border-left: 4px solid #10b981; }
-        .stat-card.ocultos { border-left: 4px solid #f59e0b; }
         .stat-card.oferta { border-left: 4px solid #8b5cf6; }
         .stat-title { font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
         .stat-value { font-size: 20px; font-weight: 900; color: white; }
@@ -478,32 +475,42 @@
                     </div>
                 </div>
 
+                <!-- CONTROL DE STOCK INTERNO CON ESTADÍSTICAS Y VENTA -->
                 <div id="admin-tab-stock" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">📦 Control de Stock Interno</h2>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Vende artículos aquí para rebajar stock y sumarlos al cierre de caja.</p>
+                    
+                    <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:20px;">
+                        <div class="stat-card total"><div class="stat-title">Inversión Stock</div><div class="stat-value" id="stock-stat-inversion">₡0</div></div>
+                        <div class="stat-card visibles"><div class="stat-title">Valor Venta Est.</div><div class="stat-value" id="stock-stat-venta">₡0</div></div>
+                        <div class="stat-card oferta"><div class="stat-title">Ganancia Est.</div><div class="stat-value" id="stock-stat-ganancia" style="color:#4ade80;">₡0</div></div>
+                    </div>
+
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
-                                <tr><th>Artículo</th><th>Stock</th><th>Compra (₡)</th><th>Venta (₡)</th></tr>
+                                <tr><th>Artículo</th><th>Stock</th><th>Compra</th><th>Venta</th><th>Gan/Unid</th><th>Acción</th></tr>
                             </thead>
                             <tbody id="admin-tabla-stock-body">
-                                <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>
+                                <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
+                <!-- CIERRE DE CAJA FUNCIONAL -->
                 <div id="admin-tab-caja" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">💰 Cierre de Caja y Reportes</h2>
                     <div class="stats-cards-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom:20px;">
-                        <div class="stat-card total"><div class="stat-title">Ingresos Totales</div><div class="stat-value" id="stat-ingresos">₡0</div></div>
-                        <div class="stat-card visibles"><div class="stat-title">Total Pedidos</div><div class="stat-value" id="stat-total-pedidos">0</div></div>
+                        <div class="stat-card total"><div class="stat-title">Ingresos Totales (Pedidos + Stock)</div><div class="stat-value" id="stat-ingresos">₡0</div></div>
+                        <div class="stat-card visibles"><div class="stat-title">Total Transacciones</div><div class="stat-value" id="stat-total-pedidos">0</div></div>
                     </div>
+                    <button type="button" class="btn-admin-action" onclick="calcularCorteCaja()">Calcular Cierre de Caja del Día</button>
+                    <div id="resultado-corte-container" style="margin-top:15px; font-size:14px; color:white;"></div>
                 </div>
 
-                <!-- SECCIÓN RESTAURADA: CATEGORÍAS E ICONOS EN NUBE -->
                 <div id="admin-tab-categorias" class="admin-section-tab">
                     <h2 style="margin:0; font-size:18px; color:var(--color-principal); margin-bottom:15px;">📁 Gestión de Categorías e Iconos</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Personaliza los nombres y sube iconos personalizados para cada categoría.</p>
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
@@ -521,11 +528,11 @@
                     <form id="productForm">
                         <div class="form-group">
                             <label>Nombre del Ítem:</label>
-                            <input type="text" id="nombre" required placeholder="Ej. Costilla Cerdo">
+                            <input type="text" id="nombre" required placeholder="Ej. Costilla Cerdo o Botella guaro">
                         </div>
                         <div class="form-group">
                             <label>Categoría:</label>
-                            <select id="categoria" required>
+                            <select id="categoria" required onchange="toggleCamposStock(this.value)">
                                 <option value="Bocas">Bocas</option>
                                 <option value="Comidas Rápidas">Comidas Rápidas</option>
                                 <option value="Arroces">Arroces</option>
@@ -535,16 +542,30 @@
                                 <option value="Stock_Interno">📦 Stock Interno (Oculto)</option>
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="group-precio-venta">
                             <label>Precio de Venta (₡):</label>
                             <input type="number" id="precio" required placeholder="5000">
+                        </div>
+                        <div id="campos-stock-extra" style="display:none; background:#181818; padding:12px; border-radius:10px; border:1px solid var(--border-color); margin-bottom:16px;">
+                            <div style="display:flex; gap:10px;">
+                                <div class="form-group" style="flex:1; margin-bottom:0;">
+                                    <label>Cantidad Stock:</label>
+                                    <input type="number" id="stock-cantidad" placeholder="Ej. 24">
+                                </div>
+                                <div class="form-group" style="flex:1; margin-bottom:0;">
+                                    <label>Precio Compra (₡):</label>
+                                    <input type="number" id="stock-compra" placeholder="Ej. 3500">
+                                </div>
+                            </div>
                         </div>
                         <button type="submit" class="btn-admin-action">Guardar Ítem</button>
                     </form>
                 </div>
 
+                <!-- GENERADOR DE SELLOS DE UN SOLO USO ESTRICTO -->
                 <div id="admin-tab-lealtad" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">🔐 Generador de Sello</h2>
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">🔐 Generador de Sello (Un Solo Uso)</h2>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">El código generado expirará automáticamente en cuanto el cliente lo canjee.</p>
                     <div style="background:#181818; padding:18px; border-radius:14px; border:1px solid var(--border-color); text-align:center;">
                         <span id="codigo-activo-display" style="font-size:28px; font-weight:900; letter-spacing:4px; color:var(--color-principal); display:block; margin-bottom:15px;">----</span>
                         <button type="button" class="btn-admin-action" onclick="generarNuevoCodigoSello()">Generar Código Nuevo</button>
@@ -565,7 +586,7 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN RESTAURADA: HORARIOS DE ATENCIÓN -->
+                <!-- HORARIOS DE ATENCIÓN FUNCIONALES -->
                 <div id="admin-tab-horarios" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Horarios de Atención</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Configura la disponibilidad semanal de tu negocio.</p>
@@ -573,13 +594,9 @@
                     <button type="button" class="btn-admin-action" onclick="guardarHorariosNube()" style="padding:16px; font-size:15px; margin-top:10px;">Guardar Horarios en la Nube</button>
                 </div>
 
-                <!-- SECCIÓN RESTAURADA: AJUSTES, LOGO Y PALETA DE COLORES -->
                 <div id="admin-tab-ajustes" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Ajustes de Cuenta y Paleta de Colores</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Personaliza la apariencia visual de tu menú digital.</p>
-                    
                     <div class="settings-card">
-                        <h3>Configuración General</h3>
                         <div class="form-group">
                             <label>Nombre de la Cuenta (Interno)</label>
                             <input type="text" id="input-nombre-interno" placeholder="Bar Alaska">
@@ -600,13 +617,9 @@
                             <label>Color Principal</label>
                             <input type="color" id="input-color-principal" value="#d4af37" style="height:42px; cursor:pointer;">
                         </div>
-                        <div class="form-group">
-                            <label>Color de Oferta / Acento</label>
-                            <input type="color" id="input-color-oferta" value="#ef4444" style="height:42px; cursor:pointer;">
-                        </div>
                     </div>
 
-                    <button type="button" class="btn-admin-action" onclick="guardarAjustesYConfiguracionNube()" style="padding:16px; font-size:15px; margin-bottom:30px;">Guardar Cambios en la Nube</button>
+                    <button type="button" class="btn-admin-action" onclick="guardarAjustesYConfiguracionNube()" style="padding:16px; font-size:15px; margin-bottom:30px;">Guardar Cambios</button>
                 </div>
 
             </div>
@@ -614,19 +627,15 @@
 
     </div>
 
-    <!-- MODAL EDITAR CATEGORÍA E ICONO -->
+    <!-- MODAL EDITAR CATEGORÍA -->
     <div id="modal-editar-categoria" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-size:16px;">📁 Editar Categoría e Icono</h3>
+                <h3 style="margin:0; font-size:16px;">📁 Editar Icono de Categoría</h3>
                 <button onclick="cerrarModalEditarCat()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
             </div>
             <div class="modal-body">
-                <input type="hidden" id="edit-cat-id">
-                <div class="form-group">
-                    <label>Nombre de la Categoría</label>
-                    <input type="text" id="edit-cat-nombre" readonly style="opacity:0.7;">
-                </div>
+                <input type="hidden" id="edit-cat-nombre">
                 <div class="form-group">
                     <label>Subir Icono Personalizado:</label>
                     <input type="file" id="edit-cat-file" accept="image/*">
@@ -647,9 +656,8 @@
                 <button onclick="cerrarModalSelloInteractivo()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
             </div>
             <div class="modal-body">
-                <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Introduce el código de 4 dígitos proporcionado por el cajero para marcar tu casilla.</p>
+                <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Introduce el código de 4 dígitos proporcionado por el cajero:</p>
                 <div class="form-group">
-                    <label>Código de un solo uso:</label>
                     <input type="text" id="input-codigo-sello-rapido" placeholder="Ej. 4829" maxlength="4" style="text-align:center; font-size:22px; letter-spacing:6px; font-weight:bold;">
                 </div>
                 <button onclick="validarYGanarSelloRapido()" class="btn-admin-action" style="background:var(--color-principal);">Validar y Marcar Sello ⭐</button>
@@ -662,7 +670,7 @@
             <div class="status-dot" id="floating-status-dot"></div>
             <span id="floating-status-text">Abierto</span>
         </div>
-        <button class="cart-icon-btn" onclick="mostrarToast('Carrito listo')" title="Ver Carrito">
+        <button class="cart-icon-btn" onclick="mostrarToast('Sistema listo')" title="Estado">
             <svg class="icon-svg-lg" style="color:#121212;" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             <span class="cart-count-badge" id="cart-count">0</span>
         </button>
@@ -676,7 +684,7 @@
             </div>
             <div class="modal-body">
                 <div id="seccion-registro-cliente" style="display:block;">
-                    <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Regístrate con tu nombre y teléfono para guardar tus sellos en la nube.</p>
+                    <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Regístrate con tu nombre y teléfono para unirte al Club.</p>
                     <div class="form-group">
                         <label>Tu Nombre *</label>
                         <input type="text" id="reg-nombre" placeholder="Ej. Carlos Pérez">
@@ -710,7 +718,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, setDoc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, setDoc, getDoc, query, where, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD2JhmA4m7NMbRcC2RqaHVIz1NLgI2IzE",
@@ -742,16 +750,13 @@
         }
 
         async function cargarMenu() {
-            const menuGrid = document.getElementById("menu-grid");
             try {
                 const querySnapshot = await getDocs(collection(db, "menu"));
                 listaPlatos = [];
                 querySnapshot.forEach((docSnap) => { listaPlatos.push({ id: docSnap.id, ...docSnap.data() }); });
                 mostrarPlatos(listaPlatos);
                 inicializarCategoriasNube();
-            } catch (error) {
-                if (menuGrid) menuGrid.innerHTML = "<p style='color:#ef4444; text-align:center;'>Error al cargar menú.</p>";
-            }
+            } catch (error) { console.log(error); }
         }
 
         function mostrarPlatos(platos) {
@@ -772,7 +777,7 @@
                     <div class="food-card">
                         <div class="card-image-container">
                             <img src="${imagen}" alt="${plato.nombre}">
-                            <span class="badge" style="${plato.categoria === 'Ofertas' ? 'color:var(--color-oferta); border-color:var(--color-oferta); background:rgba(239,68,68,0.15);' : ''}">${plato.categoria || 'Especialidad'}</span>
+                            <span class="badge">${plato.categoria || 'Especialidad'}</span>
                         </div>
                         <div class="card-content">
                             <div>
@@ -818,16 +823,15 @@
             container.innerHTML = html;
         }
 
-        // FUNCIONALIDAD INTERACTIVA DE LOS SELLOS
+        // CÓDIGO DE SELLO DE UN SOLO USO ESTRICTO
         window.hacerClickCasillaSello = function(numeroCasilla) {
             if (!window.clienteActualId) {
                 abrirLealtadModalSimple();
-                mostrarToast("Primero ingresa tu nombre y teléfono para unirte al Club.");
+                mostrarToast("Primero ingresa tu nombre y teléfono.");
                 return;
             }
 
             let selloEsperado = window.clienteActualSellos + 1;
-
             if (numeroCasilla <= window.clienteActualSellos) {
                 mostrarToast("⭐ ¡Este sello ya lo tienes acumulado!");
                 return;
@@ -848,13 +852,14 @@
 
         window.validarYGanarSelloRapido = async function() {
             const codigoIngresado = document.getElementById('input-codigo-sello-rapido').value.trim();
-            if (!codigoIngresado) { mostrarToast("Introduce el código de 4 dígitos."); return; }
+            if (!codigoIngresado) { mostrarToast("Introduce el código."); return; }
 
             try {
                 const docRefConfig = doc(db, "configuracion", "selloActivo");
                 const docSnap = await getDoc(docRefConfig);
 
                 if (docSnap.exists() && docSnap.data().codigo === codigoIngresado) {
+                    // ELIMINAR CÓDIGO INMEDIATAMENTE PARA QUE SEA DE UN SOLO USO
                     await setDoc(docRefConfig, { codigo: null });
 
                     window.clienteActualSellos++;
@@ -870,10 +875,10 @@
                     actualizarUILealtadPublica();
                     cerrarModalSelloInteractivo();
                 } else {
-                    mostrarToast("Código incorrecto o ya utilizado.");
+                    mostrarToast("❌ Código incorrecto o ya fue utilizado (Un solo uso).");
                 }
             } catch(e) {
-                mostrarToast("Error al validar el código.");
+                mostrarToast("Error al validar código.");
             }
         }
 
@@ -881,15 +886,12 @@
             const counterEl = document.getElementById('loyalty-counter-text');
             if (counterEl) counterEl.textContent = `${window.clienteActualSellos} / 5 Sellos`;
             let gridHTML = "";
-            
             for (let i = 1; i <= 5; i++) {
                 let filled = i <= window.clienteActualSellos;
                 let isNext = i === (window.clienteActualSellos + 1);
-                
                 let claseBox = filled ? 'stamp-box filled' : (isNext ? 'stamp-box next-to-fill' : 'stamp-box');
                 let contenido = filled ? '⭐' : i;
-
-                gridHTML += `<div class="${claseBox}" onclick="hacerClickCasillaSello(${i})" title="Haz clic para marcar el sello ${i}">${contenido}</div>`;
+                gridHTML += `<div class="${claseBox}" onclick="hacerClickCasillaSello(${i})">${contenido}</div>`;
             }
             const gridEl = document.getElementById('public-stamps-grid');
             if (gridEl) gridEl.innerHTML = gridHTML;
@@ -897,48 +899,34 @@
 
         window.abrirLealtadModal = function(e) { 
             if(e) e.preventDefault();
-            if (!window.clienteActualId) {
-                document.getElementById('modal-lealtad').style.display = 'flex'; 
-            } else {
-                mostrarToast(`¡Hola ${window.clienteActualNombre}! Tienes ${window.clienteActualSellos}/5 sellos.`);
-            }
+            if (!window.clienteActualId) document.getElementById('modal-lealtad').style.display = 'flex'; 
+            else mostrarToast(`¡Hola ${window.clienteActualNombre}! Tienes ${window.clienteActualSellos}/5 sellos.`);
         }
-
-        window.abrirLealtadModalSimple = function() {
-            document.getElementById('modal-lealtad').style.display = 'flex';
-        }
-        
+        window.abrirLealtadModalSimple = function() { document.getElementById('modal-lealtad').style.display = 'flex'; }
         window.cerrarLealtadModal = function() { document.getElementById('modal-lealtad').style.display = 'none'; }
 
         window.registrarOIdentificarCliente = async function() {
             const nombre = document.getElementById('reg-nombre').value.trim();
             const telefono = document.getElementById('reg-telefono').value.trim();
-
-            if (!nombre || !telefono) { mostrarToast("Por favor ingresa tu nombre y teléfono."); return; }
+            if (!nombre || !telefono) { mostrarToast("Ingresa nombre y teléfono."); return; }
 
             try {
                 const q = query(collection(db, "clientes"), where("telefono", "==", telefono));
                 const querySnapshot = await getDocs(q);
-
-                let clienteId = null;
-                let sellos = 0;
+                let clienteId = null, sellos = 0;
 
                 if (!querySnapshot.empty) {
                     let docRef = querySnapshot.docs[0];
                     clienteId = docRef.id;
                     sellos = docRef.data().sellos || 0;
                 } else {
-                    const nuevoDoc = await addDoc(collection(db, "clientes"), {
-                        nombre: nombre, telefono: telefono, sellos: 0, fechaRegistro: new Date().toLocaleDateString()
-                    });
+                    const nuevoDoc = await addDoc(collection(db, "clientes"), { nombre, telefono, sellos: 0, fechaRegistro: new Date().toLocaleDateString() });
                     clienteId = nuevoDoc.id;
-                    sellos = 0;
                 }
 
                 window.clienteActualId = clienteId;
                 window.clienteActualNombre = nombre;
                 window.clienteActualSellos = sellos;
-
                 localStorage.setItem('alaska_cliente_doc_id', clienteId);
                 localStorage.setItem('alaska_cliente_nombre', nombre);
                 localStorage.setItem('alaska_cliente_sellos', sellos);
@@ -946,12 +934,10 @@
                 actualizarUILealtadPublica();
                 cerrarLealtadModal();
                 mostrarToast("¡Bienvenido al Club Alaska, " + nombre + "!");
-            } catch(e) {
-                mostrarToast("Error al registrar cliente.");
-            }
+            } catch(e) { mostrarToast("Error al registrar."); }
         }
 
-        // FUNCIONES DE HORARIOS RESTAURADAS
+        // HORARIOS
         function renderizarFormularioHorarios(horariosData = {}) {
             const container = document.getElementById('days-schedule-container');
             if (!container) return;
@@ -959,7 +945,7 @@
             diasSemana.forEach(dia => {
                 let info = horariosData[dia] || { cerrado: false, apertura: "12:00", cierre: "22:00" };
                 container.innerHTML += `
-                    <div class="day-schedule-card" id="card-dia-${dia}">
+                    <div class="day-schedule-card">
                         <div class="day-header-flex">
                             <h4>${dia}</h4>
                             <label class="checkbox-label">
@@ -990,39 +976,26 @@
                 const cierre = document.getElementById(`time-cierre-${dia}`).value;
                 horariosObj[dia] = { cerrado, apertura, cierre };
             });
-
             try {
                 await setDoc(doc(db, "configuracion", "horariosAtencion"), horariosObj);
                 mostrarToast("✅ ¡Horarios guardados en la nube!");
             } catch(e) { mostrarToast("Error al guardar horarios."); }
         }
 
-        // CONFIGURACIÓN VISUAL Y PALETA DE COLORES RESTAURADA
+        // CONFIGURACIÓN Y PALETA DE COLORES
         async function cargarConfiguracionVisualNube() {
             try {
                 const docRef = doc(db, "configuracion", "estilosGenerales");
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    if (data.nombreInterno && document.getElementById('input-nombre-interno')) {
-                        document.getElementById('input-nombre-interno').value = data.nombreInterno;
-                        document.getElementById('sidebar-brand-title').textContent = data.nombreInterno;
-                    }
-                    if (data.tituloPublico && document.getElementById('input-titulo-publico')) {
-                        document.getElementById('input-titulo-publico').value = data.tituloPublico;
-                        document.getElementById('public-title-display').textContent = data.tituloPublico;
-                    }
+                    if (data.nombreInterno && document.getElementById('input-nombre-interno')) document.getElementById('input-nombre-interno').value = data.nombreInterno;
+                    if (data.tituloPublico && document.getElementById('input-titulo-publico')) document.getElementById('input-titulo-publico').value = data.tituloPublico;
                     if (data.colorPrincipal) {
                         document.documentElement.style.setProperty('--color-principal', data.colorPrincipal);
                         if(document.getElementById('input-color-principal')) document.getElementById('input-color-principal').value = data.colorPrincipal;
                     }
-                    if (data.colorOferta) {
-                        document.documentElement.style.setProperty('--color-oferta', data.colorOferta);
-                        if(document.getElementById('input-color-oferta')) document.getElementById('input-color-oferta').value = data.colorOferta;
-                    }
-                    if (data.logoUrl && document.getElementById('logo-display')) {
-                        document.getElementById('logo-display').src = data.logoUrl;
-                    }
+                    if (data.logoUrl && document.getElementById('logo-display')) document.getElementById('logo-display').src = data.logoUrl;
                 }
                 const docRefH = doc(db, "configuracion", "horariosAtencion");
                 const docSnapH = await getDoc(docRefH);
@@ -1034,36 +1007,30 @@
             const nombreInterno = document.getElementById('input-nombre-interno').value.trim();
             const tituloPublico = document.getElementById('input-titulo-publico').value.trim();
             const colorPrincipal = document.getElementById('input-color-principal').value;
-            const colorOferta = document.getElementById('input-color-oferta').value;
             const fileInput = document.getElementById('logoFileInput');
 
-            const guardarDatosFinales = async (logoUrlFinal) => {
+            const guardarFin = async (logoUrl) => {
                 try {
-                    let objData = { nombreInterno, tituloPublico, colorPrincipal, colorOferta };
-                    if(logoUrlFinal) objData.logoUrl = logoUrlFinal;
-
-                    await setDoc(doc(db, "configuracion", "estilosGenerales"), objData, { merge: true });
+                    let dataObj = { nombreInterno, tituloPublico, colorPrincipal };
+                    if(logoUrl) dataObj.logoUrl = logoUrl;
+                    await setDoc(doc(db, "configuracion", "estilosGenerales"), dataObj, { merge: true });
                     document.documentElement.style.setProperty('--color-principal', colorPrincipal);
-                    document.documentElement.style.setProperty('--color-oferta', colorOferta);
-                    if(logoUrlFinal) document.getElementById('logo-display').src = logoUrlFinal;
-                    mostrarToast("✅ ¡Ajustes guardados en la nube!");
-                } catch(e) { mostrarToast("Error al guardar ajustes."); }
+                    if(logoUrl) document.getElementById('logo-display').src = logoUrl;
+                    mostrarToast("✅ ¡Ajustes guardados!");
+                } catch(e) { mostrarToast("Error al guardar."); }
             };
 
             if (fileInput.files && fileInput.files[0]) {
                 const reader = new FileReader();
                 reader.readAsDataURL(fileInput.files[0]);
-                reader.onload = async function() { await guardarDatosFinales(reader.result); };
-            } else {
-                await guardarDatosFinales(null);
-            }
+                reader.onload = async function() { await guardarFin(reader.result); };
+            } else { await guardarFin(null); }
         }
 
         window.abrirSidebar = function() {
             document.getElementById('sidebar-drawer').classList.add('open');
             document.getElementById('sidebar-overlay').style.display = 'block';
         }
-
         window.cerrarSidebar = function() {
             document.getElementById('sidebar-drawer').classList.remove('open');
             document.getElementById('sidebar-overlay').style.display = 'none';
@@ -1108,92 +1075,77 @@
 
         window.cambiarVista = function(vista) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active-view'));
-            if (vista === 'menu') {
-                document.getElementById('view-menu').classList.add('active-view');
-            } else if (vista === 'admin') {
-                document.getElementById('view-admin').classList.add('active-view');
-            }
+            if (vista === 'menu') document.getElementById('view-menu').classList.add('active-view');
+            else if (vista === 'admin') document.getElementById('view-admin').classList.add('active-view');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        async function cargarPedidosAdmin() {
-            const contenedor = document.getElementById("admin-pedidos-container");
-            if (!contenedor) return;
-            contenedor.innerHTML = "<p style='color:var(--text-muted); font-size:13px;'>Cargando pedidos...</p>";
-            try {
-                const qs = await getDocs(collection(db, "pedidos"));
-                if (qs.empty) { contenedor.innerHTML = "<p style='color:var(--text-muted); font-size:13px;'>Sin pedidos.</p>"; return; }
-                contenedor.innerHTML = "";
-                qs.forEach(d => {
-                    const p = d.data();
-                    contenedor.innerHTML += `
-                        <div style="background:#252525; padding:12px; border-radius:10px; margin-bottom:10px; border:1px solid var(--border-color);">
-                            <strong style="color:white;">${p.nombre}</strong><br>
-                            <span style="font-size:12px; color:var(--color-principal);">${p.detalle}</span><br>
-                            <strong style="color:white;">₡${p.total.toLocaleString()}</strong>
-                        </div>
-                    `;
-                });
-            } catch(e) { contenedor.innerHTML = "<p style='color:#ef4444;'>Error al cargar pedidos.</p>"; }
-        }
-
-        async function cargarAdminPlatosDashboard() {
-            try {
-                const qs = await getDocs(collection(db, "menu"));
-                let platos = [];
-                qs.forEach(d => platos.push({ id: d.id, ...d.data() }));
-                renderizarTablaAdminPlatos(platos);
-            } catch(e) { console.log(e); }
-        }
-
-        function renderizarTablaAdminPlatos(platos) {
-            const tbody = document.getElementById('admin-tabla-platos-body');
-            if (!tbody) return;
-            let platosVisibles = platos.filter(p => p.categoria !== 'Stock_Interno');
-            if (platosVisibles.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No hay platos.</td></tr>`;
-                return;
-            }
-            tbody.innerHTML = "";
-            platosVisibles.forEach((p, idx) => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${idx + 1}</td>
-                        <td><img src="${p.imagenUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=100&q=80'}" style="width:36px; height:36px; border-radius:6px; object-fit:cover;"></td>
-                        <td style="font-weight:700;">${p.nombre}</td>
-                        <td>${p.categoria}</td>
-                        <td style="color:var(--color-principal); font-weight:800;">₡${p.precio.toLocaleString()}</td>
-                    </tr>
-                `;
-            });
+        // STOCK INTERNO Y ESTADÍSTICAS DE GANANCIAS
+        window.toggleCamposStock = function(val) {
+            document.getElementById('campos-stock-extra').style.display = (val === 'Stock_Interno') ? 'block' : 'none';
         }
 
         async function cargarAdminStock() {
             const tbody = document.getElementById('admin-tabla-stock-body');
             if (!tbody) return;
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>`;
             try {
                 const qs = await getDocs(collection(db, "menu"));
                 tbody.innerHTML = "";
                 let hayStock = false;
+                let totalInversion = 0;
+                let totalVentaEst = 0;
+
                 qs.forEach(d => {
-                    let s = d.data();
+                    let s = { id: d.id, ...d.data() };
                     if (s.categoria === 'Stock_Interno') {
                         hayStock = true;
+                        let cant = Number(s.stockCantidad || 0);
+                        let comp = Number(s.stockCompra || 0);
+                        let vent = Number(s.precio || 0);
+                        let ganUnid = vent - comp;
+
+                        totalInversion += (cant * comp);
+                        totalVentaEst += (cant * vent);
+
                         tbody.innerHTML += `
                             <tr>
                                 <td style="font-weight:700;">${s.nombre}</td>
-                                <td style="font-weight:800; color:var(--color-principal);">${s.stockCantidad || 0} unids</td>
-                                <td>₡${Number(s.stockCompra || 0).toLocaleString()}</td>
-                                <td>₡${Number(s.precio || 0).toLocaleString()}</td>
+                                <td style="font-weight:800; color:var(--color-principal);">${cant} unids</td>
+                                <td>₡${comp.toLocaleString()}</td>
+                                <td>₡${vent.toLocaleString()}</td>
+                                <td style="color:#4ade80;">₡${ganUnid.toLocaleString()}</td>
+                                <td><button onclick="venderUnidadStock('${s.id}', ${cant}, ${vent})" class="action-pill" style="padding:6px 12px; font-size:11px; background:rgba(212,175,55,0.2);">Vender 1</button></td>
                             </tr>
                         `;
                     }
                 });
-                if (!hayStock) tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No hay stock interno.</td></tr>`;
-            } catch(e) { tbody.innerHTML = `<tr><td colspan="4" style='color:#ef4444;'>Error.</td></tr>`; }
+
+                document.getElementById('stock-stat-inversion').textContent = `₡${totalInversion.toLocaleString()}`;
+                document.getElementById('stock-stat-venta').textContent = `₡${totalVentaEst.toLocaleString()}`;
+                document.getElementById('stock-stat-ganancia').textContent = `₡${(totalVentaEst - totalInversion).toLocaleString()}`;
+
+                if (!hayStock) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No hay stock interno.</td></tr>`;
+            } catch(e) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#ef4444;">Error al cargar stock.</td></tr>`; }
         }
 
+        window.venderUnidadStock = async function(idPlato, stockActual, precioVenta) {
+            if (stockActual <= 0) { mostrarToast("⚠️ No hay unidades disponibles en stock."); return; }
+            try {
+                await updateDoc(doc(db, "menu", idPlato), { stockCantidad: stockActual - 1 });
+                // Registrar venta en pedidos para el cierre de caja automático
+                await addDoc(collection(db, "pedidos"), {
+                    nombre: "Venta Stock Interno",
+                    detalle: "1 unidad vendida",
+                    total: precioVenta,
+                    fecha: new Date().toLocaleString()
+                });
+                mostrarToast("✅ ¡Venta registrada y stock rebajado!");
+                cargarAdminStock();
+            } catch(e) { mostrarToast("Error al procesar venta."); }
+        }
+
+        // CIERRE DE CAJA
         async function cargarEstadisticasCaja() {
             try {
                 const qs = await getDocs(collection(db, "pedidos"));
@@ -1204,7 +1156,20 @@
             } catch(e) { console.log(e); }
         }
 
-        // GESTIÓN DE CATEGORÍAS Y EDICIÓN DE ICONOS EN NUBE RESTAURADA
+        window.calcularCorteCaja = async function() {
+            try {
+                const qs = await getDocs(collection(db, "pedidos"));
+                let total = 0;
+                qs.forEach(d => total += Number(d.data().total || 0));
+                document.getElementById('resultado-corte-container').innerHTML = `
+                    <div style="background:#222; padding:15px; border-radius:10px; border:1px solid var(--color-principal);">
+                        <strong style="color:var(--color-principal); font-size:16px;">💰 Total Recaudado en Caja: ₡${total.toLocaleString()}</strong><br>
+                        <span style="font-size:12px; color:var(--text-muted);">Basado en ${qs.size} transacciones registradas.</span>
+                    </div>
+                `;
+            } catch(e) { mostrarToast("Error al calcular corte."); }
+        }
+
         async function renderizarTablaCategoriasAdmin() {
             const tbody = document.getElementById('admin-tabla-categorias-body');
             if (!tbody) return;
@@ -1227,19 +1192,12 @@
             document.getElementById('edit-cat-file').value = "";
             document.getElementById('modal-editar-categoria').style.display = 'flex';
         }
-
-        window.cerrarModalEditarCat = function() {
-            document.getElementById('modal-editar-categoria').style.display = 'none';
-        }
+        window.cerrarModalEditarCat = function() { document.getElementById('modal-editar-categoria').style.display = 'none'; }
 
         window.guardarCategoriaEditadaNube = async function() {
             const catNombre = document.getElementById('edit-cat-nombre').value;
             const fileInput = document.getElementById('edit-cat-file');
-
-            if (!fileInput.files || !fileInput.files[0]) {
-                mostrarToast("Selecciona una imagen para el icono.");
-                return;
-            }
+            if (!fileInput.files || !fileInput.files[0]) { mostrarToast("Selecciona una imagen."); return; }
 
             const reader = new FileReader();
             reader.readAsDataURL(fileInput.files[0]);
@@ -1252,9 +1210,56 @@
                     renderizarCategoriasPublicas();
                     renderizarTablaCategoriasAdmin();
                     cerrarModalEditarCat();
-                    mostrarToast("✅ ¡Icono de categoría actualizado en la nube!");
+                    mostrarToast("✅ ¡Icono actualizado en la nube!");
                 } catch(e) { mostrarToast("Error al guardar icono."); }
             };
+        }
+
+        async function cargarPedidosAdmin() {
+            const contenedor = document.getElementById("admin-pedidos-container");
+            if (!contenedor) return;
+            try {
+                const qs = await getDocs(collection(db, "pedidos"));
+                if (qs.empty) { contenedor.innerHTML = "<p style='color:var(--text-muted); font-size:13px;'>Sin pedidos recientes.</p>"; return; }
+                contenedor.innerHTML = "";
+                qs.forEach(d => {
+                    const p = d.data();
+                    contenedor.innerHTML += `
+                        <div style="background:#252525; padding:12px; border-radius:10px; margin-bottom:10px; border:1px solid var(--border-color);">
+                            <strong style="color:white;">${p.nombre}</strong><br>
+                            <span style="font-size:12px; color:var(--color-principal);">${p.detalle}</span><br>
+                            <strong style="color:white;">₡${p.total.toLocaleString()}</strong>
+                        </div>
+                    `;
+                });
+            } catch(e) { contenedor.innerHTML = "<p style='color:#ef4444;'>Error.</p>"; }
+        }
+
+        async function cargarAdminPlatosDashboard() {
+            try {
+                const qs = await getDocs(collection(db, "menu"));
+                let platos = [];
+                qs.forEach(d => platos.push({ id: d.id, ...d.data() }));
+                renderizarTablaAdminPlatos(platos);
+            } catch(e) { console.log(e); }
+        }
+
+        function renderizarTablaAdminPlatos(platos) {
+            const tbody = document.getElementById('admin-tabla-platos-body');
+            if (!tbody) return;
+            let visibles = platos.filter(p => p.categoria !== 'Stock_Interno');
+            tbody.innerHTML = "";
+            visibles.forEach((p, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${idx + 1}</td>
+                        <td><img src="${p.imagenUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=100&q=80'}" style="width:36px; height:36px; border-radius:6px; object-fit:cover;"></td>
+                        <td style="font-weight:700;">${p.nombre}</td>
+                        <td>${p.categoria}</td>
+                        <td style="color:var(--color-principal); font-weight:800;">₡${p.precio.toLocaleString()}</td>
+                    </tr>
+                `;
+            });
         }
 
         async function cargarBaseClientesAdmin() {
@@ -1262,13 +1267,12 @@
             if (!tbody) return;
             try {
                 const qs = await getDocs(collection(db, "clientes"));
-                if (qs.empty) { tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Sin clientes.</td></tr>`; return; }
                 tbody.innerHTML = "";
                 qs.forEach(d => {
                     const c = d.data();
                     tbody.innerHTML += `<tr><td style="font-weight:750;">${c.nombre}</td><td>${c.telefono}</td><td style="color:var(--color-principal); font-weight:800;">${c.sellos || 0} / 5 ⭐</td></tr>`;
                 });
-            } catch(e) { tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#ef4444;">Error.</td></tr>`; }
+            } catch(e) { console.log(e); }
         }
 
         async function cargarCodigoActivoAdmin() {
@@ -1286,14 +1290,39 @@
             try {
                 await setDoc(doc(db, "configuracion", "selloActivo"), { codigo: nuevoCodigo });
                 document.getElementById('codigo-activo-display').textContent = nuevoCodigo;
-                mostrarToast("¡Código generado!: " + nuevoCodigo);
+                mostrarToast("¡Código de un solo uso generado!: " + nuevoCodigo);
             } catch(e) { mostrarToast("Error al generar."); }
         }
+
+        // REGISTRAR NUEVO ÍTEM O STOCK DESDE EL FORMULARIO
+        document.getElementById('productForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nombre = document.getElementById('nombre').value.trim();
+            const categoria = document.getElementById('categoria').value;
+            const precio = Number(document.getElementById('precio').value);
+
+            let dataPlato = { nombre, categoria, precio, disponible: true };
+
+            if (categoria === 'Stock_Interno') {
+                dataPlato.stockCantidad = Number(document.getElementById('stock-cantidad').value || 0);
+                dataPlato.stockCompra = Number(document.getElementById('stock-compra').value || 0);
+            }
+
+            try {
+                await addDoc(collection(db, "menu"), dataPlato);
+                mostrarToast("✅ ¡Ítem registrado con éxito!");
+                document.getElementById('productForm').reset();
+                toggleCamposStock('Bocas');
+                cargarMenu();
+            } catch(err) {
+                mostrarToast("Error al registrar ítem.");
+            }
+        });
 
         window.abrirSeguimientoModal = function(e) { e.preventDefault(); document.getElementById('modal-seguimiento').style.display = 'flex'; }
         window.cerrarSeguimientoModal = function() { document.getElementById('modal-seguimiento').style.display = 'none'; }
 
-        // Inicialización general completa y restaurada
+        // INICIALIZACIÓN
         cargarConfiguracionVisualNube();
         actualizarUILealtadPublica();
         cargarMenu();
