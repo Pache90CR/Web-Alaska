@@ -495,7 +495,6 @@
 
                 <div id="admin-tab-platos" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:15px;">🍽️ Gestión de Platos</h2>
-                    
                     <div class="stats-cards-grid">
                         <div class="stat-card total"><div class="stat-title">Total</div><div class="stat-value" id="stat-total">0</div></div>
                         <div class="stat-card img"><div class="stat-title">Con Imagen</div><div class="stat-value" id="stat-con-img">0</div></div>
@@ -504,20 +503,6 @@
                         <div class="stat-card ocultos"><div class="stat-title">Ocultos</div><div class="stat-value" id="stat-ocultos">0</div></div>
                         <div class="stat-card oferta"><div class="stat-title">En Oferta</div><div class="stat-value" id="stat-oferta">0</div></div>
                     </div>
-
-                    <div style="display:flex; justify-content:space-between; gap:10px; margin-bottom:15px; flex-wrap:wrap; align-items:center;">
-                        <input type="text" id="input-buscar-admin-plato" placeholder="🔍 Buscar platos..." oninput="filtrarTablaAdminPlatos()" style="flex:1; min-width:200px; padding:10px; font-size:13px; background:#181818; border:1px solid var(--border-color); border-radius:8px; color:white;">
-                        <select id="select-filtro-categoria" onchange="filtrarTablaAdminPlatos()" style="width:160px; padding:10px; font-size:13px; background:#181818; border:1px solid var(--border-color); border-radius:8px; color:white;">
-                            <option value="todos">Todas las Categorías</option>
-                            <option value="Bocas">Bocas</option>
-                            <option value="Comidas Rápidas">Comidas Rápidas</option>
-                            <option value="Arroces">Arroces</option>
-                            <option value="Batidos">Batidos</option>
-                            <option value="Casados">Casados</option>
-                            <option value="Ofertas">Ofertas</option>
-                        </select>
-                    </div>
-
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
@@ -540,14 +525,6 @@
 
                 <div id="admin-tab-stock" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">📦 Control de Stock Interno</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Inventario privado. Vende artículos aquí para rebajar stock y sumarlos automáticamente al cierre de caja.</p>
-                    
-                    <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:20px;">
-                        <div class="stat-card total"><div class="stat-title">Inversión Stock</div><div class="stat-value" id="stock-stat-inversion">₡0</div></div>
-                        <div class="stat-card visibles"><div class="stat-title">Valor Venta Est.</div><div class="stat-value" id="stock-stat-venta">₡0</div></div>
-                        <div class="stat-card oferta"><div class="stat-title">Ganancia Total Est.</div><div class="stat-value" id="stock-stat-ganancia" style="color:#4ade80;">₡0</div></div>
-                    </div>
-
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
@@ -556,55 +533,35 @@
                                     <th>Stock</th>
                                     <th>Compra (₡)</th>
                                     <th>Venta (₡)</th>
-                                    <th>Gan/Unid</th>
-                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="admin-tabla-stock-body">
-                                <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>
+                                <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
                 <div id="admin-tab-caja" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">💰 Cierre de Caja y Reportes de Ventas</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Estadísticas generales de ingresos y resumen del negocio.</p>
-                    
-                    <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:20px;">
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">💰 Cierre de Caja y Reportes</h2>
+                    <div class="stats-cards-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom:20px;">
                         <div class="stat-card total"><div class="stat-title">Ingresos Totales</div><div class="stat-value" id="stat-ingresos">₡0</div></div>
                         <div class="stat-card visibles"><div class="stat-title">Total Pedidos</div><div class="stat-value" id="stat-total-pedidos">0</div></div>
-                        <div class="stat-card oferta"><div class="stat-title">Clientes Club</div><div class="stat-value" id="stat-total-clientes">0</div></div>
-                    </div>
-
-                    <div style="background:#181818; padding:18px; border-radius:14px; border:1px solid var(--border-color);">
-                        <h3 style="margin-top:0; font-size:15px; color:var(--color-principal);">🧾 Generar Corte de Caja</h3>
-                        <p style="font-size:13px; color:var(--text-muted);">Calcula el total recaudado según los pedidos y ventas de stock registradas.</p>
-                        <button type="button" class="btn-admin-action" onclick="calcularCorteCaja()">Calcular Ventas del Día</button>
-                        <div id="resultado-corte-container" style="margin-top:15px; font-size:14px; color:white;"></div>
                     </div>
                 </div>
 
                 <div id="admin-tab-categorias" class="admin-section-tab">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <div>
-                            <h2 style="margin:0; font-size:18px; color:var(--color-principal);">📁 Gestión de Categorías e Iconos (Nube)</h2>
-                            <p style="font-size:13px; color:var(--text-muted); margin:4px 0 0 0;">Los iconos y estados se guardan en la nube para que todos los clientes los vean.</p>
-                        </div>
-                    </div>
-
+                    <h2 style="margin:0; font-size:18px; color:var(--color-principal); margin-bottom:15px;">📁 Gestión de Categorías</h2>
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
                                 <tr>
-                                    <th>Icono</th>
                                     <th>Categoría</th>
-                                    <th>Visible</th>
-                                    <th>Acciones</th>
+                                    <th>Estado</th>
                                 </tr>
                             </thead>
                             <tbody id="admin-tabla-categorias-body">
-                                <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando categorías...</td></tr>
+                                <tr><td colspan="2" style="text-align:center; color:var(--text-muted);">Cargando categorías...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -612,70 +569,33 @@
 
                 <div id="admin-tab-nuevo-plato" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">➕ Registrar Nuevo Ítem / Stock</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Añade platos al menú o selecciona "Stock_Interno" para inventario privado con precios de compra y venta.</p>
                     <form id="productForm">
                         <div class="form-group">
                             <label>Nombre del Ítem:</label>
-                            <input type="text" id="nombre" required placeholder="Ej. Costilla Cerdo o Botella guaro">
+                            <input type="text" id="nombre" required placeholder="Ej. Costilla Cerdo">
                         </div>
-                        <div style="display:flex; gap:10px;">
-                            <div class="form-group" style="flex:1;">
-                                <label>Categoría:</label>
-                                <select id="categoria" required onchange="toggleCamposStock(this.value)">
-                                    <option value="Bocas">Bocas</option>
-                                    <option value="Comidas Rápidas">Comidas Rápidas</option>
-                                    <option value="Arroces">Arroces</option>
-                                    <option value="Batidos">Batidos</option>
-                                    <option value="Casados">Casados</option>
-                                    <option value="Ofertas">Ofertas</option>
-                                    <option value="Stock_Interno">📦 Stock Interno (Oculto)</option>
-                                </select>
-                            </div>
-                            <div class="form-group" style="flex:1;" id="group-precio-venta">
-                                <label>Precio de Venta (₡):</label>
-                                <input type="number" id="precio" required placeholder="5000">
-                            </div>
-                        </div>
-
-                        <div id="campos-stock-extra" style="display:none; background:#181818; padding:12px; border-radius:10px; border:1px solid var(--border-color); margin-bottom:16px;">
-                            <div style="display:flex; gap:10px;">
-                                <div class="form-group" style="flex:1; margin-bottom:0;">
-                                    <label>Cantidad en Stock:</label>
-                                    <input type="number" id="stock-cantidad" placeholder="Ej. 24">
-                                </div>
-                                <div class="form-group" style="flex:1; margin-bottom:0;">
-                                    <label>Precio de Compra (₡):</label>
-                                    <input type="number" id="stock-compra" placeholder="Ej. 3500">
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="form-group">
-                            <label>Descripción:</label>
-                            <input type="text" id="descripcion" placeholder="Detalles o ingredientes...">
+                            <label>Categoría:</label>
+                            <select id="categoria" required>
+                                <option value="Bocas">Bocas</option>
+                                <option value="Comidas Rápidas">Comidas Rápidas</option>
+                                <option value="Arroces">Arroces</option>
+                                <option value="Batidos">Batidos</option>
+                                <option value="Casados">Casados</option>
+                                <option value="Ofertas">Ofertas</option>
+                                <option value="Stock_Interno">📦 Stock Interno (Oculto)</option>
+                            </select>
                         </div>
-
-                        <div class="form-group" id="group-variantes" style="background:#222; padding:12px; border-radius:10px; border:1px solid var(--border-color);">
-                            <label>Acompañamientos / Extras (Opcional):</label>
-                            <div style="display:flex; gap:6px; margin-bottom:8px;">
-                                <input type="text" id="input-nombre-var" placeholder="Ej. Papas Gajo" style="flex:2;">
-                                <input type="number" id="input-precio-var" placeholder="₡ Extra" style="flex:1;">
-                                <button type="button" onclick="agregarVarianteTemporal()" style="background:var(--color-principal); color:#121212; border:none; padding:0 14px; border-radius:8px; font-weight:bold; cursor:pointer;">+</button>
-                            </div>
-                            <div id="lista-variantes-temp" style="font-size:12px; color:var(--text-muted);">Sin extras añadidos.</div>
-                        </div>
-
                         <div class="form-group">
-                            <label>Fotografía (Opcional):</label>
-                            <input type="file" id="imagenFile" accept="image/*">
+                            <label>Precio de Venta (₡):</label>
+                            <input type="number" id="precio" required placeholder="5000">
                         </div>
                         <button type="submit" id="btnGuardar" class="btn-admin-action">Guardar Ítem</button>
                     </form>
                 </div>
 
                 <div id="admin-tab-lealtad" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">🔐 Generador de Sello (Un Solo Uso)</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Genera códigos seguros y dinámicos para el programa de lealtad.</p>
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">🔐 Generador de Sello</h2>
                     <div style="background:#181818; padding:18px; border-radius:14px; border:1px solid var(--border-color); text-align:center;">
                         <span id="codigo-activo-display" style="font-size:28px; font-weight:900; letter-spacing:4px; color:var(--color-principal); display:block; margin-bottom:15px;">----</span>
                         <button type="button" class="btn-admin-action" onclick="generarNuevoCodigoSello()">Generar Código Nuevo</button>
@@ -683,20 +603,18 @@
                 </div>
 
                 <div id="admin-tab-clientes" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:10px;">👥 Base de Clientes y Lealtad</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Lista de clientes registrados con sus sellos acumulados para marketing o control.</p>
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:10px;">👥 Base de Clientes</h2>
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
                                 <tr>
                                     <th>Cliente</th>
-                                    <th>Teléfono / WhatsApp</th>
+                                    <th>Teléfono</th>
                                     <th>Sellos ⭐</th>
-                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="admin-tabla-clientes-body">
-                                <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando clientes...</td></tr>
+                                <tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Cargando clientes...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -704,81 +622,23 @@
 
                 <div id="admin-tab-horarios" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Horarios de Atención</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Configura la disponibilidad semanal de tu negocio.</p>
                     <div id="days-schedule-container"></div>
                     <button type="button" class="btn-admin-action" onclick="guardarHorariosNube()" style="padding:16px; font-size:15px; margin-top:10px;">Guardar Horarios en la Nube</button>
                 </div>
 
                 <div id="admin-tab-ajustes" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Ajustes de Cuenta</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Configura los detalles de tu cuenta y preferencias.</p>
-                    
                     <div class="settings-card">
-                        <h3>Configuración de la cuenta</h3>
-                        <p>Preferencias generales y títulos públicos de tu negocio.</p>
-
                         <div class="form-group">
                             <label>Nombre de la Cuenta (Interno)</label>
                             <input type="text" id="input-nombre-interno" placeholder="Bar Alaska">
                         </div>
-
                         <div class="form-group">
                             <label>Título del Menú (Público)</label>
                             <input type="text" id="input-titulo-publico" placeholder="Bar Restaurante Alaska">
                         </div>
-
-                        <div class="form-group">
-                            <label>Subtítulo (Público)</label>
-                            <input type="text" id="input-subtitulo-publico" placeholder="Descubre nuestras deliciosas opciones">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Logo del negocio</label>
-                            <div style="background:#121212; border:1px solid var(--border-color); border-radius:12px; padding:20px; text-align:center;">
-                                <img id="settings-logo-preview" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=150&q=80" style="width:70px; height:70px; border-radius:50%; object-fit:cover; border:2px solid var(--color-principal); margin-bottom:12px;">
-                                <input type="file" id="logoFileInput" accept="image/*" style="font-size:12px;">
-                            </div>
-                        </div>
                     </div>
-
-                    <div class="settings-card">
-                        <h3>Paleta de Colores</h3>
-                        <p>Personaliza los tonos visuales de tu menú digital.</p>
-
-                        <div class="form-group">
-                            <label>Color principal</label>
-                            <div style="display:flex; gap:10px; align-items:center;">
-                                <input type="color" id="input-color-principal" value="#d4af37" style="width:50px; height:42px; padding:2px; cursor:pointer;">
-                                <input type="text" id="text-color-principal" value="#d4af37" readonly style="flex:1;">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Color secundario</label>
-                            <div style="display:flex; gap:10px; align-items:center;">
-                                <input type="color" id="input-color-secundario" value="#2a2a2a" style="width:50px; height:42px; padding:2px; cursor:pointer;">
-                                <input type="text" id="text-color-secundario" value="#2a2a2a" readonly style="flex:1;">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Color de Oferta (Acento)</label>
-                            <div style="display:flex; gap:10px; align-items:center;">
-                                <input type="color" id="input-color-oferta" value="#ef4444" style="width:50px; height:42px; padding:2px; cursor:pointer;">
-                                <input type="text" id="text-color-oferta" value="#ef4444" readonly style="flex:1;">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Color de Fondo (Header / Base)</label>
-                            <div style="display:flex; gap:10px; align-items:center;">
-                                <input type="color" id="input-color-fondo" value="#121212" style="width:50px; height:42px; padding:2px; cursor:pointer;">
-                                <input type="text" id="text-color-fondo" value="#121212" readonly style="flex:1;">
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="button" class="btn-admin-action" onclick="guardarAjustesYConfiguracionNube()" style="padding:16px; font-size:15px; margin-bottom:30px;">Guardar Cambios en la Nube</button>
+                    <button type="button" class="btn-admin-action" onclick="guardarAjustesYConfiguracionNube()" style="padding:16px; font-size:15px; margin-bottom:30px;">Guardar Cambios</button>
                 </div>
 
             </div>
@@ -786,36 +646,7 @@
 
     </div>
 
-    <!-- MODAL EDITAR CATEGORÍA -->
-    <div id="modal-editar-categoria" class="modal-overlay">
-        <div class="modal-content">
-            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-size:16px;">📁 Editar Categoría e Icono</h3>
-                <button onclick="cerrarModalEditarCat()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="edit-cat-id">
-                <div class="form-group">
-                    <label>Nombre de la categoría *</label>
-                    <input type="text" id="edit-cat-nombre" readonly style="opacity:0.7;">
-                </div>
-                <div class="form-group" style="text-align:center; background:#181818; padding:15px; border-radius:12px; border:1px solid var(--border-color);">
-                    <label style="margin-bottom:10px;">Icono actual en Nube:</label>
-                    <img id="edit-cat-img-preview" src="" style="width:50px; height:50px; object-fit:contain; border-radius:8px; background:#222; margin-bottom:10px; border:1px solid var(--color-principal);">
-                    <div class="form-group" style="margin-bottom:0;">
-                        <label>Subir nuevo icono personalizado:</label>
-                        <input type="file" id="edit-cat-file" accept="image/*">
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button onclick="cerrarModalEditarCat()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer;">Cancelar</button>
-                <button onclick="guardarCategoriaEditadaNube()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Guardar en Nube</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL INTERACTIVO PARA INTRODUCIR CÓDIGO DE SELLO DESDE LA TARJETA -->
+    <!-- MODAL DE SELLO INTERACTIVO -->
     <div id="modal-sello-interactivo" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -823,7 +654,7 @@
                 <button onclick="cerrarModalSelloInteractivo()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
             </div>
             <div class="modal-body">
-                <p style="font-size:13px; color:var(--text-muted); margin-top:0;" id="desc-modal-sello">Introduce el código de 4 dígitos proporcionado por el cajero para marcar tu casilla.</p>
+                <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Introduce el código de 4 dígitos proporcionado por el cajero para marcar tu casilla.</p>
                 <div class="form-group">
                     <label>Código de un solo uso:</label>
                     <input type="text" id="input-codigo-sello-rapido" placeholder="Ej. 4829" maxlength="4" style="text-align:center; font-size:22px; letter-spacing:6px; font-weight:bold;">
@@ -838,80 +669,10 @@
             <div class="status-dot" id="floating-status-dot"></div>
             <span id="floating-status-text">Abierto</span>
         </div>
-        <button class="cart-icon-btn" onclick="abrirCarritoModal()" title="Ver Carrito">
+        <button class="cart-icon-btn" onclick="mostrarToast('Carrito listo')" title="Ver Carrito">
             <svg class="icon-svg-lg" style="color:#121212;" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             <span class="cart-count-badge" id="cart-count">0</span>
         </button>
-    </div>
-
-    <div id="modal-editar-plato" class="modal-overlay">
-        <div class="modal-content">
-            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-size:16px;">✏️ Editar Ítem / Stock</h3>
-                <button onclick="cerrarModalEditarPlato()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="edit-plato-id">
-                <div class="form-group">
-                    <label>Nombre</label>
-                    <input type="text" id="edit-plato-nombre">
-                </div>
-                <div style="display:flex; gap:10px;">
-                    <div class="form-group" style="flex:1;">
-                        <label>Categoría</label>
-                        <select id="edit-plato-categoria" onchange="toggleCamposStockEdicion(this.value)">
-                            <option value="Bocas">Bocas</option>
-                            <option value="Comidas Rápidas">Comidas Rápidas</option>
-                            <option value="Arroces">Arroces</option>
-                            <option value="Batidos">Batidos</option>
-                            <option value="Casados">Casados</option>
-                            <option value="Ofertas">Ofertas</option>
-                            <option value="Stock_Interno">📦 Stock Interno (Oculto)</option>
-                        </select>
-                    </div>
-                    <div class="form-group" style="flex:1;">
-                        <label>Precio Venta (₡)</label>
-                        <input type="number" id="edit-plato-precio">
-                    </div>
-                </div>
-
-                <div id="edit-campos-stock-extra" style="display:none; background:#181818; padding:12px; border-radius:10px; border:1px solid var(--border-color); margin-bottom:16px;">
-                    <div style="display:flex; gap:10px;">
-                        <div class="form-group" style="flex:1; margin-bottom:0;">
-                            <label>Stock:</label>
-                            <input type="number" id="edit-stock-cantidad">
-                        </div>
-                        <div class="form-group" style="flex:1; margin-bottom:0;">
-                            <label>Compra (₡):</label>
-                            <input type="number" id="edit-stock-compra">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Descripción</label>
-                    <input type="text" id="edit-plato-desc">
-                </div>
-                <div class="form-group">
-                    <label>Cambiar Fotografía (Opcional)</label>
-                    <input type="file" id="edit-plato-file" accept="image/*">
-                </div>
-
-                <div class="form-group" style="background:#222; padding:12px; border-radius:10px; border:1px solid var(--border-color);">
-                    <label>Gestionar Acompañamientos / Extras:</label>
-                    <div style="display:flex; gap:6px; margin-bottom:8px;">
-                        <input type="text" id="edit-input-nombre-var" placeholder="Nombre extra" style="flex:2;">
-                        <input type="number" id="edit-input-precio-var" placeholder="₡" style="flex:1;">
-                        <button type="button" onclick="agregarVarianteEdicion()" style="background:var(--color-principal); color:#121212; border:none; padding:0 14px; border-radius:8px; font-weight:bold; cursor:pointer;">+</button>
-                    </div>
-                    <div id="edit-lista-variantes" style="font-size:12px; color:var(--text-muted);">Sin extras.</div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button onclick="cerrarModalEditarPlato()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer;">Cancelar</button>
-                <button onclick="guardarPlatoEditado()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Guardar Cambios</button>
-            </div>
-        </div>
     </div>
 
     <div id="modal-lealtad" class="modal-overlay">
@@ -922,7 +683,7 @@
             </div>
             <div class="modal-body">
                 <div id="seccion-registro-cliente" style="display:block;">
-                    <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Regístrate con tu nombre y teléfono para guardar tus sellos en la nube y no perderlos nunca.</p>
+                    <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Regístrate con tu nombre y teléfono para guardar tus sellos en la nube.</p>
                     <div class="form-group">
                         <label>Tu Nombre *</label>
                         <input type="text" id="reg-nombre" placeholder="Ej. Carlos Pérez">
@@ -946,7 +707,7 @@
             <div class="modal-body">
                 <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Ingresa tu Nombre o Teléfono:</p>
                 <div class="form-group">
-                    <input type="text" id="input-buscar-cliente" placeholder="Ej. Juan o 88888888">
+                    <input type="text" id="input-buscar-cliente" placeholder="Ej. Juan">
                 </div>
                 <button onclick="buscarEstadoPedido()" class="btn-admin-action" style="background:var(--color-principal); margin-bottom:15px;">Consultar Estado</button>
                 <div id="resultado-seguimiento-container" style="font-size:13px; color:var(--text-main);"></div>
@@ -956,7 +717,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, setDoc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD2JhmA4m7NMbRcC2RqaHVIz1NLgI2IzE",
@@ -974,11 +735,6 @@
         let categoriasNube = {};
         const categoriasDefault = ["Bocas", "Comidas Rápidas", "Arroces", "Batidos", "Casados", "Ofertas"];
         const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-
-        let variantesTemporales = [];
-        let variantesEdicionActuales = [];
-        let platoSeleccionadoActual = null;
-        let carrito = [];
         let adminAutenticado = false;
 
         window.clienteActualId = localStorage.getItem('alaska_cliente_doc_id') || null;
@@ -990,6 +746,66 @@
             document.getElementById('toast-msg').textContent = mensaje;
             toast.classList.add('show');
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        // CARGAR MENÚ PÚBLICO CORRECTAMENTE
+        async function cargarMenu() {
+            const menuGrid = document.getElementById("menu-grid");
+            try {
+                const querySnapshot = await getDocs(collection(db, "menu"));
+                listaPlatos = [];
+                querySnapshot.forEach((docSnap) => { listaPlatos.push({ id: docSnap.id, ...docSnap.data() }); });
+                mostrarPlatos(listaPlatos);
+                renderizarCategoriasPublicas();
+            } catch (error) {
+                if (menuGrid) menuGrid.innerHTML = "<p style='color:#ef4444; text-align:center;'>Error al cargar menú.</p>";
+            }
+        }
+
+        function mostrarPlatos(platos) {
+            const menuGrid = document.getElementById("menu-grid");
+            if (!menuGrid) return;
+            menuGrid.innerHTML = "";
+            const disponibles = platos.filter(p => p.categoria !== 'Stock_Interno' && p.disponible !== false);
+            
+            if (disponibles.length === 0) {
+                menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay platos disponibles.</p>";
+                return;
+            }
+            disponibles.forEach((plato) => {
+                let tieneFotoValida = plato.imagenUrl && typeof plato.imagenUrl === 'string' && plato.imagenUrl.trim() !== "";
+                const imagen = tieneFotoValida ? plato.imagenUrl : 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
+                
+                menuGrid.innerHTML += `
+                    <div class="food-card">
+                        <div class="card-image-container">
+                            <img src="${imagen}" alt="${plato.nombre}">
+                            <span class="badge" style="${plato.categoria === 'Ofertas' ? 'color:var(--color-oferta); border-color:var(--color-oferta); background:rgba(239,68,68,0.15);' : ''}">${plato.categoria || 'Especialidad'}</span>
+                        </div>
+                        <div class="card-content">
+                            <div>
+                                <div class="card-header-flex">
+                                    <h3>${plato.nombre}</h3>
+                                    <div class="price">₡${plato.precio.toLocaleString()}</div>
+                                </div>
+                                <div class="stars">★★★★★</div>
+                            </div>
+                            <button class="order-btn" onclick="mostrarToast('${plato.nombre} seleccionado')">Pedir</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderizarCategoriasPublicas() {
+            const container = document.getElementById('category-container');
+            if (!container) return;
+            let html = `<button class="cat-btn active">Todos</button>`;
+            categoriasDefault.forEach(cat => {
+                let claseExtra = (cat === 'Ofertas') ? 'full-width' : '';
+                html += `<button class="cat-btn ${claseExtra}">${cat}</button>`;
+            });
+            container.innerHTML = html;
         }
 
         // FUNCIONALIDAD INTERACTIVA DE LOS SELLOS
@@ -1136,40 +952,12 @@
                         <div class="day-header-flex">
                             <h4>${dia}</h4>
                             <label class="checkbox-label">
-                                <input type="checkbox" id="chk-cerrado-${dia}" ${info.cerrado ? 'checked':''} onchange="toggleDiaCerrado('${dia}')" style="width:16px; height:16px;"> Cerrado
+                                <input type="checkbox" id="chk-cerrado-${dia}" ${info.cerrado ? 'checked':''} style="width:16px; height:16px;"> Cerrado
                             </label>
-                        </div>
-                        <div id="wrapper-horas-${dia}" style="display:${info.cerrado ? 'none':'flex'}; gap:10px; align-items:center;">
-                            <input type="time" id="time-apertura-${dia}" value="${info.apertura || '12:00'}" style="flex:1;">
-                            <span style="color:var(--text-muted);">a</span>
-                            <input type="time" id="time-cierre-${dia}" value="${info.cierre || '22:00'}" style="flex:1;">
                         </div>
                     </div>
                 `;
             });
-        }
-
-        window.toggleDiaCerrado = function(dia) {
-            const chk = document.getElementById(`chk-cerrado-${dia}`);
-            const wrapper = document.getElementById(`wrapper-horas-${dia}`);
-            if(chk && wrapper) wrapper.style.display = chk.checked ? 'none' : 'flex';
-        }
-
-        window.guardarHorariosNube = async function() {
-            let horariosObj = {};
-            diasSemana.forEach(dia => {
-                const cerrado = document.getElementById(`chk-cerrado-${dia}`).checked;
-                const apertura = document.getElementById(`time-apertura-${dia}`).value;
-                const cierre = document.getElementById(`time-cierre-${dia}`).value;
-                horariosObj[dia] = { cerrado, apertura, cierre };
-            });
-
-            try {
-                await setDoc(doc(db, "configuracion", "horariosAtencion"), horariosObj);
-                mostrarToast("✅ ¡Horarios guardados en la nube!");
-            } catch(e) {
-                mostrarToast("Error al guardar horarios.");
-            }
         }
 
         async function cargarConfiguracionVisualNube() {
@@ -1190,24 +978,16 @@
                         document.documentElement.style.setProperty('--color-principal', data.colorPrincipal);
                     }
                 }
-                const docRefH = doc(db, "configuracion", "horariosAtencion");
-                const docSnapH = await getDoc(docRefH);
-                renderizarFormularioHorarios(docSnapH.exists() ? docSnapH.data() : {});
             } catch (e) { console.log(e); }
         }
 
         window.guardarAjustesYConfiguracionNube = async function() {
             const nombreInterno = document.getElementById('input-nombre-interno').value.trim();
             const tituloPublico = document.getElementById('input-titulo-publico').value.trim();
-            const colorPrincipal = document.getElementById('input-color-principal').value;
-
             try {
-                await setDoc(doc(db, "configuracion", "estilosGenerales"), { nombreInterno, tituloPublico, colorPrincipal }, { merge: true });
-                document.documentElement.style.setProperty('--color-principal', colorPrincipal);
+                await setDoc(doc(db, "configuracion", "estilosGenerales"), { nombreInterno, tituloPublico }, { merge: true });
                 mostrarToast("✅ ¡Ajustes guardados!");
-            } catch(e) {
-                mostrarToast("Error al guardar ajustes.");
-            }
+            } catch(e) { mostrarToast("Error al guardar."); }
         }
 
         window.abrirSidebar = function() {
@@ -1220,14 +1000,12 @@
             document.getElementById('sidebar-overlay').style.display = 'none';
         }
 
-        // CARGA DIFERIDA DE SECCIONES ADMIN PARA EVITAR CONGELAMIENTOS
         window.seleccionarSeccionAdmin = function(seccion) {
             document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
             event.currentTarget.classList.add('active');
             document.querySelectorAll('.admin-section-tab').forEach(el => el.classList.remove('active-admin-tab'));
             document.getElementById(`admin-tab-${seccion}`).classList.add('active-admin-tab');
             
-            // Cargar únicamente la sección seleccionada
             if (seccion === 'pedidos') cargarPedidosAdmin();
             else if (seccion === 'platos') cargarAdminPlatosDashboard();
             else if (seccion === 'stock') cargarAdminStock();
@@ -1254,7 +1032,7 @@
                     adminAutenticado = true;
                     cambiarVista('admin');
                     abrirSidebar();
-                    cargarPedidosAdmin(); // Cargar solo pedidos al entrar
+                    cargarPedidosAdmin();
                 } else if (pass !== null) { mostrarToast("Contraseña incorrecta."); }
             }
         }
@@ -1271,6 +1049,7 @@
 
         async function cargarPedidosAdmin() {
             const contenedor = document.getElementById("admin-pedidos-container");
+            if (!contenedor) return;
             contenedor.innerHTML = "<p style='color:var(--text-muted); font-size:13px;'>Cargando pedidos...</p>";
             try {
                 const qs = await getDocs(collection(db, "pedidos"));
@@ -1278,7 +1057,6 @@
                 contenedor.innerHTML = "";
                 qs.forEach(d => {
                     const p = d.data();
-                    const id = d.id;
                     contenedor.innerHTML += `
                         <div class="pedido-card">
                             <strong style="color:white; font-size:15px;">${p.nombre}</strong><br>
@@ -1293,14 +1071,15 @@
         async function cargarAdminPlatosDashboard() {
             try {
                 const qs = await getDocs(collection(db, "menu"));
-                listaPlatos = [];
-                qs.forEach(d => listaPlatos.push({ id: d.id, ...d.data() }));
-                renderizarTablaAdminPlatos(listaPlatos);
+                let platos = [];
+                qs.forEach(d => platos.push({ id: d.id, ...d.data() }));
+                renderizarTablaAdminPlatos(platos);
             } catch(e) { console.log(e); }
         }
 
         function renderizarTablaAdminPlatos(platos) {
             const tbody = document.getElementById('admin-tabla-platos-body');
+            if (!tbody) return;
             let platosVisibles = platos.filter(p => p.categoria !== 'Stock_Interno');
             if (platosVisibles.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">No hay platos registrados.</td></tr>`;
@@ -1324,7 +1103,8 @@
 
         async function cargarAdminStock() {
             const tbody = document.getElementById('admin-tabla-stock-body');
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>`;
+            if (!tbody) return;
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>`;
             try {
                 const qs = await getDocs(collection(db, "menu"));
                 tbody.innerHTML = "";
@@ -1339,14 +1119,12 @@
                                 <td style="font-weight:800; color:var(--color-principal);">${s.stockCantidad || 0} unids</td>
                                 <td>₡${Number(s.stockCompra || 0).toLocaleString()}</td>
                                 <td>₡${Number(s.precio || 0).toLocaleString()}</td>
-                                <td>-</td>
-                                <td>-</td>
                             </tr>
                         `;
                     }
                 });
-                if (!hayStock) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No hay ítems en stock interno.</td></tr>`;
-            } catch(e) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#ef4444;">Error al cargar stock.</td></tr>`; }
+                if (!hayStock) tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No hay ítems en stock interno.</td></tr>`;
+            } catch(e) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;'>Error al cargar stock.</td></tr>`; }
         }
 
         async function cargarEstadisticasCaja() {
@@ -1354,20 +1132,20 @@
                 const qs = await getDocs(collection(db, "pedidos"));
                 let totalIngresos = 0;
                 qs.forEach(d => totalIngresos += Number(d.data().total || 0));
-                document.getElementById('stat-ingresos').textContent = `₡${totalIngresos.toLocaleString()}`;
-                document.getElementById('stat-total-pedidos').textContent = qs.size;
+                if (document.getElementById('stat-ingresos')) document.getElementById('stat-ingresos').textContent = `₡${totalIngresos.toLocaleString()}`;
+                if (document.getElementById('stat-total-pedidos')) document.getElementById('stat-total-pedidos').textContent = qs.size;
             } catch(e) { console.log(e); }
         }
 
         async function renderizarTablaCategoriasAdmin() {
             const tbody = document.getElementById('admin-tabla-categorias-body');
+            if (!tbody) return;
             tbody.innerHTML = "";
             categoriasDefault.forEach(cat => {
                 tbody.innerHTML += `
                     <tr>
                         <td style="font-weight:700;">${cat}</td>
                         <td>Activa</td>
-                        <td>-</td>
                     </tr>
                 `;
             });
@@ -1375,10 +1153,11 @@
 
         async function cargarBaseClientesAdmin() {
             const tbody = document.getElementById('admin-tabla-clientes-body');
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando clientes...</td></tr>`;
+            if (!tbody) return;
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Cargando clientes...</td></tr>`;
             try {
                 const qs = await getDocs(collection(db, "clientes"));
-                if (qs.empty) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin clientes.</td></tr>`; return; }
+                if (qs.empty) { tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Sin clientes.</td></tr>`; return; }
                 tbody.innerHTML = "";
                 qs.forEach(d => {
                     const c = d.data();
@@ -1387,11 +1166,10 @@
                             <td style="font-weight:750;">${c.nombre}</td>
                             <td>${c.telefono}</td>
                             <td style="color:var(--color-principal); font-weight:800;">${c.sellos || 0} / 5 ⭐</td>
-                            <td>-</td>
                         </tr>
                     `;
                 });
-            } catch(e) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;">Error.</td></tr>`; }
+            } catch(e) { tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#ef4444;">Error.</td></tr>`; }
         }
 
         async function cargarCodigoActivoAdmin() {
@@ -1416,9 +1194,10 @@
         window.abrirSeguimientoModal = function(e) { e.preventDefault(); document.getElementById('modal-seguimiento').style.display = 'flex'; }
         window.cerrarSeguimientoModal = function() { document.getElementById('modal-seguimiento').style.display = 'none'; }
 
-        // Inicialización ligera y segura
+        // Inicialización general restaurada y fluida
         cargarConfiguracionVisualNube();
         actualizarUILealtadPublica();
+        cargarMenu();
     </script>
 </body>
 </html>
