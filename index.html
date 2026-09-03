@@ -330,7 +330,7 @@
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
         .modal-content { background: var(--card-bg); width: 100%; max-width: 480px; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color); display: flex; flex-direction: column; max-height: 85vh; color: var(--text-main); }
         .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
-        .modal-footer { padding: 16px 20px; background: #181818; border-top: 1px solid var(--border-color); display: flex; gap: 10px; }
+        .modal-footer { padding: 16px 20px; background: #181818; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 10px; }
     </style>
 </head>
 <body>
@@ -696,7 +696,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="modal-footer" style="display:flex; flex-direction:row; justify-content:space-between; align-items:center;">
                 <div id="modal-detalle-precio-total" style="font-size:18px; font-weight:800; color:var(--color-principal);">₡0</div>
                 <button onclick="agregarPlatoConExtrasAlCarrito()" class="btn-admin-action" id="btn-hacer-pedido" style="flex:1; margin-left:15px; padding:10px;">Agregar al Carrito 🛒</button>
             </div>
@@ -715,7 +715,7 @@
                 <!-- Se llena dinámicamente por pasos -->
             </div>
 
-            <div class="modal-footer" id="carrito-footer-contenido" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="modal-footer" id="carrito-footer-contenido">
                 <!-- Botones dinámicos según el paso -->
             </div>
         </div>
@@ -769,9 +769,9 @@
                     <input type="file" id="edit-plato-file" accept="image/*">
                 </div>
             </div>
-            <div class="modal-footer">
-                <button onclick="cerrarModalEditarPlato()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer;">Cancelar</button>
-                <button onclick="guardarPlatoEditado()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Guardar Cambios</button>
+            <div class="modal-footer" style="flex-direction:row;">
+                <button onclick="cerrarModalEditarPlato()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer; flex:1;">Cancelar</button>
+                <button onclick="guardarPlatoEditado()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Guardar</button>
             </div>
         </div>
     </div>
@@ -790,8 +790,8 @@
                     <input type="file" id="edit-cat-file" accept="image/*">
                 </div>
             </div>
-            <div class="modal-footer">
-                <button onclick="cerrarModalEditarCat()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer;">Cancelar</button>
+            <div class="modal-footer" style="flex-direction:row;">
+                <button onclick="cerrarModalEditarCat()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer; flex:1;">Cancelar</button>
                 <button onclick="guardarCategoriaEditadaNube()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Guardar</button>
             </div>
         </div>
@@ -894,7 +894,6 @@
         let adminAutenticado = false;
         let negocioAbiertoGlobal = true;
 
-        // Variables de checkout del carrito
         let checkoutPaso = 1; // 1: Lista items, 2: Tipo entrega, 3: Metodo pago, 4: Datos finales
         let pedidoTipoEntrega = "";
         let pedidoMetodoPago = "";
@@ -1070,7 +1069,6 @@
             if (badge) badge.textContent = totalUnidades;
         }
 
-        // CONTROL DEL CARRITO Y PASOS DE CHECKOUT
         window.abrirModalCarrito = function() {
             checkoutPaso = 1;
             renderizarPasoCarrito();
@@ -1100,22 +1098,22 @@
                     let subtotalItem = item.precioUnitario * item.cantidad;
                     sumaTotal += subtotalItem;
                     html += `
-                        <div style="background:#222; padding:12px; border-radius:10px; margin-bottom:10px; border:1px solid var(--border-color);">
+                        <div style="background:#222; padding:14px; border-radius:12px; margin-bottom:10px; border:1px solid var(--border-color); position:relative;">
                             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                                <div>
+                                <div style="padding-right: 25px;">
                                     <strong style="color:white; font-size:15px;">${item.nombre}</strong><br>
                                     <span style="font-size:12px; color:var(--color-principal);">${item.detalle}</span><br>
                                     <strong style="color:white; font-size:13px;">₡${subtotalItem.toLocaleString()}</strong>
                                 </div>
-                                <button onclick="carritoItems.splice(${index},1); renderizarPasoCarrito(); actualizarContadorCarrito();" style="background:none; border:none; color:#ff6b6b; cursor:pointer; font-size:16px;" title="Eliminar">✕</button>
+                                <button onclick="carritoItems.splice(${index},1); renderizarPasoCarrito(); actualizarContadorCarrito();" style="position:absolute; top:12px; right:12px; background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#ef4444; width:26px; height:26px; border-radius:50%; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center;" title="Eliminar">✕</button>
                             </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; pt-2; border-top:1px solid #333;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-top:10px; border-top:1px solid #333;">
                                 <div style="display:flex; align-items:center; gap:8px;">
-                                    <button onclick="cambiarCantidadItemCarrito(${index}, -1)" style="background:#333; color:white; border:none; width:26px; height:26px; border-radius:4px; font-weight:bold; cursor:pointer;">-</button>
+                                    <button onclick="cambiarCantidadItemCarrito(${index}, -1)" style="background:#333; color:white; border:none; width:26px; height:26px; border-radius:6px; font-weight:bold; cursor:pointer;">-</button>
                                     <span style="font-size:14px; font-weight:800;">${item.cantidad}</span>
-                                    <button onclick="cambiarCantidadItemCarrito(${index}, 1)" style="background:var(--color-principal); color:#121212; border:none; width:26px; height:26px; border-radius:4px; font-weight:bold; cursor:pointer;">+</button>
+                                    <button onclick="cambiarCantidadItemCarrito(${index}, 1)" style="background:var(--color-principal); color:#121212; border:none; width:26px; height:26px; border-radius:6px; font-weight:bold; cursor:pointer;">+</button>
                                 </div>
-                                <input type="text" placeholder="Nota (ej. sin cebolla)" value="${item.nota || ''}" onchange="actualizarNotaItem(${index}, this.value)" style="width:55%; padding:6px 10px; font-size:12px; background:#181818;">
+                                <input type="text" placeholder="Nota (ej. sin cebolla)" value="${item.nota || ''}" onchange="actualizarNotaItem(${index}, this.value)" style="width:55%; padding:8px 10px; font-size:12px; background:#181818; border-radius:8px;">
                             </div>
                         </div>
                     `;
@@ -1123,13 +1121,11 @@
                 bodyEl.innerHTML = html;
 
                 footerEl.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                        <div>
-                            <span style="font-size:12px; color:var(--text-muted); display:block;">Total:</span>
-                            <span style="font-size:18px; font-weight:800; color:var(--color-principal);">₡${sumaTotal.toLocaleString()}</span>
-                        </div>
-                        <button onclick="avanzarCheckout(2)" class="btn-admin-action" style="padding:10px 20px;">Continuar con el pedido 🚀</button>
+                    <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:4px;">
+                        <span style="font-size:13px; color:var(--text-muted);">Total a Pagar:</span>
+                        <span style="font-size:18px; font-weight:800; color:var(--color-principal);">₡${sumaTotal.toLocaleString()}</span>
                     </div>
+                    <button onclick="avanzarCheckout(2)" class="btn-admin-action" style="width:100%; padding:12px;">Continuar pedido 🚀</button>
                 `;
             } else if (checkoutPaso === 2) {
                 tituloEl.textContent = "📍 Tipo de Entrega";
@@ -1147,8 +1143,8 @@
                     </div>
                 `;
                 footerEl.innerHTML = `
-                    <button onclick="avanzarCheckout(1)" class="action-pill" style="padding:10px 16px; border:none; background:#2a2a2a; color:white;">Atrás</button>
-                    <button onclick="if(!pedidoTipoEntrega){mostrarToast('Selecciona un tipo de entrega.');}else{avanzarCheckout(3);}" class="btn-admin-action" style="flex:1;">Siguiente</button>
+                    <button onclick="avanzarCheckout(1)" class="action-pill" style="width:100%; padding:10px; border:none; background:#2a2a2a; color:white; justify-content:center;">Atrás</button>
+                    <button onclick="if(!pedidoTipoEntrega){mostrarToast('Selecciona un tipo de entrega.');}else{avanzarCheckout(3);}" class="btn-admin-action" style="width:100%; padding:12px;">Siguiente</button>
                 `;
             } else if (checkoutPaso === 3) {
                 tituloEl.textContent = "💳 Método de Pago";
@@ -1168,8 +1164,8 @@
                     </div>
                 `;
                 footerEl.innerHTML = `
-                    <button onclick="avanzarCheckout(2)" class="action-pill" style="padding:10px 16px; border:none; background:#2a2a2a; color:white;">Atrás</button>
-                    <button onclick="if(!pedidoMetodoPago){mostrarToast('Selecciona un método de pago.');}else{avanzarCheckout(4);}" class="btn-admin-action" style="flex:1;">Siguiente</button>
+                    <button onclick="avanzarCheckout(2)" class="action-pill" style="width:100%; padding:10px; border:none; background:#2a2a2a; color:white; justify-content:center;">Atrás</button>
+                    <button onclick="if(!pedidoMetodoPago){mostrarToast('Selecciona un método de pago.');}else{avanzarCheckout(4);}" class="btn-admin-action" style="width:100%; padding:12px;">Siguiente</button>
                 `;
             } else if (checkoutPaso === 4) {
                 tituloEl.textContent = "📝 Datos Finales";
@@ -1188,8 +1184,8 @@
                     </div>
                 `;
                 footerEl.innerHTML = `
-                    <button onclick="avanzarCheckout(3)" class="action-pill" style="padding:10px 16px; border:none; background:#2a2a2a; color:white;">Atrás</button>
-                    <button onclick="enviarPedidoFinalDefinitivo()" class="btn-admin-action" style="flex:1; background:var(--color-principal);">Confirmar Pedido 🚀</button>
+                    <button onclick="avanzarCheckout(3)" class="action-pill" style="width:100%; padding:10px; border:none; background:#2a2a2a; color:white; justify-content:center;">Atrás</button>
+                    <button onclick="enviarPedidoFinalDefinitivo()" class="btn-admin-action" style="width:100%; padding:12px; background:var(--color-principal);">Confirmar Pedido 🚀</button>
                 `;
             }
         }
