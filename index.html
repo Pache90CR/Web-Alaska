@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bar Restaurante Alaska - Menú Digital y Lealtad</title>
+    <title id="page-title">Bar Restaurante Alaska - Menú Digital y Lealtad</title>
     
     <meta name="theme-color" content="#d4af37">
     <link rel="manifest" href="data:application/manifest+json;charset=utf-8,{
@@ -21,6 +21,8 @@
             --bg-dark: #121212;
             --card-bg: #1e1e1e;
             --color-principal: #d4af37;
+            --color-secundario: #2a2a2a;
+            --color-oferta: #ef4444;
             --text-main: #f5f5f5;
             --text-muted: #a0a0a0;
             --border-color: #333333;
@@ -50,7 +52,7 @@
         .store-header p { margin: 4px 0 15px 0; font-size: 13px; color: var(--text-muted); }
 
         .header-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 25px; }
-        .action-pill { background: #2a2a2a; color: var(--color-principal); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; border: 1px solid var(--border-color); cursor: pointer; display: flex; align-items: center; gap: 6px; transition: color 0.2s, border-color 0.2s; }
+        .action-pill { background: var(--color-secundario); color: var(--color-principal); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; border: 1px solid var(--border-color); cursor: pointer; display: flex; align-items: center; gap: 6px; transition: color 0.2s, border-color 0.2s; }
         .action-pill:hover { background: #333; }
 
         .view-section { display: none; }
@@ -82,8 +84,8 @@
             gap: 8px;
         }
         .cat-btn.active, .cat-btn:hover { background: rgba(212, 175, 55, 0.15); border-color: var(--color-principal); }
-        .cat-btn.full-width { grid-column: span 2; background: #2a1a1a; color: #ff6b6b; border-color: #5c2222; }
-        .cat-btn.full-width:hover { background: #381f1f; border-color: #ff6b6b; }
+        .cat-btn.full-width { grid-column: span 2; background: rgba(239, 68, 68, 0.15); color: var(--color-oferta); border-color: var(--color-oferta); }
+        .cat-btn.full-width:hover { background: rgba(239, 68, 68, 0.25); }
         .cat-icon-img { width: 20px; height: 20px; object-fit: contain; border-radius: 4px; }
 
         .menu-grid {
@@ -174,7 +176,7 @@
         .cart-count-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 800; }
 
         .admin-top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; background: #181818; padding: 12px 18px; border-radius: 12px; border: 1px solid var(--border-color); }
-        .btn-abrir-menu-admin { background: #2a2a2a; border: 1px solid var(--border-color); color: var(--color-principal); padding: 8px 14px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .btn-abrir-menu-admin { background: var(--color-secundario); border: 1px solid var(--border-color); color: var(--color-principal); padding: 8px 14px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
         .btn-abrir-menu-admin:hover { background: #333; }
 
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(3px); z-index: 3000; }
@@ -236,6 +238,18 @@
         }
         input:focus, select:focus { outline: none; border-color: var(--color-principal); }
         .btn-admin-action { background: var(--color-principal); color: #121212; font-weight: 800; border: none; padding: 12px; border-radius: 10px; cursor: pointer; width: 100%; }
+
+        /* Estilo tarjeta de ajustes estilo app moderna */
+        .settings-card {
+            background: #181818;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+        .settings-card h3 { margin-top: 0; font-size: 16px; color: var(--text-main); font-weight: 700; margin-bottom: 6px; }
+        .settings-card p { font-size: 12px; color: var(--text-muted); margin-top: 0; margin-bottom: 18px; }
 
         .stats-cards-grid {
             display: grid;
@@ -330,7 +344,7 @@
     <div id="sidebar-drawer" class="sidebar-drawer">
         <div class="sidebar-top-brand">
             <div class="sidebar-brand-info">
-                <h3>Bar Alaska</h3>
+                <h3 id="sidebar-brand-title">Bar Alaska</h3>
                 <span>Admin Panel</span>
             </div>
             <button class="sidebar-close-btn" onclick="cerrarSidebar()">✕</button>
@@ -393,10 +407,10 @@
 
         <div id="view-menu" class="view-section active-view">
             <div class="store-header">
-                <img id="logo-display" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80" alt="Logo Alaska" class="store-logo" ondblclick="intentarAccesoAdmin()" title="Haz doble clic para abrir administración">
+                <img id="logo-display" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80" alt="Logo Negocio" class="store-logo" ondblclick="intentarAccesoAdmin()" title="Haz doble clic para abrir administración">
                 
-                <h1>Bar Restaurante Alaska</h1>
-                <p>Descubre nuestras deliciosas opciones y gana premios</p>
+                <h1 id="public-title-display">Bar Restaurante Alaska</h1>
+                <p id="public-subtitle-display">Descubre nuestras deliciosas opciones y gana premios</p>
                 
                 <div class="header-actions">
                     <a href="#" class="action-pill" onclick="abrirLealtadModal(event)">
@@ -656,32 +670,82 @@
                     </div>
                 </div>
 
+                <!-- NUEVA PANTALLA DE AJUSTES IDÉNTICA AL ESTILO SOLICITADO -->
                 <div id="admin-tab-ajustes" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">⚙️ Ajustes del Sistema y Logo</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Personaliza la identidad visual de Bar Restaurante Alaska.</p>
+                    <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Ajustes de Cuenta</h2>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Configura los detalles de tu cuenta y preferencias.</p>
                     
-                    <div style="background:#181818; padding:18px; border-radius:14px; border:1px solid var(--border-color); margin-bottom:20px;">
-                        <h3 style="margin-top:0; font-size:15px; color:var(--color-principal);">🖼️ Cambiar Logo del Restaurante</h3>
-                        <div class="form-group" style="margin-bottom:10px;">
-                            <label>Sube la imagen para el logo:</label>
-                            <input type="file" id="logoFileInput" accept="image/*">
+                    <!-- Tarjeta: Configuración de la cuenta -->
+                    <div class="settings-card">
+                        <h3>Configuración de la cuenta</h3>
+                        <p>Preferencias generales y títulos públicos de tu negocio.</p>
+
+                        <div class="form-group">
+                            <label>Nombre de la Cuenta (Interno)</label>
+                            <input type="text" id="input-nombre-interno" placeholder="Bar Alaska">
+                            <span style="font-size:11px; color:var(--text-muted); margin-top:4px; display:block;">Nombre para uso administrativo.</span>
                         </div>
-                        <button type="button" class="btn-admin-action" onclick="guardarLogoRestaurante()">Actualizar Logo</button>
+
+                        <div class="form-group">
+                            <label>Título del Menú (Público)</label>
+                            <input type="text" id="input-titulo-publico" placeholder="Bar Restaurante Alaska">
+                            <span style="font-size:11px; color:var(--text-muted); margin-top:4px; display:block;">Este es el título principal que verán los clientes.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Subtítulo (Público)</label>
+                            <input type="text" id="input-subtitulo-publico" placeholder="Descubre nuestras deliciosas opciones">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Logo del negocio</label>
+                            <div style="background:#121212; border:1px solid var(--border-color); border-radius:12px; padding:20px; text-align:center;">
+                                <img id="settings-logo-preview" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=150&q=80" style="width:70px; height:70px; border-radius:50%; object-fit:cover; border:2px solid var(--color-principal); margin-bottom:12px;">
+                                <input type="file" id="logoFileInput" accept="image/*" style="font-size:12px;">
+                                <span style="font-size:11px; color:var(--text-muted); margin-top:6px; display:block;">Sube una imagen (PNG, JPG) para usar como logo.</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <div style="background:#181818; padding:18px; border-radius:14px; border:1px solid var(--border-color);">
-                        <h3 style="margin-top:0; font-size:15px; color:var(--color-principal);">🎨 Paleta de Colores (Nube)</h3>
-                        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Cambia el color principal del menú y botones (Ofertas se mantiene en rojo).</p>
+                    <!-- Tarjeta: Paleta de Colores -->
+                    <div class="settings-card">
+                        <h3>Paleta de Colores</h3>
+                        <p>Personaliza los tonos visuales de tu menú digital.</p>
+
                         <div class="form-group">
-                            <label>Color Principal:</label>
-                            <input type="color" id="input-color-principal" value="#d4af37" style="height:42px; cursor:pointer; padding:4px;">
+                            <label>Color principal</label>
+                            <div style="display:flex; gap:10px; align-items:center;">
+                                <input type="color" id="input-color-principal" value="#d4af37" style="width:50px; height:42px; padding:2px; cursor:pointer;">
+                                <input type="text" id="text-color-principal" value="#d4af37" readonly style="flex:1;">
+                            </div>
                         </div>
+
                         <div class="form-group">
-                            <label>Color de Fondo General:</label>
-                            <input type="color" id="input-color-fondo" value="#121212" style="height:42px; cursor:pointer; padding:4px;">
+                            <label>Color secundario</label>
+                            <div style="display:flex; gap:10px; align-items:center;">
+                                <input type="color" id="input-color-secundario" value="#2a2a2a" style="width:50px; height:42px; padding:2px; cursor:pointer;">
+                                <input type="text" id="text-color-secundario" value="#2a2a2a" readonly style="flex:1;">
+                            </div>
                         </div>
-                        <button type="button" class="btn-admin-action" onclick="guardarPaletaColoresNube()">Guardar Paleta de Colores</button>
+
+                        <div class="form-group">
+                            <label>Color de Oferta (Acento)</label>
+                            <div style="display:flex; gap:10px; align-items:center;">
+                                <input type="color" id="input-color-oferta" value="#ef4444" style="width:50px; height:42px; padding:2px; cursor:pointer;">
+                                <input type="text" id="text-color-oferta" value="#ef4444" readonly style="flex:1;">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Color de Fondo (Header / Base)</label>
+                            <div style="display:flex; gap:10px; align-items:center;">
+                                <input type="color" id="input-color-fondo" value="#121212" style="width:50px; height:42px; padding:2px; cursor:pointer;">
+                                <input type="text" id="text-color-fondo" value="#121212" readonly style="flex:1;">
+                            </div>
+                        </div>
                     </div>
+
+                    <button type="button" class="btn-admin-action" onclick="guardarAjustesYConfiguracionNube()" style="padding:16px; font-size:15px; margin-bottom:30px;">Guardar Cambios en la Nube</button>
                 </div>
 
             </div>
@@ -928,43 +992,123 @@
             }, 3000);
         }
 
+        // Sincronizar inputs de color con textos
+        ['principal', 'secundario', 'oferta', 'fondo'].forEach(tipo => {
+            const input = document.getElementById(`input-color-${tipo}`);
+            const text = document.getElementById(`text-color-${tipo}`);
+            if(input && text) {
+                input.addEventListener('input', (e) => { text.value = e.target.value.toUpperCase(); });
+            }
+        });
+
         async function cargarConfiguracionVisualNube() {
             try {
                 const docRef = doc(db, "configuracion", "estilosGenerales");
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     const data = docSnap.data();
+                    
+                    if (data.nombreInterno) {
+                        document.getElementById('input-nombre-interno').value = data.nombreInterno;
+                        document.getElementById('sidebar-brand-title').textContent = data.nombreInterno;
+                    }
+                    if (data.tituloPublico) {
+                        document.getElementById('input-titulo-publico').value = data.tituloPublico;
+                        document.getElementById('public-title-display').textContent = data.tituloPublico;
+                        document.getElementById('page-title').textContent = data.tituloPublico + " - Menú Digital";
+                    }
+                    if (data.subtituloPublico) {
+                        document.getElementById('input-subtitulo-publico').value = data.subtituloPublico;
+                        document.getElementById('public-subtitle-display').textContent = data.subtituloPublico;
+                    }
+                    if (data.logoUrl) {
+                        document.getElementById('logo-display').src = data.logoUrl;
+                        document.getElementById('settings-logo-preview').src = data.logoUrl;
+                    }
+
                     if (data.colorPrincipal) {
                         document.documentElement.style.setProperty('--color-principal', data.colorPrincipal);
                         document.getElementById('input-color-principal').value = data.colorPrincipal;
+                        document.getElementById('text-color-principal').value = data.colorPrincipal.toUpperCase();
+                    }
+                    if (data.colorSecundario) {
+                        document.documentElement.style.setProperty('--color-secundario', data.colorSecundario);
+                        document.getElementById('input-color-secundario').value = data.colorSecundario;
+                        document.getElementById('text-color-secundario').value = data.colorSecundario.toUpperCase();
+                    }
+                    if (data.colorOferta) {
+                        document.documentElement.style.setProperty('--color-oferta', data.colorOferta);
+                        document.getElementById('input-color-oferta').value = data.colorOferta;
+                        document.getElementById('text-color-oferta').value = data.colorOferta.toUpperCase();
                     }
                     if (data.colorFondo) {
                         document.documentElement.style.setProperty('--bg-dark', data.colorFondo);
                         document.getElementById('input-color-fondo').value = data.colorFondo;
+                        document.getElementById('text-color-fondo').value = data.colorFondo.toUpperCase();
                     }
                 }
             } catch (e) {
-                console.log("Error cargando estilos", e);
+                console.log("Error cargando configuración", e);
             }
         }
 
-        window.guardarPaletaColoresNube = async function() {
+        window.guardarAjustesYConfiguracionNube = async function() {
+            const nombreInterno = document.getElementById('input-nombre-interno').value.trim();
+            const tituloPublico = document.getElementById('input-titulo-publico').value.trim();
+            const subtituloPublico = document.getElementById('input-subtitulo-publico').value.trim();
+
             const colorPrincipal = document.getElementById('input-color-principal').value;
+            const colorSecundario = document.getElementById('input-color-secundario').value;
+            const colorOferta = document.getElementById('input-color-oferta').value;
             const colorFondo = document.getElementById('input-color-fondo').value;
 
-            try {
-                await setDoc(doc(db, "configuracion", "estilosGenerales"), {
-                    colorPrincipal: colorPrincipal,
-                    colorFondo: colorFondo
-                }, { merge: true });
+            const fileInput = document.getElementById('logoFileInput');
 
-                document.documentElement.style.setProperty('--color-principal', colorPrincipal);
-                document.documentElement.style.setProperty('--bg-dark', colorFondo);
-                mostrarToast("🎨 ¡Paleta de colores guardada y aplicada en la nube!");
-            } catch (e) {
-                mostrarToast("Error al guardar los colores.");
+            const ejecutarGuardado = async (logoUrlFinal) => {
+                try {
+                    let dataToSave = {
+                        nombreInterno, tituloPublico, subtituloPublico,
+                        colorPrincipal, colorSecundario, colorOferta, colorFondo
+                    };
+                    if (logoUrlFinal !== undefined) {
+                        dataToSave.logoUrl = logoUrlFinal;
+                    }
+
+                    await setDoc(doc(db, "configuracion", "estilosGenerales"), dataToSave, { merge: true });
+
+                    // Aplicar en vivo
+                    document.documentElement.style.setProperty('--color-principal', colorPrincipal);
+                    document.documentElement.style.setProperty('--color-secundario', colorSecundario);
+                    document.documentElement.style.setProperty('--color-oferta', colorOferta);
+                    document.documentElement.style.setProperty('--bg-dark', colorFondo);
+
+                    if(nombreInterno) document.getElementById('sidebar-brand-title').textContent = nombreInterno;
+                    if(tituloPublico) {
+                        document.getElementById('public-title-display').textContent = tituloPublico;
+                        document.getElementById('page-title').textContent = tituloPublico + " - Menú Digital";
+                    }
+                    if(subtituloPublico) document.getElementById('public-subtitle-display').textContent = subtituloPublico;
+                    if(logoUrlFinal) {
+                        document.getElementById('logo-display').src = logoUrlFinal;
+                        document.getElementById('settings-logo-preview').src = logoUrlFinal;
+                    }
+
+                    mostrarToast("✅ ¡Ajustes y colores guardados en la nube!");
+                } catch(e) {
+                    mostrarToast("Error al guardar los ajustes.");
+                }
+            };
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.readAsDataURL(fileInput.files[0]);
+                reader.onload = async function() {
+                    await ejecutarGuardado(reader.result);
+                };
+            } else {
+                await ejecutarGuardado(undefined);
             }
-        }
+        };
 
         async function inicializarCategoriasNube() {
             try {
@@ -1004,22 +1148,6 @@
                 if (permission === "granted") { mostrarToast("✅ ¡Notificaciones PWA activadas!"); } 
                 else { mostrarToast("Permiso denegado."); }
             });
-        }
-
-        const logoGuardado = localStorage.getItem('alaska_logo_url');
-        if (logoGuardado) { document.getElementById('logo-display').src = logoGuardado; }
-
-        window.guardarLogoRestaurante = function() {
-            const fileInput = document.getElementById('logoFileInput');
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.readAsDataURL(fileInput.files[0]);
-                reader.onload = function() {
-                    localStorage.setItem('alaska_logo_url', reader.result);
-                    document.getElementById('logo-display').src = reader.result;
-                    mostrarToast("¡Logo actualizado con éxito!");
-                }
-            } else { mostrarToast("Selecciona una imagen primero."); }
         }
 
         function iniciarEscuchaPedidos() {
@@ -1660,7 +1788,7 @@
                     <div class="food-card">
                         <div class="card-image-container">
                             <img src="${imagen}" alt="${plato.nombre}">
-                            <span class="badge">${plato.categoria || 'Especialidad'}</span>
+                            <span class="badge" style="${plato.categoria === 'Ofertas' ? 'color:var(--color-oferta); border-color:var(--color-oferta); background:rgba(239,68,68,0.15);' : ''}">${plato.categoria || 'Especialidad'}</span>
                         </div>
                         <div class="card-content">
                             <div>
@@ -2155,7 +2283,7 @@
 
             if (categoria === 'Stock_Interno') {
                 nuevoObjeto.stockCantidad = Number(document.getElementById('stock-cantidad').value || 0);
-                nuevoObjeto.stockCompra = Number(document.getElementById('stock-compra').value || 0);
+                nuevoObj.stockCompra = Number(document.getElementById('stock-compra').value || 0);
             }
 
             const guardarEnBD = async (imgUrl) => {
@@ -2183,7 +2311,7 @@
             }
         });
 
-        // Inicialización general cargando colores y categorías de la nube
+        // Inicialización general
         cargarConfiguracionVisualNube();
         inicializarCategoriasNube();
         actualizarUILealtadPublica();
