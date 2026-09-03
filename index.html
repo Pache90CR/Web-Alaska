@@ -419,7 +419,7 @@
                 <span>Horarios de Atención</span>
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('ajustes')">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065Z15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065ZM15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                 <span>Ajustes y Logo</span>
             </a>
         </div>
@@ -489,7 +489,7 @@
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">📦 Pedidos Recientes en Vivo</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Monitorea órdenes y actualiza su estado (Mesa o Retiro).</p>
                     <div id="admin-pedidos-container" style="max-height:500px; overflow-y:auto;">
-                        <p style="color:var(--text-muted); font-size:13px;">Sin pedidos nuevos.</p>
+                        <p style="color:var(--text-muted); font-size:13px;">Cargando pedidos...</p>
                     </div>
                 </div>
 
@@ -954,37 +954,9 @@
         </div>
     </div>
 
-    <div id="modal-opciones" class="modal-overlay">
-        <div class="modal-content">
-            <img id="modal-img" class="modal-img" src="" alt="Plato">
-            <div class="modal-body">
-                <h3 id="modal-nombre" style="margin-top:0; color:white; font-size:18px;">Plato</h3>
-                <p id="modal-descripcion" style="color:var(--text-muted); font-size:12px;"></p>
-                <p id="modal-precio-base" style="font-weight:800; color:var(--color-principal); font-size:16px;"></p>
-                
-                <h4 style="font-size:12px; border-bottom:1px solid var(--border-color); padding-bottom:4px; color:var(--text-muted);">Elige tus Acompañamientos (Máximo 2):</h4>
-                <div id="modal-variantes-container"></div>
-            </div>
-            <div class="modal-footer">
-                <button onclick="cerrarModal()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer;">Cerrar</button>
-                <button id="modal-btn-agregar" onclick="agregarAlCarritoDesdeModal()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Añadir • ₡0</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-carrito" class="modal-overlay">
-        <div class="modal-content" style="max-height:85vh;">
-            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 id="carrito-titulo-modal" style="margin:0; font-size:16px;">🛒 Tu Pedido Actual</h3>
-                <button onclick="cerrarCarritoModal()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
-            </div>
-            <div class="modal-body" id="carrito-contenido-dinamico"></div>
-        </div>
-    </div>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD2JhmA4m7NMbRcC2RqaHVIz1NLgI2IzE",
@@ -1008,38 +980,21 @@
         let platoSeleccionadoActual = null;
         let carrito = [];
         let adminAutenticado = false;
-        let totalPedidosPrevios = null;
 
         window.clienteActualId = localStorage.getItem('alaska_cliente_doc_id') || null;
         window.clienteActualSellos = Number(localStorage.getItem('alaska_cliente_sellos') || 0);
         window.clienteActualNombre = localStorage.getItem('alaska_cliente_nombre') || '';
 
-        window.pasoPedido = 1;
-        window.tipoEntregaSeleccionado = 'Retiro en Local';
-        window.metodoPagoSeleccionado = 'Efectivo';
-
         function mostrarToast(mensaje) {
             const toast = document.getElementById('toast-notification');
             document.getElementById('toast-msg').textContent = mensaje;
             toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
 
-        // Sincronizar inputs de color con textos
-        ['principal', 'secundario', 'oferta', 'fondo'].forEach(tipo => {
-            const input = document.getElementById(`input-color-${tipo}`);
-            const text = document.getElementById(`text-color-${tipo}`);
-            if(input && text) {
-                input.addEventListener('input', (e) => { text.value = e.target.value.toUpperCase(); });
-            }
-        });
-
-        // FUNCIONALIDAD INTERACTIVA DE LOS SELLOS DESDE LA TARJETA PRINCIPAL
+        // FUNCIONALIDAD INTERACTIVA DE LOS SELLOS
         window.hacerClickCasillaSello = function(numeroCasilla) {
             if (!window.clienteActualId) {
-                // Si no está registrado, abrir modal de registro primero
                 abrirLealtadModalSimple();
                 mostrarToast("Primero ingresa tu nombre y teléfono para unirte al Club.");
                 return;
@@ -1053,7 +1008,6 @@
             }
 
             if (numeroCasilla === selloEsperado) {
-                // Abrir modal rápido para introducir el código de este sello
                 document.getElementById('titulo-modal-sello').textContent = `⭐ Reclamar Sello #${numeroCasilla}`;
                 document.getElementById('input-codigo-sello-rapido').value = "";
                 document.getElementById('modal-sello-interactivo').style.display = 'flex';
@@ -1079,16 +1033,13 @@
 
                     window.clienteActualSellos++;
                     if (window.clienteActualSellos >= 5) {
-                        mostrarToast("🎉 ¡Felicidades! Completaste tus 5 sellos. Muestra tu pantalla para reclamar tu premio.");
+                        mostrarToast("🎉 ¡Felicidades! Completaste tus 5 sellos.");
                         window.clienteActualSellos = 0;
                     } else {
                         mostrarToast("⭐ ¡Sello añadido con éxito!");
                     }
 
-                    await updateDoc(doc(db, "clientes", window.clienteActualId), {
-                        sellos: window.clienteActualSellos
-                    });
-
+                    await updateDoc(doc(db, "clientes", window.clienteActualId), { sellos: window.clienteActualSellos });
                     localStorage.setItem('alaska_cliente_sellos', window.clienteActualSellos);
                     actualizarUILealtadPublica();
                     cerrarModalSelloInteractivo();
@@ -1101,7 +1052,8 @@
         }
 
         function actualizarUILealtadPublica() {
-            document.getElementById('loyalty-counter-text').textContent = `${window.clienteActualSellos} / 5 Sellos`;
+            const counterEl = document.getElementById('loyalty-counter-text');
+            if (counterEl) counterEl.textContent = `${window.clienteActualSellos} / 5 Sellos`;
             let gridHTML = "";
             
             for (let i = 1; i <= 5; i++) {
@@ -1113,15 +1065,16 @@
 
                 gridHTML += `<div class="${claseBox}" onclick="hacerClickCasillaSello(${i})" title="Haz clic para marcar el sello ${i}">${contenido}</div>`;
             }
-            document.getElementById('public-stamps-grid').innerHTML = gridHTML;
+            const gridEl = document.getElementById('public-stamps-grid');
+            if (gridEl) gridEl.innerHTML = gridHTML;
         }
 
         window.abrirLealtadModal = function(e) { 
             if(e) e.preventDefault();
-            if (window.clienteActualId) {
-                mostrarToast(`¡Hola ${window.clienteActualNombre}! Tienes ${window.clienteActualSellos}/5 sellos.`);
-            } else {
+            if (!window.clienteActualId) {
                 document.getElementById('modal-lealtad').style.display = 'flex'; 
+            } else {
+                mostrarToast(`¡Hola ${window.clienteActualNombre}! Tienes ${window.clienteActualSellos}/5 sellos.`);
             }
         }
 
@@ -1150,10 +1103,7 @@
                     sellos = docRef.data().sellos || 0;
                 } else {
                     const nuevoDoc = await addDoc(collection(db, "clientes"), {
-                        nombre: nombre,
-                        telefono: telefono,
-                        sellos: 0,
-                        fechaRegistro: new Date().toLocaleDateString()
+                        nombre: nombre, telefono: telefono, sellos: 0, fechaRegistro: new Date().toLocaleDateString()
                     });
                     clienteId = nuevoDoc.id;
                     sellos = 0;
@@ -1175,11 +1125,10 @@
             }
         }
 
-        // Resto de funciones del sistema...
         function renderizarFormularioHorarios(horariosData = {}) {
             const container = document.getElementById('days-schedule-container');
+            if (!container) return;
             container.innerHTML = "";
-
             diasSemana.forEach(dia => {
                 let info = horariosData[dia] || { cerrado: false, apertura: "12:00", cierre: "22:00" };
                 container.innerHTML += `
@@ -1203,7 +1152,7 @@
         window.toggleDiaCerrado = function(dia) {
             const chk = document.getElementById(`chk-cerrado-${dia}`);
             const wrapper = document.getElementById(`wrapper-horas-${dia}`);
-            wrapper.style.display = chk.checked ? 'none' : 'flex';
+            if(chk && wrapper) wrapper.style.display = chk.checked ? 'none' : 'flex';
         }
 
         window.guardarHorariosNube = async function() {
@@ -1217,54 +1166,9 @@
 
             try {
                 await setDoc(doc(db, "configuracion", "horariosAtencion"), horariosObj);
-                mostrarToast("✅ ¡Horarios de atención guardados en la nube!");
-                verificarEstadoAbiertoCerrado(horariosObj);
+                mostrarToast("✅ ¡Horarios guardados en la nube!");
             } catch(e) {
                 mostrarToast("Error al guardar horarios.");
-            }
-        }
-
-        function verificarEstadoAbiertoCerrado(horarios) {
-            const ahora = new Date();
-            const diaHoy = diasSemana[ahora.getDay()];
-            const horaActualNum = ahora.getHours() * 60 + ahora.getMinutes();
-
-            let infoDia = horarios[diaHoy];
-            let estaAbierto = false;
-            let textoEstado = "Cerrado hoy";
-
-            if (infoDia && !infoDia.cerrado) {
-                let [hAp, mAp] = infoDia.apertura.split(':').map(Number);
-                let [hCi, mCi] = infoDia.cierre.split(':').map(Number);
-                let minAp = hAp * 60 + mAp;
-                let minCi = hCi * 60 + mCi;
-
-                if (horaActualNum >= minAp && horaActualNum <= minCi) {
-                    estaAbierto = true;
-                    textoEstado = `Abierto • ${infoDia.cierre} PM`;
-                } else {
-                    textoEstado = `Cerrado • Abre a las ${infoDia.apertura}`;
-                }
-            }
-
-            const dotF = document.getElementById('floating-status-dot');
-            const textF = document.getElementById('floating-status-text');
-            const dotS = document.getElementById('sidebar-status-dot');
-            const textS = document.getElementById('sidebar-status-text');
-            const boxS = document.getElementById('sidebar-status-pill-box');
-
-            if (estaAbierto) {
-                if(dotF) dotF.classList.remove('closed');
-                if(textF) textF.textContent = textoEstado;
-                if(dotS) dotS.classList.remove('closed');
-                if(textS) textS.textContent = "TIENDA ABIERTA";
-                if(boxS) { boxS.style.background = '#132216'; boxS.style.borderColor = '#1e4620'; boxS.style.color = '#4ade80'; }
-            } else {
-                if(dotF) dotF.classList.add('closed');
-                if(textF) textF.textContent = textoEstado;
-                if(dotS) dotS.classList.add('closed');
-                if(textS) textS.textContent = "TIENDA CERRADA";
-                if(boxS) { boxS.style.background = '#2a1a1a'; boxS.style.borderColor = '#5c2222'; boxS.style.color = '#ff6b6b'; }
             }
         }
 
@@ -1274,118 +1178,36 @@
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    if (data.nombreInterno) {
+                    if (data.nombreInterno && document.getElementById('input-nombre-interno')) {
                         document.getElementById('input-nombre-interno').value = data.nombreInterno;
                         document.getElementById('sidebar-brand-title').textContent = data.nombreInterno;
                     }
-                    if (data.tituloPublico) {
+                    if (data.tituloPublico && document.getElementById('input-titulo-publico')) {
                         document.getElementById('input-titulo-publico').value = data.tituloPublico;
                         document.getElementById('public-title-display').textContent = data.tituloPublico;
-                        document.getElementById('page-title').textContent = data.tituloPublico + " - Menú Digital";
-                    }
-                    if (data.subtituloPublico) {
-                        document.getElementById('input-subtitulo-publico').value = data.subtituloPublico;
-                        document.getElementById('public-subtitle-display').textContent = data.subtituloPublico;
-                    }
-                    if (data.logoUrl) {
-                        document.getElementById('logo-display').src = data.logoUrl;
-                        document.getElementById('settings-logo-preview').src = data.logoUrl;
                     }
                     if (data.colorPrincipal) {
                         document.documentElement.style.setProperty('--color-principal', data.colorPrincipal);
-                        document.getElementById('input-color-principal').value = data.colorPrincipal;
-                        document.getElementById('text-color-principal').value = data.colorPrincipal.toUpperCase();
-                    }
-                    if (data.colorSecundario) {
-                        document.documentElement.style.setProperty('--color-secundario', data.colorSecundario);
-                        document.getElementById('input-color-secundario').value = data.colorSecundario;
-                        document.getElementById('text-color-secundario').value = data.colorSecundario.toUpperCase();
-                    }
-                    if (data.colorOferta) {
-                        document.documentElement.style.setProperty('--color-oferta', data.colorOferta);
-                        document.getElementById('input-color-oferta').value = data.colorOferta;
-                        document.getElementById('text-color-oferta').value = data.colorOferta.toUpperCase();
-                    }
-                    if (data.colorFondo) {
-                        document.documentElement.style.setProperty('--bg-dark', data.colorFondo);
-                        document.getElementById('input-color-fondo').value = data.colorFondo;
-                        document.getElementById('text-color-fondo').value = data.colorFondo.toUpperCase();
                     }
                 }
-
                 const docRefH = doc(db, "configuracion", "horariosAtencion");
                 const docSnapH = await getDoc(docRefH);
-                let horariosVal = docSnapH.exists() ? docSnapH.data() : {};
-                renderizarFormularioHorarios(horariosVal);
-                verificarEstadoAbiertoCerrado(horariosVal);
-
-            } catch (e) {
-                renderizarFormularioHorarios({});
-            }
+                renderizarFormularioHorarios(docSnapH.exists() ? docSnapH.data() : {});
+            } catch (e) { console.log(e); }
         }
 
         window.guardarAjustesYConfiguracionNube = async function() {
             const nombreInterno = document.getElementById('input-nombre-interno').value.trim();
             const tituloPublico = document.getElementById('input-titulo-publico').value.trim();
-            const subtituloPublico = document.getElementById('input-subtitulo-publico').value.trim();
             const colorPrincipal = document.getElementById('input-color-principal').value;
-            const colorSecundario = document.getElementById('input-color-secundario').value;
-            const colorOferta = document.getElementById('input-color-oferta').value;
-            const colorFondo = document.getElementById('input-color-fondo').value;
-            const fileInput = document.getElementById('logoFileInput');
 
-            const ejecutarGuardado = async (logoUrlFinal) => {
-                try {
-                    let dataToSave = { nombreInterno, tituloPublico, subtituloPublico, colorPrincipal, colorSecundario, colorOferta, colorFondo };
-                    if (logoUrlFinal !== undefined) dataToSave.logoUrl = logoUrlFinal;
-
-                    await setDoc(doc(db, "configuracion", "estilosGenerales"), dataToSave, { merge: true });
-
-                    document.documentElement.style.setProperty('--color-principal', colorPrincipal);
-                    document.documentElement.style.setProperty('--color-secundario', colorSecundario);
-                    document.documentElement.style.setProperty('--color-oferta', colorOferta);
-                    document.documentElement.style.setProperty('--bg-dark', colorFondo);
-
-                    if(nombreInterno) document.getElementById('sidebar-brand-title').textContent = nombreInterno;
-                    if(tituloPublico) {
-                        document.getElementById('public-title-display').textContent = tituloPublico;
-                        document.getElementById('page-title').textContent = tituloPublico + " - Menú Digital";
-                    }
-                    if(subtituloPublico) document.getElementById('public-subtitle-display').textContent = subtituloPublico;
-                    if(logoUrlFinal) {
-                        document.getElementById('logo-display').src = logoUrlFinal;
-                        document.getElementById('settings-logo-preview').src = logoUrlFinal;
-                    }
-
-                    mostrarToast("✅ ¡Ajustes guardados en la nube!");
-                } catch(e) {
-                    mostrarToast("Error al guardar ajustes.");
-                }
-            };
-
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.readAsDataURL(fileInput.files[0]);
-                reader.onload = async function() { await ejecutarGuardado(reader.result); };
-            } else {
-                await ejecutarGuardado(undefined);
-            }
-        };
-
-        async function inicializarCategoriasNube() {
             try {
-                const qs = await getDocs(collection(db, "categorias"));
-                categoriasNube = {};
-                qs.forEach(d => { categoriasNube[d.id] = { idDoc: d.id, ...d.data() }; });
-
-                for (let cat of categoriasDefault) {
-                    if (!categoriasNube[cat]) {
-                        await setDoc(doc(db, "categorias", cat), { nombre: cat, visible: true, icono: "" });
-                        categoriasNube[cat] = { idDoc: cat, nombre: cat, visible: true, icono: "" };
-                    }
-                }
-                renderizarCategoriasPublicas();
-            } catch (e) { console.log(e); }
+                await setDoc(doc(db, "configuracion", "estilosGenerales"), { nombreInterno, tituloPublico, colorPrincipal }, { merge: true });
+                document.documentElement.style.setProperty('--color-principal', colorPrincipal);
+                mostrarToast("✅ ¡Ajustes guardados!");
+            } catch(e) {
+                mostrarToast("Error al guardar ajustes.");
+            }
         }
 
         window.abrirSidebar = function() {
@@ -1398,11 +1220,22 @@
             document.getElementById('sidebar-overlay').style.display = 'none';
         }
 
+        // CARGA DIFERIDA DE SECCIONES ADMIN PARA EVITAR CONGELAMIENTOS
         window.seleccionarSeccionAdmin = function(seccion) {
             document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
             event.currentTarget.classList.add('active');
             document.querySelectorAll('.admin-section-tab').forEach(el => el.classList.remove('active-admin-tab'));
             document.getElementById(`admin-tab-${seccion}`).classList.add('active-admin-tab');
+            
+            // Cargar únicamente la sección seleccionada
+            if (seccion === 'pedidos') cargarPedidosAdmin();
+            else if (seccion === 'platos') cargarAdminPlatosDashboard();
+            else if (seccion === 'stock') cargarAdminStock();
+            else if (seccion === 'caja') cargarEstadisticasCaja();
+            else if (seccion === 'categorias') renderizarTablaCategoriasAdmin();
+            else if (seccion === 'clientes') cargarBaseClientesAdmin();
+            else if (seccion === 'lealtad') cargarCodigoActivoAdmin();
+
             cerrarSidebar();
         }
 
@@ -1421,68 +1254,171 @@
                     adminAutenticado = true;
                     cambiarVista('admin');
                     abrirSidebar();
+                    cargarPedidosAdmin(); // Cargar solo pedidos al entrar
                 } else if (pass !== null) { mostrarToast("Contraseña incorrecta."); }
             }
         }
 
-        async function cargarMenu() {
-            try {
-                const querySnapshot = await getDocs(collection(db, "menu"));
-                listaPlatos = [];
-                querySnapshot.forEach((docSnap) => { listaPlatos.push({ id: docSnap.id, ...docSnap.data() }); });
-                mostrarPlatos(listaPlatos);
-            } catch (error) { console.log(error); }
+        window.cambiarVista = function(vista) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active-view'));
+            if (vista === 'menu') {
+                document.getElementById('view-menu').classList.add('active-view');
+            } else if (vista === 'admin') {
+                document.getElementById('view-admin').classList.add('active-view');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        window.mostrarPlatos = function(platos) {
-            const menuGrid = document.getElementById("menu-grid");
-            menuGrid.innerHTML = "";
-            const disponibles = platos.filter(p => p.categoria !== 'Stock_Interno' && p.disponible !== false);
-            
-            if (disponibles.length === 0) {
-                menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay platos disponibles.</p>";
+        async function cargarPedidosAdmin() {
+            const contenedor = document.getElementById("admin-pedidos-container");
+            contenedor.innerHTML = "<p style='color:var(--text-muted); font-size:13px;'>Cargando pedidos...</p>";
+            try {
+                const qs = await getDocs(collection(db, "pedidos"));
+                if (qs.empty) { contenedor.innerHTML = "<p style='color:var(--text-muted); font-size:13px;'>Sin pedidos.</p>"; return; }
+                contenedor.innerHTML = "";
+                qs.forEach(d => {
+                    const p = d.data();
+                    const id = d.id;
+                    contenedor.innerHTML += `
+                        <div class="pedido-card">
+                            <strong style="color:white; font-size:15px;">${p.nombre}</strong><br>
+                            <span style="font-size:12px; color:var(--color-principal);">${p.detalle}</span><br>
+                            <strong style="color:var(--color-principal); font-size:14px;">₡${p.total.toLocaleString()}</strong>
+                        </div>
+                    `;
+                });
+            } catch(e) { contenedor.innerHTML = "<p style='color:#ef4444;'>Error al cargar pedidos.</p>"; }
+        }
+
+        async function cargarAdminPlatosDashboard() {
+            try {
+                const qs = await getDocs(collection(db, "menu"));
+                listaPlatos = [];
+                qs.forEach(d => listaPlatos.push({ id: d.id, ...d.data() }));
+                renderizarTablaAdminPlatos(listaPlatos);
+            } catch(e) { console.log(e); }
+        }
+
+        function renderizarTablaAdminPlatos(platos) {
+            const tbody = document.getElementById('admin-tabla-platos-body');
+            let platosVisibles = platos.filter(p => p.categoria !== 'Stock_Interno');
+            if (platosVisibles.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">No hay platos registrados.</td></tr>`;
                 return;
             }
-            disponibles.forEach((plato) => {
-                let tieneFotoValida = plato.imagenUrl && typeof plato.imagenUrl === 'string' && plato.imagenUrl.trim() !== "";
-                const imagen = tieneFotoValida ? plato.imagenUrl : 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
-                
-                menuGrid.innerHTML += `
-                    <div class="food-card">
-                        <div class="card-image-container">
-                            <img src="${imagen}" alt="${plato.nombre}">
-                            <span class="badge" style="${plato.categoria === 'Ofertas' ? 'color:var(--color-oferta); border-color:var(--color-oferta); background:rgba(239,68,68,0.15);' : ''}">${plato.categoria || 'Especialidad'}</span>
-                        </div>
-                        <div class="card-content">
-                            <div>
-                                <div class="card-header-flex">
-                                    <h3>${plato.nombre}</h3>
-                                    <div class="price">₡${plato.precio.toLocaleString()}</div>
-                                </div>
-                                <div class="stars">★★★★★</div>
-                            </div>
-                            <button class="order-btn" onclick='mostrarToast("Selecciona una opción del menú")'>Ver Opciones / Pedir</button>
-                        </div>
-                    </div>
+            tbody.innerHTML = "";
+            platosVisibles.forEach((p, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${idx + 1}</td>
+                        <td><img src="${p.imagenUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=100&q=80'}" style="width:36px; height:36px; border-radius:6px; object-fit:cover;"></td>
+                        <td style="font-weight:700;">${p.nombre}</td>
+                        <td>${p.categoria}</td>
+                        <td style="color:var(--color-principal); font-weight:800;">₡${p.precio.toLocaleString()}</td>
+                        <td>${p.disponible !== false ? 'Sí' : 'No'}</td>
+                        <td>-</td>
+                    </tr>
                 `;
             });
         }
 
-        function renderizarCategoriasPublicas() {
-            const container = document.getElementById('category-container');
-            let html = `<button class="cat-btn active">Todos</button>`;
-            categoriasDefault.forEach(cat => {
-                let claseExtra = (cat === 'Ofertas') ? 'full-width' : '';
-                html += `<button class="cat-btn ${claseExtra}">${cat}</button>`;
-            });
-            container.innerHTML = html;
+        async function cargarAdminStock() {
+            const tbody = document.getElementById('admin-tabla-stock-body');
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>`;
+            try {
+                const qs = await getDocs(collection(db, "menu"));
+                tbody.innerHTML = "";
+                let hayStock = false;
+                qs.forEach(d => {
+                    let s = d.data();
+                    if (s.categoria === 'Stock_Interno') {
+                        hayStock = true;
+                        tbody.innerHTML += `
+                            <tr>
+                                <td style="font-weight:700;">${s.nombre}</td>
+                                <td style="font-weight:800; color:var(--color-principal);">${s.stockCantidad || 0} unids</td>
+                                <td>₡${Number(s.stockCompra || 0).toLocaleString()}</td>
+                                <td>₡${Number(s.precio || 0).toLocaleString()}</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                        `;
+                    }
+                });
+                if (!hayStock) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No hay ítems en stock interno.</td></tr>`;
+            } catch(e) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#ef4444;">Error al cargar stock.</td></tr>`; }
         }
 
-        // Inicialización general
+        async function cargarEstadisticasCaja() {
+            try {
+                const qs = await getDocs(collection(db, "pedidos"));
+                let totalIngresos = 0;
+                qs.forEach(d => totalIngresos += Number(d.data().total || 0));
+                document.getElementById('stat-ingresos').textContent = `₡${totalIngresos.toLocaleString()}`;
+                document.getElementById('stat-total-pedidos').textContent = qs.size;
+            } catch(e) { console.log(e); }
+        }
+
+        async function renderizarTablaCategoriasAdmin() {
+            const tbody = document.getElementById('admin-tabla-categorias-body');
+            tbody.innerHTML = "";
+            categoriasDefault.forEach(cat => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight:700;">${cat}</td>
+                        <td>Activa</td>
+                        <td>-</td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function cargarBaseClientesAdmin() {
+            const tbody = document.getElementById('admin-tabla-clientes-body');
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando clientes...</td></tr>`;
+            try {
+                const qs = await getDocs(collection(db, "clientes"));
+                if (qs.empty) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin clientes.</td></tr>`; return; }
+                tbody.innerHTML = "";
+                qs.forEach(d => {
+                    const c = d.data();
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="font-weight:750;">${c.nombre}</td>
+                            <td>${c.telefono}</td>
+                            <td style="color:var(--color-principal); font-weight:800;">${c.sellos || 0} / 5 ⭐</td>
+                            <td>-</td>
+                        </tr>
+                    `;
+                });
+            } catch(e) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;">Error.</td></tr>`; }
+        }
+
+        async function cargarCodigoActivoAdmin() {
+            try {
+                const docRef = doc(db, "configuracion", "selloActivo");
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists() && docSnap.data().codigo) {
+                    document.getElementById('codigo-activo-display').textContent = docSnap.data().codigo;
+                } else { document.getElementById('codigo-activo-display').textContent = "----"; }
+            } catch(e) { document.getElementById('codigo-activo-display').textContent = "Error"; }
+        }
+
+        window.generarNuevoCodigoSello = async function() {
+            const nuevoCodigo = Math.floor(1000 + Math.random() * 9000).toString();
+            try {
+                await setDoc(doc(db, "configuracion", "selloActivo"), { codigo: nuevoCodigo });
+                document.getElementById('codigo-activo-display').textContent = nuevoCodigo;
+                mostrarToast("¡Código generado!: " + nuevoCodigo);
+            } catch(e) { mostrarToast("Error al generar."); }
+        }
+
+        window.abrirSeguimientoModal = function(e) { e.preventDefault(); document.getElementById('modal-seguimiento').style.display = 'flex'; }
+        window.cerrarSeguimientoModal = function() { document.getElementById('modal-seguimiento').style.display = 'none'; }
+
+        // Inicialización ligera y segura
         cargarConfiguracionVisualNube();
-        inicializarCategoriasNube();
         actualizarUILealtadPublica();
-        cargarMenu();
     </script>
 </body>
 </html>
