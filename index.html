@@ -426,7 +426,6 @@
                 </div>
             </div>
 
-            <!-- TARJETA DE LEALTAD INTERACTIVA -->
             <div class="loyalty-banner">
                 <h3 style="margin:0; color:var(--color-principal); font-size:17px; display:flex; align-items:center; gap:6px; justify-content:center;">
                     <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
@@ -479,7 +478,7 @@
 
                 <div id="admin-tab-stock" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">📦 Control de Stock Interno</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Inventario privado. Vende unidades múltiples para rebajar stock y sumarlas a caja.</p>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Inventario privado. Sube, baja o vende unidades y controla tu inversión.</p>
                     
                     <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:20px;">
                         <div class="stat-card total"><div class="stat-title">Inversión Stock</div><div class="stat-value" id="stock-stat-inversion">₡0</div></div>
@@ -490,10 +489,10 @@
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
-                                <tr><th>Artículo</th><th>Stock</th><th>Compra</th><th>Venta</th><th>Gan/Unid</th><th>Acción</th></tr>
+                                <tr><th>Artículo</th><th>Stock</th><th>Compra</th><th>Venta</th><th>Acciones (Aumentar / Disminuir / Vender)</th></tr>
                             </thead>
                             <tbody id="admin-tabla-stock-body">
-                                <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>
+                                <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -675,7 +674,6 @@
 
     </div>
 
-    <!-- MODAL DETALLE DE PLATO Y SELECCIÓN DE EXTRAS (LÍMITE 2) -->
     <div id="modal-detalle-plato" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -694,7 +692,6 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR PLATO -->
     <div id="modal-editar-plato" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -749,7 +746,6 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR CATEGORÍA -->
     <div id="modal-editar-categoria" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -770,7 +766,6 @@
         </div>
     </div>
 
-    <!-- MODAL SELLO -->
     <div id="modal-sello-interactivo" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -924,7 +919,6 @@
             });
         }
 
-        // ABRIR MODAL PARA SELECCIONAR EXTRAS (MÁXIMO 2, NO OBLIGATORIOS)
         window.abrirModalDetallePlato = function(id) {
             if (!negocioAbiertoGlobal) {
                 mostrarToast("⚠️ El establecimiento se encuentra cerrado temporalmente.");
@@ -1252,7 +1246,6 @@
                 if (sideDotEl) { sideDotEl.className = "status-dot closed"; sideDotEl.style.background = "#ef4444"; sideDotEl.style.boxShadow = "0 0 6px #ef4444"; }
                 if (sideTextEl) sideTextEl.textContent = "NEGOCIO CERRADO";
             }
-            // Refrescar tarjetas del menú para actualizar los botones de pedido
             if (listaPlatos.length > 0) mostrarPlatos(listaPlatos);
         }
 
@@ -1581,7 +1574,7 @@
             }
         }
 
-        // STOCK INTERNO CON VENTA MÚLTIPLE DE UNIDADES
+        // CONTROL DE STOCK INTERNO (AUMENTAR, DISMINUIR, VENDER)
         window.toggleCamposStock = function(val) {
             document.getElementById('campos-stock-extra').style.display = (val === 'Stock_Interno') ? 'block' : 'none';
         }
@@ -1589,7 +1582,7 @@
         async function cargarAdminStock() {
             const tbody = document.getElementById('admin-tabla-stock-body');
             if (!tbody) return;
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>`;
             try {
                 const qs = await getDocs(collection(db, "menu"));
                 tbody.innerHTML = "";
@@ -1604,7 +1597,6 @@
                         let cant = Number(s.stockCantidad || 0);
                         let comp = Number(s.stockCompra || 0);
                         let vent = Number(s.precio || 0);
-                        let ganUnid = vent - comp;
 
                         totalInversion += (cant * comp);
                         totalVentaEst += (cant * vent);
@@ -1615,8 +1607,13 @@
                                 <td style="font-weight:800; color:var(--color-principal);">${cant} unids</td>
                                 <td>₡${comp.toLocaleString()}</td>
                                 <td>₡${vent.toLocaleString()}</td>
-                                <td style="color:#4ade80;">₡${ganUnid.toLocaleString()}</td>
-                                <td><button onclick="venderCantidadStock('${s.id}', ${cant}, ${vent})" class="action-pill" style="padding:6px 12px; font-size:11px; background:rgba(212,175,55,0.2);">Vender</button></td>
+                                <td>
+                                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                        <button onclick="ajustarCantidadStock('${s.id}', ${cant}, 'aumentar')" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(16,185,129,0.2); color:#10b981; border-color:#10b981;">+ Aumentar</button>
+                                        <button onclick="ajustarCantidadStock('${s.id}', ${cant}, 'disminuir')" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444;">- Disminuir</button>
+                                        <button onclick="venderCantidadStock('${s.id}', ${cant}, ${vent})" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(212,175,55,0.2);">🛒 Vender</button>
+                                    </div>
+                                </td>
                             </tr>
                         `;
                     }
@@ -1626,8 +1623,25 @@
                 document.getElementById('stock-stat-venta').textContent = `₡${totalVentaEst.toLocaleString()}`;
                 document.getElementById('stock-stat-ganancia').textContent = `₡${(totalVentaEst - totalInversion).toLocaleString()}`;
 
-                if (!hayStock) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No hay stock interno.</td></tr>`;
-            } catch(e) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#ef4444;">Error al cargar stock.</td></tr>`; }
+                if (!hayStock) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No hay stock interno.</td></tr>`;
+            } catch(e) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#ef4444;">Error al cargar stock.</td></tr>`; }
+        }
+
+        window.ajustarCantidadStock = async function(idPlato, stockActual, tipoAccion) {
+            let mensajePrompt = tipoAccion === 'aumentar' ? "¿Cuántas unidades deseas AUMENTAR al stock?" : "¿Cuántas unidades deseas DISMINUIR del stock?";
+            let cantidadStr = prompt(mensajePrompt, "1");
+            if (!cantidadStr) return;
+            let cantidad = Number(cantidadStr);
+            if (isNaN(cantidad) || cantidad <= 0) { mostrarToast("Cantidad inválida."); return; }
+
+            let nuevoStock = tipoAccion === 'aumentar' ? (stockActual + cantidad) : (stockActual - cantidad);
+            if (nuevoStock < 0) nuevoStock = 0;
+
+            try {
+                await updateDoc(doc(db, "menu", idPlato), { stockCantidad: nuevoStock });
+                mostrarToast(tipoAccion === 'aumentar' ? `✅ ¡Stock aumentado con éxito!` : `⚠️ ¡Stock disminuido con éxito!`);
+                cargarAdminStock();
+            } catch(e) { mostrarToast("Error al actualizar stock."); }
         }
 
         window.venderCantidadStock = async function(idPlato, stockActual, precioVenta) {
@@ -1643,6 +1657,7 @@
                     nombre: "Venta Stock Interno",
                     detalle: `${cantidad} unidades vendidas`,
                     total: precioVenta * cantidad,
+                    estado: 'Preparación',
                     fecha: new Date().toLocaleString()
                 });
                 mostrarToast(`✅ ¡Se vendieron ${cantidad} unidades y se sumaron a caja!`);
