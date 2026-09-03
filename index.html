@@ -27,7 +27,7 @@
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-dark); margin: 0; padding: 0; color: var(--text-main); }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-dark); margin: 0; padding: 0; color: var(--text-main); transition: background 0.3s ease; }
         
         .app-container { max-width: 1200px; margin: 0 auto; padding: 20px; padding-bottom: 140px; }
 
@@ -50,7 +50,7 @@
         .store-header p { margin: 4px 0 15px 0; font-size: 13px; color: var(--text-muted); }
 
         .header-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 25px; }
-        .action-pill { background: #2a2a2a; color: var(--color-principal); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; border: 1px solid var(--border-color); cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .action-pill { background: #2a2a2a; color: var(--color-principal); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; border: 1px solid var(--border-color); cursor: pointer; display: flex; align-items: center; gap: 6px; transition: color 0.2s, border-color 0.2s; }
         .action-pill:hover { background: #333; }
 
         .view-section { display: none; }
@@ -81,8 +81,9 @@
             justify-content: center;
             gap: 8px;
         }
-        .cat-btn.active, .cat-btn:hover { background: #2d2814; border-color: var(--color-principal); }
+        .cat-btn.active, .cat-btn:hover { background: rgba(212, 175, 55, 0.15); border-color: var(--color-principal); }
         .cat-btn.full-width { grid-column: span 2; background: #2a1a1a; color: #ff6b6b; border-color: #5c2222; }
+        .cat-btn.full-width:hover { background: #381f1f; border-color: #ff6b6b; }
         .cat-icon-img { width: 20px; height: 20px; object-fit: contain; border-radius: 4px; }
 
         .menu-grid {
@@ -122,19 +123,19 @@
         .stars { color: var(--color-principal); font-size: 13px; margin-bottom: 12px; }
         
         .order-btn {
-            width: 100%; background: #332d12; color: var(--color-principal);
-            border: 1px solid #594f1b; padding: 12px; border-radius: 10px; cursor: pointer;
+            width: 100%; background: rgba(212, 175, 55, 0.15); color: var(--color-principal);
+            border: 1px solid var(--color-principal); padding: 12px; border-radius: 10px; cursor: pointer;
             font-weight: 700; font-size: 14px; text-align: center; transition: background 0.2s;
         }
-        .order-btn:hover { background: #4a3e14; }
+        .order-btn:hover { background: rgba(212, 175, 55, 0.25); }
 
         .loyalty-banner {
-            background: linear-gradient(135deg, #2a2205 0%, #161616 100%);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, #161616 100%);
             border: 1px solid var(--color-principal);
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 30px;
-            box-shadow: 0 8px 20px rgba(212,175,55,0.15);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -154,7 +155,7 @@
             color: var(--color-principal);
         }
         .stamp-box.filled {
-            background: #332d12;
+            background: rgba(212, 175, 55, 0.2);
             border: 2px solid var(--color-principal);
             box-shadow: 0 0 10px rgba(212,175,55,0.3);
         }
@@ -209,9 +210,9 @@
         .sidebar-item:hover { background: #222; color: var(--text-main); }
         
         .sidebar-item.active {
-            background: #23221a;
+            background: rgba(212, 175, 55, 0.15);
             color: var(--color-principal);
-            border: 1px solid #4a3e14;
+            border: 1px solid var(--color-principal);
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         .sidebar-item.active span { color: var(--color-principal); }
@@ -307,7 +308,7 @@
             background: #252525; border: 1px solid var(--border-color); padding: 14px; border-radius: 12px;
             color: white; font-weight: 600; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 4px; transition: 0.2s;
         }
-        .tipo-entrega-btn.selected { background: #332d12; border-color: var(--color-principal); color: var(--color-principal); }
+        .tipo-entrega-btn.selected { background: rgba(212, 175, 55, 0.15); border-color: var(--color-principal); color: var(--color-principal); }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
         .modal-content { background: var(--card-bg); width: 100%; max-width: 480px; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color); display: flex; flex-direction: column; max-height: 85vh; color: var(--text-main); }
@@ -658,13 +659,28 @@
                 <div id="admin-tab-ajustes" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">⚙️ Ajustes del Sistema y Logo</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Personaliza la identidad visual de Bar Restaurante Alaska.</p>
-                    <div style="background:#181818; padding:18px; border-radius:14px; border:1px solid var(--border-color);">
+                    
+                    <div style="background:#181818; padding:18px; border-radius:14px; border:1px solid var(--border-color); margin-bottom:20px;">
                         <h3 style="margin-top:0; font-size:15px; color:var(--color-principal);">🖼️ Cambiar Logo del Restaurante</h3>
                         <div class="form-group" style="margin-bottom:10px;">
                             <label>Sube la imagen para el logo:</label>
                             <input type="file" id="logoFileInput" accept="image/*">
                         </div>
                         <button type="button" class="btn-admin-action" onclick="guardarLogoRestaurante()">Actualizar Logo</button>
+                    </div>
+
+                    <div style="background:#181818; padding:18px; border-radius:14px; border:1px solid var(--border-color);">
+                        <h3 style="margin-top:0; font-size:15px; color:var(--color-principal);">🎨 Paleta de Colores (Nube)</h3>
+                        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Cambia el color principal del menú y botones (Ofertas se mantiene en rojo).</p>
+                        <div class="form-group">
+                            <label>Color Principal:</label>
+                            <input type="color" id="input-color-principal" value="#d4af37" style="height:42px; cursor:pointer; padding:4px;">
+                        </div>
+                        <div class="form-group">
+                            <label>Color de Fondo General:</label>
+                            <input type="color" id="input-color-fondo" value="#121212" style="height:42px; cursor:pointer; padding:4px;">
+                        </div>
+                        <button type="button" class="btn-admin-action" onclick="guardarPaletaColoresNube()">Guardar Paleta de Colores</button>
                     </div>
                 </div>
 
@@ -886,7 +902,6 @@
 
         let listaPlatos = [];
         let categoriasNube = {};
-
         const categoriasDefault = ["Bocas", "Comidas Rápidas", "Arroces", "Batidos", "Casados", "Ofertas"];
 
         let variantesTemporales = [];
@@ -913,6 +928,44 @@
             }, 3000);
         }
 
+        async function cargarConfiguracionVisualNube() {
+            try {
+                const docRef = doc(db, "configuracion", "estilosGenerales");
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    if (data.colorPrincipal) {
+                        document.documentElement.style.setProperty('--color-principal', data.colorPrincipal);
+                        document.getElementById('input-color-principal').value = data.colorPrincipal;
+                    }
+                    if (data.colorFondo) {
+                        document.documentElement.style.setProperty('--bg-dark', data.colorFondo);
+                        document.getElementById('input-color-fondo').value = data.colorFondo;
+                    }
+                }
+            } catch (e) {
+                console.log("Error cargando estilos", e);
+            }
+        }
+
+        window.guardarPaletaColoresNube = async function() {
+            const colorPrincipal = document.getElementById('input-color-principal').value;
+            const colorFondo = document.getElementById('input-color-fondo').value;
+
+            try {
+                await setDoc(doc(db, "configuracion", "estilosGenerales"), {
+                    colorPrincipal: colorPrincipal,
+                    colorFondo: colorFondo
+                }, { merge: true });
+
+                document.documentElement.style.setProperty('--color-principal', colorPrincipal);
+                document.documentElement.style.setProperty('--bg-dark', colorFondo);
+                mostrarToast("🎨 ¡Paleta de colores guardada y aplicada en la nube!");
+            } catch (e) {
+                mostrarToast("Error al guardar los colores.");
+            }
+        }
+
         async function inicializarCategoriasNube() {
             try {
                 const qs = await getDocs(collection(db, "categorias"));
@@ -921,7 +974,6 @@
                     categoriasNube[d.id] = { idDoc: d.id, ...d.data() };
                 });
 
-                // Si falta alguna categoría por defecto, la creamos en la nube automáticamente
                 for (let cat of categoriasDefault) {
                     if (!categoriasNube[cat]) {
                         let nuevoDocRef = doc(db, "categorias", cat);
@@ -2131,7 +2183,8 @@
             }
         });
 
-        // Inicialización general
+        // Inicialización general cargando colores y categorías de la nube
+        cargarConfiguracionVisualNube();
         inicializarCategoriasNube();
         actualizarUILealtadPublica();
         cargarMenu();
