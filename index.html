@@ -286,7 +286,7 @@
             margin-bottom: 25px;
         }
         @media (min-width: 768px) {
-            .stats-cards-grid { grid-template-columns: repeat(6, 1fr); }
+            .stats-cards-grid { grid-template-columns: repeat(3, 1fr); }
         }
         .stat-card {
             background: #222;
@@ -296,10 +296,7 @@
             text-align: center;
         }
         .stat-card.total { border-left: 4px solid #3b82f6; }
-        .stat-card.img { border-left: 4px solid #6366f1; }
-        .stat-card.no-img { border-left: 4px solid #f43f5e; }
         .stat-card.visibles { border-left: 4px solid #10b981; }
-        .stat-card.ocultos { border-left: 4px solid #f59e0b; }
         .stat-card.oferta { border-left: 4px solid #8b5cf6; }
         .stat-title { font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
         .stat-value { font-size: 20px; font-weight: 900; color: white; }
@@ -329,36 +326,10 @@
         }
         .admin-table tr:hover { background: #222; }
 
-        .switch { position: relative; display: inline-block; width: 36px; height: 20px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .3s; border-radius: 20px; }
-        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--color-principal); }
-        input:checked + .slider:before { transform: translateX(16px); }
-
-        .btn-accion-tabla { background: none; border: none; cursor: pointer; font-size: 15px; padding: 4px; color: var(--text-muted); transition: color 0.2s; }
-        .btn-accion-tabla:hover { color: var(--color-principal); }
-        .btn-accion-tabla.eliminar:hover { color: #ef4444; }
-
-        .pedido-card { background: #252525; border-left: 4px solid var(--color-principal); padding: 16px; border-radius: 12px; margin-bottom: 14px; border: 1px solid var(--border-color); }
-        .badge-estado { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-        .badge-preparacion { background: #1e3a8a; color: #93c5fd; }
-        .badge-camino { background: #065f46; color: #6ee7b7; }
-        .badge-entregado { background: #374151; color: #9ca3af; }
-
-        .tipo-entrega-btn {
-            background: #252525; border: 1px solid var(--border-color); padding: 14px; border-radius: 12px;
-            color: white; font-weight: 600; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 4px; transition: 0.2s;
-        }
-        .tipo-entrega-btn.selected { background: rgba(212, 175, 55, 0.15); border-color: var(--color-principal); color: var(--color-principal); }
-
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
         .modal-content { background: var(--card-bg); width: 100%; max-width: 480px; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color); display: flex; flex-direction: column; max-height: 85vh; color: var(--text-main); }
-        .modal-img { height: 190px; width: 100%; object-fit: contain; background: #181818; }
         .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
         .modal-footer { padding: 16px 20px; background: #181818; border-top: 1px solid var(--border-color); display: flex; gap: 10px; }
-        .btn-accion { background: #333; border: none; padding: 4px 8px; border-radius: 6px; cursor: pointer; color: white; font-size: 11px; }
-        .btn-eliminar { background: #5c2222; color: #ff6b6b; }
     </style>
 </head>
 <body>
@@ -384,7 +355,6 @@
             <a href="#" class="sidebar-item active" onclick="seleccionarSeccionAdmin('pedidos')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                 <span>Pedidos en Vivo</span>
-                <span id="sidebar-pedidos-count" style="background:#ef4444; color:white; font-size:10px; padding:2px 6px; border-radius:10px; display:none;">0</span>
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('platos')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2H3zm7 0v20M3 18h18v2H3v-2z"/></svg>
@@ -400,7 +370,7 @@
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('categorias')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
-                <span>Gestión de Categorías</span>
+                <span>Gestión de Categorías e Iconos</span>
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('nuevo-plato')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
@@ -419,7 +389,7 @@
                 <span>Horarios de Atención</span>
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('ajustes')">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065Z15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065ZM15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                 <span>Ajustes y Logo</span>
             </a>
         </div>
@@ -429,7 +399,6 @@
                 <div class="status-dot" id="sidebar-status-dot"></div>
                 <span id="sidebar-status-text">VERIFICANDO HORARIO...</span>
             </div>
-            <button onclick="pedirPermisoNotificaciones()" class="action-pill" style="width:100%; justify-content:center; border:none; background:#1e3a8a; color:#93c5fd;">🔔 Activar Notificaciones PWA</button>
             <button onclick="cambiarVista('menu'); cerrarSidebar();" class="action-pill" style="width:100%; justify-content:center; border:none; background:#252525;">📋 Ver Menú Público</button>
             <button onclick="cerrarSesionAdmin()" class="action-pill" style="width:100%; justify-content:center; border:none; background:#2a1a1a; color:#ff6b6b;">🚪 Cerrar Sesión</button>
         </div>
@@ -487,78 +456,40 @@
                 
                 <div id="admin-tab-pedidos" class="admin-section-tab active-admin-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">📦 Pedidos Recientes en Vivo</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Monitorea órdenes y actualiza su estado (Mesa o Retiro).</p>
                     <div id="admin-pedidos-container" style="max-height:500px; overflow-y:auto;">
-                        <p style="color:var(--text-muted); font-size:13px;">Sin pedidos nuevos.</p>
+                        <p style="color:var(--text-muted); font-size:13px;">Cargando pedidos...</p>
                     </div>
                 </div>
 
                 <div id="admin-tab-platos" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:15px;">🍽️ Gestión de Platos</h2>
-                    
-                    <div class="stats-cards-grid">
-                        <div class="stat-card total"><div class="stat-title">Total</div><div class="stat-value" id="stat-total">0</div></div>
-                        <div class="stat-card img"><div class="stat-title">Con Imagen</div><div class="stat-value" id="stat-con-img">0</div></div>
-                        <div class="stat-card no-img"><div class="stat-title">Sin Imagen</div><div class="stat-value" id="stat-sin-img">0</div></div>
-                        <div class="stat-card visibles"><div class="stat-title">Visibles</div><div class="stat-value" id="stat-visibles">0</div></div>
-                        <div class="stat-card ocultos"><div class="stat-title">Ocultos</div><div class="stat-value" id="stat-ocultos">0</div></div>
-                        <div class="stat-card oferta"><div class="stat-title">En Oferta</div><div class="stat-value" id="stat-oferta">0</div></div>
-                    </div>
-
-                    <div style="display:flex; justify-content:space-between; gap:10px; margin-bottom:15px; flex-wrap:wrap; align-items:center;">
-                        <input type="text" id="input-buscar-admin-plato" placeholder="🔍 Buscar platos..." oninput="filtrarTablaAdminPlatos()" style="flex:1; min-width:200px; padding:10px; font-size:13px; background:#181818; border:1px solid var(--border-color); border-radius:8px; color:white;">
-                        <select id="select-filtro-categoria" onchange="filtrarTablaAdminPlatos()" style="width:160px; padding:10px; font-size:13px; background:#181818; border:1px solid var(--border-color); border-radius:8px; color:white;">
-                            <option value="todos">Todas las Categorías</option>
-                            <option value="Bocas">Bocas</option>
-                            <option value="Comidas Rápidas">Comidas Rápidas</option>
-                            <option value="Arroces">Arroces</option>
-                            <option value="Batidos">Batidos</option>
-                            <option value="Casados">Casados</option>
-                            <option value="Ofertas">Ofertas</option>
-                        </select>
-                    </div>
-
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
-                                <tr>
-                                    <th>Orden</th>
-                                    <th>Img</th>
-                                    <th>Nombre</th>
-                                    <th>Categoría</th>
-                                    <th>Precio (₡)</th>
-                                    <th>Visible</th>
-                                    <th>Acciones</th>
-                                </tr>
+                                <tr><th>Orden</th><th>Img</th><th>Nombre</th><th>Categoría</th><th>Precio (₡)</th></tr>
                             </thead>
                             <tbody id="admin-tabla-platos-body">
-                                <tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Cargando platos...</td></tr>
+                                <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Cargando platos...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
+                <!-- CONTROL DE STOCK INTERNO CON ESTADÍSTICAS Y VENTA -->
                 <div id="admin-tab-stock" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">📦 Control de Stock Interno</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Inventario privado. Vende artículos aquí para rebajar stock y sumarlos automáticamente al cierre de caja.</p>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Vende artículos aquí para rebajar stock y sumarlos al cierre de caja.</p>
                     
                     <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:20px;">
                         <div class="stat-card total"><div class="stat-title">Inversión Stock</div><div class="stat-value" id="stock-stat-inversion">₡0</div></div>
                         <div class="stat-card visibles"><div class="stat-title">Valor Venta Est.</div><div class="stat-value" id="stock-stat-venta">₡0</div></div>
-                        <div class="stat-card oferta"><div class="stat-title">Ganancia Total Est.</div><div class="stat-value" id="stock-stat-ganancia" style="color:#4ade80;">₡0</div></div>
+                        <div class="stat-card oferta"><div class="stat-title">Ganancia Est.</div><div class="stat-value" id="stock-stat-ganancia" style="color:#4ade80;">₡0</div></div>
                     </div>
 
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
-                                <tr>
-                                    <th>Artículo</th>
-                                    <th>Stock</th>
-                                    <th>Compra (₡)</th>
-                                    <th>Venta (₡)</th>
-                                    <th>Gan/Unid</th>
-                                    <th>Acciones</th>
-                                </tr>
+                                <tr><th>Artículo</th><th>Stock</th><th>Compra</th><th>Venta</th><th>Gan/Unid</th><th>Acción</th></tr>
                             </thead>
                             <tbody id="admin-tabla-stock-body">
                                 <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>
@@ -567,44 +498,26 @@
                     </div>
                 </div>
 
+                <!-- CIERRE DE CAJA FUNCIONAL -->
                 <div id="admin-tab-caja" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">💰 Cierre de Caja y Reportes de Ventas</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Estadísticas generales de ingresos y resumen del negocio.</p>
-                    
-                    <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:20px;">
-                        <div class="stat-card total"><div class="stat-title">Ingresos Totales</div><div class="stat-value" id="stat-ingresos">₡0</div></div>
-                        <div class="stat-card visibles"><div class="stat-title">Total Pedidos</div><div class="stat-value" id="stat-total-pedidos">0</div></div>
-                        <div class="stat-card oferta"><div class="stat-title">Clientes Club</div><div class="stat-value" id="stat-total-clientes">0</div></div>
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">💰 Cierre de Caja y Reportes</h2>
+                    <div class="stats-cards-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom:20px;">
+                        <div class="stat-card total"><div class="stat-title">Ingresos Totales (Pedidos + Stock)</div><div class="stat-value" id="stat-ingresos">₡0</div></div>
+                        <div class="stat-card visibles"><div class="stat-title">Total Transacciones</div><div class="stat-value" id="stat-total-pedidos">0</div></div>
                     </div>
-
-                    <div style="background:#181818; padding:18px; border-radius:14px; border:1px solid var(--border-color);">
-                        <h3 style="margin-top:0; font-size:15px; color:var(--color-principal);">🧾 Generar Corte de Caja</h3>
-                        <p style="font-size:13px; color:var(--text-muted);">Calcula el total recaudado según los pedidos y ventas de stock registradas.</p>
-                        <button type="button" class="btn-admin-action" onclick="calcularCorteCaja()">Calcular Ventas del Día</button>
-                        <div id="resultado-corte-container" style="margin-top:15px; font-size:14px; color:white;"></div>
-                    </div>
+                    <button type="button" class="btn-admin-action" onclick="calcularCorteCaja()">Calcular Cierre de Caja del Día</button>
+                    <div id="resultado-corte-container" style="margin-top:15px; font-size:14px; color:white;"></div>
                 </div>
 
                 <div id="admin-tab-categorias" class="admin-section-tab">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <div>
-                            <h2 style="margin:0; font-size:18px; color:var(--color-principal);">📁 Gestión de Categorías e Iconos (Nube)</h2>
-                            <p style="font-size:13px; color:var(--text-muted); margin:4px 0 0 0;">Los iconos y estados se guardan en la nube para que todos los clientes los vean.</p>
-                        </div>
-                    </div>
-
+                    <h2 style="margin:0; font-size:18px; color:var(--color-principal); margin-bottom:15px;">📁 Gestión de Categorías e Iconos</h2>
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
-                                <tr>
-                                    <th>Icono</th>
-                                    <th>Categoría</th>
-                                    <th>Visible</th>
-                                    <th>Acciones</th>
-                                </tr>
+                                <tr><th>Icono</th><th>Categoría</th><th>Acción</th></tr>
                             </thead>
                             <tbody id="admin-tabla-categorias-body">
-                                <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando categorías...</td></tr>
+                                <tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Cargando categorías...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -612,70 +525,47 @@
 
                 <div id="admin-tab-nuevo-plato" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">➕ Registrar Nuevo Ítem / Stock</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Añade platos al menú o selecciona "Stock_Interno" para inventario privado con precios de compra y venta.</p>
                     <form id="productForm">
                         <div class="form-group">
                             <label>Nombre del Ítem:</label>
                             <input type="text" id="nombre" required placeholder="Ej. Costilla Cerdo o Botella guaro">
                         </div>
-                        <div style="display:flex; gap:10px;">
-                            <div class="form-group" style="flex:1;">
-                                <label>Categoría:</label>
-                                <select id="categoria" required onchange="toggleCamposStock(this.value)">
-                                    <option value="Bocas">Bocas</option>
-                                    <option value="Comidas Rápidas">Comidas Rápidas</option>
-                                    <option value="Arroces">Arroces</option>
-                                    <option value="Batidos">Batidos</option>
-                                    <option value="Casados">Casados</option>
-                                    <option value="Ofertas">Ofertas</option>
-                                    <option value="Stock_Interno">📦 Stock Interno (Oculto)</option>
-                                </select>
-                            </div>
-                            <div class="form-group" style="flex:1;" id="group-precio-venta">
-                                <label>Precio de Venta (₡):</label>
-                                <input type="number" id="precio" required placeholder="5000">
-                            </div>
+                        <div class="form-group">
+                            <label>Categoría:</label>
+                            <select id="categoria" required onchange="toggleCamposStock(this.value)">
+                                <option value="Bocas">Bocas</option>
+                                <option value="Comidas Rápidas">Comidas Rápidas</option>
+                                <option value="Arroces">Arroces</option>
+                                <option value="Batidos">Batidos</option>
+                                <option value="Casados">Casados</option>
+                                <option value="Ofertas">Ofertas</option>
+                                <option value="Stock_Interno">📦 Stock Interno (Oculto)</option>
+                            </select>
                         </div>
-
+                        <div class="form-group" id="group-precio-venta">
+                            <label>Precio de Venta (₡):</label>
+                            <input type="number" id="precio" required placeholder="5000">
+                        </div>
                         <div id="campos-stock-extra" style="display:none; background:#181818; padding:12px; border-radius:10px; border:1px solid var(--border-color); margin-bottom:16px;">
                             <div style="display:flex; gap:10px;">
                                 <div class="form-group" style="flex:1; margin-bottom:0;">
-                                    <label>Cantidad en Stock:</label>
+                                    <label>Cantidad Stock:</label>
                                     <input type="number" id="stock-cantidad" placeholder="Ej. 24">
                                 </div>
                                 <div class="form-group" style="flex:1; margin-bottom:0;">
-                                    <label>Precio de Compra (₡):</label>
+                                    <label>Precio Compra (₡):</label>
                                     <input type="number" id="stock-compra" placeholder="Ej. 3500">
                                 </div>
                             </div>
                         </div>
-
-                        <div class="form-group">
-                            <label>Descripción:</label>
-                            <input type="text" id="descripcion" placeholder="Detalles o ingredientes...">
-                        </div>
-
-                        <div class="form-group" id="group-variantes" style="background:#222; padding:12px; border-radius:10px; border:1px solid var(--border-color);">
-                            <label>Acompañamientos / Extras (Opcional):</label>
-                            <div style="display:flex; gap:6px; margin-bottom:8px;">
-                                <input type="text" id="input-nombre-var" placeholder="Ej. Papas Gajo" style="flex:2;">
-                                <input type="number" id="input-precio-var" placeholder="₡ Extra" style="flex:1;">
-                                <button type="button" onclick="agregarVarianteTemporal()" style="background:var(--color-principal); color:#121212; border:none; padding:0 14px; border-radius:8px; font-weight:bold; cursor:pointer;">+</button>
-                            </div>
-                            <div id="lista-variantes-temp" style="font-size:12px; color:var(--text-muted);">Sin extras añadidos.</div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Fotografía (Opcional):</label>
-                            <input type="file" id="imagenFile" accept="image/*">
-                        </div>
-                        <button type="submit" id="btnGuardar" class="btn-admin-action">Guardar Ítem</button>
+                        <button type="submit" class="btn-admin-action">Guardar Ítem</button>
                     </form>
                 </div>
 
+                <!-- GENERADOR DE SELLOS DE UN SOLO USO ESTRICTO -->
                 <div id="admin-tab-lealtad" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">🔐 Generador de Sello (Un Solo Uso)</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Genera códigos seguros y dinámicos para el programa de lealtad.</p>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">El código generado expirará automáticamente en cuanto el cliente lo canjee.</p>
                     <div style="background:#181818; padding:18px; border-radius:14px; border:1px solid var(--border-color); text-align:center;">
                         <span id="codigo-activo-display" style="font-size:28px; font-weight:900; letter-spacing:4px; color:var(--color-principal); display:block; margin-bottom:15px;">----</span>
                         <button type="button" class="btn-admin-action" onclick="generarNuevoCodigoSello()">Generar Código Nuevo</button>
@@ -683,25 +573,20 @@
                 </div>
 
                 <div id="admin-tab-clientes" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:10px;">👥 Base de Clientes y Lealtad</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Lista de clientes registrados con sus sellos acumulados para marketing o control.</p>
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:10px;">👥 Base de Clientes</h2>
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
-                                <tr>
-                                    <th>Cliente</th>
-                                    <th>Teléfono / WhatsApp</th>
-                                    <th>Sellos ⭐</th>
-                                    <th>Acciones</th>
-                                </tr>
+                                <tr><th>Cliente</th><th>Teléfono</th><th>Sellos ⭐</th></tr>
                             </thead>
                             <tbody id="admin-tabla-clientes-body">
-                                <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando clientes...</td></tr>
+                                <tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Cargando clientes...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
+                <!-- HORARIOS DE ATENCIÓN FUNCIONALES -->
                 <div id="admin-tab-horarios" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Horarios de Atención</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Configura la disponibilidad semanal de tu negocio.</p>
@@ -710,75 +595,31 @@
                 </div>
 
                 <div id="admin-tab-ajustes" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Ajustes de Cuenta</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Configura los detalles de tu cuenta y preferencias.</p>
-                    
+                    <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Ajustes de Cuenta y Paleta de Colores</h2>
                     <div class="settings-card">
-                        <h3>Configuración de la cuenta</h3>
-                        <p>Preferencias generales y títulos públicos de tu negocio.</p>
-
                         <div class="form-group">
                             <label>Nombre de la Cuenta (Interno)</label>
                             <input type="text" id="input-nombre-interno" placeholder="Bar Alaska">
                         </div>
-
                         <div class="form-group">
                             <label>Título del Menú (Público)</label>
                             <input type="text" id="input-titulo-publico" placeholder="Bar Restaurante Alaska">
                         </div>
-
                         <div class="form-group">
-                            <label>Subtítulo (Público)</label>
-                            <input type="text" id="input-subtitulo-publico" placeholder="Descubre nuestras deliciosas opciones">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Logo del negocio</label>
-                            <div style="background:#121212; border:1px solid var(--border-color); border-radius:12px; padding:20px; text-align:center;">
-                                <img id="settings-logo-preview" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=150&q=80" style="width:70px; height:70px; border-radius:50%; object-fit:cover; border:2px solid var(--color-principal); margin-bottom:12px;">
-                                <input type="file" id="logoFileInput" accept="image/*" style="font-size:12px;">
-                            </div>
+                            <label>Logo del Negocio</label>
+                            <input type="file" id="logoFileInput" accept="image/*">
                         </div>
                     </div>
 
                     <div class="settings-card">
                         <h3>Paleta de Colores</h3>
-                        <p>Personaliza los tonos visuales de tu menú digital.</p>
-
                         <div class="form-group">
-                            <label>Color principal</label>
-                            <div style="display:flex; gap:10px; align-items:center;">
-                                <input type="color" id="input-color-principal" value="#d4af37" style="width:50px; height:42px; padding:2px; cursor:pointer;">
-                                <input type="text" id="text-color-principal" value="#d4af37" readonly style="flex:1;">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Color secundario</label>
-                            <div style="display:flex; gap:10px; align-items:center;">
-                                <input type="color" id="input-color-secundario" value="#2a2a2a" style="width:50px; height:42px; padding:2px; cursor:pointer;">
-                                <input type="text" id="text-color-secundario" value="#2a2a2a" readonly style="flex:1;">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Color de Oferta (Acento)</label>
-                            <div style="display:flex; gap:10px; align-items:center;">
-                                <input type="color" id="input-color-oferta" value="#ef4444" style="width:50px; height:42px; padding:2px; cursor:pointer;">
-                                <input type="text" id="text-color-oferta" value="#ef4444" readonly style="flex:1;">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Color de Fondo (Header / Base)</label>
-                            <div style="display:flex; gap:10px; align-items:center;">
-                                <input type="color" id="input-color-fondo" value="#121212" style="width:50px; height:42px; padding:2px; cursor:pointer;">
-                                <input type="text" id="text-color-fondo" value="#121212" readonly style="flex:1;">
-                            </div>
+                            <label>Color Principal</label>
+                            <input type="color" id="input-color-principal" value="#d4af37" style="height:42px; cursor:pointer;">
                         </div>
                     </div>
 
-                    <button type="button" class="btn-admin-action" onclick="guardarAjustesYConfiguracionNube()" style="padding:16px; font-size:15px; margin-bottom:30px;">Guardar Cambios en la Nube</button>
+                    <button type="button" class="btn-admin-action" onclick="guardarAjustesYConfiguracionNube()" style="padding:16px; font-size:15px; margin-bottom:30px;">Guardar Cambios</button>
                 </div>
 
             </div>
@@ -790,22 +631,14 @@
     <div id="modal-editar-categoria" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-size:16px;">📁 Editar Categoría e Icono</h3>
+                <h3 style="margin:0; font-size:16px;">📁 Editar Icono de Categoría</h3>
                 <button onclick="cerrarModalEditarCat()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
             </div>
             <div class="modal-body">
-                <input type="hidden" id="edit-cat-id">
+                <input type="hidden" id="edit-cat-nombre">
                 <div class="form-group">
-                    <label>Nombre de la categoría *</label>
-                    <input type="text" id="edit-cat-nombre" readonly style="opacity:0.7;">
-                </div>
-                <div class="form-group" style="text-align:center; background:#181818; padding:15px; border-radius:12px; border:1px solid var(--border-color);">
-                    <label style="margin-bottom:10px;">Icono actual en Nube:</label>
-                    <img id="edit-cat-img-preview" src="" style="width:50px; height:50px; object-fit:contain; border-radius:8px; background:#222; margin-bottom:10px; border:1px solid var(--color-principal);">
-                    <div class="form-group" style="margin-bottom:0;">
-                        <label>Subir nuevo icono personalizado:</label>
-                        <input type="file" id="edit-cat-file" accept="image/*">
-                    </div>
+                    <label>Subir Icono Personalizado:</label>
+                    <input type="file" id="edit-cat-file" accept="image/*">
                 </div>
             </div>
             <div class="modal-footer">
@@ -815,7 +648,7 @@
         </div>
     </div>
 
-    <!-- MODAL INTERACTIVO PARA INTRODUCIR CÓDIGO DE SELLO DESDE LA TARJETA -->
+    <!-- MODAL DE SELLO INTERACTIVO -->
     <div id="modal-sello-interactivo" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -823,9 +656,8 @@
                 <button onclick="cerrarModalSelloInteractivo()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
             </div>
             <div class="modal-body">
-                <p style="font-size:13px; color:var(--text-muted); margin-top:0;" id="desc-modal-sello">Introduce el código de 4 dígitos proporcionado por el cajero para marcar tu casilla.</p>
+                <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Introduce el código de 4 dígitos proporcionado por el cajero:</p>
                 <div class="form-group">
-                    <label>Código de un solo uso:</label>
                     <input type="text" id="input-codigo-sello-rapido" placeholder="Ej. 4829" maxlength="4" style="text-align:center; font-size:22px; letter-spacing:6px; font-weight:bold;">
                 </div>
                 <button onclick="validarYGanarSelloRapido()" class="btn-admin-action" style="background:var(--color-principal);">Validar y Marcar Sello ⭐</button>
@@ -838,80 +670,10 @@
             <div class="status-dot" id="floating-status-dot"></div>
             <span id="floating-status-text">Abierto</span>
         </div>
-        <button class="cart-icon-btn" onclick="abrirCarritoModal()" title="Ver Carrito">
+        <button class="cart-icon-btn" onclick="mostrarToast('Sistema listo')" title="Estado">
             <svg class="icon-svg-lg" style="color:#121212;" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             <span class="cart-count-badge" id="cart-count">0</span>
         </button>
-    </div>
-
-    <div id="modal-editar-plato" class="modal-overlay">
-        <div class="modal-content">
-            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-size:16px;">✏️ Editar Ítem / Stock</h3>
-                <button onclick="cerrarModalEditarPlato()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="edit-plato-id">
-                <div class="form-group">
-                    <label>Nombre</label>
-                    <input type="text" id="edit-plato-nombre">
-                </div>
-                <div style="display:flex; gap:10px;">
-                    <div class="form-group" style="flex:1;">
-                        <label>Categoría</label>
-                        <select id="edit-plato-categoria" onchange="toggleCamposStockEdicion(this.value)">
-                            <option value="Bocas">Bocas</option>
-                            <option value="Comidas Rápidas">Comidas Rápidas</option>
-                            <option value="Arroces">Arroces</option>
-                            <option value="Batidos">Batidos</option>
-                            <option value="Casados">Casados</option>
-                            <option value="Ofertas">Ofertas</option>
-                            <option value="Stock_Interno">📦 Stock Interno (Oculto)</option>
-                        </select>
-                    </div>
-                    <div class="form-group" style="flex:1;">
-                        <label>Precio Venta (₡)</label>
-                        <input type="number" id="edit-plato-precio">
-                    </div>
-                </div>
-
-                <div id="edit-campos-stock-extra" style="display:none; background:#181818; padding:12px; border-radius:10px; border:1px solid var(--border-color); margin-bottom:16px;">
-                    <div style="display:flex; gap:10px;">
-                        <div class="form-group" style="flex:1; margin-bottom:0;">
-                            <label>Stock:</label>
-                            <input type="number" id="edit-stock-cantidad">
-                        </div>
-                        <div class="form-group" style="flex:1; margin-bottom:0;">
-                            <label>Compra (₡):</label>
-                            <input type="number" id="edit-stock-compra">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Descripción</label>
-                    <input type="text" id="edit-plato-desc">
-                </div>
-                <div class="form-group">
-                    <label>Cambiar Fotografía (Opcional)</label>
-                    <input type="file" id="edit-plato-file" accept="image/*">
-                </div>
-
-                <div class="form-group" style="background:#222; padding:12px; border-radius:10px; border:1px solid var(--border-color);">
-                    <label>Gestionar Acompañamientos / Extras:</label>
-                    <div style="display:flex; gap:6px; margin-bottom:8px;">
-                        <input type="text" id="edit-input-nombre-var" placeholder="Nombre extra" style="flex:2;">
-                        <input type="number" id="edit-input-precio-var" placeholder="₡" style="flex:1;">
-                        <button type="button" onclick="agregarVarianteEdicion()" style="background:var(--color-principal); color:#121212; border:none; padding:0 14px; border-radius:8px; font-weight:bold; cursor:pointer;">+</button>
-                    </div>
-                    <div id="edit-lista-variantes" style="font-size:12px; color:var(--text-muted);">Sin extras.</div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button onclick="cerrarModalEditarPlato()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer;">Cancelar</button>
-                <button onclick="guardarPlatoEditado()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Guardar Cambios</button>
-            </div>
-        </div>
     </div>
 
     <div id="modal-lealtad" class="modal-overlay">
@@ -922,7 +684,7 @@
             </div>
             <div class="modal-body">
                 <div id="seccion-registro-cliente" style="display:block;">
-                    <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Regístrate con tu nombre y teléfono para guardar tus sellos en la nube y no perderlos nunca.</p>
+                    <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Regístrate con tu nombre y teléfono para unirte al Club.</p>
                     <div class="form-group">
                         <label>Tu Nombre *</label>
                         <input type="text" id="reg-nombre" placeholder="Ej. Carlos Pérez">
@@ -946,7 +708,7 @@
             <div class="modal-body">
                 <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Ingresa tu Nombre o Teléfono:</p>
                 <div class="form-group">
-                    <input type="text" id="input-buscar-cliente" placeholder="Ej. Juan o 88888888">
+                    <input type="text" id="input-buscar-cliente" placeholder="Ej. Juan">
                 </div>
                 <button onclick="buscarEstadoPedido()" class="btn-admin-action" style="background:var(--color-principal); margin-bottom:15px;">Consultar Estado</button>
                 <div id="resultado-seguimiento-container" style="font-size:13px; color:var(--text-main);"></div>
@@ -954,37 +716,9 @@
         </div>
     </div>
 
-    <div id="modal-opciones" class="modal-overlay">
-        <div class="modal-content">
-            <img id="modal-img" class="modal-img" src="" alt="Plato">
-            <div class="modal-body">
-                <h3 id="modal-nombre" style="margin-top:0; color:white; font-size:18px;">Plato</h3>
-                <p id="modal-descripcion" style="color:var(--text-muted); font-size:12px;"></p>
-                <p id="modal-precio-base" style="font-weight:800; color:var(--color-principal); font-size:16px;"></p>
-                
-                <h4 style="font-size:12px; border-bottom:1px solid var(--border-color); padding-bottom:4px; color:var(--text-muted);">Elige tus Acompañamientos (Máximo 2):</h4>
-                <div id="modal-variantes-container"></div>
-            </div>
-            <div class="modal-footer">
-                <button onclick="cerrarModal()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer;">Cerrar</button>
-                <button id="modal-btn-agregar" onclick="agregarAlCarritoDesdeModal()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Añadir • ₡0</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-carrito" class="modal-overlay">
-        <div class="modal-content" style="max-height:85vh;">
-            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 id="carrito-titulo-modal" style="margin:0; font-size:16px;">🛒 Tu Pedido Actual</h3>
-                <button onclick="cerrarCarritoModal()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
-            </div>
-            <div class="modal-body" id="carrito-contenido-dinamico"></div>
-        </div>
-    </div>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, setDoc, getDoc, query, where, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD2JhmA4m7NMbRcC2RqaHVIz1NLgI2IzE",
@@ -1002,58 +736,108 @@
         let categoriasNube = {};
         const categoriasDefault = ["Bocas", "Comidas Rápidas", "Arroces", "Batidos", "Casados", "Ofertas"];
         const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-
-        let variantesTemporales = [];
-        let variantesEdicionActuales = [];
-        let platoSeleccionadoActual = null;
-        let carrito = [];
         let adminAutenticado = false;
-        let totalPedidosPrevios = null;
 
         window.clienteActualId = localStorage.getItem('alaska_cliente_doc_id') || null;
         window.clienteActualSellos = Number(localStorage.getItem('alaska_cliente_sellos') || 0);
         window.clienteActualNombre = localStorage.getItem('alaska_cliente_nombre') || '';
 
-        window.pasoPedido = 1;
-        window.tipoEntregaSeleccionado = 'Retiro en Local';
-        window.metodoPagoSeleccionado = 'Efectivo';
-
         function mostrarToast(mensaje) {
             const toast = document.getElementById('toast-notification');
             document.getElementById('toast-msg').textContent = mensaje;
             toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
 
-        // Sincronizar inputs de color con textos
-        ['principal', 'secundario', 'oferta', 'fondo'].forEach(tipo => {
-            const input = document.getElementById(`input-color-${tipo}`);
-            const text = document.getElementById(`text-color-${tipo}`);
-            if(input && text) {
-                input.addEventListener('input', (e) => { text.value = e.target.value.toUpperCase(); });
-            }
-        });
+        async function cargarMenu() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "menu"));
+                listaPlatos = [];
+                querySnapshot.forEach((docSnap) => { listaPlatos.push({ id: docSnap.id, ...docSnap.data() }); });
+                mostrarPlatos(listaPlatos);
+                inicializarCategoriasNube();
+            } catch (error) { console.log(error); }
+        }
 
-        // FUNCIONALIDAD INTERACTIVA DE LOS SELLOS DESDE LA TARJETA PRINCIPAL
+        function mostrarPlatos(platos) {
+            const menuGrid = document.getElementById("menu-grid");
+            if (!menuGrid) return;
+            menuGrid.innerHTML = "";
+            const disponibles = platos.filter(p => p.categoria !== 'Stock_Interno' && p.disponible !== false);
+            
+            if (disponibles.length === 0) {
+                menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay platos disponibles.</p>";
+                return;
+            }
+            disponibles.forEach((plato) => {
+                let tieneFotoValida = plato.imagenUrl && typeof plato.imagenUrl === 'string' && plato.imagenUrl.trim() !== "";
+                const imagen = tieneFotoValida ? plato.imagenUrl : 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
+                
+                menuGrid.innerHTML += `
+                    <div class="food-card">
+                        <div class="card-image-container">
+                            <img src="${imagen}" alt="${plato.nombre}">
+                            <span class="badge">${plato.categoria || 'Especialidad'}</span>
+                        </div>
+                        <div class="card-content">
+                            <div>
+                                <div class="card-header-flex">
+                                    <h3>${plato.nombre}</h3>
+                                    <div class="price">₡${plato.precio.toLocaleString()}</div>
+                                </div>
+                                <div class="stars">★★★★★</div>
+                            </div>
+                            <button class="order-btn" onclick="mostrarToast('${plato.nombre} seleccionado')">Pedir</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function inicializarCategoriasNube() {
+            try {
+                const qs = await getDocs(collection(db, "categorias"));
+                categoriasNube = {};
+                qs.forEach(d => { categoriasNube[d.id] = { idDoc: d.id, ...d.data() }; });
+
+                for (let cat of categoriasDefault) {
+                    if (!categoriasNube[cat]) {
+                        await setDoc(doc(db, "categorias", cat), { nombre: cat, visible: true, icono: "" });
+                        categoriasNube[cat] = { idDoc: cat, nombre: cat, visible: true, icono: "" };
+                    }
+                }
+                renderizarCategoriasPublicas();
+            } catch (e) { renderizarCategoriasPublicas(); }
+        }
+
+        function renderizarCategoriasPublicas() {
+            const container = document.getElementById('category-container');
+            if (!container) return;
+            let html = `<button class="cat-btn active">Todos</button>`;
+            categoriasDefault.forEach(cat => {
+                let catData = categoriasNube[cat] || {};
+                let iconoHtml = catData.icono ? `<img src="${catData.icono}" class="cat-icon-img">` : '';
+                let claseExtra = (cat === 'Ofertas') ? 'full-width' : '';
+                html += `<button class="cat-btn ${claseExtra}">${iconoHtml} ${cat}</button>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // CÓDIGO DE SELLO DE UN SOLO USO ESTRICTO
         window.hacerClickCasillaSello = function(numeroCasilla) {
             if (!window.clienteActualId) {
-                // Si no está registrado, abrir modal de registro primero
                 abrirLealtadModalSimple();
-                mostrarToast("Primero ingresa tu nombre y teléfono para unirte al Club.");
+                mostrarToast("Primero ingresa tu nombre y teléfono.");
                 return;
             }
 
             let selloEsperado = window.clienteActualSellos + 1;
-
             if (numeroCasilla <= window.clienteActualSellos) {
                 mostrarToast("⭐ ¡Este sello ya lo tienes acumulado!");
                 return;
             }
 
             if (numeroCasilla === selloEsperado) {
-                // Abrir modal rápido para introducir el código de este sello
                 document.getElementById('titulo-modal-sello').textContent = `⭐ Reclamar Sello #${numeroCasilla}`;
                 document.getElementById('input-codigo-sello-rapido').value = "";
                 document.getElementById('modal-sello-interactivo').style.display = 'flex';
@@ -1068,101 +852,81 @@
 
         window.validarYGanarSelloRapido = async function() {
             const codigoIngresado = document.getElementById('input-codigo-sello-rapido').value.trim();
-            if (!codigoIngresado) { mostrarToast("Introduce el código de 4 dígitos."); return; }
+            if (!codigoIngresado) { mostrarToast("Introduce el código."); return; }
 
             try {
                 const docRefConfig = doc(db, "configuracion", "selloActivo");
                 const docSnap = await getDoc(docRefConfig);
 
                 if (docSnap.exists() && docSnap.data().codigo === codigoIngresado) {
+                    // ELIMINAR CÓDIGO INMEDIATAMENTE PARA QUE SEA DE UN SOLO USO
                     await setDoc(docRefConfig, { codigo: null });
 
                     window.clienteActualSellos++;
                     if (window.clienteActualSellos >= 5) {
-                        mostrarToast("🎉 ¡Felicidades! Completaste tus 5 sellos. Muestra tu pantalla para reclamar tu premio.");
+                        mostrarToast("🎉 ¡Felicidades! Completaste tus 5 sellos.");
                         window.clienteActualSellos = 0;
                     } else {
                         mostrarToast("⭐ ¡Sello añadido con éxito!");
                     }
 
-                    await updateDoc(doc(db, "clientes", window.clienteActualId), {
-                        sellos: window.clienteActualSellos
-                    });
-
+                    await updateDoc(doc(db, "clientes", window.clienteActualId), { sellos: window.clienteActualSellos });
                     localStorage.setItem('alaska_cliente_sellos', window.clienteActualSellos);
                     actualizarUILealtadPublica();
                     cerrarModalSelloInteractivo();
                 } else {
-                    mostrarToast("Código incorrecto o ya utilizado.");
+                    mostrarToast("❌ Código incorrecto o ya fue utilizado (Un solo uso).");
                 }
             } catch(e) {
-                mostrarToast("Error al validar el código.");
+                mostrarToast("Error al validar código.");
             }
         }
 
         function actualizarUILealtadPublica() {
-            document.getElementById('loyalty-counter-text').textContent = `${window.clienteActualSellos} / 5 Sellos`;
+            const counterEl = document.getElementById('loyalty-counter-text');
+            if (counterEl) counterEl.textContent = `${window.clienteActualSellos} / 5 Sellos`;
             let gridHTML = "";
-            
             for (let i = 1; i <= 5; i++) {
                 let filled = i <= window.clienteActualSellos;
                 let isNext = i === (window.clienteActualSellos + 1);
-                
                 let claseBox = filled ? 'stamp-box filled' : (isNext ? 'stamp-box next-to-fill' : 'stamp-box');
                 let contenido = filled ? '⭐' : i;
-
-                gridHTML += `<div class="${claseBox}" onclick="hacerClickCasillaSello(${i})" title="Haz clic para marcar el sello ${i}">${contenido}</div>`;
+                gridHTML += `<div class="${claseBox}" onclick="hacerClickCasillaSello(${i})">${contenido}</div>`;
             }
-            document.getElementById('public-stamps-grid').innerHTML = gridHTML;
+            const gridEl = document.getElementById('public-stamps-grid');
+            if (gridEl) gridEl.innerHTML = gridHTML;
         }
 
         window.abrirLealtadModal = function(e) { 
             if(e) e.preventDefault();
-            if (window.clienteActualId) {
-                mostrarToast(`¡Hola ${window.clienteActualNombre}! Tienes ${window.clienteActualSellos}/5 sellos.`);
-            } else {
-                document.getElementById('modal-lealtad').style.display = 'flex'; 
-            }
+            if (!window.clienteActualId) document.getElementById('modal-lealtad').style.display = 'flex'; 
+            else mostrarToast(`¡Hola ${window.clienteActualNombre}! Tienes ${window.clienteActualSellos}/5 sellos.`);
         }
-
-        window.abrirLealtadModalSimple = function() {
-            document.getElementById('modal-lealtad').style.display = 'flex';
-        }
-        
+        window.abrirLealtadModalSimple = function() { document.getElementById('modal-lealtad').style.display = 'flex'; }
         window.cerrarLealtadModal = function() { document.getElementById('modal-lealtad').style.display = 'none'; }
 
         window.registrarOIdentificarCliente = async function() {
             const nombre = document.getElementById('reg-nombre').value.trim();
             const telefono = document.getElementById('reg-telefono').value.trim();
-
-            if (!nombre || !telefono) { mostrarToast("Por favor ingresa tu nombre y teléfono."); return; }
+            if (!nombre || !telefono) { mostrarToast("Ingresa nombre y teléfono."); return; }
 
             try {
                 const q = query(collection(db, "clientes"), where("telefono", "==", telefono));
                 const querySnapshot = await getDocs(q);
-
-                let clienteId = null;
-                let sellos = 0;
+                let clienteId = null, sellos = 0;
 
                 if (!querySnapshot.empty) {
                     let docRef = querySnapshot.docs[0];
                     clienteId = docRef.id;
                     sellos = docRef.data().sellos || 0;
                 } else {
-                    const nuevoDoc = await addDoc(collection(db, "clientes"), {
-                        nombre: nombre,
-                        telefono: telefono,
-                        sellos: 0,
-                        fechaRegistro: new Date().toLocaleDateString()
-                    });
+                    const nuevoDoc = await addDoc(collection(db, "clientes"), { nombre, telefono, sellos: 0, fechaRegistro: new Date().toLocaleDateString() });
                     clienteId = nuevoDoc.id;
-                    sellos = 0;
                 }
 
                 window.clienteActualId = clienteId;
                 window.clienteActualNombre = nombre;
                 window.clienteActualSellos = sellos;
-
                 localStorage.setItem('alaska_cliente_doc_id', clienteId);
                 localStorage.setItem('alaska_cliente_nombre', nombre);
                 localStorage.setItem('alaska_cliente_sellos', sellos);
@@ -1170,20 +934,18 @@
                 actualizarUILealtadPublica();
                 cerrarLealtadModal();
                 mostrarToast("¡Bienvenido al Club Alaska, " + nombre + "!");
-            } catch(e) {
-                mostrarToast("Error al registrar cliente.");
-            }
+            } catch(e) { mostrarToast("Error al registrar."); }
         }
 
-        // Resto de funciones del sistema...
+        // HORARIOS
         function renderizarFormularioHorarios(horariosData = {}) {
             const container = document.getElementById('days-schedule-container');
+            if (!container) return;
             container.innerHTML = "";
-
             diasSemana.forEach(dia => {
                 let info = horariosData[dia] || { cerrado: false, apertura: "12:00", cierre: "22:00" };
                 container.innerHTML += `
-                    <div class="day-schedule-card" id="card-dia-${dia}">
+                    <div class="day-schedule-card">
                         <div class="day-header-flex">
                             <h4>${dia}</h4>
                             <label class="checkbox-label">
@@ -1203,7 +965,7 @@
         window.toggleDiaCerrado = function(dia) {
             const chk = document.getElementById(`chk-cerrado-${dia}`);
             const wrapper = document.getElementById(`wrapper-horas-${dia}`);
-            wrapper.style.display = chk.checked ? 'none' : 'flex';
+            if(chk && wrapper) wrapper.style.display = chk.checked ? 'none' : 'flex';
         }
 
         window.guardarHorariosNube = async function() {
@@ -1214,185 +976,61 @@
                 const cierre = document.getElementById(`time-cierre-${dia}`).value;
                 horariosObj[dia] = { cerrado, apertura, cierre };
             });
-
             try {
                 await setDoc(doc(db, "configuracion", "horariosAtencion"), horariosObj);
-                mostrarToast("✅ ¡Horarios de atención guardados en la nube!");
-                verificarEstadoAbiertoCerrado(horariosObj);
-            } catch(e) {
-                mostrarToast("Error al guardar horarios.");
-            }
+                mostrarToast("✅ ¡Horarios guardados en la nube!");
+            } catch(e) { mostrarToast("Error al guardar horarios."); }
         }
 
-        function verificarEstadoAbiertoCerrado(horarios) {
-            const ahora = new Date();
-            const diaHoy = diasSemana[ahora.getDay()];
-            const horaActualNum = ahora.getHours() * 60 + ahora.getMinutes();
-
-            let infoDia = horarios[diaHoy];
-            let estaAbierto = false;
-            let textoEstado = "Cerrado hoy";
-
-            if (infoDia && !infoDia.cerrado) {
-                let [hAp, mAp] = infoDia.apertura.split(':').map(Number);
-                let [hCi, mCi] = infoDia.cierre.split(':').map(Number);
-                let minAp = hAp * 60 + mAp;
-                let minCi = hCi * 60 + mCi;
-
-                if (horaActualNum >= minAp && horaActualNum <= minCi) {
-                    estaAbierto = true;
-                    textoEstado = `Abierto • ${infoDia.cierre} PM`;
-                } else {
-                    textoEstado = `Cerrado • Abre a las ${infoDia.apertura}`;
-                }
-            }
-
-            const dotF = document.getElementById('floating-status-dot');
-            const textF = document.getElementById('floating-status-text');
-            const dotS = document.getElementById('sidebar-status-dot');
-            const textS = document.getElementById('sidebar-status-text');
-            const boxS = document.getElementById('sidebar-status-pill-box');
-
-            if (estaAbierto) {
-                if(dotF) dotF.classList.remove('closed');
-                if(textF) textF.textContent = textoEstado;
-                if(dotS) dotS.classList.remove('closed');
-                if(textS) textS.textContent = "TIENDA ABIERTA";
-                if(boxS) { boxS.style.background = '#132216'; boxS.style.borderColor = '#1e4620'; boxS.style.color = '#4ade80'; }
-            } else {
-                if(dotF) dotF.classList.add('closed');
-                if(textF) textF.textContent = textoEstado;
-                if(dotS) dotS.classList.add('closed');
-                if(textS) textS.textContent = "TIENDA CERRADA";
-                if(boxS) { boxS.style.background = '#2a1a1a'; boxS.style.borderColor = '#5c2222'; boxS.style.color = '#ff6b6b'; }
-            }
-        }
-
+        // CONFIGURACIÓN Y PALETA DE COLORES
         async function cargarConfiguracionVisualNube() {
             try {
                 const docRef = doc(db, "configuracion", "estilosGenerales");
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    if (data.nombreInterno) {
-                        document.getElementById('input-nombre-interno').value = data.nombreInterno;
-                        document.getElementById('sidebar-brand-title').textContent = data.nombreInterno;
-                    }
-                    if (data.tituloPublico) {
-                        document.getElementById('input-titulo-publico').value = data.tituloPublico;
-                        document.getElementById('public-title-display').textContent = data.tituloPublico;
-                        document.getElementById('page-title').textContent = data.tituloPublico + " - Menú Digital";
-                    }
-                    if (data.subtituloPublico) {
-                        document.getElementById('input-subtitulo-publico').value = data.subtituloPublico;
-                        document.getElementById('public-subtitle-display').textContent = data.subtituloPublico;
-                    }
-                    if (data.logoUrl) {
-                        document.getElementById('logo-display').src = data.logoUrl;
-                        document.getElementById('settings-logo-preview').src = data.logoUrl;
-                    }
+                    if (data.nombreInterno && document.getElementById('input-nombre-interno')) document.getElementById('input-nombre-interno').value = data.nombreInterno;
+                    if (data.tituloPublico && document.getElementById('input-titulo-publico')) document.getElementById('input-titulo-publico').value = data.tituloPublico;
                     if (data.colorPrincipal) {
                         document.documentElement.style.setProperty('--color-principal', data.colorPrincipal);
-                        document.getElementById('input-color-principal').value = data.colorPrincipal;
-                        document.getElementById('text-color-principal').value = data.colorPrincipal.toUpperCase();
+                        if(document.getElementById('input-color-principal')) document.getElementById('input-color-principal').value = data.colorPrincipal;
                     }
-                    if (data.colorSecundario) {
-                        document.documentElement.style.setProperty('--color-secundario', data.colorSecundario);
-                        document.getElementById('input-color-secundario').value = data.colorSecundario;
-                        document.getElementById('text-color-secundario').value = data.colorSecundario.toUpperCase();
-                    }
-                    if (data.colorOferta) {
-                        document.documentElement.style.setProperty('--color-oferta', data.colorOferta);
-                        document.getElementById('input-color-oferta').value = data.colorOferta;
-                        document.getElementById('text-color-oferta').value = data.colorOferta.toUpperCase();
-                    }
-                    if (data.colorFondo) {
-                        document.documentElement.style.setProperty('--bg-dark', data.colorFondo);
-                        document.getElementById('input-color-fondo').value = data.colorFondo;
-                        document.getElementById('text-color-fondo').value = data.colorFondo.toUpperCase();
-                    }
+                    if (data.logoUrl && document.getElementById('logo-display')) document.getElementById('logo-display').src = data.logoUrl;
                 }
-
                 const docRefH = doc(db, "configuracion", "horariosAtencion");
                 const docSnapH = await getDoc(docRefH);
-                let horariosVal = docSnapH.exists() ? docSnapH.data() : {};
-                renderizarFormularioHorarios(horariosVal);
-                verificarEstadoAbiertoCerrado(horariosVal);
-
-            } catch (e) {
-                renderizarFormularioHorarios({});
-            }
+                renderizarFormularioHorarios(docSnapH.exists() ? docSnapH.data() : {});
+            } catch (e) { console.log(e); }
         }
 
         window.guardarAjustesYConfiguracionNube = async function() {
             const nombreInterno = document.getElementById('input-nombre-interno').value.trim();
             const tituloPublico = document.getElementById('input-titulo-publico').value.trim();
-            const subtituloPublico = document.getElementById('input-subtitulo-publico').value.trim();
             const colorPrincipal = document.getElementById('input-color-principal').value;
-            const colorSecundario = document.getElementById('input-color-secundario').value;
-            const colorOferta = document.getElementById('input-color-oferta').value;
-            const colorFondo = document.getElementById('input-color-fondo').value;
             const fileInput = document.getElementById('logoFileInput');
 
-            const ejecutarGuardado = async (logoUrlFinal) => {
+            const guardarFin = async (logoUrl) => {
                 try {
-                    let dataToSave = { nombreInterno, tituloPublico, subtituloPublico, colorPrincipal, colorSecundario, colorOferta, colorFondo };
-                    if (logoUrlFinal !== undefined) dataToSave.logoUrl = logoUrlFinal;
-
-                    await setDoc(doc(db, "configuracion", "estilosGenerales"), dataToSave, { merge: true });
-
+                    let dataObj = { nombreInterno, tituloPublico, colorPrincipal };
+                    if(logoUrl) dataObj.logoUrl = logoUrl;
+                    await setDoc(doc(db, "configuracion", "estilosGenerales"), dataObj, { merge: true });
                     document.documentElement.style.setProperty('--color-principal', colorPrincipal);
-                    document.documentElement.style.setProperty('--color-secundario', colorSecundario);
-                    document.documentElement.style.setProperty('--color-oferta', colorOferta);
-                    document.documentElement.style.setProperty('--bg-dark', colorFondo);
-
-                    if(nombreInterno) document.getElementById('sidebar-brand-title').textContent = nombreInterno;
-                    if(tituloPublico) {
-                        document.getElementById('public-title-display').textContent = tituloPublico;
-                        document.getElementById('page-title').textContent = tituloPublico + " - Menú Digital";
-                    }
-                    if(subtituloPublico) document.getElementById('public-subtitle-display').textContent = subtituloPublico;
-                    if(logoUrlFinal) {
-                        document.getElementById('logo-display').src = logoUrlFinal;
-                        document.getElementById('settings-logo-preview').src = logoUrlFinal;
-                    }
-
-                    mostrarToast("✅ ¡Ajustes guardados en la nube!");
-                } catch(e) {
-                    mostrarToast("Error al guardar ajustes.");
-                }
+                    if(logoUrl) document.getElementById('logo-display').src = logoUrl;
+                    mostrarToast("✅ ¡Ajustes guardados!");
+                } catch(e) { mostrarToast("Error al guardar."); }
             };
 
             if (fileInput.files && fileInput.files[0]) {
                 const reader = new FileReader();
                 reader.readAsDataURL(fileInput.files[0]);
-                reader.onload = async function() { await ejecutarGuardado(reader.result); };
-            } else {
-                await ejecutarGuardado(undefined);
-            }
-        };
-
-        async function inicializarCategoriasNube() {
-            try {
-                const qs = await getDocs(collection(db, "categorias"));
-                categoriasNube = {};
-                qs.forEach(d => { categoriasNube[d.id] = { idDoc: d.id, ...d.data() }; });
-
-                for (let cat of categoriasDefault) {
-                    if (!categoriasNube[cat]) {
-                        await setDoc(doc(db, "categorias", cat), { nombre: cat, visible: true, icono: "" });
-                        categoriasNube[cat] = { idDoc: cat, nombre: cat, visible: true, icono: "" };
-                    }
-                }
-                renderizarCategoriasPublicas();
-            } catch (e) { console.log(e); }
+                reader.onload = async function() { await guardarFin(reader.result); };
+            } else { await guardarFin(null); }
         }
 
         window.abrirSidebar = function() {
             document.getElementById('sidebar-drawer').classList.add('open');
             document.getElementById('sidebar-overlay').style.display = 'block';
         }
-
         window.cerrarSidebar = function() {
             document.getElementById('sidebar-drawer').classList.remove('open');
             document.getElementById('sidebar-overlay').style.display = 'none';
@@ -1403,6 +1041,15 @@
             event.currentTarget.classList.add('active');
             document.querySelectorAll('.admin-section-tab').forEach(el => el.classList.remove('active-admin-tab'));
             document.getElementById(`admin-tab-${seccion}`).classList.add('active-admin-tab');
+            
+            if (seccion === 'pedidos') cargarPedidosAdmin();
+            else if (seccion === 'platos') cargarAdminPlatosDashboard();
+            else if (seccion === 'stock') cargarAdminStock();
+            else if (seccion === 'caja') cargarEstadisticasCaja();
+            else if (seccion === 'categorias') renderizarTablaCategoriasAdmin();
+            else if (seccion === 'clientes') cargarBaseClientesAdmin();
+            else if (seccion === 'lealtad') cargarCodigoActivoAdmin();
+
             cerrarSidebar();
         }
 
@@ -1421,66 +1068,262 @@
                     adminAutenticado = true;
                     cambiarVista('admin');
                     abrirSidebar();
+                    cargarPedidosAdmin();
                 } else if (pass !== null) { mostrarToast("Contraseña incorrecta."); }
             }
         }
 
-        async function cargarMenu() {
-            try {
-                const querySnapshot = await getDocs(collection(db, "menu"));
-                listaPlatos = [];
-                querySnapshot.forEach((docSnap) => { listaPlatos.push({ id: docSnap.id, ...docSnap.data() }); });
-                mostrarPlatos(listaPlatos);
-            } catch (error) { console.log(error); }
+        window.cambiarVista = function(vista) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active-view'));
+            if (vista === 'menu') document.getElementById('view-menu').classList.add('active-view');
+            else if (vista === 'admin') document.getElementById('view-admin').classList.add('active-view');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        window.mostrarPlatos = function(platos) {
-            const menuGrid = document.getElementById("menu-grid");
-            menuGrid.innerHTML = "";
-            const disponibles = platos.filter(p => p.categoria !== 'Stock_Interno' && p.disponible !== false);
-            
-            if (disponibles.length === 0) {
-                menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay platos disponibles.</p>";
-                return;
-            }
-            disponibles.forEach((plato) => {
-                let tieneFotoValida = plato.imagenUrl && typeof plato.imagenUrl === 'string' && plato.imagenUrl.trim() !== "";
-                const imagen = tieneFotoValida ? plato.imagenUrl : 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
-                
-                menuGrid.innerHTML += `
-                    <div class="food-card">
-                        <div class="card-image-container">
-                            <img src="${imagen}" alt="${plato.nombre}">
-                            <span class="badge" style="${plato.categoria === 'Ofertas' ? 'color:var(--color-oferta); border-color:var(--color-oferta); background:rgba(239,68,68,0.15);' : ''}">${plato.categoria || 'Especialidad'}</span>
-                        </div>
-                        <div class="card-content">
-                            <div>
-                                <div class="card-header-flex">
-                                    <h3>${plato.nombre}</h3>
-                                    <div class="price">₡${plato.precio.toLocaleString()}</div>
-                                </div>
-                                <div class="stars">★★★★★</div>
-                            </div>
-                            <button class="order-btn" onclick='mostrarToast("Selecciona una opción del menú")'>Ver Opciones / Pedir</button>
-                        </div>
+        // STOCK INTERNO Y ESTADÍSTICAS DE GANANCIAS
+        window.toggleCamposStock = function(val) {
+            document.getElementById('campos-stock-extra').style.display = (val === 'Stock_Interno') ? 'block' : 'none';
+        }
+
+        async function cargarAdminStock() {
+            const tbody = document.getElementById('admin-tabla-stock-body');
+            if (!tbody) return;
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>`;
+            try {
+                const qs = await getDocs(collection(db, "menu"));
+                tbody.innerHTML = "";
+                let hayStock = false;
+                let totalInversion = 0;
+                let totalVentaEst = 0;
+
+                qs.forEach(d => {
+                    let s = { id: d.id, ...d.data() };
+                    if (s.categoria === 'Stock_Interno') {
+                        hayStock = true;
+                        let cant = Number(s.stockCantidad || 0);
+                        let comp = Number(s.stockCompra || 0);
+                        let vent = Number(s.precio || 0);
+                        let ganUnid = vent - comp;
+
+                        totalInversion += (cant * comp);
+                        totalVentaEst += (cant * vent);
+
+                        tbody.innerHTML += `
+                            <tr>
+                                <td style="font-weight:700;">${s.nombre}</td>
+                                <td style="font-weight:800; color:var(--color-principal);">${cant} unids</td>
+                                <td>₡${comp.toLocaleString()}</td>
+                                <td>₡${vent.toLocaleString()}</td>
+                                <td style="color:#4ade80;">₡${ganUnid.toLocaleString()}</td>
+                                <td><button onclick="venderUnidadStock('${s.id}', ${cant}, ${vent})" class="action-pill" style="padding:6px 12px; font-size:11px; background:rgba(212,175,55,0.2);">Vender 1</button></td>
+                            </tr>
+                        `;
+                    }
+                });
+
+                document.getElementById('stock-stat-inversion').textContent = `₡${totalInversion.toLocaleString()}`;
+                document.getElementById('stock-stat-venta').textContent = `₡${totalVentaEst.toLocaleString()}`;
+                document.getElementById('stock-stat-ganancia').textContent = `₡${(totalVentaEst - totalInversion).toLocaleString()}`;
+
+                if (!hayStock) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No hay stock interno.</td></tr>`;
+            } catch(e) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#ef4444;">Error al cargar stock.</td></tr>`; }
+        }
+
+        window.venderUnidadStock = async function(idPlato, stockActual, precioVenta) {
+            if (stockActual <= 0) { mostrarToast("⚠️ No hay unidades disponibles en stock."); return; }
+            try {
+                await updateDoc(doc(db, "menu", idPlato), { stockCantidad: stockActual - 1 });
+                // Registrar venta en pedidos para el cierre de caja automático
+                await addDoc(collection(db, "pedidos"), {
+                    nombre: "Venta Stock Interno",
+                    detalle: "1 unidad vendida",
+                    total: precioVenta,
+                    fecha: new Date().toLocaleString()
+                });
+                mostrarToast("✅ ¡Venta registrada y stock rebajado!");
+                cargarAdminStock();
+            } catch(e) { mostrarToast("Error al procesar venta."); }
+        }
+
+        // CIERRE DE CAJA
+        async function cargarEstadisticasCaja() {
+            try {
+                const qs = await getDocs(collection(db, "pedidos"));
+                let totalIngresos = 0;
+                qs.forEach(d => totalIngresos += Number(d.data().total || 0));
+                if (document.getElementById('stat-ingresos')) document.getElementById('stat-ingresos').textContent = `₡${totalIngresos.toLocaleString()}`;
+                if (document.getElementById('stat-total-pedidos')) document.getElementById('stat-total-pedidos').textContent = qs.size;
+            } catch(e) { console.log(e); }
+        }
+
+        window.calcularCorteCaja = async function() {
+            try {
+                const qs = await getDocs(collection(db, "pedidos"));
+                let total = 0;
+                qs.forEach(d => total += Number(d.data().total || 0));
+                document.getElementById('resultado-corte-container').innerHTML = `
+                    <div style="background:#222; padding:15px; border-radius:10px; border:1px solid var(--color-principal);">
+                        <strong style="color:var(--color-principal); font-size:16px;">💰 Total Recaudado en Caja: ₡${total.toLocaleString()}</strong><br>
+                        <span style="font-size:12px; color:var(--text-muted);">Basado en ${qs.size} transacciones registradas.</span>
                     </div>
+                `;
+            } catch(e) { mostrarToast("Error al calcular corte."); }
+        }
+
+        async function renderizarTablaCategoriasAdmin() {
+            const tbody = document.getElementById('admin-tabla-categorias-body');
+            if (!tbody) return;
+            tbody.innerHTML = "";
+            categoriasDefault.forEach(cat => {
+                let catData = categoriasNube[cat] || {};
+                let imgUrl = catData.icono || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=100&q=80';
+                tbody.innerHTML += `
+                    <tr>
+                        <td><img src="${imgUrl}" style="width:36px; height:36px; object-fit:contain; border-radius:6px; background:#222;"></td>
+                        <td style="font-weight:700;">${cat}</td>
+                        <td><button onclick="abrirModalEditarCat('${cat}')" class="action-pill" style="padding:4px 10px; font-size:11px;">Editar Icono</button></td>
+                    </tr>
                 `;
             });
         }
 
-        function renderizarCategoriasPublicas() {
-            const container = document.getElementById('category-container');
-            let html = `<button class="cat-btn active">Todos</button>`;
-            categoriasDefault.forEach(cat => {
-                let claseExtra = (cat === 'Ofertas') ? 'full-width' : '';
-                html += `<button class="cat-btn ${claseExtra}">${cat}</button>`;
-            });
-            container.innerHTML = html;
+        window.abrirModalEditarCat = function(catNombre) {
+            document.getElementById('edit-cat-nombre').value = catNombre;
+            document.getElementById('edit-cat-file').value = "";
+            document.getElementById('modal-editar-categoria').style.display = 'flex';
+        }
+        window.cerrarModalEditarCat = function() { document.getElementById('modal-editar-categoria').style.display = 'none'; }
+
+        window.guardarCategoriaEditadaNube = async function() {
+            const catNombre = document.getElementById('edit-cat-nombre').value;
+            const fileInput = document.getElementById('edit-cat-file');
+            if (!fileInput.files || !fileInput.files[0]) { mostrarToast("Selecciona una imagen."); return; }
+
+            const reader = new FileReader();
+            reader.readAsDataURL(fileInput.files[0]);
+            reader.onload = async function() {
+                try {
+                    let iconoBase64 = reader.result;
+                    await setDoc(doc(db, "categorias", catNombre), { nombre: catNombre, icono: iconoBase64 }, { merge: true });
+                    if(!categoriasNube[catNombre]) categoriasNube[catNombre] = {};
+                    categoriasNube[catNombre].icono = iconoBase64;
+                    renderizarCategoriasPublicas();
+                    renderizarTablaCategoriasAdmin();
+                    cerrarModalEditarCat();
+                    mostrarToast("✅ ¡Icono actualizado en la nube!");
+                } catch(e) { mostrarToast("Error al guardar icono."); }
+            };
         }
 
-        // Inicialización general
+        async function cargarPedidosAdmin() {
+            const contenedor = document.getElementById("admin-pedidos-container");
+            if (!contenedor) return;
+            try {
+                const qs = await getDocs(collection(db, "pedidos"));
+                if (qs.empty) { contenedor.innerHTML = "<p style='color:var(--text-muted); font-size:13px;'>Sin pedidos recientes.</p>"; return; }
+                contenedor.innerHTML = "";
+                qs.forEach(d => {
+                    const p = d.data();
+                    contenedor.innerHTML += `
+                        <div style="background:#252525; padding:12px; border-radius:10px; margin-bottom:10px; border:1px solid var(--border-color);">
+                            <strong style="color:white;">${p.nombre}</strong><br>
+                            <span style="font-size:12px; color:var(--color-principal);">${p.detalle}</span><br>
+                            <strong style="color:white;">₡${p.total.toLocaleString()}</strong>
+                        </div>
+                    `;
+                });
+            } catch(e) { contenedor.innerHTML = "<p style='color:#ef4444;'>Error.</p>"; }
+        }
+
+        async function cargarAdminPlatosDashboard() {
+            try {
+                const qs = await getDocs(collection(db, "menu"));
+                let platos = [];
+                qs.forEach(d => platos.push({ id: d.id, ...d.data() }));
+                renderizarTablaAdminPlatos(platos);
+            } catch(e) { console.log(e); }
+        }
+
+        function renderizarTablaAdminPlatos(platos) {
+            const tbody = document.getElementById('admin-tabla-platos-body');
+            if (!tbody) return;
+            let visibles = platos.filter(p => p.categoria !== 'Stock_Interno');
+            tbody.innerHTML = "";
+            visibles.forEach((p, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${idx + 1}</td>
+                        <td><img src="${p.imagenUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=100&q=80'}" style="width:36px; height:36px; border-radius:6px; object-fit:cover;"></td>
+                        <td style="font-weight:700;">${p.nombre}</td>
+                        <td>${p.categoria}</td>
+                        <td style="color:var(--color-principal); font-weight:800;">₡${p.precio.toLocaleString()}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function cargarBaseClientesAdmin() {
+            const tbody = document.getElementById('admin-tabla-clientes-body');
+            if (!tbody) return;
+            try {
+                const qs = await getDocs(collection(db, "clientes"));
+                tbody.innerHTML = "";
+                qs.forEach(d => {
+                    const c = d.data();
+                    tbody.innerHTML += `<tr><td style="font-weight:750;">${c.nombre}</td><td>${c.telefono}</td><td style="color:var(--color-principal); font-weight:800;">${c.sellos || 0} / 5 ⭐</td></tr>`;
+                });
+            } catch(e) { console.log(e); }
+        }
+
+        async function cargarCodigoActivoAdmin() {
+            try {
+                const docRef = doc(db, "configuracion", "selloActivo");
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists() && docSnap.data().codigo) {
+                    document.getElementById('codigo-activo-display').textContent = docSnap.data().codigo;
+                } else { document.getElementById('codigo-activo-display').textContent = "----"; }
+            } catch(e) { document.getElementById('codigo-activo-display').textContent = "Error"; }
+        }
+
+        window.generarNuevoCodigoSello = async function() {
+            const nuevoCodigo = Math.floor(1000 + Math.random() * 9000).toString();
+            try {
+                await setDoc(doc(db, "configuracion", "selloActivo"), { codigo: nuevoCodigo });
+                document.getElementById('codigo-activo-display').textContent = nuevoCodigo;
+                mostrarToast("¡Código de un solo uso generado!: " + nuevoCodigo);
+            } catch(e) { mostrarToast("Error al generar."); }
+        }
+
+        // REGISTRAR NUEVO ÍTEM O STOCK DESDE EL FORMULARIO
+        document.getElementById('productForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nombre = document.getElementById('nombre').value.trim();
+            const categoria = document.getElementById('categoria').value;
+            const precio = Number(document.getElementById('precio').value);
+
+            let dataPlato = { nombre, categoria, precio, disponible: true };
+
+            if (categoria === 'Stock_Interno') {
+                dataPlato.stockCantidad = Number(document.getElementById('stock-cantidad').value || 0);
+                dataPlato.stockCompra = Number(document.getElementById('stock-compra').value || 0);
+            }
+
+            try {
+                await addDoc(collection(db, "menu"), dataPlato);
+                mostrarToast("✅ ¡Ítem registrado con éxito!");
+                document.getElementById('productForm').reset();
+                toggleCamposStock('Bocas');
+                cargarMenu();
+            } catch(err) {
+                mostrarToast("Error al registrar ítem.");
+            }
+        });
+
+        window.abrirSeguimientoModal = function(e) { e.preventDefault(); document.getElementById('modal-seguimiento').style.display = 'flex'; }
+        window.cerrarSeguimientoModal = function() { document.getElementById('modal-seguimiento').style.display = 'none'; }
+
+        // INICIALIZACIÓN
         cargarConfiguracionVisualNube();
-        inicializarCategoriasNube();
         actualizarUILealtadPublica();
         cargarMenu();
     </script>
