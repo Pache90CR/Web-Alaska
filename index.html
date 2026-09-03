@@ -154,12 +154,29 @@
             align-items: center;
             justify-content: center;
             font-size: 16px;
-            color: var(--color-principal);
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
         }
+        .stamp-box:hover { border-color: var(--color-principal); color: var(--color-principal); transform: scale(1.03); }
         .stamp-box.filled {
             background: rgba(212, 175, 55, 0.2);
             border: 2px solid var(--color-principal);
             box-shadow: 0 0 10px rgba(212,175,55,0.3);
+            color: var(--color-principal);
+            cursor: default;
+        }
+        .stamp-box.next-to-fill {
+            border: 2px solid var(--color-principal);
+            background: rgba(212, 175, 55, 0.08);
+            animation: pulse-stamp 1.5s infinite;
+            color: var(--color-principal);
+        }
+        @keyframes pulse-stamp {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(212, 175, 55, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
         }
 
         .floating-bottom-bar {
@@ -240,7 +257,6 @@
         input:focus, select:focus { outline: none; border-color: var(--color-principal); }
         .btn-admin-action { background: var(--color-principal); color: #121212; font-weight: 800; border: none; padding: 12px; border-radius: 10px; cursor: pointer; width: 100%; }
 
-        /* Tarjeta de ajustes e itinerario */
         .settings-card {
             background: #181818;
             border: 1px solid var(--border-color);
@@ -252,7 +268,6 @@
         .settings-card h3 { margin-top: 0; font-size: 16px; color: var(--text-main); font-weight: 700; margin-bottom: 6px; }
         .settings-card p { font-size: 12px; color: var(--text-muted); margin-top: 0; margin-bottom: 18px; }
 
-        /* Estilo tarjeta de día en Horarios */
         .day-schedule-card {
             background: #222;
             border: 1px solid var(--border-color);
@@ -404,7 +419,7 @@
                 <span>Horarios de Atención</span>
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('ajustes')">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065zM15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065Z15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                 <span>Ajustes y Logo</span>
             </a>
         </div>
@@ -441,14 +456,14 @@
                 </div>
             </div>
 
-            <!-- TARJETA DE LEALTAD MINIMALISTA -->
+            <!-- TARJETA DE LEALTAD INTERACTIVA -->
             <div class="loyalty-banner">
                 <h3 style="margin:0; color:var(--color-principal); font-size:17px; display:flex; align-items:center; gap:6px; justify-content:center;">
                     <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
                     Club Bar Alaska
                 </h3>
                 <div id="loyalty-counter-text" style="font-weight:800; font-size:15px; background:#111; padding:8px 16px; border-radius:12px; border:1px solid var(--border-color); color:white;">0 / 5 Sellos</div>
-                <p style="margin:0; font-size:12px; color:var(--text-muted); line-height: 1.4;">¡Completa 5 sellos y gana una boca o bebida gratis!</p>
+                <p style="margin:0; font-size:12px; color:var(--text-muted); line-height: 1.4;">¡Haz clic en el siguiente cuadro para introducir tu código y ganar tu sello!</p>
                 <div class="stamps-grid" id="public-stamps-grid"></div>
             </div>
 
@@ -687,15 +702,10 @@
                     </div>
                 </div>
 
-                <!-- NUEVA SECCIÓN: HORARIOS DE ATENCIÓN -->
                 <div id="admin-tab-horarios" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Horarios de Atención</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Configura la disponibilidad semanal de tu negocio.</p>
-
-                    <div id="days-schedule-container">
-                        <!-- Se inyectarán dinámicamente los 7 días -->
-                    </div>
-
+                    <div id="days-schedule-container"></div>
                     <button type="button" class="btn-admin-action" onclick="guardarHorariosNube()" style="padding:16px; font-size:15px; margin-top:10px;">Guardar Horarios en la Nube</button>
                 </div>
 
@@ -710,13 +720,11 @@
                         <div class="form-group">
                             <label>Nombre de la Cuenta (Interno)</label>
                             <input type="text" id="input-nombre-interno" placeholder="Bar Alaska">
-                            <span style="font-size:11px; color:var(--text-muted); margin-top:4px; display:block;">Nombre para uso administrativo.</span>
                         </div>
 
                         <div class="form-group">
                             <label>Título del Menú (Público)</label>
                             <input type="text" id="input-titulo-publico" placeholder="Bar Restaurante Alaska">
-                            <span style="font-size:11px; color:var(--text-muted); margin-top:4px; display:block;">Este es el título principal que verán los clientes.</span>
                         </div>
 
                         <div class="form-group">
@@ -729,7 +737,6 @@
                             <div style="background:#121212; border:1px solid var(--border-color); border-radius:12px; padding:20px; text-align:center;">
                                 <img id="settings-logo-preview" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=150&q=80" style="width:70px; height:70px; border-radius:50%; object-fit:cover; border:2px solid var(--color-principal); margin-bottom:12px;">
                                 <input type="file" id="logoFileInput" accept="image/*" style="font-size:12px;">
-                                <span style="font-size:11px; color:var(--text-muted); margin-top:6px; display:block;">Sube una imagen (PNG, JPG) para usar como logo.</span>
                             </div>
                         </div>
                     </div>
@@ -796,7 +803,7 @@
                     <label style="margin-bottom:10px;">Icono actual en Nube:</label>
                     <img id="edit-cat-img-preview" src="" style="width:50px; height:50px; object-fit:contain; border-radius:8px; background:#222; margin-bottom:10px; border:1px solid var(--color-principal);">
                     <div class="form-group" style="margin-bottom:0;">
-                        <label>Subir nuevo icono personalizado (Se guardará para todos los clientes):</label>
+                        <label>Subir nuevo icono personalizado:</label>
                         <input type="file" id="edit-cat-file" accept="image/*">
                     </div>
                 </div>
@@ -804,6 +811,24 @@
             <div class="modal-footer">
                 <button onclick="cerrarModalEditarCat()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer;">Cancelar</button>
                 <button onclick="guardarCategoriaEditadaNube()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Guardar en Nube</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL INTERACTIVO PARA INTRODUCIR CÓDIGO DE SELLO DESDE LA TARJETA -->
+    <div id="modal-sello-interactivo" class="modal-overlay">
+        <div class="modal-content">
+            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="margin:0; font-size:16px;" id="titulo-modal-sello">⭐ Reclamar Sello</h3>
+                <button onclick="cerrarModalSelloInteractivo()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:13px; color:var(--text-muted); margin-top:0;" id="desc-modal-sello">Introduce el código de 4 dígitos proporcionado por el cajero para marcar tu casilla.</p>
+                <div class="form-group">
+                    <label>Código de un solo uso:</label>
+                    <input type="text" id="input-codigo-sello-rapido" placeholder="Ej. 4829" maxlength="4" style="text-align:center; font-size:22px; letter-spacing:6px; font-weight:bold;">
+                </div>
+                <button onclick="validarYGanarSelloRapido()" class="btn-admin-action" style="background:var(--color-principal);">Validar y Marcar Sello ⭐</button>
             </div>
         </div>
     </div>
@@ -908,23 +933,6 @@
                     </div>
                     <button onclick="registrarOIdentificarCliente()" class="btn-admin-action" style="background:var(--color-principal);">Entrar a mi Tarjeta ⭐</button>
                 </div>
-
-                <div id="seccion-tarjeta-cliente" style="display:none;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; background:#151515; padding:10px; border-radius:8px;">
-                        <div>
-                            <span style="font-size:11px; color:var(--text-muted); display:block;">Cliente registrado:</span>
-                            <strong id="lbl-cliente-nombre" style="color:var(--color-principal); font-size:15px;">-</strong>
-                        </div>
-                        <button onclick="cerrarSesionCliente()" style="background:#2a1a1a; color:#ff6b6b; border:none; padding:6px 10px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:bold;">Salir</button>
-                    </div>
-                    <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Acumula 1 sello por cada compra y reclama tu premio al completar 5.</p>
-                    <div class="stamps-grid" id="modal-stamps-grid" style="margin-bottom:20px;"></div>
-                    <div class="form-group">
-                        <label>Código de un Solo Uso (Dado por el cajero):</label>
-                        <input type="text" id="codigo-sello" placeholder="Introduce el código de 4 dígitos...">
-                    </div>
-                    <button onclick="reclamarSelloConBD()" class="btn-admin-action" style="background:var(--color-principal);">Validar y Ganar Sello ⭐</button>
-                </div>
             </div>
         </div>
     </div>
@@ -1028,6 +1036,146 @@
             }
         });
 
+        // FUNCIONALIDAD INTERACTIVA DE LOS SELLOS DESDE LA TARJETA PRINCIPAL
+        window.hacerClickCasillaSello = function(numeroCasilla) {
+            if (!window.clienteActualId) {
+                // Si no está registrado, abrir modal de registro primero
+                abrirLealtadModalSimple();
+                mostrarToast("Primero ingresa tu nombre y teléfono para unirte al Club.");
+                return;
+            }
+
+            let selloEsperado = window.clienteActualSellos + 1;
+
+            if (numeroCasilla <= window.clienteActualSellos) {
+                mostrarToast("⭐ ¡Este sello ya lo tienes acumulado!");
+                return;
+            }
+
+            if (numeroCasilla === selloEsperado) {
+                // Abrir modal rápido para introducir el código de este sello
+                document.getElementById('titulo-modal-sello').textContent = `⭐ Reclamar Sello #${numeroCasilla}`;
+                document.getElementById('input-codigo-sello-rapido').value = "";
+                document.getElementById('modal-sello-interactivo').style.display = 'flex';
+            } else {
+                mostrarToast(`⚠️ Debes completar primero el sello #${selloEsperado}.`);
+            }
+        }
+
+        window.cerrarModalSelloInteractivo = function() {
+            document.getElementById('modal-sello-interactivo').style.display = 'none';
+        }
+
+        window.validarYGanarSelloRapido = async function() {
+            const codigoIngresado = document.getElementById('input-codigo-sello-rapido').value.trim();
+            if (!codigoIngresado) { mostrarToast("Introduce el código de 4 dígitos."); return; }
+
+            try {
+                const docRefConfig = doc(db, "configuracion", "selloActivo");
+                const docSnap = await getDoc(docRefConfig);
+
+                if (docSnap.exists() && docSnap.data().codigo === codigoIngresado) {
+                    await setDoc(docRefConfig, { codigo: null });
+
+                    window.clienteActualSellos++;
+                    if (window.clienteActualSellos >= 5) {
+                        mostrarToast("🎉 ¡Felicidades! Completaste tus 5 sellos. Muestra tu pantalla para reclamar tu premio.");
+                        window.clienteActualSellos = 0;
+                    } else {
+                        mostrarToast("⭐ ¡Sello añadido con éxito!");
+                    }
+
+                    await updateDoc(doc(db, "clientes", window.clienteActualId), {
+                        sellos: window.clienteActualSellos
+                    });
+
+                    localStorage.setItem('alaska_cliente_sellos', window.clienteActualSellos);
+                    actualizarUILealtadPublica();
+                    cerrarModalSelloInteractivo();
+                } else {
+                    mostrarToast("Código incorrecto o ya utilizado.");
+                }
+            } catch(e) {
+                mostrarToast("Error al validar el código.");
+            }
+        }
+
+        function actualizarUILealtadPublica() {
+            document.getElementById('loyalty-counter-text').textContent = `${window.clienteActualSellos} / 5 Sellos`;
+            let gridHTML = "";
+            
+            for (let i = 1; i <= 5; i++) {
+                let filled = i <= window.clienteActualSellos;
+                let isNext = i === (window.clienteActualSellos + 1);
+                
+                let claseBox = filled ? 'stamp-box filled' : (isNext ? 'stamp-box next-to-fill' : 'stamp-box');
+                let contenido = filled ? '⭐' : i;
+
+                gridHTML += `<div class="${claseBox}" onclick="hacerClickCasillaSello(${i})" title="Haz clic para marcar el sello ${i}">${contenido}</div>`;
+            }
+            document.getElementById('public-stamps-grid').innerHTML = gridHTML;
+        }
+
+        window.abrirLealtadModal = function(e) { 
+            if(e) e.preventDefault();
+            if (window.clienteActualId) {
+                mostrarToast(`¡Hola ${window.clienteActualNombre}! Tienes ${window.clienteActualSellos}/5 sellos.`);
+            } else {
+                document.getElementById('modal-lealtad').style.display = 'flex'; 
+            }
+        }
+
+        window.abrirLealtadModalSimple = function() {
+            document.getElementById('modal-lealtad').style.display = 'flex';
+        }
+        
+        window.cerrarLealtadModal = function() { document.getElementById('modal-lealtad').style.display = 'none'; }
+
+        window.registrarOIdentificarCliente = async function() {
+            const nombre = document.getElementById('reg-nombre').value.trim();
+            const telefono = document.getElementById('reg-telefono').value.trim();
+
+            if (!nombre || !telefono) { mostrarToast("Por favor ingresa tu nombre y teléfono."); return; }
+
+            try {
+                const q = query(collection(db, "clientes"), where("telefono", "==", telefono));
+                const querySnapshot = await getDocs(q);
+
+                let clienteId = null;
+                let sellos = 0;
+
+                if (!querySnapshot.empty) {
+                    let docRef = querySnapshot.docs[0];
+                    clienteId = docRef.id;
+                    sellos = docRef.data().sellos || 0;
+                } else {
+                    const nuevoDoc = await addDoc(collection(db, "clientes"), {
+                        nombre: nombre,
+                        telefono: telefono,
+                        sellos: 0,
+                        fechaRegistro: new Date().toLocaleDateString()
+                    });
+                    clienteId = nuevoDoc.id;
+                    sellos = 0;
+                }
+
+                window.clienteActualId = clienteId;
+                window.clienteActualNombre = nombre;
+                window.clienteActualSellos = sellos;
+
+                localStorage.setItem('alaska_cliente_doc_id', clienteId);
+                localStorage.setItem('alaska_cliente_nombre', nombre);
+                localStorage.setItem('alaska_cliente_sellos', sellos);
+
+                actualizarUILealtadPublica();
+                cerrarLealtadModal();
+                mostrarToast("¡Bienvenido al Club Alaska, " + nombre + "!");
+            } catch(e) {
+                mostrarToast("Error al registrar cliente.");
+            }
+        }
+
+        // Resto de funciones del sistema...
         function renderizarFormularioHorarios(horariosData = {}) {
             const container = document.getElementById('days-schedule-container');
             container.innerHTML = "";
@@ -1099,7 +1247,6 @@
                 }
             }
 
-            // Actualizar píldoras flotantes y sidebar
             const dotF = document.getElementById('floating-status-dot');
             const textF = document.getElementById('floating-status-text');
             const dotS = document.getElementById('sidebar-status-dot');
@@ -1107,16 +1254,16 @@
             const boxS = document.getElementById('sidebar-status-pill-box');
 
             if (estaAbierto) {
-                if(dotF) { dotF.classList.remove('closed'); }
-                if(textF) { textF.textContent = textoEstado; }
-                if(dotS) { dotS.classList.remove('closed'); }
-                if(textS) { textS.textContent = "TIENDA ABIERTA"; }
+                if(dotF) dotF.classList.remove('closed');
+                if(textF) textF.textContent = textoEstado;
+                if(dotS) dotS.classList.remove('closed');
+                if(textS) textS.textContent = "TIENDA ABIERTA";
                 if(boxS) { boxS.style.background = '#132216'; boxS.style.borderColor = '#1e4620'; boxS.style.color = '#4ade80'; }
             } else {
-                if(dotF) { dotF.classList.add('closed'); }
-                if(textF) { textF.textContent = textoEstado; }
-                if(dotS) { dotS.classList.add('closed'); }
-                if(textS) { textS.textContent = "TIENDA CERRADA"; }
+                if(dotF) dotF.classList.add('closed');
+                if(textF) textF.textContent = textoEstado;
+                if(dotS) dotS.classList.add('closed');
+                if(textS) textS.textContent = "TIENDA CERRADA";
                 if(boxS) { boxS.style.background = '#2a1a1a'; boxS.style.borderColor = '#5c2222'; boxS.style.color = '#ff6b6b'; }
             }
         }
@@ -1127,7 +1274,6 @@
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    
                     if (data.nombreInterno) {
                         document.getElementById('input-nombre-interno').value = data.nombreInterno;
                         document.getElementById('sidebar-brand-title').textContent = data.nombreInterno;
@@ -1145,7 +1291,6 @@
                         document.getElementById('logo-display').src = data.logoUrl;
                         document.getElementById('settings-logo-preview').src = data.logoUrl;
                     }
-
                     if (data.colorPrincipal) {
                         document.documentElement.style.setProperty('--color-principal', data.colorPrincipal);
                         document.getElementById('input-color-principal').value = data.colorPrincipal;
@@ -1168,7 +1313,6 @@
                     }
                 }
 
-                // Cargar horarios
                 const docRefH = doc(db, "configuracion", "horariosAtencion");
                 const docSnapH = await getDoc(docRefH);
                 let horariosVal = docSnapH.exists() ? docSnapH.data() : {};
@@ -1176,7 +1320,6 @@
                 verificarEstadoAbiertoCerrado(horariosVal);
 
             } catch (e) {
-                console.log("Error cargando configuración", e);
                 renderizarFormularioHorarios({});
             }
         }
@@ -1185,23 +1328,16 @@
             const nombreInterno = document.getElementById('input-nombre-interno').value.trim();
             const tituloPublico = document.getElementById('input-titulo-publico').value.trim();
             const subtituloPublico = document.getElementById('input-subtitulo-publico').value.trim();
-
             const colorPrincipal = document.getElementById('input-color-principal').value;
             const colorSecundario = document.getElementById('input-color-secundario').value;
             const colorOferta = document.getElementById('input-color-oferta').value;
             const colorFondo = document.getElementById('input-color-fondo').value;
-
             const fileInput = document.getElementById('logoFileInput');
 
             const ejecutarGuardado = async (logoUrlFinal) => {
                 try {
-                    let dataToSave = {
-                        nombreInterno, tituloPublico, subtituloPublico,
-                        colorPrincipal, colorSecundario, colorOferta, colorFondo
-                    };
-                    if (logoUrlFinal !== undefined) {
-                        dataToSave.logoUrl = logoUrlFinal;
-                    }
+                    let dataToSave = { nombreInterno, tituloPublico, subtituloPublico, colorPrincipal, colorSecundario, colorOferta, colorFondo };
+                    if (logoUrlFinal !== undefined) dataToSave.logoUrl = logoUrlFinal;
 
                     await setDoc(doc(db, "configuracion", "estilosGenerales"), dataToSave, { merge: true });
 
@@ -1221,18 +1357,16 @@
                         document.getElementById('settings-logo-preview').src = logoUrlFinal;
                     }
 
-                    mostrarToast("✅ ¡Ajustes y colores guardados en la nube!");
+                    mostrarToast("✅ ¡Ajustes guardados en la nube!");
                 } catch(e) {
-                    mostrarToast("Error al guardar los ajustes.");
+                    mostrarToast("Error al guardar ajustes.");
                 }
             };
 
             if (fileInput.files && fileInput.files[0]) {
                 const reader = new FileReader();
                 reader.readAsDataURL(fileInput.files[0]);
-                reader.onload = async function() {
-                    await ejecutarGuardado(reader.result);
-                };
+                reader.onload = async function() { await ejecutarGuardado(reader.result); };
             } else {
                 await ejecutarGuardado(undefined);
             }
@@ -1242,67 +1376,16 @@
             try {
                 const qs = await getDocs(collection(db, "categorias"));
                 categoriasNube = {};
-                qs.forEach(d => {
-                    categoriasNube[d.id] = { idDoc: d.id, ...d.data() };
-                });
+                qs.forEach(d => { categoriasNube[d.id] = { idDoc: d.id, ...d.data() }; });
 
                 for (let cat of categoriasDefault) {
                     if (!categoriasNube[cat]) {
-                        let nuevoDocRef = doc(db, "categorias", cat);
-                        await setDoc(nuevoDocRef, { nombre: cat, visible: true, icono: "" });
+                        await setDoc(doc(db, "categorias", cat), { nombre: cat, visible: true, icono: "" });
                         categoriasNube[cat] = { idDoc: cat, nombre: cat, visible: true, icono: "" };
                     }
                 }
                 renderizarCategoriasPublicas();
-                if (adminAutenticado) renderizarTablaCategoriasAdmin();
-            } catch (e) {
-                console.log("Error cargando categorías de la nube", e);
-            }
-        }
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('data:text/javascript;base64,' + btoa(`
-                    self.addEventListener('install', (e) => { self.skipWaiting(); });
-                    self.addEventListener('activate', (e) => { clients.claim(); });
-                    self.addEventListener('fetch', (e) => { e.respondWith(fetch(e.request).catch(() => caches.match(e.request))); });
-                `)).catch(err => console.log("SW error", err));
-            });
-        }
-
-        window.pedirPermisoNotificaciones = function() {
-            if (!("Notification" in window)) { mostrarToast("Este navegador no soporta notificaciones."); return; }
-            Notification.requestPermission().then(permission => {
-                if (permission === "granted") { mostrarToast("✅ ¡Notificaciones PWA activadas!"); } 
-                else { mostrarToast("Permiso denegado."); }
-            });
-        }
-
-        function iniciarEscuchaPedidos() {
-            onSnapshot(collection(db, "pedidos"), (snapshot) => {
-                let count = snapshot.size;
-                if (totalPedidosPrevios !== null && count > totalPedidosPrevios) {
-                    dispararNotificacionNativaPWA();
-                }
-                totalPedidosPrevios = count;
-                if (adminAutenticado) { renderizarPedidosAdmin(snapshot); }
-            });
-        }
-
-        function dispararNotificacionNativaPWA() {
-            try {
-                let audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
-                audio.play();
-            } catch(e) {}
-
-            if (Notification.permission === "granted") {
-                navigator.serviceWorker.ready.then(registration => {
-                    registration.showNotification("🚨 ¡Nuevo Pedido en Bar Alaska!", {
-                        body: "Un cliente acaba de realizar una orden.",
-                        icon: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=192&q=80"
-                    });
-                });
-            }
+            } catch (e) { console.log(e); }
         }
 
         window.abrirSidebar = function() {
@@ -1320,14 +1403,6 @@
             event.currentTarget.classList.add('active');
             document.querySelectorAll('.admin-section-tab').forEach(el => el.classList.remove('active-admin-tab'));
             document.getElementById(`admin-tab-${seccion}`).classList.add('active-admin-tab');
-            
-            if (seccion === 'pedidos') cargarPedidosAdmin();
-            else if (seccion === 'platos') cargarAdminPlatosDashboard();
-            else if (seccion === 'stock') cargarAdminStock();
-            else if (seccion === 'caja') cargarEstadisticasCaja();
-            else if (seccion === 'categorias') renderizarTablaCategoriasAdmin();
-            else if (seccion === 'clientes') cargarBaseClientesAdmin();
-            
             cerrarSidebar();
         }
 
@@ -1336,509 +1411,6 @@
             cerrarSidebar();
             cambiarVista('menu');
             mostrarToast("Sesión cerrada.");
-        }
-
-        window.renderizarTablaCategoriasAdmin = function() {
-            const tbody = document.getElementById('admin-tabla-categorias-body');
-            tbody.innerHTML = "";
-            
-            categoriasDefault.forEach(cat => {
-                let info = categoriasNube[cat] || { visible: true, icono: "" };
-                let iconoHtml = info.icono ? `<img src="${info.icono}" style="width:32px; height:32px; object-fit:contain; border-radius:6px; background:#222;">` : `<span style="font-size:10px; color:var(--text-muted);">Sin icono</span>`;
-                
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${iconoHtml}</td>
-                        <td style="font-weight:700;">${cat}</td>
-                        <td>
-                            <label class="switch">
-                                <input type="checkbox" ${info.visible !== false ? 'checked':''} onchange="toggleEstadoCategoriaNube('${cat}', ${info.visible !== false})">
-                                <span class="slider"></span>
-                            </label>
-                        </td>
-                        <td>
-                            <button class="btn-accion-tabla" onclick="abrirModalEditarCat('${cat}')" title="Editar Categoría e Icono">✏️</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        window.toggleEstadoCategoriaNube = async function(cat, estadoActual) {
-            try {
-                if (!categoriasNube[cat]) categoriasNube[cat] = { visible: true, icono: "" };
-                categoriasNube[cat].visible = !estadoActual;
-                await setDoc(doc(db, "categorias", cat), categoriasNube[cat], { merge: true });
-                renderizarTablaCategoriasAdmin();
-                renderizarCategoriasPublicas();
-                mostrarToast("Estado actualizado en la nube.");
-            } catch(e) {
-                mostrarToast("Error al actualizar visibilidad.");
-            }
-        }
-
-        window.abrirModalEditarCat = function(catNombre) {
-            document.getElementById('edit-cat-nombre').value = catNombre;
-            document.getElementById('edit-cat-file').value = "";
-            
-            let info = categoriasNube[catNombre] || { icono: "" };
-            let imgPrev = document.getElementById('edit-cat-img-preview');
-            if (info.icono) {
-                imgPrev.src = info.icono;
-                imgPrev.style.display = 'block';
-            } else {
-                imgPrev.src = 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=100&q=80';
-            }
-
-            document.getElementById('modal-editar-categoria').style.display = 'flex';
-        }
-
-        window.cerrarModalEditarCat = function() {
-            document.getElementById('modal-editar-categoria').style.display = 'none';
-        }
-
-        window.guardarCategoriaEditadaNube = async function() {
-            const catNombre = document.getElementById('edit-cat-nombre').value;
-            const fileInput = document.getElementById('edit-cat-file');
-
-            if (!categoriasNube[catNombre]) categoriasNube[catNombre] = { visible: true, icono: "" };
-
-            const guardarData = async (urlIcono) => {
-                if (urlIcono !== undefined) {
-                    categoriasNube[catNombre].icono = urlIcono;
-                }
-                await setDoc(doc(db, "categorias", catNombre), categoriasNube[catNombre], { merge: true });
-                mostrarToast("¡Icono guardado en la nube para todos los clientes!");
-                cerrarModalEditarCat();
-                renderizarTablaCategoriasAdmin();
-                renderizarCategoriasPublicas();
-            };
-
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.readAsDataURL(fileInput.files[0]);
-                reader.onload = async function() {
-                    await guardarData(reader.result);
-                }
-            } else {
-                await guardarData(undefined);
-            }
-        }
-
-        function renderizarCategoriasPublicas() {
-            const container = document.getElementById('category-container');
-            let html = `<button class="cat-btn active" onclick="filtrarCategoria('todos')"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Todos</button>`;
-            
-            categoriasDefault.forEach(cat => {
-                let info = categoriasNube[cat] || { visible: true, icono: "" };
-                if (info.visible !== false) {
-                    let claseExtra = (cat === 'Ofertas') ? 'full-width' : '';
-                    let iconoHtml = info.icono ? `<img src="${info.icono}" class="cat-icon-img">` : `<svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v20m9-10H3"/></svg>`;
-                    html += `<button class="cat-btn ${claseExtra}" onclick="filtrarCategoria('${cat}')">${iconoHtml} ${cat}</button>`;
-                }
-            });
-
-            container.innerHTML = html;
-        }
-
-        async function cargarCodigoActivoAdmin() {
-            try {
-                const docRef = doc(db, "configuracion", "selloActivo");
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists() && docSnap.data().codigo) {
-                    document.getElementById('codigo-activo-display').textContent = docSnap.data().codigo;
-                } else { document.getElementById('codigo-activo-display').textContent = "USADO / ----"; }
-            } catch(e) { document.getElementById('codigo-activo-display').textContent = "Error"; }
-        }
-
-        window.generarNuevoCodigoSello = async function() {
-            const nuevoCodigo = Math.floor(1000 + Math.random() * 9000).toString();
-            try {
-                await setDoc(doc(db, "configuracion", "selloActivo"), { codigo: nuevoCodigo });
-                document.getElementById('codigo-activo-display').textContent = nuevoCodigo;
-                mostrarToast("¡Nuevo código generado!: " + nuevoCodigo);
-            } catch(e) { mostrarToast("Error al generar."); }
-        }
-
-        function actualizarUILealtadPublica() {
-            document.getElementById('loyalty-counter-text').textContent = `${window.clienteActualSellos} / 5 Sellos`;
-            let gridHTML = "", modalGridHTML = "";
-            for (let i = 0; i < 5; i++) {
-                let filled = i < window.clienteActualSellos;
-                let content = filled ? '<svg class="icon-svg" style="color:var(--color-principal);" viewBox="0 0 24 24"><path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>' : (i + 1);
-                gridHTML += `<div class="stamp-box ${filled ? 'filled':''}">${content}</div>`;
-                modalGridHTML += `<div class="stamp-box ${filled ? 'filled':''}">${content}</div>`;
-            }
-            document.getElementById('public-stamps-grid').innerHTML = gridHTML;
-            document.getElementById('modal-stamps-grid').innerHTML = modalGridHTML;
-
-            if (window.clienteActualId) {
-                document.getElementById('seccion-registro-cliente').style.display = 'none';
-                document.getElementById('seccion-tarjeta-cliente').style.display = 'block';
-                document.getElementById('lbl-cliente-nombre').textContent = window.clienteActualNombre;
-            } else {
-                document.getElementById('seccion-registro-cliente').style.display = 'block';
-                document.getElementById('seccion-tarjeta-cliente').style.display = 'none';
-            }
-        }
-
-        window.abrirLealtadModal = function(e) { 
-            e.preventDefault(); 
-            actualizarUILealtadPublica();
-            document.getElementById('modal-lealtad').style.display = 'flex'; 
-        }
-        
-        window.cerrarLealtadModal = function() { document.getElementById('modal-lealtad').style.display = 'none'; }
-
-        window.registrarOIdentificarCliente = async function() {
-            const nombre = document.getElementById('reg-nombre').value.trim();
-            const telefono = document.getElementById('reg-telefono').value.trim();
-
-            if (!nombre || !telefono) { mostrarToast("Por favor ingresa tu nombre y teléfono."); return; }
-
-            try {
-                const q = query(collection(db, "clientes"), where("telefono", "==", telefono));
-                const querySnapshot = await getDocs(q);
-
-                let clienteId = null;
-                let sellos = 0;
-
-                if (!querySnapshot.empty) {
-                    let docRef = querySnapshot.docs[0];
-                    clienteId = docRef.id;
-                    sellos = docRef.data().sellos || 0;
-                } else {
-                    const nuevoDoc = await addDoc(collection(db, "clientes"), {
-                        nombre: nombre,
-                        telefono: telefono,
-                        sellos: 0,
-                        fechaRegistro: new Date().toLocaleDateString()
-                    });
-                    clienteId = nuevoDoc.id;
-                    sellos = 0;
-                }
-
-                window.clienteActualId = clienteId;
-                window.clienteActualNombre = nombre;
-                window.clienteActualSellos = sellos;
-
-                localStorage.setItem('alaska_cliente_doc_id', clienteId);
-                localStorage.setItem('alaska_cliente_nombre', nombre);
-                localStorage.setItem('alaska_cliente_sellos', sellos);
-
-                actualizarUILealtadPublica();
-                mostrarToast("¡Bienvenido al Club Alaska, " + nombre + "!");
-            } catch(e) {
-                mostrarToast("Error al registrar cliente.");
-            }
-        }
-
-        window.cerrarSesionCliente = function() {
-            window.clienteActualId = null;
-            window.clienteActualNombre = '';
-            window.clienteActualSellos = 0;
-            localStorage.removeItem('alaska_cliente_doc_id');
-            localStorage.removeItem('alaska_cliente_nombre');
-            localStorage.removeItem('alaska_cliente_sellos');
-            actualizarUILealtadPublica();
-        }
-
-        window.reclamarSelloConBD = async function() {
-            const codigoIngresado = document.getElementById('codigo-sello').value.trim();
-            if (!codigoIngresado) { mostrarToast("Ingresa el código."); return; }
-
-            try {
-                const docRefConfig = doc(db, "configuracion", "selloActivo");
-                const docSnap = await getDoc(docRefConfig);
-
-                if (docSnap.exists() && docSnap.data().codigo === codigoIngresado) {
-                    await setDoc(docRefConfig, { codigo: null });
-
-                    window.clienteActualSellos++;
-                    if (window.clienteActualSellos >= 5) {
-                        mostrarToast("🎉 ¡Felicidades! Completa tus 5 sellos y muestra tu pantalla para reclamar premio.");
-                        window.clienteActualSellos = 0;
-                    } else {
-                        mostrarToast("⭐ ¡Sello añadido! Faltan " + (5 - window.clienteActualSellos) + " sellos.");
-                    }
-
-                    await updateDoc(doc(db, "clientes", window.clienteActualId), {
-                        sellos: window.clienteActualSellos
-                    });
-
-                    localStorage.setItem('alaska_cliente_sellos', window.clienteActualSellos);
-                    actualizarUILealtadPublica();
-                    document.getElementById('codigo-sello').value = "";
-                    cerrarLealtadModal();
-                } else {
-                    mostrarToast("Código incorrecto o ya utilizado.");
-                }
-            } catch(e) {
-                mostrarToast("Error al validar el sello.");
-            }
-        }
-
-        async function cargarBaseClientesAdmin() {
-            const tbody = document.getElementById('admin-tabla-clientes-body');
-            try {
-                const qs = await getDocs(collection(db, "clientes"));
-                if (qs.empty) {
-                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No hay clientes registrados aún.</td></tr>`;
-                    return;
-                }
-                tbody.innerHTML = "";
-                qs.forEach(d => {
-                    const c = d.data();
-                    tbody.innerHTML += `
-                        <tr>
-                            <td style="font-weight:750;">${c.nombre}</td>
-                            <td><a href="https://wa.me/506${c.telefono.replace(/\s+/g,'')}" target="_blank" style="color:#4ade80; text-decoration:none; font-weight:bold;">📱 ${c.telefono}</a></td>
-                            <td style="color:var(--color-principal); font-weight:800;">${c.sellos || 0} / 5 ⭐</td>
-                            <td>
-                                <button class="btn-accion btn-eliminar" onclick="eliminarClienteAdmin('${d.id}')">Eliminar</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            } catch(e) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;">Error al cargar la base de clientes.</td></tr>`;
-            }
-        }
-
-        window.eliminarClienteAdmin = async function(id) {
-            if (confirm("¿Estás seguro de eliminar este cliente de la base de datos?")) {
-                await deleteDoc(doc(db, "clientes", id));
-                cargarBaseClientesAdmin();
-            }
-        }
-
-        async function cargarEstadisticasCaja() {
-            try {
-                const qsPedidos = await getDocs(collection(db, "pedidos"));
-                const qsClientes = await getDocs(collection(db, "clientes"));
-
-                let totalIngresos = 0;
-                let totalPedidos = qsPedidos.size;
-
-                qsPedidos.forEach(d => {
-                    let dat = d.data();
-                    totalIngresos += Number(dat.total || 0);
-                });
-
-                document.getElementById('stat-ingresos').textContent = `₡${totalIngresos.toLocaleString()}`;
-                document.getElementById('stat-total-pedidos').textContent = totalPedidos;
-                document.getElementById('stat-total-clientes').textContent = qsClientes.size;
-            } catch(e) {
-                console.log("Error cargando caja", e);
-            }
-        }
-
-        window.calcularCorteCaja = async function() {
-            const contenedor = document.getElementById('resultado-corte-container');
-            contenedor.innerHTML = "Calculando corte...";
-            try {
-                const qs = await getDocs(collection(db, "pedidos"));
-                let total = 0;
-                let contadoEfectivo = 0;
-                let contadoSinpe = 0;
-                let contadoTarjeta = 0;
-
-                qs.forEach(d => {
-                    let p = d.data();
-                    let monto = Number(p.total || 0);
-                    total += monto;
-                    if (p.metodoPago === 'Efectivo') contadoEfectivo += monto;
-                    else if (p.metodoPago === 'SINPE Móvil') contadoSinpe += monto;
-                    else if (p.metodoPago === 'Tarjeta') contadoTarjeta += monto;
-                });
-
-                contenedor.innerHTML = `
-                    <div style="background:#222; padding:12px; border-radius:8px; border:1px solid var(--border-color);">
-                        <strong>Total Recaudado:</strong> <span style="color:var(--color-principal); font-size:16px;">₡${total.toLocaleString()}</span><br><br>
-                        💵 Efectivo: ₡${contadoEfectivo.toLocaleString()}<br>
-                        📱 SINPE Móvil: ₡${contadoSinpe.toLocaleString()}<br>
-                        💳 Tarjeta (Datáfono): ₡${contadoTarjeta.toLocaleString()}
-                    </div>
-                `;
-            } catch(e) {
-                contenedor.innerHTML = "<p style='color:#ef4444;'>Error al calcular el corte.</p>";
-            }
-        }
-
-        window.toggleCamposStock = function(valorCat) {
-            const extrasStock = document.getElementById('campos-stock-extra');
-            const groupVariantes = document.getElementById('group-variantes');
-            if (valorCat === 'Stock_Interno') {
-                extrasStock.style.display = 'block';
-                groupVariantes.style.display = 'none';
-            } else {
-                extrasStock.style.display = 'none';
-                groupVariantes.style.display = 'block';
-            }
-        }
-
-        window.toggleCamposStockEdicion = function(valorCat) {
-            const extrasStock = document.getElementById('edit-campos-stock-extra');
-            if (valorCat === 'Stock_Interno') {
-                extrasStock.style.display = 'block';
-            } else {
-                extrasStock.style.display = 'none';
-            }
-        }
-
-        async function cargarAdminStock() {
-            const tbody = document.getElementById('admin-tabla-stock-body');
-            try {
-                const qs = await getDocs(collection(db, "menu"));
-                let stockItems = [];
-                let inversionTotal = 0;
-                let valorVentaTotal = 0;
-
-                qs.forEach(d => {
-                    let dat = d.data();
-                    if (dat.categoria === 'Stock_Interno') {
-                        stockItems.push({ id: d.id, ...dat });
-                        let cant = Number(dat.stockCantidad || 0);
-                        let compra = Number(dat.stockCompra || 0);
-                        let venta = Number(dat.precio || 0);
-                        inversionTotal += (cant * compra);
-                        valorVentaTotal += (cant * venta);
-                    }
-                });
-
-                let gananciaTotalEstimada = valorVentaTotal - inversionTotal;
-
-                document.getElementById('stock-stat-inversion').textContent = `₡${inversionTotal.toLocaleString()}`;
-                document.getElementById('stock-stat-venta').textContent = `₡${valorVentaTotal.toLocaleString()}`;
-                document.getElementById('stock-stat-ganancia').textContent = `₡${gananciaTotalEstimada.toLocaleString()}`;
-
-                if (stockItems.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No hay ítems en stock interno. Registra uno seleccionando "Stock Interno".</td></tr>`;
-                    return;
-                }
-
-                tbody.innerHTML = "";
-                stockItems.forEach(s => {
-                    let cant = Number(s.stockCantidad || 0);
-                    let compra = Number(s.stockCompra || 0);
-                    let venta = Number(s.precio || 0);
-                    let gananciaUnit = venta - compra;
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td style="font-weight:700;">${s.name || s.nombre}</td>
-                            <td style="font-weight:800; color:var(--color-principal);">${cant} unids</td>
-                            <td>₡${compra.toLocaleString()}</td>
-                            <td>₡${venta.toLocaleString()}</td>
-                            <td style="color:${gananciaUnit >= 0 ? '#4ade80':'#ef4444'}; font-weight:bold;">₡${gananciaUnit.toLocaleString()}</td>
-                            <td>
-                                <div style="display:flex; gap:6px;">
-                                    <button class="btn-accion" style="background:#22c55e; color:white; font-weight:bold;" onclick='venderItemStock("${s.id}", "${s.nombre}", ${cant}, ${venta})' title="Vender unidades y rebajar stock">🛒 Vender</button>
-                                    <button class="btn-accion-tabla" onclick='abrirModalEditarPlato(${JSON.stringify(s)})'>✏️</button>
-                                    <button class="btn-accion-tabla eliminar" onclick="delPlatoDashboard('${s.id}')">🗑️</button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                });
-            } catch(e) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#ef4444;">Error al cargar stock.</td></tr>`;
-            }
-        }
-
-        window.venderItemStock = async function(id, nombre, stockActual, precioVenta) {
-            let cantidadVender = prompt(`¿Cuántas unidades de "${nombre}" deseas vender? (Stock actual: ${stockActual})`, "1");
-            if (cantidadVender === null) return;
-            let cant = Number(cantidadVender);
-
-            if (isNaN(cant) || cant <= 0) {
-                mostrarToast("Cantidad inválida.");
-                return;
-            }
-
-            if (cant > stockActual) {
-                mostrarToast("⚠️ No puedes vender más unidades de las que tienes en stock.");
-                return;
-            }
-
-            let nuevoStock = stockActual - cant;
-            let totalVenta = cant * precioVenta;
-
-            try {
-                await updateDoc(doc(db, "menu", id), {
-                    stockCantidad: nuevoStock
-                });
-
-                await addDoc(collection(db, "pedidos"), {
-                    nombre: "Venta Barra / Stock",
-                    detalle: `${cant}x ${nombre}`,
-                    total: totalVenta,
-                    tipoEntrega: "Venta Directa",
-                    metodoPago: "Efectivo",
-                    estado: "Entregado ✅",
-                    fecha: new Date().toLocaleString()
-                });
-
-                mostrarToast(`✅ Venta registrada (₡${totalVenta.toLocaleString()})`);
-                cargarAdminStock();
-            } catch (e) {
-                mostrarToast("Error al procesar la venta de stock.");
-            }
-        }
-
-        window.abrirSeguimientoModal = function(e) { e.preventDefault(); document.getElementById('modal-seguimiento').style.display = 'flex'; }
-        window.cerrarSeguimientoModal = function() { document.getElementById('modal-seguimiento').style.display = 'none'; }
-
-        window.buscarEstadoPedido = async function() {
-            const busqueda = document.getElementById('input-buscar-cliente').value.trim().toLowerCase();
-            const contenedor = document.getElementById('resultado-seguimiento-container');
-            if (!busqueda) { contenedor.innerHTML = "<p style='color:#ef4444;'>Ingresa tu nombre.</p>"; return; }
-
-            contenedor.innerHTML = "Buscando...";
-            try {
-                const qs = await getDocs(collection(db, "pedidos"));
-                let encontrados = [];
-                qs.forEach(d => {
-                    let data = d.data();
-                    if (data.nombre && data.nombre.toLowerCase().includes(busqueda)) { encontrados.push(data); }
-                });
-
-                if (encontrados.length === 0) {
-                    contenedor.innerHTML = "<p style='color:var(--text-muted);'>No se encontraron pedidos recientes.</p>";
-                    return;
-                }
-
-                contenedor.innerHTML = "";
-                encontrados.forEach(ord => {
-                    let clase = ord.estado.includes('Preparación') ? 'badge-preparacion' : ord.estado.includes('Camino') || ord.estado.includes('Listo') ? 'badge-camino' : ord.estado.includes('Entregado') ? 'badge-entregado' : 'badge-pendiente';
-                    contenedor.innerHTML += `
-                        <div style="background:#252525; padding:12px; border-radius:10px; margin-bottom:10px; border:1px solid var(--border-color);">
-                            <strong>Cliente:</strong> ${ord.nombre} (${ord.tipoEntrega || 'Local'})<br>
-                            <strong>Detalle:</strong> ${ord.detalle}<br>
-                            <strong>Total:</strong> ₡${ord.total.toLocaleString()}<br>
-                            <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
-                                <span>Estado:</span>
-                                <span class="badge-estado ${clase}">${ord.estado}</span>
-                            </div>
-                        </div>
-                    `;
-                });
-            } catch(e) { contenedor.innerHTML = "<p style='color:#ef4444;'>Error al buscar.</p>"; }
-        }
-
-        window.cambiarVista = function(vista) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active-view'));
-            if (vista === 'menu') {
-                document.getElementById('view-menu').classList.add('active-view');
-                renderizarCategoriasPublicas();
-                cargarMenu();
-            } else if (vista === 'admin') {
-                document.getElementById('view-admin').classList.add('active-view');
-                cargarPedidosAdmin();
-                renderizarTablaCategoriasAdmin();
-                cargarCodigoActivoAdmin();
-            }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         window.intentarAccesoAdmin = function() {
@@ -1853,63 +1425,26 @@
             }
         }
 
-        window.agregarVarianteTemporal = function() {
-            const nombreVar = document.getElementById('input-nombre-var').value.trim();
-            const precioVar = Number(document.getElementById('input-precio-var').value);
-            if (!nombreVar) return;
-            variantesTemporales.push({ nombre: nombreVar, precio: isNaN(precioVar) ? 0 : precioVar, disponible: true });
-            document.getElementById('input-nombre-var').value = "";
-            document.getElementById('input-precio-var').value = "";
-            actualizarListaVariantesTempUI();
-        }
-
-        window.toggleDisponibilidadTemporal = function(index) {
-            variantesTemporales[index].disponible = !variantesTemporales[index].disponible;
-            actualizarListaVariantesTempUI();
-        }
-
-        function actualizarListaVariantesTempUI() {
-            const contenedor = document.getElementById('lista-variantes-temp');
-            if (variantesTemporales.length === 0) { contenedor.innerHTML = "Sin extras añadidos."; return; }
-            contenedor.innerHTML = variantesTemporales.map((v, index) => `
-                <div style="display:flex; justify-content:space-between; align-items:center; background:#181818; padding:6px 10px; border-radius:6px; margin-top:4px; border:1px solid var(--border-color);">
-                    <span>${v.nombre} (₡${v.precio})</span>
-                    <div>
-                        <button type="button" class="btn-accion" style="background:${v.disponible !== false ? '#10b981':'#f59e0b'}; color:white;" onclick="toggleDisponibilidadTemporal(${index})">${v.disponible !== false ? 'Disp':'Agot'}</button>
-                        <button type="button" class="btn-accion btn-eliminar" onclick="variantesTemporales.splice(${index},1);actualizarListaVariantesTempUI();">X</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
         async function cargarMenu() {
-            const menuGrid = document.getElementById("menu-grid");
             try {
                 const querySnapshot = await getDocs(collection(db, "menu"));
                 listaPlatos = [];
                 querySnapshot.forEach((docSnap) => { listaPlatos.push({ id: docSnap.id, ...docSnap.data() }); });
                 mostrarPlatos(listaPlatos);
-            } catch (error) { menuGrid.innerHTML = "<p style='color:red;'>Error al cargar menú.</p>"; }
+            } catch (error) { console.log(error); }
         }
 
         window.mostrarPlatos = function(platos) {
             const menuGrid = document.getElementById("menu-grid");
             menuGrid.innerHTML = "";
+            const disponibles = platos.filter(p => p.categoria !== 'Stock_Interno' && p.disponible !== false);
             
-            const disponibles = platos.filter(p => {
-                let esStockInterno = p.categoria === 'Stock_Interno';
-                let platoVisible = p.disponible !== false;
-                let catInfo = categoriasNube[p.categoria] || { visible: true };
-                let catVisible = catInfo.visible !== false;
-                return !esStockInterno && platoVisible && catVisible;
-            });
-
             if (disponibles.length === 0) {
                 menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay platos disponibles.</p>";
                 return;
             }
             disponibles.forEach((plato) => {
-                let tieneFotoValida = plato.imagenUrl && typeof plato.imagenUrl === 'string' && plato.imagenUrl.trim() !== "" && plato.imagenUrl.trim().toLowerCase() !== "null";
+                let tieneFotoValida = plato.imagenUrl && typeof plato.imagenUrl === 'string' && plato.imagenUrl.trim() !== "";
                 const imagen = tieneFotoValida ? plato.imagenUrl : 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
                 
                 menuGrid.innerHTML += `
@@ -1926,525 +1461,28 @@
                                 </div>
                                 <div class="stars">★★★★★</div>
                             </div>
-                            <button class="order-btn" onclick='abrirModalPlato(${JSON.stringify(plato)})'>Ver Opciones / Pedir</button>
+                            <button class="order-btn" onclick='mostrarToast("Selecciona una opción del menú")'>Ver Opciones / Pedir</button>
                         </div>
                     </div>
                 `;
             });
         }
 
-        window.filtrarCategoria = function(cat) {
-            document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            if (cat === 'todos') { mostrarPlatos(listaPlatos); } 
-            else { mostrarPlatos(listaPlatos.filter(p => p.categoria === cat)); }
-        }
-
-        window.abrirModalPlato = function(plato) {
-            platoSeleccionadoActual = plato;
-            let tieneFotoValida = plato.imagenUrl && typeof plato.imagenUrl === 'string' && plato.imagenUrl.trim() !== "" && plato.imagenUrl.trim().toLowerCase() !== "null";
-            
-            document.getElementById('modal-img').src = tieneFotoValida ? plato.imagenUrl : 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
-            document.getElementById('modal-nombre').textContent = plato.nombre;
-            document.getElementById('modal-descripcion').textContent = plato.descripcion || '';
-            document.getElementById('modal-precio-base').textContent = `Precio base: ₡${plato.precio.toLocaleString()}`;
-
-            const container = document.getElementById('modal-variantes-container');
-            container.innerHTML = "";
-
-            if (plato.variantes && plato.variantes.length > 0) {
-                const varDisp = plato.variantes.filter(v => v.disponible !== false);
-                if (varDisp.length === 0) {
-                    container.innerHTML = "<p style='color:var(--text-muted); font-size:12px;'>No hay extras disponibles.</p>";
-                } else {
-                    varDisp.forEach(v => {
-                        container.innerHTML += `
-                            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border-color); font-size:14px; align-items:center;">
-                                <label style="display:flex; gap:10px; cursor:pointer; align-items:center; width:100%;">
-                                    <input type="checkbox" class="check-variante" value="${v.precio}" data-nombre="${v.nombre}" onchange="validarLimiteExtras(this)" style="width:18px; height:18px;">
-                                    <span>${v.nombre}</span>
-                                </label>
-                                <span style="font-weight:800; color:var(--color-principal); white-space:nowrap;">+₡${v.precio.toLocaleString()}</span>
-                            </div>
-                        `;
-                    });
-                }
-            } else { container.innerHTML = "<p style='color:var(--text-muted); font-size:12px;'>Sin extras adicionales.</p>"; }
-
-            calcularTotalModal();
-            document.getElementById('modal-opciones').style.display = 'flex';
-        }
-
-        window.validarLimiteExtras = function(checkbox) {
-            const seleccionados = document.querySelectorAll('.check-variante:checked');
-            if (seleccionados.length > 2) {
-                checkbox.checked = false;
-                mostrarToast("⚠️ Solo puedes escoger un máximo de 2 acompañamientos.");
-            }
-            calcularTotalModal();
-        }
-
-        window.cerrarModal = function() { document.getElementById('modal-opciones').style.display = 'none'; }
-
-        window.calcularTotalModal = function() {
-            if (!platoSeleccionadoActual) return;
-            let total = platoSeleccionadoActual.precio;
-            document.querySelectorAll('.check-variante:checked').forEach(chk => total += Number(chk.value));
-            document.getElementById('modal-btn-agregar').textContent = `Añadir • ₡${total.toLocaleString()}`;
-        }
-
-        window.agregarAlCarritoDesdeModal = function() {
-            let extras = [];
-            let totalItem = platoSeleccionadoActual.precio;
-            document.querySelectorAll('.check-variante:checked').forEach(chk => {
-                extras.push(chk.getAttribute('data-nombre'));
-                totalItem += Number(chk.value);
+        function renderizarCategoriasPublicas() {
+            const container = document.getElementById('category-container');
+            let html = `<button class="cat-btn active">Todos</button>`;
+            categoriasDefault.forEach(cat => {
+                let claseExtra = (cat === 'Ofertas') ? 'full-width' : '';
+                html += `<button class="cat-btn ${claseExtra}">${cat}</button>`;
             });
-
-            carrito.push({
-                id: platoSeleccionadoActual.id,
-                nombre: platoSeleccionadoActual.nombre,
-                extras: extras,
-                precioUnitario: totalItem
-            });
-
-            document.getElementById('cart-count').textContent = carrito.length;
-            mostrarToast("¡Plato añadido al pedido!");
-            cerrarModal();
+            container.innerHTML = html;
         }
-
-        window.abrirCarritoModal = function() {
-            window.pasoPedido = 1;
-            window.renderizarPasoCarrito();
-            document.getElementById('modal-carrito').style.display = 'flex';
-        }
-
-        window.cerrarCarritoModal = function() { document.getElementById('modal-carrito').style.display = 'none'; }
-
-        window.renderizarPasoCarrito = function() {
-            const container = document.getElementById('carrito-contenido-dinamico');
-            const tituloModal = document.getElementById('carrito-titulo-modal');
-            
-            if (window.pasoPedido === 1) {
-                tituloModal.textContent = "🛒 Tu Pedido Actual";
-                if (carrito.length === 0) {
-                    container.innerHTML = "<p style='color:var(--text-muted); text-align:center;'>Tu carrito está vacío.</p>";
-                    return;
-                }
-                let totalGeneral = carrito.reduce((sum, i) => sum + i.precioUnitario, 0);
-                let htmlItems = "";
-                carrito.forEach((item, idx) => {
-                    htmlItems += `
-                        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border-color);">
-                            <div>
-                                <strong style="color:white;">${item.nombre}</strong><br>
-                                <span style="font-size:11px; color:var(--text-muted);">${item.extras.length ? 'Extras: ' + item.extras.join(', ') : ''}</span>
-                            </div>
-                            <div style="text-align:right;">
-                                <span style="font-weight:800; color:var(--color-principal);">₡${item.precioUnitario.toLocaleString()}</span><br>
-                                <button onclick="carrito.splice(${idx}, 1); window.renderizarPasoCarrito(); document.getElementById('cart-count').textContent = carrito.length;" style="background:none; border:none; color:#ef4444; font-size:11px; cursor:pointer;">Quitar</button>
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = `
-                    <div style="max-height:260px; overflow-y:auto; margin-bottom:15px;">${htmlItems}</div>
-                    <div style="display:flex; justify-content:space-between; font-size:17px; font-weight:900; margin-bottom:20px; color:white; border-top:1px solid var(--border-color); padding-top:10px;">
-                        <span>Total:</span>
-                        <span style="color:var(--color-principal);">₡${totalGeneral.toLocaleString()}</span>
-                    </div>
-                    <button onclick="window.pasoPedido = 2; window.renderizarPasoCarrito();" class="btn-admin-action" style="background:var(--color-principal);">Continuar con el pedido</button>
-                `;
-            } else if (window.pasoPedido === 2) {
-                tituloModal.textContent = "📦 Completar pedido";
-                let totalGeneral = carrito.reduce((sum, i) => sum + i.precioUnitario, 0);
-                container.innerHTML = `
-                    <div style="font-size:14px; margin-bottom:15px; display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding-bottom:8px;">
-                        <span>Total</span> <strong style="color:var(--color-principal);">₡${totalGeneral.toLocaleString()}</strong>
-                    </div>
-                    <label style="font-weight:700; margin-bottom:8px;">Tipo de entrega *</label>
-                    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
-                        <button type="button" class="tipo-entrega-btn ${window.tipoEntregaSeleccionado === 'Consumo en Mesa' ? 'selected':''}" onclick="window.tipoEntregaSeleccionado='Consumo en Mesa'; window.renderizarPasoCarrito();">
-                            <strong>🍽️ Consumo en Mesa</strong>
-                            <span style="font-size:11px; color:var(--text-muted);">Requiere indicar número de mesa</span>
-                        </button>
-                        <button type="button" class="tipo-entrega-btn ${window.tipoEntregaSeleccionado === 'Retiro en Local' ? 'selected':''}" onclick="window.tipoEntregaSeleccionado='Retiro en Local'; window.renderizarPasoCarrito();">
-                            <strong>🛍️ Retiro en Local</strong>
-                            <span style="font-size:11px; color:var(--text-muted);">Pasa a recoger por el bar</span>
-                        </button>
-                    </div>
-                    <div style="display:flex; gap:10px;">
-                        <button onclick="window.pasoPedido = 1; window.renderizarPasoCarrito();" class="btn-admin-action" style="background:#2a2a2a; color:white;">Atrás</button>
-                        <button onclick="window.pasoPedido = 3; window.renderizarPasoCarrito();" class="btn-admin-action" style="background:var(--color-principal);">Siguiente</button>
-                    </div>
-                `;
-            } else if (window.pasoPedido === 3) {
-                tituloModal.textContent = "💳 Método de Pago";
-                container.innerHTML = `
-                    <div style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Entrega: <strong>${window.tipoEntregaSeleccionado}</strong></div>
-                    <label style="font-weight:700; margin-bottom:8px;">Método de pago *</label>
-                    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
-                        <button type="button" class="tipo-entrega-btn ${window.metodoPagoSeleccionado === 'SINPE Móvil' ? 'selected':''}" onclick="window.metodoPagoSeleccionado='SINPE Móvil'; window.renderizarPasoCarrito();">
-                            <strong>📱 SINPE Móvil</strong>
-                            <span style="font-size:11px; color:var(--text-muted);">Tel: 8521-3829</span>
-                        </button>
-                        <button type="button" class="tipo-entrega-btn ${window.metodoPagoSeleccionado === 'Efectivo' ? 'selected':''}" onclick="window.metodoPagoSeleccionado='Efectivo'; window.renderizarPasoCarrito();">
-                            <strong>💵 Efectivo</strong>
-                        </button>
-                        <button type="button" class="tipo-entrega-btn ${window.metodoPagoSeleccionado === 'Tarjeta' ? 'selected':''}" onclick="window.metodoPagoSeleccionado='Tarjeta'; window.renderizarPasoCarrito();">
-                            <strong>💳 Pago en Tarjeta (datáfono)</strong>
-                        </button>
-                    </div>
-                    <div style="display:flex; gap:10px;">
-                        <button onclick="window.pasoPedido = 2; window.renderizarPasoCarrito();" class="btn-admin-action" style="background:#2a2a2a; color:white;">Atrás</button>
-                        <button onclick="window.pasoPedido = 4; window.renderizarPasoCarrito();" class="btn-admin-action" style="background:var(--color-principal);">Siguiente</button>
-                    </div>
-                `;
-            } else if (window.pasoPedido === 4) {
-                tituloModal.textContent = "📝 Datos Finales";
-                container.innerHTML = `
-                    <div class="form-group">
-                        <label>Tu Nombre / Mesa *</label>
-                        <input type="text" id="input-nombre-final" placeholder="Ej. José o Mesa 4">
-                    </div>
-                    <div class="form-group">
-                        <label>Teléfono (opcional)</label>
-                        <input type="text" id="input-tel-final" placeholder="8888-8888">
-                    </div>
-                    <div class="form-group">
-                        <label>Notas especiales / Observaciones</label>
-                        <textarea id="input-notas-final" rows="2" placeholder="Instrucciones adicionales..."></textarea>
-                    </div>
-                    <div style="display:flex; gap:10px; margin-top:15px;">
-                        <button onclick="window.pasoPedido = 3; window.renderizarPasoCarrito();" class="btn-admin-action" style="background:#2a2a2a; color:white;">Atrás</button>
-                        <button onclick="window.enviarPedidoFinal()" class="btn-admin-action" style="background:#22c55e; color:white;">Confirmar y Enviar</button>
-                    </div>
-                `;
-            }
-        }
-
-        window.enviarPedidoFinal = async function() {
-            const nombre = document.getElementById('input-nombre-final').value.trim();
-            const tel = document.getElementById('input-tel-final').value.trim();
-            const notas = document.getElementById('input-notas-final').value.trim();
-
-            if (!nombre) { mostrarToast("Por favor ingresa tu nombre o mesa."); return; }
-            if (carrito.length === 0) { mostrarToast("El carrito está vacío."); return; }
-
-            let detalleStr = carrito.map(i => `${i.nombre} ${i.extras.length ? '(' + i.extras.join(', ') + ')' : ''}`).join(' + ');
-            if (notas) detalleStr += ` [Nota: ${notas}]`;
-            if (tel) detalleStr += ` [Tel: ${tel}]`;
-
-            let totalGeneral = carrito.reduce((sum, i) => sum + i.precioUnitario, 0);
-
-            try {
-                await addDoc(collection(db, "pedidos"), {
-                    nombre: nombre,
-                    detalle: detalleStr,
-                    total: totalGeneral,
-                    tipoEntrega: window.tipoEntregaSeleccionado,
-                    metodoPago: window.metodoPagoSeleccionado,
-                    estado: 'Pendiente 🕒',
-                    fecha: new Date().toLocaleString()
-                });
-                mostrarToast("¡Pedido completado con éxito!");
-                carrito = [];
-                document.getElementById('cart-count').textContent = '0';
-                cerrarCarritoModal();
-            } catch(e) { mostrarToast("Error al enviar el pedido."); }
-        }
-
-        async function cargarAdminPlatosDashboard() {
-            const querySnapshot = await getDocs(collection(db, "menu"));
-            listaPlatos = [];
-            querySnapshot.forEach((docSnap) => {
-                listaPlatos.push({ id: docSnap.id, ...docSnap.data() });
-            });
-            renderizarTablaAdminPlatos(listaPlatos);
-        }
-
-        window.filtrarTablaAdminPlatos = function() {
-            const busqueda = document.getElementById('input-buscar-admin-plato').value.toLowerCase();
-            const categoriaFiltro = document.getElementById('select-filtro-categoria').value;
-
-            let filtrados = listaPlatos.filter(p => {
-                if (p.categoria === 'Stock_Interno') return false;
-                let coincideNombre = p.nombre.toLowerCase().includes(busqueda);
-                let coincideCat = (categoriaFiltro === 'todos' || p.categoria === categoriaFiltro);
-                return coincideNombre && coincideCat;
-            });
-            renderizarTablaAdminPlatos(filtrados);
-        }
-
-        function renderizarTablaAdminPlatos(platos) {
-            const tbody = document.getElementById('admin-tabla-platos-body');
-            
-            let platosVisiblesAdmin = platos.filter(p => p.categoria !== 'Stock_Interno');
-            let total = platosVisiblesAdmin.length;
-            let conImg = platosVisiblesAdmin.filter(p => {
-                if (p.imagenUrl === undefined || p.imagenUrl === null) return false;
-                let str = String(p.imagenUrl).trim().toLowerCase();
-                return str !== "" && str !== "null" && str !== "undefined";
-            }).length;
-            
-            let sinImg = total - conImg;
-            let visibles = platosVisiblesAdmin.filter(p => p.disponible !== false).length;
-            let ocultos = total - visibles;
-            let enOferta = platosVisiblesAdmin.filter(p => p.categoria === 'Ofertas').length;
-
-            document.getElementById('stat-total').textContent = total;
-            document.getElementById('stat-con-img').textContent = conImg;
-            document.getElementById('stat-sin-img').textContent = sinImg;
-            document.getElementById('stat-visibles').textContent = visibles;
-            document.getElementById('stat-ocultos').textContent = ocultos;
-            document.getElementById('stat-oferta').textContent = enOferta;
-
-            if (platosVisiblesAdmin.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">No se encontraron platos.</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = "";
-            platosVisiblesAdmin.forEach((p, idx) => {
-                let tieneFotoValida = p.imagenUrl !== undefined && p.imagenUrl !== null && String(p.imagenUrl).trim() !== "" && String(p.imagenUrl).trim().toLowerCase() !== "null";
-                
-                let imgHtml = tieneFotoValida ? `<img src="${p.imagenUrl}" style="width:36px; height:36px; border-radius:6px; object-fit:cover;">` : `<span style="font-size:11px; color:#ef4444; font-weight:bold;">Sin foto</span>`;
-                let isVisible = p.disponible !== false;
-
-                tbody.innerHTML += `
-                    <tr>
-                        <td style="font-weight:700; color:var(--text-muted);">${idx + 1}</td>
-                        <td>${imgHtml}</td>
-                        <td style="font-weight:700;">${p.nombre}</td>
-                        <td style="color:var(--text-muted);">${p.categoria || 'General'}</td>
-                        <td style="color:var(--color-principal); font-weight:800;">₡${p.precio.toLocaleString()}.00</td>
-                        <td>
-                            <label class="switch">
-                                <input type="checkbox" ${isVisible ? 'checked':''} onchange="togglePlatoDashboard('${p.id}', ${isVisible})">
-                                <span class="slider"></span>
-                            </label>
-                        </td>
-                        <td>
-                            <div style="display:flex; gap:8px;">
-                                <button class="btn-accion-tabla" onclick='abrirModalEditarPlato(${JSON.stringify(p)})' title="Editar Completo">✏️</button>
-                                <button class="btn-accion-tabla eliminar" onclick="delPlatoDashboard('${p.id}')" title="Eliminar">🗑️</button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        window.abrirModalEditarPlato = function(plato) {
-            document.getElementById('edit-plato-id').value = plato.id;
-            document.getElementById('edit-plato-nombre').value = plato.nombre;
-            document.getElementById('edit-plato-precio').value = plato.precio;
-            document.getElementById('edit-plato-desc').value = plato.descripcion || '';
-            document.getElementById('edit-plato-file').value = "";
-            
-            const selCat = document.getElementById('edit-plato-categoria');
-            if (selCat) {
-                selCat.value = plato.categoria || 'Bocas';
-                toggleCamposStockEdicion(selCat.value);
-            }
-
-            document.getElementById('edit-stock-cantidad').value = plato.stockCantidad || '';
-            document.getElementById('edit-stock-compra').value = plato.stockCompra || '';
-
-            variantesEdicionActuales = plato.variantes ? JSON.parse(JSON.stringify(plato.variantes)) : [];
-            actualizarListaVariantesEdicionUI();
-            document.getElementById('modal-editar-plato').style.display = 'flex';
-        }
-
-        window.cerrarModalEditarPlato = function() {
-            document.getElementById('modal-editar-plato').style.display = 'none';
-        }
-
-        window.agregarVarianteEdicion = function() {
-            const nombreVar = document.getElementById('edit-input-nombre-var').value.trim();
-            const precioVar = Number(document.getElementById('edit-input-precio-var').value);
-            if (!nombreVar) return;
-            variantesEdicionActuales.push({ nombre: nombreVar, precio: isNaN(precioVar) ? 0 : precioVar, disponible: true });
-            document.getElementById('edit-input-nombre-var').value = "";
-            document.getElementById('edit-input-precio-var').value = "";
-            actualizarListaVariantesEdicionUI();
-        }
-
-        window.toggleDisponibilidadEdicion = function(index) {
-            variantesEdicionActuales[index].disponible = variantesEdicionActuales[index].disponible === false ? true : false;
-            actualizarListaVariantesEdicionUI();
-        }
-
-        window.cambiarPrecioVarianteEdicion = function(index, nuevoVal) {
-            let num = Number(nuevoVal);
-            if (!isNaN(num)) variantesEdicionActuales[index].precio = num;
-        }
-
-        function actualizarListaVariantesEdicionUI() {
-            const contenedor = document.getElementById('edit-lista-variantes');
-            if (variantesEdicionActuales.length === 0) { contenedor.innerHTML = "Sin extras añadidos."; return; }
-            contenedor.innerHTML = variantesEdicionActuales.map((v, index) => `
-                <div style="display:flex; justify-content:space-between; align-items:center; background:#181818; padding:6px 10px; border-radius:6px; margin-top:4px; border:1px solid var(--border-color); gap:6px;">
-                    <span style="flex:2; font-weight:600;">${v.nombre}</span>
-                    <input type="number" value="${v.precio}" onchange="cambiarPrecioVarianteEdicion(${index}, this.value)" style="flex:1; padding:4px; font-size:12px; background:#222; border:1px solid var(--border-color); border-radius:4px; color:white;">
-                    <button type="button" class="btn-accion" style="background:${v.disponible !== false ? '#10b981':'#f59e0b'}; color:white;" onclick="toggleDisponibilidadEdicion(${index})">${v.disponible !== false ? 'Disp':'Agot'}</button>
-                    <button type="button" class="btn-accion btn-eliminar" onclick="variantesEdicionActuales.splice(${index},1);actualizarListaVariantesEdicionUI();">X</button>
-                </div>
-            `).join('');
-        }
-
-        window.guardarPlatoEditado = async function() {
-            const id = document.getElementById('edit-plato-id').value;
-            const nombre = document.getElementById('edit-plato-nombre').value;
-            const categoria = document.getElementById('edit-plato-categoria').value;
-            const precio = Number(document.getElementById('edit-plato-precio').value);
-            const descripcion = document.getElementById('edit-plato-desc').value;
-            const fileInput = document.getElementById('edit-plato-file');
-
-            let dataUpdate = { nombre, categoria, precio, descripcion, variantes: variantesEdicionActuales };
-
-            if (categoria === 'Stock_Interno') {
-                dataUpdate.stockCantidad = Number(document.getElementById('edit-stock-cantidad').value || 0);
-                dataUpdate.stockCompra = Number(document.getElementById('edit-stock-compra').value || 0);
-            }
-
-            const ejecutarActualizacion = async (urlFinal) => {
-                if (urlFinal !== undefined) {
-                    dataUpdate.imagenUrl = urlFinal;
-                }
-                await updateDoc(doc(db, "menu", id), dataUpdate);
-                mostrarToast("¡Ítem actualizado con éxito!");
-                cerrarModalEditarPlato();
-                cargarAdminPlatosDashboard();
-                cargarAdminStock();
-            };
-
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.readAsDataURL(fileInput.files[0]);
-                reader.onload = async function() {
-                    await ejecutarActualizacion(reader.result);
-                };
-            } else {
-                await ejecutarActualizacion(undefined);
-            }
-        }
-
-        window.togglePlatoDashboard = async function(id, estadoActual) {
-            await updateDoc(doc(db, "menu", id), { disponible: !estadoActual });
-            cargarAdminPlatosDashboard();
-        }
-
-        window.delPlatoDashboard = async function(id) {
-            if (confirm("¿Estás seguro de eliminar este ítem?")) {
-                await deleteDoc(doc(db, "menu", id));
-                cargarAdminPlatosDashboard();
-                cargarAdminStock();
-            }
-        }
-
-        async function cargarPedidosAdmin() {
-            const qs = await getDocs(collection(db, "pedidos"));
-            renderizarPedidosAdmin(qs);
-        }
-
-        function renderizarPedidosAdmin(snapshot) {
-            const contenedor = document.getElementById("admin-pedidos-container");
-            if (snapshot.empty) { contenedor.innerHTML = "<p style='color:var(--text-muted); font-size:13px;'>Sin pedidos.</p>"; return; }
-            contenedor.innerHTML = "";
-            snapshot.forEach(d => {
-                const p = d.data();
-                const id = d.id;
-                let estadoActual = p.estado || 'Pendiente 🕒';
-                
-                contenedor.innerHTML += `
-                    <div class="pedido-card">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                            <strong style="color:white; font-size:15px;">${p.nombre}</strong>
-                            <span style="font-size:11px; color:var(--text-muted);">${p.fecha || ''}</span>
-                        </div>
-                        <div style="font-size:12px; color:var(--color-principal); margin-bottom:4px;">Tipo: ${p.tipoEntrega || 'Local'} | Pago: ${p.metodoPago || 'Efectivo'}</div>
-                        <div style="font-size:13px; color:var(--text-muted); margin-bottom:10px;">${p.detalle}</div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-color); padding-top:10px;">
-                            <strong style="color:var(--color-principal); font-size:15px;">₡${p.total.toLocaleString()}</strong>
-                            <div style="display:flex; gap:6px; align-items:center;">
-                                <select onchange="cambiarEstadoPedido('${id}', this.value)" style="padding:6px; font-size:12px; border-radius:8px; background:#181818; color:white;">
-                                    <option value="Pendiente 🕒" ${estadoActual.includes('Pendiente') ? 'selected':''}>Pendiente 🕒</option>
-                                    <option value="En Preparación 🍳" ${estadoActual.includes('Preparación') ? 'selected':''}>En Preparación 🍳</option>
-                                    <option value="En Camino / Listo 🛵" ${estadoActual.includes('Camino') || estadoActual.includes('Listo') ? 'selected':''}>En Camino / Listo 🛵</option>
-                                    <option value="Entregado ✅" ${estadoActual.includes('Entregado') ? 'selected':''}>Entregado ✅</option>
-                                </select>
-                                <button class="btn-accion btn-eliminar" onclick="eliminarPedido('${id}')">X</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        window.cambiarEstadoPedido = async function(id, nuevoEstado) {
-            await updateDoc(doc(db, "pedidos", id), { estado: nuevoEstado });
-        }
-
-        window.eliminarPedido = async function(id) {
-            if(confirm("¿Eliminar este pedido?")) {
-                await deleteDoc(doc(db, "pedidos", id));
-                cargarPedidosAdmin();
-            }
-        }
-
-        const form = document.getElementById('productForm');
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btnGuardar');
-            btn.textContent = "Guardando..."; btn.disabled = true;
-
-            const nombre = document.getElementById('nombre').value;
-            const categoria = document.getElementById('categoria').value;
-            const precio = Number(document.getElementById('precio').value);
-            const descripcion = document.getElementById('descripcion').value;
-            const file = document.getElementById('imagenFile').files[0];
-
-            let nuevoObjeto = {
-                nombre, categoria, precio, descripcion, variantes: variantesTemporales, disponible: true, imagenUrl: ""
-            };
-
-            if (categoria === 'Stock_Interno') {
-                nuevoObjeto.stockCantidad = Number(document.getElementById('stock-cantidad').value || 0);
-                nuevoObjeto.stockCompra = Number(document.getElementById('stock-compra').value || 0);
-            }
-
-            const guardarEnBD = async (imgUrl) => {
-                try {
-                    if (imgUrl) nuevoObjeto.imagenUrl = imgUrl;
-                    await addDoc(collection(db, "menu"), nuevoObjeto);
-                    mostrarToast("¡Ítem guardado con éxito!");
-                    form.reset();
-                    variantesTemporales = [];
-                    document.getElementById('campos-stock-extra').style.display = 'none';
-                    document.getElementById('group-variantes').style.display = 'block';
-                    actualizarListaVariantesTempUI();
-                    cargarAdminPlatosDashboard();
-                    cargarAdminStock();
-                } catch(err) { mostrarToast("Error al guardar."); }
-                finally { btn.textContent = "Guardar Ítem"; btn.disabled = false; }
-            };
-
-            if (file) {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = async function() { await guardarEnBD(reader.result); };
-            } else {
-                await guardarEnBD("");
-            }
-        });
 
         // Inicialización general
         cargarConfiguracionVisualNube();
         inicializarCategoriasNube();
         actualizarUILealtadPublica();
         cargarMenu();
-        iniciarEscuchaPedidos();
     </script>
 </body>
 </html>
