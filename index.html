@@ -83,6 +83,7 @@
         }
         .cat-btn.active, .cat-btn:hover { background: #2d2814; border-color: var(--color-principal); }
         .cat-btn.full-width { grid-column: span 2; background: #2a1a1a; color: #ff6b6b; border-color: #5c2222; }
+        .cat-icon-img { width: 20px; height: 20px; object-fit: contain; border-radius: 4px; }
 
         .menu-grid {
             display: grid;
@@ -538,15 +539,21 @@
                 </div>
 
                 <div id="admin-tab-categorias" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">📁 Gestión de Categorías</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Activa o desactiva las categorías principales para mostrarlas u ocultarlas en el menú.</p>
-                    
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                        <div>
+                            <h2 style="margin:0; font-size:18px; color:var(--color-principal);">📁 Gestión de Categorías e Iconos</h2>
+                            <p style="font-size:13px; color:var(--text-muted); margin:4px 0 0 0;">Personaliza el nombre, estado y sube un icono único para cada categoría.</p>
+                        </div>
+                    </div>
+
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
                                 <tr>
+                                    <th>Icono</th>
                                     <th>Categoría</th>
-                                    <th>Visible en Menú</th>
+                                    <th>Visible</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="admin-tabla-categorias-body"></tbody>
@@ -662,6 +669,35 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- MODAL EDITAR CATEGORÍA -->
+    <div id="modal-editar-categoria" class="modal-overlay">
+        <div class="modal-content">
+            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="margin:0; font-size:16px;">📁 Editar Categoría e Icono</h3>
+                <button onclick="cerrarModalEditarCat()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-cat-nombre-orig">
+                <div class="form-group">
+                    <label>Nombre de la categoría *</label>
+                    <input type="text" id="edit-cat-nombre" readonly style="opacity:0.7;">
+                </div>
+                <div class="form-group" style="text-align:center; background:#181818; padding:15px; border-radius:12px; border:1px solid var(--border-color);">
+                    <label style="margin-bottom:10px;">Icono actual / Vista previa:</label>
+                    <img id="edit-cat-img-preview" src="" style="width:50px; height:50px; object-fit:contain; border-radius:8px; background:#222; margin-bottom:10px; border:1px solid var(--color-principal);">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Subir nuevo icono personalizado (Imagen):</label>
+                        <input type="file" id="edit-cat-file" accept="image/*">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="cerrarModalEditarCat()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer;">Cancelar</button>
+                <button onclick="guardarCategoriaEditada()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Guardar Cambios</button>
+            </div>
+        </div>
     </div>
 
     <div class="floating-bottom-bar" id="floating-bar">
@@ -847,13 +883,13 @@
         const db = getFirestore(app);
 
         let listaPlatos = [];
-        let categoriasEstado = JSON.parse(localStorage.getItem('alaska_cat_estado') || JSON.stringify({
-            "Bocas": true,
-            "Comidas Rápidas": true,
-            "Arroces": true,
-            "Batidos": true,
-            "Casados": true,
-            "Ofertas": true
+        let categoriasData = JSON.parse(localStorage.getItem('alaska_categorias_custom') || JSON.stringify({
+            "Bocas": { visible: true, icono: "" },
+            "Comidas Rápidas": { visible: true, icono: "" },
+            "Arroces": { visible: true, icono: "" },
+            "Batidos": { visible: true, icono: "" },
+            "Casados": { visible: true, icono: "" },
+            "Ofertas": { visible: true, icono: "" }
         }));
 
         let variantesTemporales = [];
@@ -980,15 +1016,21 @@
             
             tbody.innerHTML = "";
             nombresCat.forEach(cat => {
-                let visible = categoriasEstado[cat] !== false;
+                let info = categoriasData[cat] || { visible: true, icono: "" };
+                let iconoHtml = info.icono ? `<img src="${info.icono}" style="width:32px; height:32px; object-fit:contain; border-radius:6px; background:#222;">` : `<span style="font-size:10px; color:var(--text-muted);">Sin icono</span>`;
+                
                 tbody.innerHTML += `
                     <tr>
+                        <td>${iconoHtml}</td>
                         <td style="font-weight:700;">${cat}</td>
                         <td>
                             <label class="switch">
-                                <input type="checkbox" ${visible ? 'checked':''} onchange="toggleEstadoCategoria('${cat}', ${visible})">
+                                <input type="checkbox" ${info.visible !== false ? 'checked':''} onchange="toggleEstadoCategoria('${cat}', ${info.visible !== false})">
                                 <span class="slider"></span>
                             </label>
+                        </td>
+                        <td>
+                            <button class="btn-accion-tabla" onclick="abrirModalEditarCat('${cat}')" title="Editar Categoría e Icono">✏️</button>
                         </td>
                     </tr>
                 `;
@@ -996,28 +1038,78 @@
         }
 
         window.toggleEstadoCategoria = function(cat, estadoActual) {
-            categoriasEstado[cat] = !estadoActual;
-            localStorage.setItem('alaska_cat_estado', JSON.stringify(categoriasEstado));
+            if (!categoriasData[cat]) categoriasData[cat] = { visible: true, icono: "" };
+            categoriasData[cat].visible = !estadoActual;
+            localStorage.setItem('alaska_categorias_custom', JSON.stringify(categoriasData));
             renderizarTablaCategoriasAdmin();
             renderizarCategoriasPublicas();
+        }
+
+        window.abrirModalEditarCat = function(catNombre) {
+            document.getElementById('edit-cat-nombre-orig').value = catNombre;
+            document.getElementById('edit-cat-nombre').value = catNombre;
+            document.getElementById('edit-cat-file').value = "";
+            
+            let info = categoriasData[catNombre] || { icono: "" };
+            let imgPrev = document.getElementById('edit-cat-img-preview');
+            if (info.icono) {
+                imgPrev.src = info.icono;
+                imgPrev.style.display = 'block';
+            } else {
+                imgPrev.src = 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=100&q=80';
+            }
+
+            document.getElementById('modal-editar-categoria').style.display = 'flex';
+        }
+
+        window.cerrarModalEditarCat = function() {
+            document.getElementById('modal-editar-categoria').style.display = 'none';
+        }
+
+        window.guardarCategoriaEditada = function() {
+            const catNombre = document.getElementById('edit-cat-nombre-orig').value;
+            const fileInput = document.getElementById('edit-cat-file');
+
+            if (!categoriasData[catNombre]) categoriasData[catNombre] = { visible: true, icono: "" };
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.readAsDataURL(fileInput.files[0]);
+                reader.onload = function() {
+                    categoriasData[catNombre].icono = reader.result;
+                    localStorage.setItem('alaska_categorias_custom', JSON.stringify(categoriasData));
+                    mostrarToast("¡Icono de categoría actualizado!");
+                    cerrarModalEditarCat();
+                    renderizarTablaCategoriasAdmin();
+                    renderizarCategoriasPublicas();
+                }
+            } else {
+                localStorage.setItem('alaska_categorias_custom', JSON.stringify(categoriasData));
+                mostrarToast("Categoría guardada.");
+                cerrarModalEditarCat();
+                renderizarTablaCategoriasAdmin();
+                renderizarCategoriasPublicas();
+            }
         }
 
         function renderizarCategoriasPublicas() {
             const container = document.getElementById('category-container');
             let html = `<button class="cat-btn active" onclick="filtrarCategoria('todos')"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Todos</button>`;
             
-            const mapping = [
-                { nombre: "Bocas", svg: '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M6 18L18 6M9 6h9v9"/></svg>' },
-                { nombre: "Comidas Rápidas", svg: '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 11h16M4 15h16M5 7h14a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V9a2 2 0 012-2z"/></svg>' },
-                { nombre: "Arroces", svg: '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 3v18m9-9H3"/></svg>' },
-                { nombre: "Batidos", svg: '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M17 2H7v2h10V2zM6 8h12l-1.5 12H7.5L6 8zM10 12v4m4-4v4"/></svg>' },
-                { nombre: "Casados", svg: '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M6 3v12m0-6h4m4-6l6 18M18 3l-6 18"/></svg>' },
-                { nombre: "Ofertas", svg: '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M7 7h.01M7 3h5a2 2 0 011.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>', clase: "full-width" }
+            const nombresCat = [
+                { nombre: "Bocas" },
+                { nombre: "Comidas Rápidas" },
+                { nombre: "Arroces" },
+                { nombre: "Batidos" },
+                { nombre: "Casados" },
+                { nombre: "Ofertas", clase: "full-width" }
             ];
 
-            mapping.forEach(c => {
-                if (categoriasEstado[c.nombre] !== false) {
-                    html += `<button class="cat-btn ${c.clase || ''}" onclick="filtrarCategoria('${c.nombre}')">${c.svg} ${c.nombre}</button>`;
+            nombresCat.forEach(c => {
+                let info = categoriasData[c.nombre] || { visible: true, icono: "" };
+                if (info.visible !== false) {
+                    let iconoHtml = info.icono ? `<img src="${info.icono}" class="cat-icon-img">` : `<svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v20m9-10H3"/></svg>`;
+                    html += `<button class="cat-btn ${c.clase || ''}" onclick="filtrarCategoria('${c.nombre}')">${iconoHtml} ${c.nombre}</button>`;
                 }
             });
 
@@ -1482,7 +1574,8 @@
             const disponibles = platos.filter(p => {
                 let esStockInterno = p.categoria === 'Stock_Interno';
                 let platoVisible = p.disponible !== false;
-                let catVisible = categoriasEstado[p.categoria] !== false;
+                let catInfo = categoriasData[p.categoria] || { visible: true };
+                let catVisible = catInfo.visible !== false;
                 return !esStockInterno && platoVisible && catVisible;
             });
 
@@ -1992,6 +2085,7 @@
             };
 
             if (categoria === 'Stock_Interno') {
+                nuevoStock = Number(document.getElementById('stock-cantidad').value || 0);
                 nuevoObjeto.stockCantidad = Number(document.getElementById('stock-cantidad').value || 0);
                 nuevoObjeto.stockCompra = Number(document.getElementById('stock-compra').value || 0);
             }
@@ -2009,7 +2103,7 @@
                     cargarAdminPlatosDashboard();
                     cargarAdminStock();
                 } catch(err) { mostrarToast("Error al guardar."); }
-                finally { btn.textContent = "Guardar Ítem"; btn.disabled = false; }
+                finally { btn.TextView = "Guardar Ítem"; btn.textContent = "Guardar Ítem"; btn.disabled = false; }
             };
 
             if (file) {
