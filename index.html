@@ -31,6 +31,16 @@
         
         .app-container { max-width: 1200px; margin: 0 auto; padding: 20px; padding-bottom: 140px; }
 
+        /* Estilo para notificaciones flotantes internas (Toast) */
+        #toast-notification {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: #222; color: white; padding: 12px 24px; border-radius: 30px;
+            border: 1px solid var(--color-principal); box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            font-size: 13px; font-weight: 700; z-index: 9999; transition: transform 0.3s ease;
+            display: flex; align-items: center; gap: 8px; text-align: center;
+        }
+        #toast-notification.show { transform: translateX(-50%) translateY(0); }
+
         .store-header { text-align: center; margin-bottom: 25px; padding-top: 10px; }
         .store-logo { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-principal); margin-bottom: 10px; background: #222; cursor: pointer; transition: transform 0.2s; }
         .store-logo:hover { transform: scale(1.05); }
@@ -306,6 +316,9 @@
     </style>
 </head>
 <body>
+
+    <!-- Notificación flotante para reemplazar alertas feas -->
+    <div id="toast-notification">⚠️ <span id="toast-msg">Mensaje</span></div>
 
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="cerrarSidebar()"></div>
     <div id="sidebar-drawer" class="sidebar-drawer">
@@ -819,6 +832,16 @@
         window.tipoEntregaSeleccionado = 'Retiro en Local';
         window.metodoPagoSeleccionado = 'Efectivo';
 
+        // Función personalizada para mostrar avisos elegantes sin que salga el nombre de github
+        function mostrarToast(mensaje) {
+            const toast = document.getElementById('toast-notification');
+            document.getElementById('toast-msg').textContent = mensaje;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('data:text/javascript;base64,' + btoa(`
@@ -830,10 +853,10 @@
         }
 
         window.pedirPermisoNotificaciones = function() {
-            if (!("Notification" in window)) { alert("Este navegador no soporta notificaciones."); return; }
+            if (!("Notification" in window)) { mostrarToast("Este navegador no soporta notificaciones."); return; }
             Notification.requestPermission().then(permission => {
-                if (permission === "granted") { alert("✅ ¡Notificaciones PWA activadas!"); } 
-                else { alert("Permiso denegado."); }
+                if (permission === "granted") { mostrarToast("✅ ¡Notificaciones PWA activadas!"); } 
+                else { mostrarToast("Permiso denegado."); }
             });
         }
 
@@ -848,9 +871,9 @@
                 reader.onload = function() {
                     localStorage.setItem('alaska_logo_url', reader.result);
                     document.getElementById('logo-display').src = reader.result;
-                    alert("¡Logo actualizado con éxito!");
+                    mostrarToast("¡Logo actualizado con éxito!");
                 }
-            } else { alert("Selecciona una imagen primero."); }
+            } else { mostrarToast("Selecciona una imagen primero."); }
         }
 
         function iniciarEscuchaPedidos() {
@@ -910,7 +933,7 @@
             adminAutenticado = false;
             cerrarSidebar();
             cambiarVista('menu');
-            alert("Sesión cerrada.");
+            mostrarToast("Sesión cerrada.");
         }
 
         window.renderizarTablaCategoriasAdmin = function() {
@@ -978,8 +1001,8 @@
             try {
                 await setDoc(doc(db, "configuracion", "selloActivo"), { codigo: nuevoCodigo });
                 document.getElementById('codigo-activo-display').textContent = nuevoCodigo;
-                alert("¡Nuevo código generado!: " + nuevoCodigo);
-            } catch(e) { alert("Error al generar."); }
+                mostrarToast("¡Nuevo código generado!: " + nuevoCodigo);
+            } catch(e) { mostrarToast("Error al generar."); }
         }
 
         function actualizarUILealtadPublica() {
@@ -1016,7 +1039,7 @@
             const nombre = document.getElementById('reg-nombre').value.trim();
             const telefono = document.getElementById('reg-telefono').value.trim();
 
-            if (!nombre || !telefono) { alert("Por favor ingresa tu nombre y teléfono."); return; }
+            if (!nombre || !telefono) { mostrarToast("Por favor ingresa tu nombre y teléfono."); return; }
 
             try {
                 const q = query(collection(db, "clientes"), where("telefono", "==", telefono));
@@ -1049,9 +1072,9 @@
                 localStorage.setItem('alaska_cliente_sellos', sellos);
 
                 actualizarUILealtadPublica();
-                alert("¡Bienvenido al Club Alaska, " + nombre + "!");
+                mostrarToast("¡Bienvenido al Club Alaska, " + nombre + "!");
             } catch(e) {
-                alert("Error al registrar cliente.");
+                mostrarToast("Error al registrar cliente.");
             }
         }
 
@@ -1067,7 +1090,7 @@
 
         window.reclamarSelloConBD = async function() {
             const codigoIngresado = document.getElementById('codigo-sello').value.trim();
-            if (!codigoIngresado) { alert("Ingresa el código."); return; }
+            if (!codigoIngresado) { mostrarToast("Ingresa el código."); return; }
 
             try {
                 const docRefConfig = doc(db, "configuracion", "selloActivo");
@@ -1078,10 +1101,10 @@
 
                     window.clienteActualSellos++;
                     if (window.clienteActualSellos >= 5) {
-                        alert("🎉 ¡Felicidades! Completa tus 5 sellos y muestra tu pantalla para reclamar premio.");
+                        mostrarToast("🎉 ¡Felicidades! Completa tus 5 sellos y muestra tu pantalla para reclamar premio.");
                         window.clienteActualSellos = 0;
                     } else {
-                        alert("⭐ ¡Sello añadido! Faltan " + (5 - window.clienteActualSellos) + " sellos.");
+                        mostrarToast("⭐ ¡Sello añadido! Faltan " + (5 - window.clienteActualSellos) + " sellos.");
                     }
 
                     await updateDoc(doc(db, "clientes", window.clienteActualId), {
@@ -1093,10 +1116,10 @@
                     document.getElementById('codigo-sello').value = "";
                     cerrarLealtadModal();
                 } else {
-                    alert("Código incorrecto o ya utilizado.");
+                    mostrarToast("Código incorrecto o ya utilizado.");
                 }
             } catch(e) {
-                alert("Error al validar el sello.");
+                mostrarToast("Error al validar el sello.");
             }
         }
 
@@ -1274,12 +1297,12 @@
             let cant = Number(cantidadVender);
 
             if (isNaN(cant) || cant <= 0) {
-                alert("Cantidad inválida.");
+                mostrarToast("Cantidad inválida.");
                 return;
             }
 
             if (cant > stockActual) {
-                alert("⚠️ No puedes vender más unidades de las que tienes en stock.");
+                mostrarToast("⚠️ No puedes vender más unidades de las que tienes en stock.");
                 return;
             }
 
@@ -1301,10 +1324,10 @@
                     fecha: new Date().toLocaleString()
                 });
 
-                alert(`✅ ¡Venta registrada con éxito!\n- Stock rebajado a: ${nuevoStock} unids\n- Ingreso sumado a caja: ₡${totalVenta.toLocaleString()}`);
+                mostrarToast(`✅ Venta registrada (₡${totalVenta.toLocaleString()})`);
                 cargarAdminStock();
             } catch (e) {
-                alert("Error al procesar la venta de stock.");
+                mostrarToast("Error al procesar la venta de stock.");
             }
         }
 
@@ -1371,7 +1394,7 @@
                     adminAutenticado = true;
                     cambiarVista('admin');
                     abrirSidebar();
-                } else if (pass !== null) { alert("Contraseña incorrecta."); }
+                } else if (pass !== null) { mostrarToast("Contraseña incorrecta."); }
             }
         }
 
@@ -1500,7 +1523,7 @@
             const seleccionados = document.querySelectorAll('.check-variante:checked');
             if (seleccionados.length > 2) {
                 checkbox.checked = false;
-                alert("⚠️ Solo puedes escoger un máximo de 2 acompañamientos.");
+                mostrarToast("⚠️ Solo puedes escoger un máximo de 2 acompañamientos.");
             }
             calcularTotalModal();
         }
@@ -1530,7 +1553,7 @@
             });
 
             document.getElementById('cart-count').textContent = carrito.length;
-            alert("¡Plato añadido al pedido!");
+            mostrarToast("¡Plato añadido al pedido!");
             cerrarModal();
         }
 
@@ -1649,8 +1672,8 @@
             const tel = document.getElementById('input-tel-final').value.trim();
             const notas = document.getElementById('input-notas-final').value.trim();
 
-            if (!nombre) { alert("Por favor ingresa tu nombre o mesa."); return; }
-            if (carrito.length === 0) { alert("El carrito está vacío."); return; }
+            if (!nombre) { mostrarToast("Por favor ingresa tu nombre o mesa."); return; }
+            if (carrito.length === 0) { mostrarToast("El carrito está vacío."); return; }
 
             let detalleStr = carrito.map(i => `${i.nombre} ${i.extras.length ? '(' + i.extras.join(', ') + ')' : ''}`).join(' + ');
             if (notas) detalleStr += ` [Nota: ${notas}]`;
@@ -1668,11 +1691,11 @@
                     estado: 'Pendiente 🕒',
                     fecha: new Date().toLocaleString()
                 });
-                alert("¡Pedido completado con éxito! Puedes revisar el estado en el menú principal.");
+                mostrarToast("¡Pedido completado con éxito!");
                 carrito = [];
                 document.getElementById('cart-count').textContent = '0';
                 cerrarCarritoModal();
-            } catch(e) { alert("Error al enviar el pedido."); }
+            } catch(e) { mostrarToast("Error al enviar el pedido."); }
         }
 
         async function cargarAdminPlatosDashboard() {
@@ -1834,7 +1857,7 @@
                     dataUpdate.imagenUrl = urlFinal;
                 }
                 await updateDoc(doc(db, "menu", id), dataUpdate);
-                alert("¡Ítem actualizado con éxito!");
+                mostrarToast("¡Ítem actualizado con éxito!");
                 cerrarModalEditarPlato();
                 cargarAdminPlatosDashboard();
                 cargarAdminStock();
@@ -1939,7 +1962,7 @@
                 try {
                     if (imgUrl) nuevoObjeto.imagenUrl = imgUrl;
                     await addDoc(collection(db, "menu"), nuevoObjeto);
-                    alert("¡Ítem guardado con éxito!");
+                    mostrarToast("¡Ítem guardado con éxito!");
                     form.reset();
                     variantesTemporales = [];
                     document.getElementById('campos-stock-extra').style.display = 'none';
@@ -1947,7 +1970,7 @@
                     actualizarListaVariantesTempUI();
                     cargarAdminPlatosDashboard();
                     cargarAdminStock();
-                } catch(err) { alert("Error al guardar."); }
+                } catch(err) { mostrarToast("Error al guardar."); }
                 finally { btn.textContent = "Guardar Ítem"; btn.disabled = false; }
             };
 
