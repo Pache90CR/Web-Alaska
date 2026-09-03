@@ -397,7 +397,7 @@
         <div class="sidebar-footer">
             <div class="sidebar-status-pill" id="sidebar-status-pill-box">
                 <div class="status-dot" id="sidebar-status-dot"></div>
-                <span id="sidebar-status-text">VERIFICANDO HORARIO...</span>
+                <span id="sidebar-status-text">VERIFICANDO...</span>
             </div>
             <button onclick="cambiarVista('menu'); cerrarSidebar();" class="action-pill" style="width:100%; justify-content:center; border:none; background:#252525;">📋 Ver Menú Público</button>
             <button onclick="cerrarSesionAdmin()" class="action-pill" style="width:100%; justify-content:center; border:none; background:#2a1a1a; color:#ff6b6b;">🚪 Cerrar Sesión</button>
@@ -608,7 +608,7 @@
 
                 <div id="admin-tab-horarios" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Horarios de Atención</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Configura la disponibilidad semanal de tu negocio.</p>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Configura la disponibilidad semanal de tu negocio (Formato 24h).</p>
                     <div id="days-schedule-container"></div>
                     <button type="button" class="btn-admin-action" onclick="guardarHorariosNube()" style="padding:16px; font-size:15px; margin-top:10px;">Guardar Horarios en la Nube</button>
                 </div>
@@ -688,7 +688,7 @@
             </div>
             <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
                 <div id="modal-detalle-precio-total" style="font-size:18px; font-weight:800; color:var(--color-principal);">₡0</div>
-                <button onclick="agregarPlatoConExtrasAlPedido()" class="btn-admin-action" style="flex:1; margin-left:15px; padding:10px;">Agregar al Pedido 🛒</button>
+                <button onclick="agregarPlatoConExtrasAlPedido()" class="btn-admin-action" id="btn-hacer-pedido" style="flex:1; margin-left:15px; padding:10px;">Agregar al Pedido 🛒</button>
             </div>
         </div>
     </div>
@@ -861,6 +861,7 @@
         let variantesEdicionActual = [];
         let platoSeleccionadoParaPedir = null;
         let adminAutenticado = false;
+        let negocioAbiertoGlobal = true;
 
         window.clienteActualId = localStorage.getItem('alaska_cliente_doc_id') || null;
         window.clienteActualSellos = Number(localStorage.getItem('alaska_cliente_sellos') || 0);
@@ -920,6 +921,10 @@
 
         // ABRIR MODAL PARA SELECCIONAR EXTRAS (MÁXIMO 2, NO OBLIGATORIOS)
         window.abrirModalDetallePlato = function(id) {
+            if (!negocioAbiertoGlobal) {
+                mostrarToast("⚠️ El establecimiento se encuentra cerrado temporalmente.");
+                return;
+            }
             const plato = listaPlatos.find(p => p.id === id);
             if (!plato) return;
             platoSeleccionadoParaPedir = plato;
@@ -980,6 +985,10 @@
         }
 
         window.agregarPlatoConExtrasAlPedido = async function() {
+            if (!negocioAbiertoGlobal) {
+                mostrarToast("⚠️ El establecimiento se encuentra cerrado temporalmente.");
+                return;
+            }
             if (!platoSeleccionadoParaPedir) return;
             const checkboxes = document.querySelectorAll('.chk-extra-item:checked');
             let extrasSeleccionados = [];
@@ -1148,7 +1157,7 @@
             } catch(e) { mostrarToast("Error al registrar."); }
         }
 
-        // HORARIOS
+        // HORARIOS Y VERIFICADOR AUTOMÁTICO DE ESTADO
         function renderizarFormularioHorarios(horariosData = {}) {
             const container = document.getElementById('days-schedule-container');
             if (!container) return;
@@ -1190,7 +1199,59 @@
             try {
                 await setDoc(doc(db, "configuracion", "horariosAtencion"), horariosObj);
                 mostrarToast("✅ ¡Horarios guardados en la nube!");
+                verificarEstadoNegocioConHorarios(horariosObj);
             } catch(e) { mostrarToast("Error al guardar horarios."); }
+        }
+
+        function verificarEstadoNegocioConHorarios(horariosObj) {
+            const now = new Date();
+            const diaIndex = now.getDay(); // 0: Domingo, 1: Lunes, etc.
+            const nombreDiaHoy = diasSemana[diaIndex];
+            const infoHoy = horariosObj[nombreDiaHoy];
+
+            const dotEl = document.getElementById('floating-status-dot');
+            const textEl = document.getElementById('floating-status-text');
+            const sideDotEl = document.getElementById('sidebar-status-dot');
+            const sideTextEl = document.getElementById('sidebar-status-text');
+
+            if (!infoHoy || infoHoy.cerrado) {
+                negocioAbiertoGlobal = false;
+                aplicarEstadoVisualNegocio(false, "Cerrado hoy");
+                return;
+            }
+
+            const horaActualMinutos = now.getHours() * 60 + now.getMinutes();
+            const [aperturaH, aperturaM] = (infoHoy.apertura || "12:00").split(':').map(Number);
+            const [cierreH, cierreM] = (infoHoy.cierre || "22:00").split(':').map(Number);
+            const aperturaMinutos = aperturaH * 60 + aperturaM;
+            const cierreMinutos = cierreH * 60 + cierreM;
+
+            if (horaActualMinutos >= aperturaMinutos && horaActualMinutos <= cierreMinutos) {
+                negocioAbiertoGlobal = true;
+                aplicarEstadoVisualNegocio(true, "Abierto");
+            } else {
+                negocioAbiertoGlobal = false;
+                aplicarEstadoVisualNegocio(false, "Cerrado ahora");
+            }
+        }
+
+        function aplicarEstadoVisualNegocio(abierto, texto) {
+            const dotEl = document.getElementById('floating-status-dot');
+            const textEl = document.getElementById('floating-status-text');
+            const sideDotEl = document.getElementById('sidebar-status-dot');
+            const sideTextEl = document.getElementById('sidebar-status-text');
+
+            if (abierto) {
+                if (dotEl) { dotEl.className = "status-dot"; dotEl.style.background = "#22c55e"; dotEl.style.boxShadow = "0 0 6px #22c55e"; }
+                if (textEl) textEl.textContent = texto;
+                if (sideDotEl) { sideDotEl.className = "status-dot"; sideDotEl.style.background = "#22c55e"; sideDotEl.style.boxShadow = "0 0 6px #22c55e"; }
+                if (sideTextEl) sideTextEl.textContent = "NEGOCIO ABIERTO";
+            } else {
+                if (dotEl) { dotEl.className = "status-dot closed"; dotEl.style.background = "#ef4444"; dotEl.style.boxShadow = "0 0 6px #ef4444"; }
+                if (textEl) textEl.textContent = texto;
+                if (sideDotEl) { sideDotEl.className = "status-dot closed"; sideDotEl.style.background = "#ef4444"; sideDotEl.style.boxShadow = "0 0 6px #ef4444"; }
+                if (sideTextEl) sideTextEl.textContent = "NEGOCIO CERRADO";
+            }
         }
 
         // AJUSTES Y PALETA DE COLORES
@@ -1234,7 +1295,9 @@
                 }
                 const docRefH = doc(db, "configuracion", "horariosAtencion");
                 const docSnapH = await getDoc(docRefH);
-                renderizarFormularioHorarios(docSnapH.exists() ? docSnapH.data() : {});
+                let horariosData = docSnapH.exists() ? docSnapH.data() : {};
+                renderizarFormularioHorarios(horariosData);
+                verificarEstadoNegocioConHorarios(horariosData);
             } catch (e) { console.log(e); }
         }
 
