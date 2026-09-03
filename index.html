@@ -462,7 +462,6 @@
                     </div>
                 </div>
 
-                <!-- GESTIÓN DE PLATOS CON ESTADO DISPONIBLE/AGOTADO Y EDICIÓN -->
                 <div id="admin-tab-platos" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:15px;">🍽️ Gestión de Platos</h2>
                     <div style="overflow-x:auto;">
@@ -568,7 +567,7 @@
                         </div>
 
                         <div class="form-group" style="background:#222; padding:12px; border-radius:10px; border:1px solid var(--border-color);">
-                            <label>Acompañamientos / Extras (Opcional):</label>
+                            <label>Acompañamientos / Extras (Límite 2 selecciones):</label>
                             <div style="display:flex; gap:6px; margin-bottom:8px;">
                                 <input type="text" id="input-nombre-var" placeholder="Ej. Papas Gajo" style="flex:2;">
                                 <input type="number" id="input-precio-var" placeholder="₡ Extra" style="flex:1;">
@@ -675,6 +674,25 @@
 
     </div>
 
+    <!-- MODAL DETALLE DE PLATO Y SELECCIÓN DE EXTRAS (LÍMITE 2) -->
+    <div id="modal-detalle-plato" class="modal-overlay">
+        <div class="modal-content">
+            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                <h3 id="modal-detalle-titulo" style="margin:0; font-size:16px;">Detalle del Plato</h3>
+                <button onclick="cerrarModalDetallePlato()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
+            </div>
+            <div class="modal-body">
+                <img id="modal-detalle-img" src="" style="width:100%; height:160px; object-fit:cover; border-radius:10px; margin-bottom:12px;">
+                <p id="modal-detalle-desc" style="font-size:13px; color:var(--text-muted); margin-top:0;"></p>
+                <div id="modal-detalle-extras-container" style="margin-top:15px;"></div>
+            </div>
+            <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
+                <div id="modal-detalle-precio-total" style="font-size:18px; font-weight:800; color:var(--color-principal);">₡0</div>
+                <button onclick="agregarPlatoConExtrasAlPedido()" class="btn-admin-action" style="flex:1; margin-left:15px; padding:10px;">Agregar al Pedido 🛒</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL EDITAR PLATO -->
     <div id="modal-editar-plato" class="modal-overlay">
         <div class="modal-content">
@@ -710,7 +728,7 @@
                     <input type="text" id="edit-plato-desc">
                 </div>
                 <div class="form-group" style="background:#222; padding:12px; border-radius:10px; border:1px solid var(--border-color);">
-                    <label>Acompañamientos / Extras:</label>
+                    <label>Acompañamientos / Extras (Límite 2 selecciones, control de agotados):</label>
                     <div style="display:flex; gap:6px; margin-bottom:8px;">
                         <input type="text" id="edit-input-nombre-var" placeholder="Ej. Papas Gajo" style="flex:2;">
                         <input type="number" id="edit-input-precio-var" placeholder="₡ Extra" style="flex:1;">
@@ -841,6 +859,7 @@
         const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
         let variantesTemporales = [];
         let variantesEdicionActual = [];
+        let platoSeleccionadoParaPedir = null;
         let adminAutenticado = false;
 
         window.clienteActualId = localStorage.getItem('alaska_cliente_doc_id') || null;
@@ -892,11 +911,101 @@
                                 </div>
                                 <div class="stars">★★★★★</div>
                             </div>
-                            <button class="order-btn" onclick="mostrarToast('${plato.nombre} seleccionado')">Pedir</button>
+                            <button class="order-btn" onclick="abrirModalDetallePlato('${plato.id}')">Pedir</button>
                         </div>
                     </div>
                 `;
             });
+        }
+
+        // ABRIR MODAL PARA SELECCIONAR EXTRAS (MÁXIMO 2, NO OBLIGATORIOS)
+        window.abrirModalDetallePlato = function(id) {
+            const plato = listaPlatos.find(p => p.id === id);
+            if (!plato) return;
+            platoSeleccionadoParaPedir = plato;
+
+            document.getElementById('modal-detalle-titulo').textContent = plato.nombre;
+            document.getElementById('modal-detalle-img').src = plato.imagenUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
+            document.getElementById('modal-detalle-desc').textContent = plato.descripcion || 'Sin descripción adicional.';
+            document.getElementById('modal-detalle-precio-total').textContent = `₡${plato.precio.toLocaleString()}`;
+
+            const containerExtras = document.getElementById('modal-detalle-extras-container');
+            containerExtras.innerHTML = "";
+
+            if (plato.variantes && plato.variantes.length > 0) {
+                let htmlExtras = `<label style="font-weight:700; color:var(--color-principal); margin-bottom:8px;">Acompañamientos / Extras (Elige hasta 2):</label>`;
+                plato.variantes.forEach((v, index) => {
+                    let agotado = v.agotado === true;
+                    if (!agotado) {
+                        htmlExtras += `
+                            <label style="display:flex; align-items:center; justify-content:space-between; background:#222; padding:10px; border-radius:8px; margin-bottom:6px; cursor:pointer;">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <input type="checkbox" class="chk-extra-item" value="${index}" data-nombre="${v.nombre}" data-precio="${v.precio}" onchange="validarLimiteExtras()" style="width:16px; height:16px;">
+                                    <span>${v.nombre}</span>
+                                </div>
+                                <span style="color:var(--color-principal); font-weight:bold;">+₡${v.precio.toLocaleString()}</span>
+                            </label>
+                        `;
+                    }
+                });
+                containerExtras.innerHTML = htmlExtras;
+            } else {
+                containerExtras.innerHTML = `<span style="font-size:12px; color:var(--text-muted);">Este plato no cuenta con acompañamientos adicionales.</span>`;
+            }
+
+            document.getElementById('modal-detalle-plato').style.display = 'flex';
+        }
+
+        window.cerrarModalDetallePlato = function() {
+            document.getElementById('modal-detalle-plato').style.display = 'none';
+        }
+
+        window.validarLimiteExtras = function() {
+            const checkboxes = document.querySelectorAll('.chk-extra-item:checked');
+            if (checkboxes.length > 2) {
+                mostrarToast("⚠️ Solo puedes seleccionar un máximo de 2 acompañamientos.");
+                event.target.checked = false;
+            }
+            actualizarPrecioTotalModal();
+        }
+
+        function actualizarPrecioTotalModal() {
+            if (!platoSeleccionadoParaPedir) return;
+            let total = platoSeleccionadoParaPedir.precio;
+            const checkboxes = document.querySelectorAll('.chk-extra-item:checked');
+            checkboxes.forEach(chk => {
+                total += Number(chk.getAttribute('data-precio') || 0);
+            });
+            document.getElementById('modal-detalle-precio-total').textContent = `₡${total.toLocaleString()}`;
+        }
+
+        window.agregarPlatoConExtrasAlPedido = async function() {
+            if (!platoSeleccionadoParaPedir) return;
+            const checkboxes = document.querySelectorAll('.chk-extra-item:checked');
+            let extrasSeleccionados = [];
+            let adicionalPrecio = 0;
+
+            checkboxes.forEach(chk => {
+                extrasSeleccionados.push(chk.getAttribute('data-nombre'));
+                adicionalPrecio += Number(chk.getAttribute('data-precio') || 0);
+            });
+
+            let detalleTexto = extrasSeleccionados.length > 0 ? `Con: ${extrasSeleccionados.join(', ')}` : 'Sin extras';
+            let precioTotal = platoSeleccionadoParaPedir.precio + adicionalPrecio;
+
+            try {
+                await addDoc(collection(db, "pedidos"), {
+                    nombre: platoSeleccionadoParaPedir.nombre,
+                    detalle: detalleTexto,
+                    total: precioTotal,
+                    estado: 'Preparación',
+                    fecha: new Date().toLocaleString()
+                });
+                mostrarToast(`✅ ¡${platoSeleccionadoParaPedir.nombre} agregado al pedido!`);
+                cerrarModalDetallePlato();
+            } catch(e) {
+                mostrarToast("Error al registrar pedido.");
+            }
         }
 
         async function inicializarCategoriasNube() {
@@ -1336,7 +1445,7 @@
             const nombreVar = document.getElementById('edit-input-nombre-var').value.trim();
             const precioVar = Number(document.getElementById('edit-input-precio-var').value || 0);
             if (!nombreVar) { mostrarToast("Escribe el nombre del extra."); return; }
-            variantesEdicionActual.push({ nombre: nombreVar, precio: precioVar });
+            variantesEdicionActual.push({ nombre: nombreVar, precio: precioVar, agotado: false });
             document.getElementById('edit-input-nombre-var').value = "";
             document.getElementById('edit-input-precio-var').value = "";
             actualizarListaVariantesEdicionUI();
@@ -1348,9 +1457,25 @@
             if (variantesEdicionActual.length === 0) { container.innerHTML = "Sin extras añadidos."; return; }
             let html = "";
             variantesEdicionActual.forEach((v, idx) => {
-                html += `<div>• ${v.nombre} (+₡${v.precio.toLocaleString()}) <button type="button" onclick="variantesEdicionActual.splice(${idx},1); actualizarListaVariantesEdicionUI();" style="color:#ff6b6b; background:none; border:none; cursor:pointer;">✕</button></div>`;
+                let extraAgotado = v.agotado === true;
+                html += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#181818; padding:8px; border-radius:6px; margin-bottom:4px;">
+                        <span>${v.nombre} (+₡${v.precio.toLocaleString()})</span>
+                        <div style="display:flex; gap:6px;">
+                            <button type="button" onclick="toggleAgotadoExtraEdicion(${idx})" style="font-size:10px; padding:2px 6px; border-radius:4px; border:none; cursor:pointer; background:${extraAgotado ? 'rgba(239,68,68,0.2)' : 'rgba(16,185,129,0.2)'}; color:${extraAgotado ? '#ef4444' : '#10b981'};">
+                                ${extraAgotado ? 'Agotado' : 'Disponible'}
+                            </button>
+                            <button type="button" onclick="variantesEdicionActual.splice(${idx},1); actualizarListaVariantesEdicionUI();" style="color:#ff6b6b; background:none; border:none; cursor:pointer;">✕</button>
+                        </div>
+                    </div>
+                `;
             });
             container.innerHTML = html;
+        }
+
+        window.toggleAgotadoExtraEdicion = function(idx) {
+            variantesEdicionActual[idx].agotado = !variantesEdicionActual[idx].agotado;
+            actualizarListaVariantesEdicionUI();
         }
 
         window.guardarPlatoEditado = async function() {
@@ -1490,7 +1615,7 @@
             const nombreVar = document.getElementById('input-nombre-var').value.trim();
             const precioVar = Number(document.getElementById('input-precio-var').value || 0);
             if (!nombreVar) { mostrarToast("Escribe el nombre del extra."); return; }
-            variantesTemporales.push({ nombre: nombreVar, precio: precioVar });
+            variantesTemporales.push({ nombre: nombreVar, precio: precioVar, agotado: false });
             document.getElementById('input-nombre-var').value = "";
             document.getElementById('input-precio-var').value = "";
             actualizarListaVariantesTempUI();
@@ -1539,7 +1664,7 @@
             } else { await guardarConImagen(null); }
         });
 
-        // BASE DE CLIENTES CON OPCIÓN DE ELIMINAR
+        // BASE DE CLIENTES
         async function cargarBaseClientesAdmin() {
             const tbody = document.getElementById('admin-tabla-clientes-body');
             if (!tbody) return;
