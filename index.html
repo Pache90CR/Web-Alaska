@@ -390,7 +390,7 @@
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('ajustes')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065ZM15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                <span>Ajustes y Logo</span>
+                <span>Ajustes</span>
             </a>
         </div>
 
@@ -454,31 +454,34 @@
 
             <div class="admin-wrapper">
                 
+                <!-- PEDIDOS EN VIVO CON ESTADOS -->
                 <div id="admin-tab-pedidos" class="admin-section-tab active-admin-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">📦 Pedidos Recientes en Vivo</h2>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Monitorea órdenes y actualiza su estado operativo.</p>
                     <div id="admin-pedidos-container" style="max-height:500px; overflow-y:auto;">
                         <p style="color:var(--text-muted); font-size:13px;">Cargando pedidos...</p>
                     </div>
                 </div>
 
+                <!-- GESTIÓN DE PLATOS CON EDICIÓN COMPLETA -->
                 <div id="admin-tab-platos" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:15px;">🍽️ Gestión de Platos</h2>
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
-                                <tr><th>Orden</th><th>Img</th><th>Nombre</th><th>Categoría</th><th>Precio (₡)</th></tr>
+                                <tr><th>Orden</th><th>Img</th><th>Nombre</th><th>Categoría</th><th>Precio (₡)</th><th>Acciones</th></tr>
                             </thead>
                             <tbody id="admin-tabla-platos-body">
-                                <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Cargando platos...</td></tr>
+                                <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Cargando platos...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- CONTROL DE STOCK INTERNO CON ESTADÍSTICAS Y VENTA -->
+                <!-- STOCK INTERNO CON VENTA MÚLTIPLE Y ESTADÍSTICAS -->
                 <div id="admin-tab-stock" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">📦 Control de Stock Interno</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Vende artículos aquí para rebajar stock y sumarlos al cierre de caja.</p>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Inventario privado. Vende unidades para rebajar stock y sumarlas al cierre de caja.</p>
                     
                     <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:20px;">
                         <div class="stat-card total"><div class="stat-title">Inversión Stock</div><div class="stat-value" id="stock-stat-inversion">₡0</div></div>
@@ -498,11 +501,11 @@
                     </div>
                 </div>
 
-                <!-- CIERRE DE CAJA FUNCIONAL -->
+                <!-- CIERRE DE CAJA -->
                 <div id="admin-tab-caja" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">💰 Cierre de Caja y Reportes</h2>
                     <div class="stats-cards-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom:20px;">
-                        <div class="stat-card total"><div class="stat-title">Ingresos Totales (Pedidos + Stock)</div><div class="stat-value" id="stat-ingresos">₡0</div></div>
+                        <div class="stat-card total"><div class="stat-title">Ingresos Totales</div><div class="stat-value" id="stat-ingresos">₡0</div></div>
                         <div class="stat-card visibles"><div class="stat-title">Total Transacciones</div><div class="stat-value" id="stat-total-pedidos">0</div></div>
                     </div>
                     <button type="button" class="btn-admin-action" onclick="calcularCorteCaja()">Calcular Cierre de Caja del Día</button>
@@ -523,6 +526,7 @@
                     </div>
                 </div>
 
+                <!-- REGISTRAR NUEVO ÍTEM CON IMAGEN Y VARIANTES -->
                 <div id="admin-tab-nuevo-plato" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">➕ Registrar Nuevo Ítem / Stock</h2>
                     <form id="productForm">
@@ -530,22 +534,25 @@
                             <label>Nombre del Ítem:</label>
                             <input type="text" id="nombre" required placeholder="Ej. Costilla Cerdo o Botella guaro">
                         </div>
-                        <div class="form-group">
-                            <label>Categoría:</label>
-                            <select id="categoria" required onchange="toggleCamposStock(this.value)">
-                                <option value="Bocas">Bocas</option>
-                                <option value="Comidas Rápidas">Comidas Rápidas</option>
-                                <option value="Arroces">Arroces</option>
-                                <option value="Batidos">Batidos</option>
-                                <option value="Casados">Casados</option>
-                                <option value="Ofertas">Ofertas</option>
-                                <option value="Stock_Interno">📦 Stock Interno (Oculto)</option>
-                            </select>
+                        <div style="display:flex; gap:10px;">
+                            <div class="form-group" style="flex:1;">
+                                <label>Categoría:</label>
+                                <select id="categoria" required onchange="toggleCamposStock(this.value)">
+                                    <option value="Bocas">Bocas</option>
+                                    <option value="Comidas Rápidas">Comidas Rápidas</option>
+                                    <option value="Arroces">Arroces</option>
+                                    <option value="Batidos">Batidos</option>
+                                    <option value="Casados">Casados</option>
+                                    <option value="Ofertas">Ofertas</option>
+                                    <option value="Stock_Interno">📦 Stock Interno (Oculto)</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="flex:1;">
+                                <label>Precio de Venta (₡):</label>
+                                <input type="number" id="precio" required placeholder="5000">
+                            </div>
                         </div>
-                        <div class="form-group" id="group-precio-venta">
-                            <label>Precio de Venta (₡):</label>
-                            <input type="number" id="precio" required placeholder="5000">
-                        </div>
+
                         <div id="campos-stock-extra" style="display:none; background:#181818; padding:12px; border-radius:10px; border:1px solid var(--border-color); margin-bottom:16px;">
                             <div style="display:flex; gap:10px;">
                                 <div class="form-group" style="flex:1; margin-bottom:0;">
@@ -558,35 +565,55 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label>Descripción:</label>
+                            <input type="text" id="descripcion" placeholder="Detalles o ingredientes...">
+                        </div>
+
+                        <div class="form-group" style="background:#222; padding:12px; border-radius:10px; border:1px solid var(--border-color);">
+                            <label>Acompañamientos / Extras (Opcional):</label>
+                            <div style="display:flex; gap:6px; margin-bottom:8px;">
+                                <input type="text" id="input-nombre-var" placeholder="Ej. Papas Gajo" style="flex:2;">
+                                <input type="number" id="input-precio-var" placeholder="₡ Extra" style="flex:1;">
+                                <button type="button" onclick="agregarVarianteTemporal()" style="background:var(--color-principal); color:#121212; border:none; padding:0 14px; border-radius:8px; font-weight:bold; cursor:pointer;">+</button>
+                            </div>
+                            <div id="lista-variantes-temp" style="font-size:12px; color:var(--text-muted);">Sin extras añadidos.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Fotografía (Opcional):</label>
+                            <input type="file" id="imagenFile" accept="image/*">
+                        </div>
                         <button type="submit" class="btn-admin-action">Guardar Ítem</button>
                     </form>
                 </div>
 
-                <!-- GENERADOR DE SELLOS DE UN SOLO USO ESTRICTO -->
+                <!-- GENERADOR DE SELLOS DE UN SOLO USO -->
                 <div id="admin-tab-lealtad" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">🔐 Generador de Sello (Un Solo Uso)</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">El código generado expirará automáticamente en cuanto el cliente lo canjee.</p>
                     <div style="background:#181818; padding:18px; border-radius:14px; border:1px solid var(--border-color); text-align:center;">
                         <span id="codigo-activo-display" style="font-size:28px; font-weight:900; letter-spacing:4px; color:var(--color-principal); display:block; margin-bottom:15px;">----</span>
                         <button type="button" class="btn-admin-action" onclick="generarNuevoCodigoSello()">Generar Código Nuevo</button>
                     </div>
                 </div>
 
+                <!-- BASE DE CLIENTES CON OPCIÓN DE ELIMINAR -->
                 <div id="admin-tab-clientes" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:10px;">👥 Base de Clientes</h2>
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
-                                <tr><th>Cliente</th><th>Teléfono</th><th>Sellos ⭐</th></tr>
+                                <tr><th>Cliente</th><th>Teléfono</th><th>Sellos ⭐</th><th>Acción</th></tr>
                             </thead>
                             <tbody id="admin-tabla-clientes-body">
-                                <tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Cargando clientes...</td></tr>
+                                <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando clientes...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- HORARIOS DE ATENCIÓN FUNCIONALES -->
+                <!-- HORARIOS DE ATENCIÓN -->
                 <div id="admin-tab-horarios" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Horarios de Atención</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Configura la disponibilidad semanal de tu negocio.</p>
@@ -594,28 +621,57 @@
                     <button type="button" class="btn-admin-action" onclick="guardarHorariosNube()" style="padding:16px; font-size:15px; margin-top:10px;">Guardar Horarios en la Nube</button>
                 </div>
 
+                <!-- AJUSTES (ESTILO EXACTO SOLICITADO) -->
                 <div id="admin-tab-ajustes" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Ajustes de Cuenta y Paleta de Colores</h2>
+                    <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Ajustes</h2>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Configura los detalles de tu cuenta y preferencias.</p>
+                    
                     <div class="settings-card">
+                        <h3>Configuración de la cuenta</h3>
+                        <p style="font-size:12px; color:var(--text-muted); margin-bottom:15px;">Nombre para uso administrativo y público.</p>
+
                         <div class="form-group">
                             <label>Nombre de la Cuenta (Interno)</label>
                             <input type="text" id="input-nombre-interno" placeholder="Bar Alaska">
                         </div>
                         <div class="form-group">
                             <label>Título del Menú (Público)</label>
-                            <input type="text" id="input-titulo-publico" placeholder="Bar Restaurante Alaska">
+                            <input type="text" id="input-titulo-publico" placeholder="Restaurante Alaska">
                         </div>
                         <div class="form-group">
-                            <label>Logo del Negocio</label>
-                            <input type="file" id="logoFileInput" accept="image/*">
+                            <label>Subtítulo (Público)</label>
+                            <input type="text" id="input-subtitulo-publico" placeholder="Descubre nuestras deliciosas opciones">
+                        </div>
+                        <div class="form-group">
+                            <label>Descripción Adicional</label>
+                            <input type="text" id="input-desc-adicional" placeholder="Bar Alaska">
+                        </div>
+                        <div class="form-group">
+                            <label>Logo del negocio</label>
+                            <div style="background:#121212; border:1px solid var(--border-color); border-radius:12px; padding:20px; text-align:center;">
+                                <img id="settings-logo-preview" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=150&q=80" style="width:70px; height:70px; border-radius:50%; object-fit:cover; border:2px solid var(--color-principal); margin-bottom:12px;">
+                                <input type="file" id="logoFileInput" accept="image/*" style="font-size:12px;">
+                            </div>
                         </div>
                     </div>
 
                     <div class="settings-card">
                         <h3>Paleta de Colores</h3>
                         <div class="form-group">
-                            <label>Color Principal</label>
+                            <label>Color principal</label>
                             <input type="color" id="input-color-principal" value="#d4af37" style="height:42px; cursor:pointer;">
+                        </div>
+                        <div class="form-group">
+                            <label>Color secundario</label>
+                            <input type="color" id="input-color-secundario" value="#2a2a2a" style="height:42px; cursor:pointer;">
+                        </div>
+                        <div class="form-group">
+                            <label>Color de Oferta (Acento)</label>
+                            <input type="color" id="input-color-oferta" value="#ef4444" style="height:42px; cursor:pointer;">
+                        </div>
+                        <div class="form-group">
+                            <label>Color de Fondo (Header)</label>
+                            <input type="color" id="input-color-fondo" value="#121212" style="height:42px; cursor:pointer;">
                         </div>
                     </div>
 
@@ -625,6 +681,52 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- MODAL EDITAR PLATO -->
+    <div id="modal-editar-plato" class="modal-overlay">
+        <div class="modal-content">
+            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="margin:0; font-size:16px;">✏️ Editar Ítem</h3>
+                <button onclick="cerrarModalEditarPlato()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-plato-id">
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" id="edit-plato-nombre">
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <div class="form-group" style="flex:1;">
+                        <label>Categoría</label>
+                        <select id="edit-plato-categoria">
+                            <option value="Bocas">Bocas</option>
+                            <option value="Comidas Rápidas">Comidas Rápidas</option>
+                            <option value="Arroces">Arroces</option>
+                            <option value="Batidos">Batidos</option>
+                            <option value="Casados">Casados</option>
+                            <option value="Ofertas">Ofertas</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label>Precio Venta (₡)</label>
+                        <input type="number" id="edit-plato-precio">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <input type="text" id="edit-plato-desc">
+                </div>
+                <div class="form-group">
+                    <label>Cambiar Fotografía</label>
+                    <input type="file" id="edit-plato-file" accept="image/*">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="cerrarModalEditarPlato()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer;">Cancelar</button>
+                <button onclick="guardarPlatoEditado()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Guardar Cambios</button>
+            </div>
+        </div>
     </div>
 
     <!-- MODAL EDITAR CATEGORÍA -->
@@ -643,12 +745,12 @@
             </div>
             <div class="modal-footer">
                 <button onclick="cerrarModalEditarCat()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer;">Cancelar</button>
-                <button onclick="guardarCategoriaEditadaNube()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Guardar en Nube</button>
+                <button onclick="guardarCategoriaEditadaNube()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Guardar</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DE SELLO INTERACTIVO -->
+    <!-- MODAL SELLO -->
     <div id="modal-sello-interactivo" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -656,11 +758,11 @@
                 <button onclick="cerrarModalSelloInteractivo()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
             </div>
             <div class="modal-body">
-                <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Introduce el código de 4 dígitos proporcionado por el cajero:</p>
+                <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Introduce el código de 4 dígitos:</p>
                 <div class="form-group">
                     <input type="text" id="input-codigo-sello-rapido" placeholder="Ej. 4829" maxlength="4" style="text-align:center; font-size:22px; letter-spacing:6px; font-weight:bold;">
                 </div>
-                <button onclick="validarYGanarSelloRapido()" class="btn-admin-action" style="background:var(--color-principal);">Validar y Marcar Sello ⭐</button>
+                <button onclick="validarYGanarSelloRapido()" class="btn-admin-action" style="background:var(--color-principal);">Validar Sello ⭐</button>
             </div>
         </div>
     </div>
@@ -670,7 +772,7 @@
             <div class="status-dot" id="floating-status-dot"></div>
             <span id="floating-status-text">Abierto</span>
         </div>
-        <button class="cart-icon-btn" onclick="mostrarToast('Sistema listo')" title="Estado">
+        <button class="cart-icon-btn" onclick="mostrarToast('Sistema operativo')" title="Estado">
             <svg class="icon-svg-lg" style="color:#121212;" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             <span class="cart-count-badge" id="cart-count">0</span>
         </button>
@@ -684,7 +786,7 @@
             </div>
             <div class="modal-body">
                 <div id="seccion-registro-cliente" style="display:block;">
-                    <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Regístrate con tu nombre y teléfono para unirte al Club.</p>
+                    <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Regístrate con tu nombre y teléfono.</p>
                     <div class="form-group">
                         <label>Tu Nombre *</label>
                         <input type="text" id="reg-nombre" placeholder="Ej. Carlos Pérez">
@@ -718,7 +820,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, setDoc, getDoc, query, where, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD2JhmA4m7NMbRcC2RqaHVIz1NLgI2IzE",
@@ -736,6 +838,7 @@
         let categoriasNube = {};
         const categoriasDefault = ["Bocas", "Comidas Rápidas", "Arroces", "Batidos", "Casados", "Ofertas"];
         const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+        let variantesTemporales = [];
         let adminAutenticado = false;
 
         window.clienteActualId = localStorage.getItem('alaska_cliente_doc_id') || null;
@@ -823,7 +926,7 @@
             container.innerHTML = html;
         }
 
-        // CÓDIGO DE SELLO DE UN SOLO USO ESTRICTO
+        // CÓDIGO DE SELLO DE UN SOLO USO
         window.hacerClickCasillaSello = function(numeroCasilla) {
             if (!window.clienteActualId) {
                 abrirLealtadModalSimple();
@@ -859,8 +962,7 @@
                 const docSnap = await getDoc(docRefConfig);
 
                 if (docSnap.exists() && docSnap.data().codigo === codigoIngresado) {
-                    // ELIMINAR CÓDIGO INMEDIATAMENTE PARA QUE SEA DE UN SOLO USO
-                    await setDoc(docRefConfig, { codigo: null });
+                    await setDoc(docRefConfig, { codigo: null }); // Invalida el código (Un solo uso)
 
                     window.clienteActualSellos++;
                     if (window.clienteActualSellos >= 5) {
@@ -875,11 +977,9 @@
                     actualizarUILealtadPublica();
                     cerrarModalSelloInteractivo();
                 } else {
-                    mostrarToast("❌ Código incorrecto o ya fue utilizado (Un solo uso).");
+                    mostrarToast("❌ Código incorrecto o ya fue utilizado.");
                 }
-            } catch(e) {
-                mostrarToast("Error al validar código.");
-            }
+            } catch(e) { mostrarToast("Error al validar código."); }
         }
 
         function actualizarUILealtadPublica() {
@@ -982,7 +1082,7 @@
             } catch(e) { mostrarToast("Error al guardar horarios."); }
         }
 
-        // CONFIGURACIÓN Y PALETA DE COLORES
+        // AJUSTES Y PALETA DE COLORES
         async function cargarConfiguracionVisualNube() {
             try {
                 const docRef = doc(db, "configuracion", "estilosGenerales");
@@ -990,12 +1090,36 @@
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     if (data.nombreInterno && document.getElementById('input-nombre-interno')) document.getElementById('input-nombre-interno').value = data.nombreInterno;
-                    if (data.tituloPublico && document.getElementById('input-titulo-publico')) document.getElementById('input-titulo-publico').value = data.tituloPublico;
+                    if (data.tituloPublico && document.getElementById('input-titulo-publico')) {
+                        document.getElementById('input-titulo-publico').value = data.tituloPublico;
+                        document.getElementById('public-title-display').textContent = data.tituloPublico;
+                    }
+                    if (data.subtituloPublico && document.getElementById('input-subtitulo-publico')) {
+                        document.getElementById('input-subtitulo-publico').value = data.subtituloPublico;
+                        document.getElementById('public-subtitle-display').textContent = data.subtituloPublico;
+                    }
+                    if (data.descAdicional && document.getElementById('input-desc-adicional')) document.getElementById('input-desc-adicional').value = data.descAdicional;
+                    
                     if (data.colorPrincipal) {
                         document.documentElement.style.setProperty('--color-principal', data.colorPrincipal);
                         if(document.getElementById('input-color-principal')) document.getElementById('input-color-principal').value = data.colorPrincipal;
                     }
-                    if (data.logoUrl && document.getElementById('logo-display')) document.getElementById('logo-display').src = data.logoUrl;
+                    if (data.colorSecundario) {
+                        document.documentElement.style.setProperty('--color-secundario', data.colorSecundario);
+                        if(document.getElementById('input-color-secundario')) document.getElementById('input-color-secundario').value = data.colorSecundario;
+                    }
+                    if (data.colorOferta) {
+                        document.documentElement.style.setProperty('--color-oferta', data.colorOferta);
+                        if(document.getElementById('input-color-oferta')) document.getElementById('input-color-oferta').value = data.colorOferta;
+                    }
+                    if (data.colorFondo) {
+                        document.documentElement.style.setProperty('--bg-dark', data.colorFondo);
+                        if(document.getElementById('input-color-fondo')) document.getElementById('input-color-fondo').value = data.colorFondo;
+                    }
+                    if (data.logoUrl) {
+                        if(document.getElementById('logo-display')) document.getElementById('logo-display').src = data.logoUrl;
+                        if(document.getElementById('settings-logo-preview')) document.getElementById('settings-logo-preview').src = data.logoUrl;
+                    }
                 }
                 const docRefH = doc(db, "configuracion", "horariosAtencion");
                 const docSnapH = await getDoc(docRefH);
@@ -1006,17 +1130,29 @@
         window.guardarAjustesYConfiguracionNube = async function() {
             const nombreInterno = document.getElementById('input-nombre-interno').value.trim();
             const tituloPublico = document.getElementById('input-titulo-publico').value.trim();
+            const subtituloPublico = document.getElementById('input-subtitulo-publico').value.trim();
+            const descAdicional = document.getElementById('input-desc-adicional').value.trim();
             const colorPrincipal = document.getElementById('input-color-principal').value;
+            const colorSecundario = document.getElementById('input-color-secundario').value;
+            const colorOferta = document.getElementById('input-color-oferta').value;
+            const colorFondo = document.getElementById('input-color-fondo').value;
             const fileInput = document.getElementById('logoFileInput');
 
             const guardarFin = async (logoUrl) => {
                 try {
-                    let dataObj = { nombreInterno, tituloPublico, colorPrincipal };
+                    let dataObj = { nombreInterno, tituloPublico, subtituloPublico, descAdicional, colorPrincipal, colorSecundario, colorOferta, colorFondo };
                     if(logoUrl) dataObj.logoUrl = logoUrl;
                     await setDoc(doc(db, "configuracion", "estilosGenerales"), dataObj, { merge: true });
+                    
                     document.documentElement.style.setProperty('--color-principal', colorPrincipal);
-                    if(logoUrl) document.getElementById('logo-display').src = logoUrl;
-                    mostrarToast("✅ ¡Ajustes guardados!");
+                    document.documentElement.style.setProperty('--color-secundario', colorSecundario);
+                    document.documentElement.style.setProperty('--color-oferta', colorOferta);
+                    document.documentElement.style.setProperty('--bg-dark', colorFondo);
+                    if(logoUrl) {
+                        document.getElementById('logo-display').src = logoUrl;
+                        document.getElementById('settings-logo-preview').src = logoUrl;
+                    }
+                    mostrarToast("✅ ¡Ajustes guardados correctamente!");
                 } catch(e) { mostrarToast("Error al guardar."); }
             };
 
@@ -1080,7 +1216,140 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // STOCK INTERNO Y ESTADÍSTICAS DE GANANCIAS
+        // PEDIDOS EN VIVO CON ESTADOS
+        async function cargarPedidosAdmin() {
+            const contenedor = document.getElementById("admin-pedidos-container");
+            if (!contenedor) return;
+            try {
+                const qs = await getDocs(collection(db, "pedidos"));
+                if (qs.empty) { contenedor.innerHTML = "<p style='color:var(--text-muted); font-size:13px;'>Sin pedidos recientes.</p>"; return; }
+                contenedor.innerHTML = "";
+                qs.forEach(d => {
+                    const p = d.data();
+                    const id = d.id;
+                    const estadoActual = p.estado || 'Preparación';
+                    contenedor.innerHTML += `
+                        <div class="pedido-card" style="background:#252525; padding:15px; border-radius:12px; margin-bottom:12px; border:1px solid var(--border-color); border-left:4px solid var(--color-principal);">
+                            <strong style="color:white; font-size:15px;">${p.nombre}</strong><br>
+                            <span style="font-size:13px; color:var(--color-principal);">${p.detalle || ''}</span><br>
+                            <strong style="color:white; font-size:14px;">₡${Number(p.total || 0).toLocaleString()}</strong>
+                            <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                                <span style="font-size:11px; color:var(--text-muted);">Estado:</span>
+                                <button onclick="actualizarEstadoPedido('${id}', 'Preparación')" class="action-pill" style="padding:4px 8px; font-size:11px; ${estadoActual==='Preparación'?'background:var(--color-principal); color:#121212;':''}">Preparación</button>
+                                <button onclick="actualizarEstadoPedido('${id}', 'En Camino')" class="action-pill" style="padding:4px 8px; font-size:11px; ${estadoActual==='En Camino'?'background:var(--color-principal); color:#121212;':''}">En Camino</button>
+                                <button onclick="actualizarEstadoPedido('${id}', 'Entregado')" class="action-pill" style="padding:4px 8px; font-size:11px; ${estadoActual==='Entregado'?'background:var(--color-principal); color:#121212;':''}">Entregado</button>
+                                <button onclick="eliminarPedido('${id}')" class="action-pill" style="padding:4px 8px; font-size:11px; background:#5c2222; color:#ff6b6b; border:none;">Eliminar</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch(e) { contenedor.innerHTML = "<p style='color:#ef4444;'>Error al cargar pedidos.</p>"; }
+        }
+
+        window.actualizarEstadoPedido = async function(idPedido, nuevoEstado) {
+            try {
+                await updateDoc(doc(db, "pedidos", idPedido), { estado: nuevoEstado });
+                mostrarToast(`Estado actualizado a: ${nuevoEstado}`);
+                cargarPedidosAdmin();
+            } catch(e) { mostrarToast("Error al actualizar estado."); }
+        }
+
+        window.eliminarPedido = async function(idPedido) {
+            if(confirm("¿Eliminar este pedido?")) {
+                await deleteDoc(doc(db, "pedidos", idPedido));
+                mostrarToast("Pedido eliminado");
+                cargarPedidosAdmin();
+            }
+        }
+
+        // GESTIÓN DE PLATOS CON EDICIÓN COMPLETA Y FOTO
+        async function cargarAdminPlatosDashboard() {
+            try {
+                const qs = await getDocs(collection(db, "menu"));
+                let platos = [];
+                qs.forEach(d => platos.push({ id: d.id, ...d.data() }));
+                renderizarTablaAdminPlatos(platos);
+            } catch(e) { console.log(e); }
+        }
+
+        function renderizarTablaAdminPlatos(platos) {
+            const tbody = document.getElementById('admin-tabla-platos-body');
+            if (!tbody) return;
+            let visibles = platos.filter(p => p.categoria !== 'Stock_Interno');
+            if (visibles.length === 0) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No hay platos registrados.</td></tr>`; return; }
+            tbody.innerHTML = "";
+            visibles.forEach((p, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${idx + 1}</td>
+                        <td><img src="${p.imagenUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=100&q=80'}" style="width:36px; height:36px; border-radius:6px; object-fit:cover;"></td>
+                        <td style="font-weight:700;">${p.nombre}</td>
+                        <td>${p.categoria}</td>
+                        <td style="color:var(--color-principal); font-weight:800;">₡${p.precio.toLocaleString()}</td>
+                        <td>
+                            <button onclick="abrirModalEditarPlato('${p.id}')" class="action-pill" style="padding:4px 8px; font-size:11px;">Editar</button>
+                            <button onclick="eliminarPlato('${p.id}')" class="action-pill" style="padding:4px 8px; font-size:11px; background:#5c2222; color:#ff6b6b; border:none;">Eliminar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.abrirModalEditarPlato = function(id) {
+            const p = listaPlatos.find(item => item.id === id);
+            if(!p) return;
+            document.getElementById('edit-plato-id').value = p.id;
+            document.getElementById('edit-plato-nombre').value = p.nombre || '';
+            document.getElementById('edit-plato-categoria').value = p.categoria || 'Bocas';
+            document.getElementById('edit-plato-precio').value = p.precio || 0;
+            document.getElementById('edit-plato-desc').value = p.descripcion || '';
+            document.getElementById('edit-plato-file').value = '';
+            document.getElementById('modal-editar-plato').style.display = 'flex';
+        }
+
+        window.cerrarModalEditarPlato = function() {
+            document.getElementById('modal-editar-plato').style.display = 'none';
+        }
+
+        window.guardarPlatoEditado = async function() {
+            const id = document.getElementById('edit-plato-id').value;
+            const nombre = document.getElementById('edit-plato-nombre').value.trim();
+            const categoria = document.getElementById('edit-plato-categoria').value;
+            const precio = Number(document.getElementById('edit-plato-precio').value);
+            const descripcion = document.getElementById('edit-plato-desc').value.trim();
+            const fileInput = document.getElementById('edit-plato-file');
+
+            const actualizarDatos = async (imagenUrlFinal) => {
+                try {
+                    let obj = { nombre, categoria, precio, descripcion };
+                    if(imagenUrlFinal) obj.imagenUrl = imagenUrlFinal;
+                    await updateDoc(doc(db, "menu", id), obj);
+                    cerrarModalEditarPlato();
+                    mostrarToast("✅ ¡Plato actualizado con éxito!");
+                    cargarAdminPlatosDashboard();
+                    cargarMenu();
+                } catch(e) { mostrarToast("Error al actualizar plato."); }
+            };
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.readAsDataURL(fileInput.files[0]);
+                reader.onload = async function() { await actualizarDatos(reader.result); };
+            } else { await actualizarDatos(null); }
+        }
+
+        window.eliminarPlato = async function(id) {
+            if(confirm("¿Estás seguro de eliminar este ítem?")) {
+                try {
+                    await deleteDoc(doc(db, "menu", id));
+                    mostrarToast("Ítem eliminado.");
+                    cargarAdminPlatosDashboard();
+                    cargarMenu();
+                } catch(e) { mostrarToast("Error al eliminar."); }
+            }
+        }
+
+        // STOCK INTERNO CON VENTA MÚLTIPLE DE UNIDADES
         window.toggleCamposStock = function(val) {
             document.getElementById('campos-stock-extra').style.display = (val === 'Stock_Interno') ? 'block' : 'none';
         }
@@ -1115,7 +1384,7 @@
                                 <td>₡${comp.toLocaleString()}</td>
                                 <td>₡${vent.toLocaleString()}</td>
                                 <td style="color:#4ade80;">₡${ganUnid.toLocaleString()}</td>
-                                <td><button onclick="venderUnidadStock('${s.id}', ${cant}, ${vent})" class="action-pill" style="padding:6px 12px; font-size:11px; background:rgba(212,175,55,0.2);">Vender 1</button></td>
+                                <td><button onclick="venderCantidadStock('${s.id}', ${cant}, ${vent})" class="action-pill" style="padding:6px 12px; font-size:11px; background:rgba(212,175,55,0.2);">Vender</button></td>
                             </tr>
                         `;
                     }
@@ -1129,18 +1398,22 @@
             } catch(e) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#ef4444;">Error al cargar stock.</td></tr>`; }
         }
 
-        window.venderUnidadStock = async function(idPlato, stockActual, precioVenta) {
-            if (stockActual <= 0) { mostrarToast("⚠️ No hay unidades disponibles en stock."); return; }
+        window.venderCantidadStock = async function(idPlato, stockActual, precioVenta) {
+            let cantidadStr = prompt("¿Cuántas unidades deseas vender?", "1");
+            if (!cantidadStr) return;
+            let cantidad = Number(cantidadStr);
+            if (isNaN(cantidad) || cantidad <= 0) { mostrarToast("Cantidad inválida."); return; }
+            if (cantidad > stockActual) { mostrarToast("⚠️ No hay suficiente stock disponible."); return; }
+
             try {
-                await updateDoc(doc(db, "menu", idPlato), { stockCantidad: stockActual - 1 });
-                // Registrar venta en pedidos para el cierre de caja automático
+                await updateDoc(doc(db, "menu", idPlato), { stockCantidad: stockActual - cantidad });
                 await addDoc(collection(db, "pedidos"), {
                     nombre: "Venta Stock Interno",
-                    detalle: "1 unidad vendida",
-                    total: precioVenta,
+                    detalle: `${cantidad} unidades vendidas`,
+                    total: precioVenta * cantidad,
                     fecha: new Date().toLocaleString()
                 });
-                mostrarToast("✅ ¡Venta registrada y stock rebajado!");
+                mostrarToast(`✅ ¡Se vendieron ${cantidad} unidades y se sumaron a caja!`);
                 cargarAdminStock();
             } catch(e) { mostrarToast("Error al procesar venta."); }
         }
@@ -1163,13 +1436,99 @@
                 qs.forEach(d => total += Number(d.data().total || 0));
                 document.getElementById('resultado-corte-container').innerHTML = `
                     <div style="background:#222; padding:15px; border-radius:10px; border:1px solid var(--color-principal);">
-                        <strong style="color:var(--color-principal); font-size:16px;">💰 Total Recaudado en Caja: ₡${total.toLocaleString()}</strong><br>
-                        <span style="font-size:12px; color:var(--text-muted);">Basado en ${qs.size} transacciones registradas.</span>
+                        <strong style="color:var(--color-principal); font-size:16px;">💰 Total Recaudado: ₡${total.toLocaleString()}</strong><br>
+                        <span style="font-size:12px; color:var(--text-muted);">Basado en ${qs.size} transacciones.</span>
                     </div>
                 `;
-            } catch(e) { mostrarToast("Error al calcular corte."); }
+            } catch(e) { mostrarToast("Error al calcular."); }
         }
 
+        // REGISTRAR NUEVO ÍTEM CON IMAGEN Y VARIANTES
+        window.agregarVarianteTemporal = function() {
+            const nombreVar = document.getElementById('input-nombre-var').value.trim();
+            const precioVar = Number(document.getElementById('input-precio-var').value || 0);
+            if (!nombreVar) { mostrarToast("Escribe el nombre del extra."); return; }
+            variantesTemporales.push({ nombre: nombreVar, precio: precioVar });
+            document.getElementById('input-nombre-var').value = "";
+            document.getElementById('input-precio-var').value = "";
+            actualizarListaVariantesTempUI();
+        }
+
+        function actualizarListaVariantesTempUI() {
+            const container = document.getElementById('lista-variantes-temp');
+            if (variantesTemporales.length === 0) { container.innerHTML = "Sin extras añadidos."; return; }
+            let html = "";
+            variantesTemporales.forEach((v, idx) => {
+                html += `<div>• ${v.nombre} (+₡${v.precio.toLocaleString()}) <button type="button" onclick="variantesTemporales.splice(${idx},1); actualizarListaVariantesTempUI();" style="color:#ff6b6b; background:none; border:none; cursor:pointer;">✕</button></div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        document.getElementById('productForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nombre = document.getElementById('nombre').value.trim();
+            const categoria = document.getElementById('categoria').value;
+            const precio = Number(document.getElementById('precio').value);
+            const descripcion = document.getElementById('descripcion').value.trim();
+            const fileInput = document.getElementById('imagenFile');
+
+            const guardarConImagen = async (imagenUrlFinal) => {
+                try {
+                    let dataPlato = { nombre, categoria, precio, descripcion, disponible: true, variantes: variantesTemporales };
+                    if(imagenUrlFinal) dataPlato.imagenUrl = imagenUrlFinal;
+                    if (categoria === 'Stock_Interno') {
+                        dataPlato.stockCantidad = Number(document.getElementById('stock-cantidad').value || 0);
+                        dataPlato.stockCompra = Number(document.getElementById('stock-compra').value || 0);
+                    }
+                    await addDoc(collection(db, "menu"), dataPlato);
+                    mostrarToast("✅ ¡Ítem registrado con éxito!");
+                    document.getElementById('productForm').reset();
+                    variantesTemporales = [];
+                    actualizarListaVariantesTempUI();
+                    toggleCamposStock('Bocas');
+                    cargarMenu();
+                } catch(err) { mostrarToast("Error al registrar ítem."); }
+            };
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.readAsDataURL(fileInput.files[0]);
+                reader.onload = async function() { await guardarConImagen(reader.result); };
+            } else { await guardarConImagen(null); }
+        });
+
+        // BASE DE CLIENTES CON OPCIÓN DE ELIMINAR
+        async function cargarBaseClientesAdmin() {
+            const tbody = document.getElementById('admin-tabla-clientes-body');
+            if (!tbody) return;
+            try {
+                const qs = await getDocs(collection(db, "clientes"));
+                if (qs.empty) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin clientes.</td></tr>`; return; }
+                tbody.innerHTML = "";
+                qs.forEach(d => {
+                    const c = d.data();
+                    const id = d.id;
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="font-weight:750;">${c.nombre}</td>
+                            <td>${c.telefono}</td>
+                            <td style="color:var(--color-principal); font-weight:800;">${c.sellos || 0} / 5 ⭐</td>
+                            <td><button onclick="eliminarCliente('${id}')" class="action-pill" style="padding:4px 8px; font-size:11px; background:#5c2222; color:#ff6b6b; border:none;">Eliminar</button></td>
+                        </tr>
+                    `;
+                });
+            } catch(e) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;">Error.</td></tr>`; }
+        }
+
+        window.eliminarCliente = async function(id) {
+            if(confirm("¿Eliminar este cliente de la base de datos?")) {
+                await deleteDoc(doc(db, "clientes", id));
+                mostrarToast("Cliente eliminado.");
+                cargarBaseClientesAdmin();
+            }
+        }
+
+        // CATEGORÍAS
         async function renderizarTablaCategoriasAdmin() {
             const tbody = document.getElementById('admin-tabla-categorias-body');
             if (!tbody) return;
@@ -1210,71 +1569,12 @@
                     renderizarCategoriasPublicas();
                     renderizarTablaCategoriasAdmin();
                     cerrarModalEditarCat();
-                    mostrarToast("✅ ¡Icono actualizado en la nube!");
-                } catch(e) { mostrarToast("Error al guardar icono."); }
+                    mostrarToast("✅ ¡Icono actualizado!");
+                } catch(e) { mostrarToast("Error al guardar."); }
             };
         }
 
-        async function cargarPedidosAdmin() {
-            const contenedor = document.getElementById("admin-pedidos-container");
-            if (!contenedor) return;
-            try {
-                const qs = await getDocs(collection(db, "pedidos"));
-                if (qs.empty) { contenedor.innerHTML = "<p style='color:var(--text-muted); font-size:13px;'>Sin pedidos recientes.</p>"; return; }
-                contenedor.innerHTML = "";
-                qs.forEach(d => {
-                    const p = d.data();
-                    contenedor.innerHTML += `
-                        <div style="background:#252525; padding:12px; border-radius:10px; margin-bottom:10px; border:1px solid var(--border-color);">
-                            <strong style="color:white;">${p.nombre}</strong><br>
-                            <span style="font-size:12px; color:var(--color-principal);">${p.detalle}</span><br>
-                            <strong style="color:white;">₡${p.total.toLocaleString()}</strong>
-                        </div>
-                    `;
-                });
-            } catch(e) { contenedor.innerHTML = "<p style='color:#ef4444;'>Error.</p>"; }
-        }
-
-        async function cargarAdminPlatosDashboard() {
-            try {
-                const qs = await getDocs(collection(db, "menu"));
-                let platos = [];
-                qs.forEach(d => platos.push({ id: d.id, ...d.data() }));
-                renderizarTablaAdminPlatos(platos);
-            } catch(e) { console.log(e); }
-        }
-
-        function renderizarTablaAdminPlatos(platos) {
-            const tbody = document.getElementById('admin-tabla-platos-body');
-            if (!tbody) return;
-            let visibles = platos.filter(p => p.categoria !== 'Stock_Interno');
-            tbody.innerHTML = "";
-            visibles.forEach((p, idx) => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${idx + 1}</td>
-                        <td><img src="${p.imagenUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=100&q=80'}" style="width:36px; height:36px; border-radius:6px; object-fit:cover;"></td>
-                        <td style="font-weight:700;">${p.nombre}</td>
-                        <td>${p.categoria}</td>
-                        <td style="color:var(--color-principal); font-weight:800;">₡${p.precio.toLocaleString()}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        async function cargarBaseClientesAdmin() {
-            const tbody = document.getElementById('admin-tabla-clientes-body');
-            if (!tbody) return;
-            try {
-                const qs = await getDocs(collection(db, "clientes"));
-                tbody.innerHTML = "";
-                qs.forEach(d => {
-                    const c = d.data();
-                    tbody.innerHTML += `<tr><td style="font-weight:750;">${c.nombre}</td><td>${c.telefono}</td><td style="color:var(--color-principal); font-weight:800;">${c.sellos || 0} / 5 ⭐</td></tr>`;
-                });
-            } catch(e) { console.log(e); }
-        }
-
+        // GENERADOR DE SELLOS
         async function cargarCodigoActivoAdmin() {
             try {
                 const docRef = doc(db, "configuracion", "selloActivo");
@@ -1290,34 +1590,9 @@
             try {
                 await setDoc(doc(db, "configuracion", "selloActivo"), { codigo: nuevoCodigo });
                 document.getElementById('codigo-activo-display').textContent = nuevoCodigo;
-                mostrarToast("¡Código de un solo uso generado!: " + nuevoCodigo);
+                mostrarToast("¡Código generado (Un solo uso): " + nuevoCodigo);
             } catch(e) { mostrarToast("Error al generar."); }
         }
-
-        // REGISTRAR NUEVO ÍTEM O STOCK DESDE EL FORMULARIO
-        document.getElementById('productForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const nombre = document.getElementById('nombre').value.trim();
-            const categoria = document.getElementById('categoria').value;
-            const precio = Number(document.getElementById('precio').value);
-
-            let dataPlato = { nombre, categoria, precio, disponible: true };
-
-            if (categoria === 'Stock_Interno') {
-                dataPlato.stockCantidad = Number(document.getElementById('stock-cantidad').value || 0);
-                dataPlato.stockCompra = Number(document.getElementById('stock-compra').value || 0);
-            }
-
-            try {
-                await addDoc(collection(db, "menu"), dataPlato);
-                mostrarToast("✅ ¡Ítem registrado con éxito!");
-                document.getElementById('productForm').reset();
-                toggleCamposStock('Bocas');
-                cargarMenu();
-            } catch(err) {
-                mostrarToast("Error al registrar ítem.");
-            }
-        });
 
         window.abrirSeguimientoModal = function(e) { e.preventDefault(); document.getElementById('modal-seguimiento').style.display = 'flex'; }
         window.cerrarSeguimientoModal = function() { document.getElementById('modal-seguimiento').style.display = 'none'; }
