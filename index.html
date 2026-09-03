@@ -454,7 +454,6 @@
 
             <div class="admin-wrapper">
                 
-                <!-- PEDIDOS EN VIVO CON ESTADOS -->
                 <div id="admin-tab-pedidos" class="admin-section-tab active-admin-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">📦 Pedidos Recientes en Vivo</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Monitorea órdenes y actualiza su estado operativo.</p>
@@ -463,25 +462,24 @@
                     </div>
                 </div>
 
-                <!-- GESTIÓN DE PLATOS CON EDICIÓN COMPLETA -->
+                <!-- GESTIÓN DE PLATOS CON ESTADO DISPONIBLE/AGOTADO Y EDICIÓN -->
                 <div id="admin-tab-platos" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:15px;">🍽️ Gestión de Platos</h2>
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
-                                <tr><th>Orden</th><th>Img</th><th>Nombre</th><th>Categoría</th><th>Precio (₡)</th><th>Acciones</th></tr>
+                                <tr><th>Orden</th><th>Img</th><th>Nombre</th><th>Categoría</th><th>Precio (₡)</th><th>Estado</th><th>Acciones</th></tr>
                             </thead>
                             <tbody id="admin-tabla-platos-body">
-                                <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Cargando platos...</td></tr>
+                                <tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Cargando platos...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- STOCK INTERNO CON VENTA MÚLTIPLE Y ESTADÍSTICAS -->
                 <div id="admin-tab-stock" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">📦 Control de Stock Interno</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Inventario privado. Vende unidades para rebajar stock y sumarlas al cierre de caja.</p>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Inventario privado. Vende unidades múltiples para rebajar stock y sumarlas a caja.</p>
                     
                     <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:20px;">
                         <div class="stat-card total"><div class="stat-title">Inversión Stock</div><div class="stat-value" id="stock-stat-inversion">₡0</div></div>
@@ -501,7 +499,6 @@
                     </div>
                 </div>
 
-                <!-- CIERRE DE CAJA -->
                 <div id="admin-tab-caja" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">💰 Cierre de Caja y Reportes</h2>
                     <div class="stats-cards-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom:20px;">
@@ -526,7 +523,6 @@
                     </div>
                 </div>
 
-                <!-- REGISTRAR NUEVO ÍTEM CON IMAGEN Y VARIANTES -->
                 <div id="admin-tab-nuevo-plato" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">➕ Registrar Nuevo Ítem / Stock</h2>
                     <form id="productForm">
@@ -589,7 +585,6 @@
                     </form>
                 </div>
 
-                <!-- GENERADOR DE SELLOS DE UN SOLO USO -->
                 <div id="admin-tab-lealtad" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">🔐 Generador de Sello (Un Solo Uso)</h2>
                     <div style="background:#181818; padding:18px; border-radius:14px; border:1px solid var(--border-color); text-align:center;">
@@ -598,7 +593,6 @@
                     </div>
                 </div>
 
-                <!-- BASE DE CLIENTES CON OPCIÓN DE ELIMINAR -->
                 <div id="admin-tab-clientes" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:10px;">👥 Base de Clientes</h2>
                     <div style="overflow-x:auto;">
@@ -613,7 +607,6 @@
                     </div>
                 </div>
 
-                <!-- HORARIOS DE ATENCIÓN -->
                 <div id="admin-tab-horarios" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Horarios de Atención</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Configura la disponibilidad semanal de tu negocio.</p>
@@ -621,7 +614,6 @@
                     <button type="button" class="btn-admin-action" onclick="guardarHorariosNube()" style="padding:16px; font-size:15px; margin-top:10px;">Guardar Horarios en la Nube</button>
                 </div>
 
-                <!-- AJUSTES (ESTILO EXACTO SOLICITADO) -->
                 <div id="admin-tab-ajustes" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Ajustes</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Configura los detalles de tu cuenta y preferencias.</p>
@@ -687,7 +679,7 @@
     <div id="modal-editar-plato" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-size:16px;">✏️ Editar Ítem</h3>
+                <h3 style="margin:0; font-size:16px;">✏️ Editar Ítem y Acompañamientos</h3>
                 <button onclick="cerrarModalEditarPlato()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
             </div>
             <div class="modal-body">
@@ -716,6 +708,15 @@
                 <div class="form-group">
                     <label>Descripción</label>
                     <input type="text" id="edit-plato-desc">
+                </div>
+                <div class="form-group" style="background:#222; padding:12px; border-radius:10px; border:1px solid var(--border-color);">
+                    <label>Acompañamientos / Extras:</label>
+                    <div style="display:flex; gap:6px; margin-bottom:8px;">
+                        <input type="text" id="edit-input-nombre-var" placeholder="Ej. Papas Gajo" style="flex:2;">
+                        <input type="number" id="edit-input-precio-var" placeholder="₡ Extra" style="flex:1;">
+                        <button type="button" onclick="agregarVarianteEdicion()" style="background:var(--color-principal); color:#121212; border:none; padding:0 14px; border-radius:8px; font-weight:bold; cursor:pointer;">+</button>
+                    </div>
+                    <div id="edit-lista-variantes" style="font-size:12px; color:var(--text-muted);">Sin extras añadidos.</div>
                 </div>
                 <div class="form-group">
                     <label>Cambiar Fotografía</label>
@@ -839,6 +840,7 @@
         const categoriasDefault = ["Bocas", "Comidas Rápidas", "Arroces", "Batidos", "Casados", "Ofertas"];
         const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
         let variantesTemporales = [];
+        let variantesEdicionActual = [];
         let adminAutenticado = false;
 
         window.clienteActualId = localStorage.getItem('alaska_cliente_doc_id') || null;
@@ -962,7 +964,7 @@
                 const docSnap = await getDoc(docRefConfig);
 
                 if (docSnap.exists() && docSnap.data().codigo === codigoIngresado) {
-                    await setDoc(docRefConfig, { codigo: null }); // Invalida el código (Un solo uso)
+                    await setDoc(docRefConfig, { codigo: null });
 
                     window.clienteActualSellos++;
                     if (window.clienteActualSellos >= 5) {
@@ -1229,7 +1231,7 @@
                     const id = d.id;
                     const estadoActual = p.estado || 'Preparación';
                     contenedor.innerHTML += `
-                        <div class="pedido-card" style="background:#252525; padding:15px; border-radius:12px; margin-bottom:12px; border:1px solid var(--border-color); border-left:4px solid var(--color-principal);">
+                        <div style="background:#252525; padding:15px; border-radius:12px; margin-bottom:12px; border:1px solid var(--border-color); border-left:4px solid var(--color-principal);">
                             <strong style="color:white; font-size:15px;">${p.nombre}</strong><br>
                             <span style="font-size:13px; color:var(--color-principal);">${p.detalle || ''}</span><br>
                             <strong style="color:white; font-size:14px;">₡${Number(p.total || 0).toLocaleString()}</strong>
@@ -1262,7 +1264,7 @@
             }
         }
 
-        // GESTIÓN DE PLATOS CON EDICIÓN COMPLETA Y FOTO
+        // GESTIÓN DE PLATOS CON DISPONIBLE/AGOTADO Y EDICIÓN COMPLETA
         async function cargarAdminPlatosDashboard() {
             try {
                 const qs = await getDocs(collection(db, "menu"));
@@ -1276,9 +1278,10 @@
             const tbody = document.getElementById('admin-tabla-platos-body');
             if (!tbody) return;
             let visibles = platos.filter(p => p.categoria !== 'Stock_Interno');
-            if (visibles.length === 0) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No hay platos registrados.</td></tr>`; return; }
+            if (visibles.length === 0) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">No hay platos registrados.</td></tr>`; return; }
             tbody.innerHTML = "";
             visibles.forEach((p, idx) => {
+                let disponible = p.disponible !== false;
                 tbody.innerHTML += `
                     <tr>
                         <td>${idx + 1}</td>
@@ -1287,12 +1290,26 @@
                         <td>${p.categoria}</td>
                         <td style="color:var(--color-principal); font-weight:800;">₡${p.precio.toLocaleString()}</td>
                         <td>
+                            <button onclick="toggleDisponibilidadPlato('${p.id}', ${disponible})" class="action-pill" style="padding:4px 8px; font-size:11px; ${disponible ? 'background:rgba(16,185,129,0.2); color:#10b981; border-color:#10b981;' : 'background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444;'}">
+                                ${disponible ? 'Disponible' : 'Agotado'}
+                            </button>
+                        </td>
+                        <td>
                             <button onclick="abrirModalEditarPlato('${p.id}')" class="action-pill" style="padding:4px 8px; font-size:11px;">Editar</button>
                             <button onclick="eliminarPlato('${p.id}')" class="action-pill" style="padding:4px 8px; font-size:11px; background:#5c2222; color:#ff6b6b; border:none;">Eliminar</button>
                         </td>
                     </tr>
                 `;
             });
+        }
+
+        window.toggleDisponibilidadPlato = async function(id, estadoActual) {
+            try {
+                await updateDoc(doc(db, "menu", id), { disponible: !estadoActual });
+                mostrarToast(!estadoActual ? "✅ Plato marcado como Disponible" : "⚠️ Plato marcado como Agotado");
+                cargarAdminPlatosDashboard();
+                cargarMenu();
+            } catch(e) { mostrarToast("Error al cambiar estado."); }
         }
 
         window.abrirModalEditarPlato = function(id) {
@@ -1304,11 +1321,36 @@
             document.getElementById('edit-plato-precio').value = p.precio || 0;
             document.getElementById('edit-plato-desc').value = p.descripcion || '';
             document.getElementById('edit-plato-file').value = '';
+            
+            variantesEdicionActual = p.variantes ? [...p.variantes] : [];
+            actualizarListaVariantesEdicionUI();
+            
             document.getElementById('modal-editar-plato').style.display = 'flex';
         }
 
         window.cerrarModalEditarPlato = function() {
             document.getElementById('modal-editar-plato').style.display = 'none';
+        }
+
+        window.agregarVarianteEdicion = function() {
+            const nombreVar = document.getElementById('edit-input-nombre-var').value.trim();
+            const precioVar = Number(document.getElementById('edit-input-precio-var').value || 0);
+            if (!nombreVar) { mostrarToast("Escribe el nombre del extra."); return; }
+            variantesEdicionActual.push({ nombre: nombreVar, precio: precioVar });
+            document.getElementById('edit-input-nombre-var').value = "";
+            document.getElementById('edit-input-precio-var').value = "";
+            actualizarListaVariantesEdicionUI();
+        }
+
+        function actualizarListaVariantesEdicionUI() {
+            const container = document.getElementById('edit-lista-variantes');
+            if (!container) return;
+            if (variantesEdicionActual.length === 0) { container.innerHTML = "Sin extras añadidos."; return; }
+            let html = "";
+            variantesEdicionActual.forEach((v, idx) => {
+                html += `<div>• ${v.nombre} (+₡${v.precio.toLocaleString()}) <button type="button" onclick="variantesEdicionActual.splice(${idx},1); actualizarListaVariantesEdicionUI();" style="color:#ff6b6b; background:none; border:none; cursor:pointer;">✕</button></div>`;
+            });
+            container.innerHTML = html;
         }
 
         window.guardarPlatoEditado = async function() {
@@ -1321,7 +1363,7 @@
 
             const actualizarDatos = async (imagenUrlFinal) => {
                 try {
-                    let obj = { nombre, categoria, precio, descripcion };
+                    let obj = { nombre, categoria, precio, descripcion, variantes: variantesEdicionActual };
                     if(imagenUrlFinal) obj.imagenUrl = imagenUrlFinal;
                     await updateDoc(doc(db, "menu", id), obj);
                     cerrarModalEditarPlato();
