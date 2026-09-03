@@ -171,6 +171,7 @@
 
         .status-pill { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: #a3e635; }
         .status-dot { width: 7px; height: 7px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 6px #22c55e; }
+        .status-dot.closed { background: #ef4444; box-shadow: 0 0 6px #ef4444; }
         
         .cart-icon-btn { background: var(--color-principal); color: #121212; border: none; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
         .cart-count-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 800; }
@@ -239,7 +240,7 @@
         input:focus, select:focus { outline: none; border-color: var(--color-principal); }
         .btn-admin-action { background: var(--color-principal); color: #121212; font-weight: 800; border: none; padding: 12px; border-radius: 10px; cursor: pointer; width: 100%; }
 
-        /* Estilo tarjeta de ajustes estilo app moderna */
+        /* Tarjeta de ajustes e itinerario */
         .settings-card {
             background: #181818;
             border: 1px solid var(--border-color);
@@ -250,6 +251,18 @@
         }
         .settings-card h3 { margin-top: 0; font-size: 16px; color: var(--text-main); font-weight: 700; margin-bottom: 6px; }
         .settings-card p { font-size: 12px; color: var(--text-muted); margin-top: 0; margin-bottom: 18px; }
+
+        /* Estilo tarjeta de día en Horarios */
+        .day-schedule-card {
+            background: #222;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+        .day-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .day-header-flex h4 { margin: 0; font-size: 15px; color: white; }
+        .checkbox-label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); cursor: pointer; }
 
         .stats-cards-grid {
             display: grid;
@@ -386,6 +399,10 @@
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2m8-10a4 4 0 100-8 4 4 0 000 8zm14 10v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg>
                 <span>Base de Clientes</span>
             </a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('horarios')">
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span>Horarios de Atención</span>
+            </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('ajustes')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065zM15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                 <span>Ajustes y Logo</span>
@@ -393,9 +410,9 @@
         </div>
 
         <div class="sidebar-footer">
-            <div class="sidebar-status-pill">
-                <div class="status-dot"></div>
-                <span>TIENDA ABIERTA</span>
+            <div class="sidebar-status-pill" id="sidebar-status-pill-box">
+                <div class="status-dot" id="sidebar-status-dot"></div>
+                <span id="sidebar-status-text">VERIFICANDO HORARIO...</span>
             </div>
             <button onclick="pedirPermisoNotificaciones()" class="action-pill" style="width:100%; justify-content:center; border:none; background:#1e3a8a; color:#93c5fd;">🔔 Activar Notificaciones PWA</button>
             <button onclick="cambiarVista('menu'); cerrarSidebar();" class="action-pill" style="width:100%; justify-content:center; border:none; background:#252525;">📋 Ver Menú Público</button>
@@ -670,12 +687,22 @@
                     </div>
                 </div>
 
-                <!-- NUEVA PANTALLA DE AJUSTES IDÉNTICA AL ESTILO SOLICITADO -->
+                <!-- NUEVA SECCIÓN: HORARIOS DE ATENCIÓN -->
+                <div id="admin-tab-horarios" class="admin-section-tab">
+                    <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Horarios de Atención</h2>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Configura la disponibilidad semanal de tu negocio.</p>
+
+                    <div id="days-schedule-container">
+                        <!-- Se inyectarán dinámicamente los 7 días -->
+                    </div>
+
+                    <button type="button" class="btn-admin-action" onclick="guardarHorariosNube()" style="padding:16px; font-size:15px; margin-top:10px;">Guardar Horarios en la Nube</button>
+                </div>
+
                 <div id="admin-tab-ajustes" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Ajustes de Cuenta</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Configura los detalles de tu cuenta y preferencias.</p>
                     
-                    <!-- Tarjeta: Configuración de la cuenta -->
                     <div class="settings-card">
                         <h3>Configuración de la cuenta</h3>
                         <p>Preferencias generales y títulos públicos de tu negocio.</p>
@@ -707,7 +734,6 @@
                         </div>
                     </div>
 
-                    <!-- Tarjeta: Paleta de Colores -->
                     <div class="settings-card">
                         <h3>Paleta de Colores</h3>
                         <p>Personaliza los tonos visuales de tu menú digital.</p>
@@ -784,8 +810,8 @@
 
     <div class="floating-bottom-bar" id="floating-bar">
         <div class="status-pill">
-            <div class="status-dot"></div>
-            <span>Abierto • 9:30 PM</span>
+            <div class="status-dot" id="floating-status-dot"></div>
+            <span id="floating-status-text">Abierto</span>
         </div>
         <button class="cart-icon-btn" onclick="abrirCarritoModal()" title="Ver Carrito">
             <svg class="icon-svg-lg" style="color:#121212;" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
@@ -967,6 +993,7 @@
         let listaPlatos = [];
         let categoriasNube = {};
         const categoriasDefault = ["Bocas", "Comidas Rápidas", "Arroces", "Batidos", "Casados", "Ofertas"];
+        const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
         let variantesTemporales = [];
         let variantesEdicionActuales = [];
@@ -1000,6 +1027,99 @@
                 input.addEventListener('input', (e) => { text.value = e.target.value.toUpperCase(); });
             }
         });
+
+        function renderizarFormularioHorarios(horariosData = {}) {
+            const container = document.getElementById('days-schedule-container');
+            container.innerHTML = "";
+
+            diasSemana.forEach(dia => {
+                let info = horariosData[dia] || { cerrado: false, apertura: "12:00", cierre: "22:00" };
+                container.innerHTML += `
+                    <div class="day-schedule-card" id="card-dia-${dia}">
+                        <div class="day-header-flex">
+                            <h4>${dia}</h4>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="chk-cerrado-${dia}" ${info.cerrado ? 'checked':''} onchange="toggleDiaCerrado('${dia}')" style="width:16px; height:16px;"> Cerrado
+                            </label>
+                        </div>
+                        <div id="wrapper-horas-${dia}" style="display:${info.cerrado ? 'none':'flex'}; gap:10px; align-items:center;">
+                            <input type="time" id="time-apertura-${dia}" value="${info.apertura || '12:00'}" style="flex:1;">
+                            <span style="color:var(--text-muted);">a</span>
+                            <input type="time" id="time-cierre-${dia}" value="${info.cierre || '22:00'}" style="flex:1;">
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        window.toggleDiaCerrado = function(dia) {
+            const chk = document.getElementById(`chk-cerrado-${dia}`);
+            const wrapper = document.getElementById(`wrapper-horas-${dia}`);
+            wrapper.style.display = chk.checked ? 'none' : 'flex';
+        }
+
+        window.guardarHorariosNube = async function() {
+            let horariosObj = {};
+            diasSemana.forEach(dia => {
+                const cerrado = document.getElementById(`chk-cerrado-${dia}`).checked;
+                const apertura = document.getElementById(`time-apertura-${dia}`).value;
+                const cierre = document.getElementById(`time-cierre-${dia}`).value;
+                horariosObj[dia] = { cerrado, apertura, cierre };
+            });
+
+            try {
+                await setDoc(doc(db, "configuracion", "horariosAtencion"), horariosObj);
+                mostrarToast("✅ ¡Horarios de atención guardados en la nube!");
+                verificarEstadoAbiertoCerrado(horariosObj);
+            } catch(e) {
+                mostrarToast("Error al guardar horarios.");
+            }
+        }
+
+        function verificarEstadoAbiertoCerrado(horarios) {
+            const ahora = new Date();
+            const diaHoy = diasSemana[ahora.getDay()];
+            const horaActualNum = ahora.getHours() * 60 + ahora.getMinutes();
+
+            let infoDia = horarios[diaHoy];
+            let estaAbierto = false;
+            let textoEstado = "Cerrado hoy";
+
+            if (infoDia && !infoDia.cerrado) {
+                let [hAp, mAp] = infoDia.apertura.split(':').map(Number);
+                let [hCi, mCi] = infoDia.cierre.split(':').map(Number);
+                let minAp = hAp * 60 + mAp;
+                let minCi = hCi * 60 + mCi;
+
+                if (horaActualNum >= minAp && horaActualNum <= minCi) {
+                    estaAbierto = true;
+                    textoEstado = `Abierto • ${infoDia.cierre} PM`;
+                } else {
+                    textoEstado = `Cerrado • Abre a las ${infoDia.apertura}`;
+                }
+            }
+
+            // Actualizar píldoras flotantes y sidebar
+            const dotF = document.getElementById('floating-status-dot');
+            const textF = document.getElementById('floating-status-text');
+            const dotS = document.getElementById('sidebar-status-dot');
+            const textS = document.getElementById('sidebar-status-text');
+            const boxS = document.getElementById('sidebar-status-pill-box');
+
+            if (estaAbierto) {
+                if(dotF) { dotF.classList.remove('closed'); }
+                if(textF) { textF.textContent = textoEstado; }
+                if(dotS) { dotS.classList.remove('closed'); }
+                if(textS) { textS.textContent = "TIENDA ABIERTA"; }
+                if(boxS) { boxS.style.background = '#132216'; boxS.style.borderColor = '#1e4620'; boxS.style.color = '#4ade80'; }
+            } else {
+                if(dotF) { dotF.classList.add('closed'); }
+                if(textF) { textF.textContent = textoEstado; }
+                if(dotS) { dotS.classList.add('closed'); }
+                if(textS) { textS.textContent = "TIENDA CERRADA"; }
+                if(boxS) { boxS.style.background = '#2a1a1a'; boxS.style.borderColor = '#5c2222'; boxS.style.color = '#ff6b6b'; }
+            }
+        }
 
         async function cargarConfiguracionVisualNube() {
             try {
@@ -1047,8 +1167,17 @@
                         document.getElementById('text-color-fondo').value = data.colorFondo.toUpperCase();
                     }
                 }
+
+                // Cargar horarios
+                const docRefH = doc(db, "configuracion", "horariosAtencion");
+                const docSnapH = await getDoc(docRefH);
+                let horariosVal = docSnapH.exists() ? docSnapH.data() : {};
+                renderizarFormularioHorarios(horariosVal);
+                verificarEstadoAbiertoCerrado(horariosVal);
+
             } catch (e) {
                 console.log("Error cargando configuración", e);
+                renderizarFormularioHorarios({});
             }
         }
 
@@ -1076,7 +1205,6 @@
 
                     await setDoc(doc(db, "configuracion", "estilosGenerales"), dataToSave, { merge: true });
 
-                    // Aplicar en vivo
                     document.documentElement.style.setProperty('--color-principal', colorPrincipal);
                     document.documentElement.style.setProperty('--color-secundario', colorSecundario);
                     document.documentElement.style.setProperty('--color-oferta', colorOferta);
@@ -2283,7 +2411,7 @@
 
             if (categoria === 'Stock_Interno') {
                 nuevoObjeto.stockCantidad = Number(document.getElementById('stock-cantidad').value || 0);
-                nuevoObj.stockCompra = Number(document.getElementById('stock-compra').value || 0);
+                nuevoObjeto.stockCompra = Number(document.getElementById('stock-compra').value || 0);
             }
 
             const guardarEnBD = async (imgUrl) => {
