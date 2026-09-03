@@ -329,36 +329,10 @@
         }
         .admin-table tr:hover { background: #222; }
 
-        .switch { position: relative; display: inline-block; width: 36px; height: 20px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .3s; border-radius: 20px; }
-        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--color-principal); }
-        input:checked + .slider:before { transform: translateX(16px); }
-
-        .btn-accion-tabla { background: none; border: none; cursor: pointer; font-size: 15px; padding: 4px; color: var(--text-muted); transition: color 0.2s; }
-        .btn-accion-tabla:hover { color: var(--color-principal); }
-        .btn-accion-tabla.eliminar:hover { color: #ef4444; }
-
-        .pedido-card { background: #252525; border-left: 4px solid var(--color-principal); padding: 16px; border-radius: 12px; margin-bottom: 14px; border: 1px solid var(--border-color); }
-        .badge-estado { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-        .badge-preparacion { background: #1e3a8a; color: #93c5fd; }
-        .badge-camino { background: #065f46; color: #6ee7b7; }
-        .badge-entregado { background: #374151; color: #9ca3af; }
-
-        .tipo-entrega-btn {
-            background: #252525; border: 1px solid var(--border-color); padding: 14px; border-radius: 12px;
-            color: white; font-weight: 600; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 4px; transition: 0.2s;
-        }
-        .tipo-entrega-btn.selected { background: rgba(212, 175, 55, 0.15); border-color: var(--color-principal); color: var(--color-principal); }
-
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
         .modal-content { background: var(--card-bg); width: 100%; max-width: 480px; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color); display: flex; flex-direction: column; max-height: 85vh; color: var(--text-main); }
-        .modal-img { height: 190px; width: 100%; object-fit: contain; background: #181818; }
         .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
         .modal-footer { padding: 16px 20px; background: #181818; border-top: 1px solid var(--border-color); display: flex; gap: 10px; }
-        .btn-accion { background: #333; border: none; padding: 4px 8px; border-radius: 6px; cursor: pointer; color: white; font-size: 11px; }
-        .btn-eliminar { background: #5c2222; color: #ff6b6b; }
     </style>
 </head>
 <body>
@@ -384,7 +358,6 @@
             <a href="#" class="sidebar-item active" onclick="seleccionarSeccionAdmin('pedidos')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                 <span>Pedidos en Vivo</span>
-                <span id="sidebar-pedidos-count" style="background:#ef4444; color:white; font-size:10px; padding:2px 6px; border-radius:10px; display:none;">0</span>
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('platos')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2H3zm7 0v20M3 18h18v2H3v-2z"/></svg>
@@ -400,7 +373,7 @@
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('categorias')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
-                <span>Gestión de Categorías</span>
+                <span>Gestión de Categorías e Iconos</span>
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('nuevo-plato')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
@@ -429,7 +402,6 @@
                 <div class="status-dot" id="sidebar-status-dot"></div>
                 <span id="sidebar-status-text">VERIFICANDO HORARIO...</span>
             </div>
-            <button onclick="pedirPermisoNotificaciones()" class="action-pill" style="width:100%; justify-content:center; border:none; background:#1e3a8a; color:#93c5fd;">🔔 Activar Notificaciones PWA</button>
             <button onclick="cambiarVista('menu'); cerrarSidebar();" class="action-pill" style="width:100%; justify-content:center; border:none; background:#252525;">📋 Ver Menú Público</button>
             <button onclick="cerrarSesionAdmin()" class="action-pill" style="width:100%; justify-content:center; border:none; background:#2a1a1a; color:#ff6b6b;">🚪 Cerrar Sesión</button>
         </div>
@@ -487,7 +459,6 @@
                 
                 <div id="admin-tab-pedidos" class="admin-section-tab active-admin-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">📦 Pedidos Recientes en Vivo</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Monitorea órdenes y actualiza su estado (Mesa o Retiro).</p>
                     <div id="admin-pedidos-container" style="max-height:500px; overflow-y:auto;">
                         <p style="color:var(--text-muted); font-size:13px;">Cargando pedidos...</p>
                     </div>
@@ -495,29 +466,13 @@
 
                 <div id="admin-tab-platos" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:15px;">🍽️ Gestión de Platos</h2>
-                    <div class="stats-cards-grid">
-                        <div class="stat-card total"><div class="stat-title">Total</div><div class="stat-value" id="stat-total">0</div></div>
-                        <div class="stat-card img"><div class="stat-title">Con Imagen</div><div class="stat-value" id="stat-con-img">0</div></div>
-                        <div class="stat-card no-img"><div class="stat-title">Sin Imagen</div><div class="stat-value" id="stat-sin-img">0</div></div>
-                        <div class="stat-card visibles"><div class="stat-title">Visibles</div><div class="stat-value" id="stat-visibles">0</div></div>
-                        <div class="stat-card ocultos"><div class="stat-title">Ocultos</div><div class="stat-value" id="stat-ocultos">0</div></div>
-                        <div class="stat-card oferta"><div class="stat-title">En Oferta</div><div class="stat-value" id="stat-oferta">0</div></div>
-                    </div>
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
-                                <tr>
-                                    <th>Orden</th>
-                                    <th>Img</th>
-                                    <th>Nombre</th>
-                                    <th>Categoría</th>
-                                    <th>Precio (₡)</th>
-                                    <th>Visible</th>
-                                    <th>Acciones</th>
-                                </tr>
+                                <tr><th>Orden</th><th>Img</th><th>Nombre</th><th>Categoría</th><th>Precio (₡)</th></tr>
                             </thead>
                             <tbody id="admin-tabla-platos-body">
-                                <tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Cargando platos...</td></tr>
+                                <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Cargando platos...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -528,12 +483,7 @@
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
-                                <tr>
-                                    <th>Artículo</th>
-                                    <th>Stock</th>
-                                    <th>Compra (₡)</th>
-                                    <th>Venta (₡)</th>
-                                </tr>
+                                <tr><th>Artículo</th><th>Stock</th><th>Compra (₡)</th><th>Venta (₡)</th></tr>
                             </thead>
                             <tbody id="admin-tabla-stock-body">
                                 <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>
@@ -550,18 +500,17 @@
                     </div>
                 </div>
 
+                <!-- SECCIÓN RESTAURADA: CATEGORÍAS E ICONOS EN NUBE -->
                 <div id="admin-tab-categorias" class="admin-section-tab">
-                    <h2 style="margin:0; font-size:18px; color:var(--color-principal); margin-bottom:15px;">📁 Gestión de Categorías</h2>
+                    <h2 style="margin:0; font-size:18px; color:var(--color-principal); margin-bottom:15px;">📁 Gestión de Categorías e Iconos</h2>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Personaliza los nombres y sube iconos personalizados para cada categoría.</p>
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
-                                <tr>
-                                    <th>Categoría</th>
-                                    <th>Estado</th>
-                                </tr>
+                                <tr><th>Icono</th><th>Categoría</th><th>Acción</th></tr>
                             </thead>
                             <tbody id="admin-tabla-categorias-body">
-                                <tr><td colspan="2" style="text-align:center; color:var(--text-muted);">Cargando categorías...</td></tr>
+                                <tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Cargando categorías...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -590,7 +539,7 @@
                             <label>Precio de Venta (₡):</label>
                             <input type="number" id="precio" required placeholder="5000">
                         </div>
-                        <button type="submit" id="btnGuardar" class="btn-admin-action">Guardar Ítem</button>
+                        <button type="submit" class="btn-admin-action">Guardar Ítem</button>
                     </form>
                 </div>
 
@@ -607,11 +556,7 @@
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
-                                <tr>
-                                    <th>Cliente</th>
-                                    <th>Teléfono</th>
-                                    <th>Sellos ⭐</th>
-                                </tr>
+                                <tr><th>Cliente</th><th>Teléfono</th><th>Sellos ⭐</th></tr>
                             </thead>
                             <tbody id="admin-tabla-clientes-body">
                                 <tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Cargando clientes...</td></tr>
@@ -620,15 +565,21 @@
                     </div>
                 </div>
 
+                <!-- SECCIÓN RESTAURADA: HORARIOS DE ATENCIÓN -->
                 <div id="admin-tab-horarios" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Horarios de Atención</h2>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Configura la disponibilidad semanal de tu negocio.</p>
                     <div id="days-schedule-container"></div>
                     <button type="button" class="btn-admin-action" onclick="guardarHorariosNube()" style="padding:16px; font-size:15px; margin-top:10px;">Guardar Horarios en la Nube</button>
                 </div>
 
+                <!-- SECCIÓN RESTAURADA: AJUSTES, LOGO Y PALETA DE COLORES -->
                 <div id="admin-tab-ajustes" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Ajustes de Cuenta</h2>
+                    <h2 style="margin-top:0; font-size:20px; color:var(--text-main); margin-bottom:4px;">Ajustes de Cuenta y Paleta de Colores</h2>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Personaliza la apariencia visual de tu menú digital.</p>
+                    
                     <div class="settings-card">
+                        <h3>Configuración General</h3>
                         <div class="form-group">
                             <label>Nombre de la Cuenta (Interno)</label>
                             <input type="text" id="input-nombre-interno" placeholder="Bar Alaska">
@@ -637,13 +588,55 @@
                             <label>Título del Menú (Público)</label>
                             <input type="text" id="input-titulo-publico" placeholder="Bar Restaurante Alaska">
                         </div>
+                        <div class="form-group">
+                            <label>Logo del Negocio</label>
+                            <input type="file" id="logoFileInput" accept="image/*">
+                        </div>
                     </div>
-                    <button type="button" class="btn-admin-action" onclick="guardarAjustesYConfiguracionNube()" style="padding:16px; font-size:15px; margin-bottom:30px;">Guardar Cambios</button>
+
+                    <div class="settings-card">
+                        <h3>Paleta de Colores</h3>
+                        <div class="form-group">
+                            <label>Color Principal</label>
+                            <input type="color" id="input-color-principal" value="#d4af37" style="height:42px; cursor:pointer;">
+                        </div>
+                        <div class="form-group">
+                            <label>Color de Oferta / Acento</label>
+                            <input type="color" id="input-color-oferta" value="#ef4444" style="height:42px; cursor:pointer;">
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-admin-action" onclick="guardarAjustesYConfiguracionNube()" style="padding:16px; font-size:15px; margin-bottom:30px;">Guardar Cambios en la Nube</button>
                 </div>
 
             </div>
         </div>
 
+    </div>
+
+    <!-- MODAL EDITAR CATEGORÍA E ICONO -->
+    <div id="modal-editar-categoria" class="modal-overlay">
+        <div class="modal-content">
+            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="margin:0; font-size:16px;">📁 Editar Categoría e Icono</h3>
+                <button onclick="cerrarModalEditarCat()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-cat-id">
+                <div class="form-group">
+                    <label>Nombre de la Categoría</label>
+                    <input type="text" id="edit-cat-nombre" readonly style="opacity:0.7;">
+                </div>
+                <div class="form-group">
+                    <label>Subir Icono Personalizado:</label>
+                    <input type="file" id="edit-cat-file" accept="image/*">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="cerrarModalEditarCat()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer;">Cancelar</button>
+                <button onclick="guardarCategoriaEditadaNube()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Guardar en Nube</button>
+            </div>
+        </div>
     </div>
 
     <!-- MODAL DE SELLO INTERACTIVO -->
@@ -748,7 +741,6 @@
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
 
-        // CARGAR MENÚ PÚBLICO CORRECTAMENTE
         async function cargarMenu() {
             const menuGrid = document.getElementById("menu-grid");
             try {
@@ -756,7 +748,7 @@
                 listaPlatos = [];
                 querySnapshot.forEach((docSnap) => { listaPlatos.push({ id: docSnap.id, ...docSnap.data() }); });
                 mostrarPlatos(listaPlatos);
-                renderizarCategoriasPublicas();
+                inicializarCategoriasNube();
             } catch (error) {
                 if (menuGrid) menuGrid.innerHTML = "<p style='color:#ef4444; text-align:center;'>Error al cargar menú.</p>";
             }
@@ -797,13 +789,31 @@
             });
         }
 
+        async function inicializarCategoriasNube() {
+            try {
+                const qs = await getDocs(collection(db, "categorias"));
+                categoriasNube = {};
+                qs.forEach(d => { categoriasNube[d.id] = { idDoc: d.id, ...d.data() }; });
+
+                for (let cat of categoriasDefault) {
+                    if (!categoriasNube[cat]) {
+                        await setDoc(doc(db, "categorias", cat), { nombre: cat, visible: true, icono: "" });
+                        categoriasNube[cat] = { idDoc: cat, nombre: cat, visible: true, icono: "" };
+                    }
+                }
+                renderizarCategoriasPublicas();
+            } catch (e) { renderizarCategoriasPublicas(); }
+        }
+
         function renderizarCategoriasPublicas() {
             const container = document.getElementById('category-container');
             if (!container) return;
             let html = `<button class="cat-btn active">Todos</button>`;
             categoriasDefault.forEach(cat => {
+                let catData = categoriasNube[cat] || {};
+                let iconoHtml = catData.icono ? `<img src="${catData.icono}" class="cat-icon-img">` : '';
                 let claseExtra = (cat === 'Ofertas') ? 'full-width' : '';
-                html += `<button class="cat-btn ${claseExtra}">${cat}</button>`;
+                html += `<button class="cat-btn ${claseExtra}">${iconoHtml} ${cat}</button>`;
             });
             container.innerHTML = html;
         }
@@ -941,6 +951,7 @@
             }
         }
 
+        // FUNCIONES DE HORARIOS RESTAURADAS
         function renderizarFormularioHorarios(horariosData = {}) {
             const container = document.getElementById('days-schedule-container');
             if (!container) return;
@@ -952,14 +963,41 @@
                         <div class="day-header-flex">
                             <h4>${dia}</h4>
                             <label class="checkbox-label">
-                                <input type="checkbox" id="chk-cerrado-${dia}" ${info.cerrado ? 'checked':''} style="width:16px; height:16px;"> Cerrado
+                                <input type="checkbox" id="chk-cerrado-${dia}" ${info.cerrado ? 'checked':''} onchange="toggleDiaCerrado('${dia}')" style="width:16px; height:16px;"> Cerrado
                             </label>
+                        </div>
+                        <div id="wrapper-horas-${dia}" style="display:${info.cerrado ? 'none':'flex'}; gap:10px; align-items:center;">
+                            <input type="time" id="time-apertura-${dia}" value="${info.apertura || '12:00'}" style="flex:1;">
+                            <span style="color:var(--text-muted);">a</span>
+                            <input type="time" id="time-cierre-${dia}" value="${info.cierre || '22:00'}" style="flex:1;">
                         </div>
                     </div>
                 `;
             });
         }
 
+        window.toggleDiaCerrado = function(dia) {
+            const chk = document.getElementById(`chk-cerrado-${dia}`);
+            const wrapper = document.getElementById(`wrapper-horas-${dia}`);
+            if(chk && wrapper) wrapper.style.display = chk.checked ? 'none' : 'flex';
+        }
+
+        window.guardarHorariosNube = async function() {
+            let horariosObj = {};
+            diasSemana.forEach(dia => {
+                const cerrado = document.getElementById(`chk-cerrado-${dia}`).checked;
+                const apertura = document.getElementById(`time-apertura-${dia}`).value;
+                const cierre = document.getElementById(`time-cierre-${dia}`).value;
+                horariosObj[dia] = { cerrado, apertura, cierre };
+            });
+
+            try {
+                await setDoc(doc(db, "configuracion", "horariosAtencion"), horariosObj);
+                mostrarToast("✅ ¡Horarios guardados en la nube!");
+            } catch(e) { mostrarToast("Error al guardar horarios."); }
+        }
+
+        // CONFIGURACIÓN VISUAL Y PALETA DE COLORES RESTAURADA
         async function cargarConfiguracionVisualNube() {
             try {
                 const docRef = doc(db, "configuracion", "estilosGenerales");
@@ -976,18 +1014,49 @@
                     }
                     if (data.colorPrincipal) {
                         document.documentElement.style.setProperty('--color-principal', data.colorPrincipal);
+                        if(document.getElementById('input-color-principal')) document.getElementById('input-color-principal').value = data.colorPrincipal;
+                    }
+                    if (data.colorOferta) {
+                        document.documentElement.style.setProperty('--color-oferta', data.colorOferta);
+                        if(document.getElementById('input-color-oferta')) document.getElementById('input-color-oferta').value = data.colorOferta;
+                    }
+                    if (data.logoUrl && document.getElementById('logo-display')) {
+                        document.getElementById('logo-display').src = data.logoUrl;
                     }
                 }
+                const docRefH = doc(db, "configuracion", "horariosAtencion");
+                const docSnapH = await getDoc(docRefH);
+                renderizarFormularioHorarios(docSnapH.exists() ? docSnapH.data() : {});
             } catch (e) { console.log(e); }
         }
 
         window.guardarAjustesYConfiguracionNube = async function() {
             const nombreInterno = document.getElementById('input-nombre-interno').value.trim();
             const tituloPublico = document.getElementById('input-titulo-publico').value.trim();
-            try {
-                await setDoc(doc(db, "configuracion", "estilosGenerales"), { nombreInterno, tituloPublico }, { merge: true });
-                mostrarToast("✅ ¡Ajustes guardados!");
-            } catch(e) { mostrarToast("Error al guardar."); }
+            const colorPrincipal = document.getElementById('input-color-principal').value;
+            const colorOferta = document.getElementById('input-color-oferta').value;
+            const fileInput = document.getElementById('logoFileInput');
+
+            const guardarDatosFinales = async (logoUrlFinal) => {
+                try {
+                    let objData = { nombreInterno, tituloPublico, colorPrincipal, colorOferta };
+                    if(logoUrlFinal) objData.logoUrl = logoUrlFinal;
+
+                    await setDoc(doc(db, "configuracion", "estilosGenerales"), objData, { merge: true });
+                    document.documentElement.style.setProperty('--color-principal', colorPrincipal);
+                    document.documentElement.style.setProperty('--color-oferta', colorOferta);
+                    if(logoUrlFinal) document.getElementById('logo-display').src = logoUrlFinal;
+                    mostrarToast("✅ ¡Ajustes guardados en la nube!");
+                } catch(e) { mostrarToast("Error al guardar ajustes."); }
+            };
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.readAsDataURL(fileInput.files[0]);
+                reader.onload = async function() { await guardarDatosFinales(reader.result); };
+            } else {
+                await guardarDatosFinales(null);
+            }
         }
 
         window.abrirSidebar = function() {
@@ -1058,10 +1127,10 @@
                 qs.forEach(d => {
                     const p = d.data();
                     contenedor.innerHTML += `
-                        <div class="pedido-card">
-                            <strong style="color:white; font-size:15px;">${p.nombre}</strong><br>
+                        <div style="background:#252525; padding:12px; border-radius:10px; margin-bottom:10px; border:1px solid var(--border-color);">
+                            <strong style="color:white;">${p.nombre}</strong><br>
                             <span style="font-size:12px; color:var(--color-principal);">${p.detalle}</span><br>
-                            <strong style="color:var(--color-principal); font-size:14px;">₡${p.total.toLocaleString()}</strong>
+                            <strong style="color:white;">₡${p.total.toLocaleString()}</strong>
                         </div>
                     `;
                 });
@@ -1082,7 +1151,7 @@
             if (!tbody) return;
             let platosVisibles = platos.filter(p => p.categoria !== 'Stock_Interno');
             if (platosVisibles.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">No hay platos registrados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No hay platos.</td></tr>`;
                 return;
             }
             tbody.innerHTML = "";
@@ -1094,8 +1163,6 @@
                         <td style="font-weight:700;">${p.nombre}</td>
                         <td>${p.categoria}</td>
                         <td style="color:var(--color-principal); font-weight:800;">₡${p.precio.toLocaleString()}</td>
-                        <td>${p.disponible !== false ? 'Sí' : 'No'}</td>
-                        <td>-</td>
                     </tr>
                 `;
             });
@@ -1123,8 +1190,8 @@
                         `;
                     }
                 });
-                if (!hayStock) tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No hay ítems en stock interno.</td></tr>`;
-            } catch(e) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;'>Error al cargar stock.</td></tr>`; }
+                if (!hayStock) tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No hay stock interno.</td></tr>`;
+            } catch(e) { tbody.innerHTML = `<tr><td colspan="4" style='color:#ef4444;'>Error.</td></tr>`; }
         }
 
         async function cargarEstadisticasCaja() {
@@ -1137,37 +1204,69 @@
             } catch(e) { console.log(e); }
         }
 
+        // GESTIÓN DE CATEGORÍAS Y EDICIÓN DE ICONOS EN NUBE RESTAURADA
         async function renderizarTablaCategoriasAdmin() {
             const tbody = document.getElementById('admin-tabla-categorias-body');
             if (!tbody) return;
             tbody.innerHTML = "";
             categoriasDefault.forEach(cat => {
+                let catData = categoriasNube[cat] || {};
+                let imgUrl = catData.icono || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=100&q=80';
                 tbody.innerHTML += `
                     <tr>
+                        <td><img src="${imgUrl}" style="width:36px; height:36px; object-fit:contain; border-radius:6px; background:#222;"></td>
                         <td style="font-weight:700;">${cat}</td>
-                        <td>Activa</td>
+                        <td><button onclick="abrirModalEditarCat('${cat}')" class="action-pill" style="padding:4px 10px; font-size:11px;">Editar Icono</button></td>
                     </tr>
                 `;
             });
         }
 
+        window.abrirModalEditarCat = function(catNombre) {
+            document.getElementById('edit-cat-nombre').value = catNombre;
+            document.getElementById('edit-cat-file').value = "";
+            document.getElementById('modal-editar-categoria').style.display = 'flex';
+        }
+
+        window.cerrarModalEditarCat = function() {
+            document.getElementById('modal-editar-categoria').style.display = 'none';
+        }
+
+        window.guardarCategoriaEditadaNube = async function() {
+            const catNombre = document.getElementById('edit-cat-nombre').value;
+            const fileInput = document.getElementById('edit-cat-file');
+
+            if (!fileInput.files || !fileInput.files[0]) {
+                mostrarToast("Selecciona una imagen para el icono.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.readAsDataURL(fileInput.files[0]);
+            reader.onload = async function() {
+                try {
+                    let iconoBase64 = reader.result;
+                    await setDoc(doc(db, "categorias", catNombre), { nombre: catNombre, icono: iconoBase64 }, { merge: true });
+                    if(!categoriasNube[catNombre]) categoriasNube[catNombre] = {};
+                    categoriasNube[catNombre].icono = iconoBase64;
+                    renderizarCategoriasPublicas();
+                    renderizarTablaCategoriasAdmin();
+                    cerrarModalEditarCat();
+                    mostrarToast("✅ ¡Icono de categoría actualizado en la nube!");
+                } catch(e) { mostrarToast("Error al guardar icono."); }
+            };
+        }
+
         async function cargarBaseClientesAdmin() {
             const tbody = document.getElementById('admin-tabla-clientes-body');
             if (!tbody) return;
-            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Cargando clientes...</td></tr>`;
             try {
                 const qs = await getDocs(collection(db, "clientes"));
                 if (qs.empty) { tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Sin clientes.</td></tr>`; return; }
                 tbody.innerHTML = "";
                 qs.forEach(d => {
                     const c = d.data();
-                    tbody.innerHTML += `
-                        <tr>
-                            <td style="font-weight:750;">${c.nombre}</td>
-                            <td>${c.telefono}</td>
-                            <td style="color:var(--color-principal); font-weight:800;">${c.sellos || 0} / 5 ⭐</td>
-                        </tr>
-                    `;
+                    tbody.innerHTML += `<tr><td style="font-weight:750;">${c.nombre}</td><td>${c.telefono}</td><td style="color:var(--color-principal); font-weight:800;">${c.sellos || 0} / 5 ⭐</td></tr>`;
                 });
             } catch(e) { tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#ef4444;">Error.</td></tr>`; }
         }
@@ -1194,7 +1293,7 @@
         window.abrirSeguimientoModal = function(e) { e.preventDefault(); document.getElementById('modal-seguimiento').style.display = 'flex'; }
         window.cerrarSeguimientoModal = function() { document.getElementById('modal-seguimiento').style.display = 'none'; }
 
-        // Inicialización general restaurada y fluida
+        // Inicialización general completa y restaurada
         cargarConfiguracionVisualNube();
         actualizarUILealtadPublica();
         cargarMenu();
