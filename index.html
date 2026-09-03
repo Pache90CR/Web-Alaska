@@ -124,9 +124,11 @@
             box-shadow: 0 8px 20px rgba(212,175,55,0.15);
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
         }
-        .stamps-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 10px; }
+        .stamps-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 5px; width: 100%; }
         .stamp-box {
             background: #111;
             border: 2px dashed var(--border-color);
@@ -358,14 +360,11 @@
                 </div>
             </div>
 
+            <!-- TARJETA DE LEALTAD REORGANIZADA Y CENTRADA -->
             <div class="loyalty-banner">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <h3 style="margin:0; color:var(--color-principal); font-size:16px;">⭐ Club Bar Alaska</h3>
-                        <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-muted);">¡Completa 5 sellos y gana una boca o bebida gratis!</p>
-                    </div>
-                    <div id="loyalty-counter-text" style="font-weight:800; font-size:15px; background:#111; padding:6px 12px; border-radius:10px; border:1px solid var(--border-color);">0 / 5 Sellos</div>
-                </div>
+                <h3 style="margin:0; color:var(--color-principal); font-size:17px;">⭐ Club Bar Alaska</h3>
+                <div id="loyalty-counter-text" style="font-weight:800; font-size:15px; background:#111; padding:8px 16px; border-radius:12px; border:1px solid var(--border-color); color:white;">0 / 5 Sellos</div>
+                <p style="margin:0; font-size:12px; color:var(--text-muted); line-height: 1.4;">¡Completa 5 sellos y gana una boca o bebida gratis!</p>
                 <div class="stamps-grid" id="public-stamps-grid"></div>
             </div>
 
@@ -439,7 +438,6 @@
                     </div>
                 </div>
 
-                <!-- CONTROL DE STOCK OCULTO (CON GANANCIA TOTAL Y BOTÓN DE VENTA) -->
                 <div id="admin-tab-stock" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">📦 Control de Stock Interno</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Inventario privado. Vende artículos aquí para rebajar stock y sumarlos automáticamente al cierre de caja.</p>
@@ -1210,7 +1208,6 @@
             }
         }
 
-        // CONTROL DE STOCK Y REGISTRO DE VENTA AUTOMÁTICA EN CAJA
         async function cargarAdminStock() {
             const tbody = document.getElementById('admin-tabla-stock-body');
             try {
@@ -1271,7 +1268,6 @@
             }
         }
 
-        // NUEVA FUNCIÓN: Vender stock, rebajar cantidad y registrar venta en caja
         window.venderItemStock = async function(id, nombre, stockActual, precioVenta) {
             let cantidadVender = prompt(`¿Cuántas unidades de "${nombre}" deseas vender? (Stock actual: ${stockActual})`, "1");
             if (cantidadVender === null) return;
@@ -1291,12 +1287,10 @@
             let totalVenta = cant * precioVenta;
 
             try {
-                // 1. Actualizar el stock en Firebase
                 await updateDoc(doc(db, "menu", id), {
                     stockCantidad: nuevoStock
                 });
 
-                // 2. Registrar el ingreso automáticamente en la colección de "pedidos" para que sume al Cierre de Caja
                 await addDoc(collection(db, "pedidos"), {
                     nombre: "Venta Barra / Stock",
                     detalle: `${cant}x ${nombre}`,
