@@ -541,8 +541,8 @@
                 <div id="admin-tab-categorias" class="admin-section-tab">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                         <div>
-                            <h2 style="margin:0; font-size:18px; color:var(--color-principal);">📁 Gestión de Categorías e Iconos</h2>
-                            <p style="font-size:13px; color:var(--text-muted); margin:4px 0 0 0;">Personaliza el nombre, estado y sube un icono único para cada categoría.</p>
+                            <h2 style="margin:0; font-size:18px; color:var(--color-principal);">📁 Gestión de Categorías e Iconos (Nube)</h2>
+                            <p style="font-size:13px; color:var(--text-muted); margin:4px 0 0 0;">Los iconos y estados se guardan en la nube para que todos los clientes los vean.</p>
                         </div>
                     </div>
 
@@ -556,7 +556,9 @@
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody id="admin-tabla-categorias-body"></tbody>
+                            <tbody id="admin-tabla-categorias-body">
+                                <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando categorías...</td></tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -679,23 +681,23 @@
                 <button onclick="cerrarModalEditarCat()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
             </div>
             <div class="modal-body">
-                <input type="hidden" id="edit-cat-nombre-orig">
+                <input type="hidden" id="edit-cat-id">
                 <div class="form-group">
                     <label>Nombre de la categoría *</label>
                     <input type="text" id="edit-cat-nombre" readonly style="opacity:0.7;">
                 </div>
                 <div class="form-group" style="text-align:center; background:#181818; padding:15px; border-radius:12px; border:1px solid var(--border-color);">
-                    <label style="margin-bottom:10px;">Icono actual / Vista previa:</label>
+                    <label style="margin-bottom:10px;">Icono actual en Nube:</label>
                     <img id="edit-cat-img-preview" src="" style="width:50px; height:50px; object-fit:contain; border-radius:8px; background:#222; margin-bottom:10px; border:1px solid var(--color-principal);">
                     <div class="form-group" style="margin-bottom:0;">
-                        <label>Subir nuevo icono personalizado (Imagen):</label>
+                        <label>Subir nuevo icono personalizado (Se guardará para todos los clientes):</label>
                         <input type="file" id="edit-cat-file" accept="image/*">
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button onclick="cerrarModalEditarCat()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer;">Cancelar</button>
-                <button onclick="guardarCategoriaEditada()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Guardar Cambios</button>
+                <button onclick="guardarCategoriaEditadaNube()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Guardar en Nube</button>
             </div>
         </div>
     </div>
@@ -883,14 +885,9 @@
         const db = getFirestore(app);
 
         let listaPlatos = [];
-        let categoriasData = JSON.parse(localStorage.getItem('alaska_categorias_custom') || JSON.stringify({
-            "Bocas": { visible: true, icono: "" },
-            "Comidas Rápidas": { visible: true, icono: "" },
-            "Arroces": { visible: true, icono: "" },
-            "Batidos": { visible: true, icono: "" },
-            "Casados": { visible: true, icono: "" },
-            "Ofertas": { visible: true, icono: "" }
-        }));
+        let categoriasNube = {};
+
+        const categoriasDefault = ["Bocas", "Comidas Rápidas", "Arroces", "Batidos", "Casados", "Ofertas"];
 
         let variantesTemporales = [];
         let variantesEdicionActuales = [];
@@ -914,6 +911,29 @@
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
+        }
+
+        async function inicializarCategoriasNube() {
+            try {
+                const qs = await getDocs(collection(db, "categorias"));
+                categoriasNube = {};
+                qs.forEach(d => {
+                    categoriasNube[d.id] = { idDoc: d.id, ...d.data() };
+                });
+
+                // Si falta alguna categoría por defecto, la creamos en la nube automáticamente
+                for (let cat of categoriasDefault) {
+                    if (!categoriasNube[cat]) {
+                        let nuevoDocRef = doc(db, "categorias", cat);
+                        await setDoc(nuevoDocRef, { nombre: cat, visible: true, icono: "" });
+                        categoriasNube[cat] = { idDoc: cat, nombre: cat, visible: true, icono: "" };
+                    }
+                }
+                renderizarCategoriasPublicas();
+                if (adminAutenticado) renderizarTablaCategoriasAdmin();
+            } catch (e) {
+                console.log("Error cargando categorías de la nube", e);
+            }
         }
 
         if ('serviceWorker' in navigator) {
@@ -1012,11 +1032,10 @@
 
         window.renderizarTablaCategoriasAdmin = function() {
             const tbody = document.getElementById('admin-tabla-categorias-body');
-            const nombresCat = ["Bocas", "Comidas Rápidas", "Arroces", "Batidos", "Casados", "Ofertas"];
-            
             tbody.innerHTML = "";
-            nombresCat.forEach(cat => {
-                let info = categoriasData[cat] || { visible: true, icono: "" };
+            
+            categoriasDefault.forEach(cat => {
+                let info = categoriasNube[cat] || { visible: true, icono: "" };
                 let iconoHtml = info.icono ? `<img src="${info.icono}" style="width:32px; height:32px; object-fit:contain; border-radius:6px; background:#222;">` : `<span style="font-size:10px; color:var(--text-muted);">Sin icono</span>`;
                 
                 tbody.innerHTML += `
@@ -1025,7 +1044,7 @@
                         <td style="font-weight:700;">${cat}</td>
                         <td>
                             <label class="switch">
-                                <input type="checkbox" ${info.visible !== false ? 'checked':''} onchange="toggleEstadoCategoria('${cat}', ${info.visible !== false})">
+                                <input type="checkbox" ${info.visible !== false ? 'checked':''} onchange="toggleEstadoCategoriaNube('${cat}', ${info.visible !== false})">
                                 <span class="slider"></span>
                             </label>
                         </td>
@@ -1037,20 +1056,24 @@
             });
         }
 
-        window.toggleEstadoCategoria = function(cat, estadoActual) {
-            if (!categoriasData[cat]) categoriasData[cat] = { visible: true, icono: "" };
-            categoriasData[cat].visible = !estadoActual;
-            localStorage.setItem('alaska_categorias_custom', JSON.stringify(categoriasData));
-            renderizarTablaCategoriasAdmin();
-            renderizarCategoriasPublicas();
+        window.toggleEstadoCategoriaNube = async function(cat, estadoActual) {
+            try {
+                if (!categoriasNube[cat]) categoriasNube[cat] = { visible: true, icono: "" };
+                categoriasNube[cat].visible = !estadoActual;
+                await setDoc(doc(db, "categorias", cat), categoriasNube[cat], { merge: true });
+                renderizarTablaCategoriasAdmin();
+                renderizarCategoriasPublicas();
+                mostrarToast("Estado actualizado en la nube.");
+            } catch(e) {
+                mostrarToast("Error al actualizar visibilidad.");
+            }
         }
 
         window.abrirModalEditarCat = function(catNombre) {
-            document.getElementById('edit-cat-nombre-orig').value = catNombre;
             document.getElementById('edit-cat-nombre').value = catNombre;
             document.getElementById('edit-cat-file').value = "";
             
-            let info = categoriasData[catNombre] || { icono: "" };
+            let info = categoriasNube[catNombre] || { icono: "" };
             let imgPrev = document.getElementById('edit-cat-img-preview');
             if (info.icono) {
                 imgPrev.src = info.icono;
@@ -1066,29 +1089,31 @@
             document.getElementById('modal-editar-categoria').style.display = 'none';
         }
 
-        window.guardarCategoriaEditada = function() {
-            const catNombre = document.getElementById('edit-cat-nombre-orig').value;
+        window.guardarCategoriaEditadaNube = async function() {
+            const catNombre = document.getElementById('edit-cat-nombre').value;
             const fileInput = document.getElementById('edit-cat-file');
 
-            if (!categoriasData[catNombre]) categoriasData[catNombre] = { visible: true, icono: "" };
+            if (!categoriasNube[catNombre]) categoriasNube[catNombre] = { visible: true, icono: "" };
+
+            const guardarData = async (urlIcono) => {
+                if (urlIcono !== undefined) {
+                    categoriasNube[catNombre].icono = urlIcono;
+                }
+                await setDoc(doc(db, "categorias", catNombre), categoriasNube[catNombre], { merge: true });
+                mostrarToast("¡Icono guardado en la nube para todos los clientes!");
+                cerrarModalEditarCat();
+                renderizarTablaCategoriasAdmin();
+                renderizarCategoriasPublicas();
+            };
 
             if (fileInput.files && fileInput.files[0]) {
                 const reader = new FileReader();
                 reader.readAsDataURL(fileInput.files[0]);
-                reader.onload = function() {
-                    categoriasData[catNombre].icono = reader.result;
-                    localStorage.setItem('alaska_categorias_custom', JSON.stringify(categoriasData));
-                    mostrarToast("¡Icono de categoría actualizado!");
-                    cerrarModalEditarCat();
-                    renderizarTablaCategoriasAdmin();
-                    renderizarCategoriasPublicas();
+                reader.onload = async function() {
+                    await guardarData(reader.result);
                 }
             } else {
-                localStorage.setItem('alaska_categorias_custom', JSON.stringify(categoriasData));
-                mostrarToast("Categoría guardada.");
-                cerrarModalEditarCat();
-                renderizarTablaCategoriasAdmin();
-                renderizarCategoriasPublicas();
+                await guardarData(undefined);
             }
         }
 
@@ -1096,20 +1121,12 @@
             const container = document.getElementById('category-container');
             let html = `<button class="cat-btn active" onclick="filtrarCategoria('todos')"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Todos</button>`;
             
-            const nombresCat = [
-                { nombre: "Bocas" },
-                { nombre: "Comidas Rápidas" },
-                { nombre: "Arroces" },
-                { nombre: "Batidos" },
-                { nombre: "Casados" },
-                { nombre: "Ofertas", clase: "full-width" }
-            ];
-
-            nombresCat.forEach(c => {
-                let info = categoriasData[c.nombre] || { visible: true, icono: "" };
+            categoriasDefault.forEach(cat => {
+                let info = categoriasNube[cat] || { visible: true, icono: "" };
                 if (info.visible !== false) {
+                    let claseExtra = (cat === 'Ofertas') ? 'full-width' : '';
                     let iconoHtml = info.icono ? `<img src="${info.icono}" class="cat-icon-img">` : `<svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v20m9-10H3"/></svg>`;
-                    html += `<button class="cat-btn ${c.clase || ''}" onclick="filtrarCategoria('${c.nombre}')">${iconoHtml} ${c.nombre}</button>`;
+                    html += `<button class="cat-btn ${claseExtra}" onclick="filtrarCategoria('${cat}')">${iconoHtml} ${cat}</button>`;
                 }
             });
 
@@ -1574,7 +1591,7 @@
             const disponibles = platos.filter(p => {
                 let esStockInterno = p.categoria === 'Stock_Interno';
                 let platoVisible = p.disponible !== false;
-                let catInfo = categoriasData[p.categoria] || { visible: true };
+                let catInfo = categoriasNube[p.categoria] || { visible: true };
                 let catVisible = catInfo.visible !== false;
                 return !esStockInterno && platoVisible && catVisible;
             });
@@ -2085,7 +2102,6 @@
             };
 
             if (categoria === 'Stock_Interno') {
-                nuevoStock = Number(document.getElementById('stock-cantidad').value || 0);
                 nuevoObjeto.stockCantidad = Number(document.getElementById('stock-cantidad').value || 0);
                 nuevoObjeto.stockCompra = Number(document.getElementById('stock-compra').value || 0);
             }
@@ -2103,7 +2119,7 @@
                     cargarAdminPlatosDashboard();
                     cargarAdminStock();
                 } catch(err) { mostrarToast("Error al guardar."); }
-                finally { btn.TextView = "Guardar Ítem"; btn.textContent = "Guardar Ítem"; btn.disabled = false; }
+                finally { btn.textContent = "Guardar Ítem"; btn.disabled = false; }
             };
 
             if (file) {
@@ -2115,8 +2131,9 @@
             }
         });
 
+        // Inicialización general
+        inicializarCategoriasNube();
         actualizarUILealtadPublica();
-        renderizarCategoriasPublicas();
         cargarMenu();
         iniciarEscuchaPedidos();
     </script>
