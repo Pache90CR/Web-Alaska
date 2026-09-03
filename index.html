@@ -675,7 +675,7 @@
 
     </div>
 
-    <!-- MODAL DETALLE DE PLATO Y SELECCIÓN DE EXTRAS (LÍMITE 2) -->
+    <!-- MODAL DETALLE DE PLATO Y SELECCIÓN DE EXTRAS (CON CANTIDAD) -->
     <div id="modal-detalle-plato" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -686,6 +686,15 @@
                 <img id="modal-detalle-img" src="" style="width:100%; height:160px; object-fit:cover; border-radius:10px; margin-bottom:12px;">
                 <p id="modal-detalle-desc" style="font-size:13px; color:var(--text-muted); margin-top:0;"></p>
                 <div id="modal-detalle-extras-container" style="margin-top:15px;"></div>
+                
+                <div style="display:flex; align-items:center; justify-content:space-between; background:#222; padding:12px; border-radius:10px; margin-top:15px; border:1px solid var(--border-color);">
+                    <span style="font-size:13px; font-weight:600;">Cantidad:</span>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <button type="button" onclick="cambiarCantidadModal(-1)" style="background:#333; color:white; border:none; width:30px; height:30px; border-radius:6px; font-weight:bold; cursor:pointer;">-</button>
+                        <span id="modal-cantidad-valor" style="font-size:16px; font-weight:800;">1</span>
+                        <button type="button" onclick="cambiarCantidadModal(1)" style="background:var(--color-principal); color:#121212; border:none; width:30px; height:30px; border-radius:6px; font-weight:bold; cursor:pointer;">+</button>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
                 <div id="modal-detalle-precio-total" style="font-size:18px; font-weight:800; color:var(--color-principal);">₡0</div>
@@ -694,28 +703,20 @@
         </div>
     </div>
 
-    <!-- MODAL CARRITO DE COMPRAS / CHECKOUT -->
+    <!-- MODAL CARRITO DE COMPRAS / CHECKOUT EN PASOS -->
     <div id="modal-carrito" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-size:16px;">🛒 Tu Carrito de Pedidos</h3>
+                <h3 id="modal-carrito-titulo" style="margin:0; font-size:16px;">🛒 Tu Pedido</h3>
                 <button onclick="cerrarModalCarrito()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
             </div>
-            <div class="modal-body">
-                <div id="carrito-items-container" style="margin-bottom:15px;">
-                    <p style="color:var(--text-muted); text-align:center;">Tu carrito está vacío.</p>
-                </div>
-                <div class="form-group" style="margin-bottom:0;">
-                    <label>Nombre o Número de Mesa / Referencia:</label>
-                    <input type="text" id="carrito-nombre-cliente" placeholder="Ej. Mesa 4 o Juan Pérez">
-                </div>
+            
+            <div class="modal-body" id="carrito-body-contenido">
+                <!-- Se llena dinámicamente por pasos -->
             </div>
-            <div class="modal-footer" style="display:flex; flex-direction:column; gap:10px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                    <span style="font-size:13px; color:var(--text-muted);">Total a Pagar:</span>
-                    <span id="carrito-total-precio" style="font-size:18px; font-weight:800; color:var(--color-principal);">₡0</span>
-                </div>
-                <button onclick="enviarPedidoFinal()" class="btn-admin-action" style="width:100%;">Confirmar y Enviar Pedido 🚀</button>
+
+            <div class="modal-footer" id="carrito-footer-contenido" style="display:flex; justify-content:space-between; align-items:center;">
+                <!-- Botones dinámicos según el paso -->
             </div>
         </div>
     </div>
@@ -889,8 +890,14 @@
         let variantesTemporales = [];
         let variantesEdicionActual = [];
         let platoSeleccionadoParaPedir = null;
+        let cantidadSeleccionadaModal = 1;
         let adminAutenticado = false;
         let negocioAbiertoGlobal = true;
+
+        // Variables de checkout del carrito
+        let checkoutPaso = 1; // 1: Lista items, 2: Tipo entrega, 3: Metodo pago, 4: Datos finales
+        let pedidoTipoEntrega = "";
+        let pedidoMetodoPago = "";
 
         window.clienteActualId = localStorage.getItem('alaska_cliente_doc_id') || null;
         window.clienteActualSellos = Number(localStorage.getItem('alaska_cliente_sellos') || 0);
@@ -960,11 +967,13 @@
             const plato = listaPlatos.find(p => p.id === id);
             if (!plato) return;
             platoSeleccionadoParaPedir = plato;
+            cantidadSeleccionadaModal = 1;
+            document.getElementById('modal-cantidad-valor').textContent = "1";
 
             document.getElementById('modal-detalle-titulo').textContent = plato.nombre;
             document.getElementById('modal-detalle-img').src = plato.imagenUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
             document.getElementById('modal-detalle-desc').textContent = plato.descripcion || 'Sin descripción adicional.';
-            document.getElementById('modal-detalle-precio-total').textContent = `₡${plato.precio.toLocaleString()}`;
+            actualizarPrecioTotalModal();
 
             const containerExtras = document.getElementById('modal-detalle-extras-container');
             containerExtras.innerHTML = "";
@@ -997,6 +1006,13 @@
             document.getElementById('modal-detalle-plato').style.display = 'none';
         }
 
+        window.cambiarCantidadModal = function(cambio) {
+            cantidadSeleccionadaModal += cambio;
+            if (cantidadSeleccionadaModal < 1) cantidadSeleccionadaModal = 1;
+            document.getElementById('modal-cantidad-valor').textContent = cantidadSeleccionadaModal;
+            actualizarPrecioTotalModal();
+        }
+
         window.validarLimiteExtras = function() {
             const checkboxes = document.querySelectorAll('.chk-extra-item:checked');
             if (checkboxes.length > 2) {
@@ -1008,12 +1024,13 @@
 
         function actualizarPrecioTotalModal() {
             if (!platoSeleccionadoParaPedir) return;
-            let total = platoSeleccionadoParaPedir.precio;
+            let totalUnitario = platoSeleccionadoParaPedir.precio;
             const checkboxes = document.querySelectorAll('.chk-extra-item:checked');
             checkboxes.forEach(chk => {
-                total += Number(chk.getAttribute('data-precio') || 0);
+                totalUnitario += Number(chk.getAttribute('data-precio') || 0);
             });
-            document.getElementById('modal-detalle-precio-total').textContent = `₡${total.toLocaleString()}`;
+            let totalFinal = totalUnitario * cantidadSeleccionadaModal;
+            document.getElementById('modal-detalle-precio-total').textContent = `₡${totalFinal.toLocaleString()}`;
         }
 
         window.agregarPlatoConExtrasAlCarrito = function() {
@@ -1032,53 +1049,31 @@
             });
 
             let detalleTexto = extrasSeleccionados.length > 0 ? `Con: ${extrasSeleccionados.join(', ')}` : 'Sin extras';
-            let precioTotal = platoSeleccionadoParaPedir.precio + adicionalPrecio;
+            let precioUnitario = platoSeleccionadoParaPedir.precio + adicionalPrecio;
 
             carritoItems.push({
                 nombre: platoSeleccionadoParaPedir.nombre,
                 detalle: detalleTexto,
-                total: precioTotal
+                precioUnitario: precioUnitario,
+                cantidad: cantidadSeleccionadaModal,
+                nota: ""
             });
 
             actualizarContadorCarrito();
-            mostrarToast(`✅ ¡${platoSeleccionadoParaPedir.nombre} agregado al carrito!`);
+            mostrarToast(`✅ ¡${cantidadSeleccionadaModal}x ${platoSeleccionadoParaPedir.nombre} agregado al carrito!`);
             cerrarModalDetallePlato();
         }
 
         function actualizarContadorCarrito() {
             const badge = document.getElementById('cart-count');
-            if (badge) badge.textContent = carritoItems.length;
+            let totalUnidades = carritoItems.reduce((acc, item) => acc + item.cantidad, 0);
+            if (badge) badge.textContent = totalUnidades;
         }
 
+        // CONTROL DEL CARRITO Y PASOS DE CHECKOUT
         window.abrirModalCarrito = function() {
-            const container = document.getElementById('carrito-items-container');
-            const totalEl = document.getElementById('carrito-total-precio');
-            if (!container) return;
-
-            if (carritoItems.length === 0) {
-                container.innerHTML = "<p style='color:var(--text-muted); text-align:center;'>Tu carrito está vacío.</p>";
-                totalEl.textContent = "₡0";
-                document.getElementById('modal-carrito').style.display = 'flex';
-                return;
-            }
-
-            let html = "";
-            let sumaTotal = 0;
-            carritoItems.forEach((item, index) => {
-                sumaTotal += item.total;
-                html += `
-                    <div style="background:#222; padding:12px; border-radius:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; border:1px solid var(--border-color);">
-                        <div>
-                            <strong style="color:white; font-size:14px;">${item.nombre}</strong><br>
-                            <span style="font-size:12px; color:var(--color-principal);">${item.detalle}</span><br>
-                            <strong style="color:white; font-size:13px;">₡${item.total.toLocaleString()}</strong>
-                        </div>
-                        <button onclick="carritoItems.splice(${index},1); abrirModalCarrito(); actualizarContadorCarrito();" style="background:none; border:none; color:#ff6b6b; cursor:pointer; font-size:16px;" title="Eliminar">✕</button>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-            totalEl.textContent = `₡${sumaTotal.toLocaleString()}`;
+            checkoutPaso = 1;
+            renderizarPasoCarrito();
             document.getElementById('modal-carrito').style.display = 'flex';
         }
 
@@ -1086,25 +1081,174 @@
             document.getElementById('modal-carrito').style.display = 'none';
         }
 
-        window.enviarPedidoFinal = async function() {
-            if (carritoItems.length === 0) {
-                mostrarToast("El carrito está vacío.");
+        window.renderizarPasoCarrito = function() {
+            const tituloEl = document.getElementById('modal-carrito-titulo');
+            const bodyEl = document.getElementById('carrito-body-contenido');
+            const footerEl = document.getElementById('carrito-footer-contenido');
+
+            if (checkoutPaso === 1) {
+                tituloEl.textContent = "🛒 Tu Pedido";
+                if (carritoItems.length === 0) {
+                    bodyEl.innerHTML = "<p style='color:var(--text-muted); text-align:center;'>Tu carrito está vacío.</p>";
+                    footerEl.innerHTML = `<button onclick="cerrarModalCarrito()" class="btn-admin-action" style="width:100%;">Cerrar</button>`;
+                    return;
+                }
+
+                let html = "";
+                let sumaTotal = 0;
+                carritoItems.forEach((item, index) => {
+                    let subtotalItem = item.precioUnitario * item.cantidad;
+                    sumaTotal += subtotalItem;
+                    html += `
+                        <div style="background:#222; padding:12px; border-radius:10px; margin-bottom:10px; border:1px solid var(--border-color);">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <strong style="color:white; font-size:15px;">${item.nombre}</strong><br>
+                                    <span style="font-size:12px; color:var(--color-principal);">${item.detalle}</span><br>
+                                    <strong style="color:white; font-size:13px;">₡${subtotalItem.toLocaleString()}</strong>
+                                </div>
+                                <button onclick="carritoItems.splice(${index},1); renderizarPasoCarrito(); actualizarContadorCarrito();" style="background:none; border:none; color:#ff6b6b; cursor:pointer; font-size:16px;" title="Eliminar">✕</button>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; pt-2; border-top:1px solid #333;">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <button onclick="cambiarCantidadItemCarrito(${index}, -1)" style="background:#333; color:white; border:none; width:26px; height:26px; border-radius:4px; font-weight:bold; cursor:pointer;">-</button>
+                                    <span style="font-size:14px; font-weight:800;">${item.cantidad}</span>
+                                    <button onclick="cambiarCantidadItemCarrito(${index}, 1)" style="background:var(--color-principal); color:#121212; border:none; width:26px; height:26px; border-radius:4px; font-weight:bold; cursor:pointer;">+</button>
+                                </div>
+                                <input type="text" placeholder="Nota (ej. sin cebolla)" value="${item.nota || ''}" onchange="actualizarNotaItem(${index}, this.value)" style="width:55%; padding:6px 10px; font-size:12px; background:#181818;">
+                            </div>
+                        </div>
+                    `;
+                });
+                bodyEl.innerHTML = html;
+
+                footerEl.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                        <div>
+                            <span style="font-size:12px; color:var(--text-muted); display:block;">Total:</span>
+                            <span style="font-size:18px; font-weight:800; color:var(--color-principal);">₡${sumaTotal.toLocaleString()}</span>
+                        </div>
+                        <button onclick="avanzarCheckout(2)" class="btn-admin-action" style="padding:10px 20px;">Continuar con el pedido 🚀</button>
+                    </div>
+                `;
+            } else if (checkoutPaso === 2) {
+                tituloEl.textContent = "📍 Tipo de Entrega";
+                bodyEl.innerHTML = `
+                    <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Selecciona cómo deseas recibir tu orden:</p>
+                    <div style="display:flex; flex-direction:column; gap:10px;">
+                        <div onclick="seleccionarEntrega('Consumo en Mesa')" style="background:${pedidoTipoEntrega==='Consumo en Mesa'?'rgba(212,175,55,0.15)':'#222'}; border:1px solid ${pedidoTipoEntrega==='Consumo en Mesa'?'var(--color-principal)':'var(--border-color)'}; padding:14px; border-radius:12px; cursor:pointer;">
+                            <strong style="color:white; font-size:15px;">🍽️ Consumo en Mesa</strong>
+                            <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-muted);">Atención directa en tu mesa dentro del local.</p>
+                        </div>
+                        <div onclick="seleccionarEntrega('Retiró en Local')" style="background:${pedidoTipoEntrega==='Retiró en Local'?'rgba(212,175,55,0.15)':'#222'}; border:1px solid ${pedidoTipoEntrega==='Retiró en Local'?'var(--color-principal)':'var(--border-color)'}; padding:14px; border-radius:12px; cursor:pointer;">
+                            <strong style="color:white; font-size:15px;">🛍️ Retiró en Local</strong>
+                            <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-muted);">Pasa a recoger tu pedido listo en barra.</p>
+                        </div>
+                    </div>
+                `;
+                footerEl.innerHTML = `
+                    <button onclick="avanzarCheckout(1)" class="action-pill" style="padding:10px 16px; border:none; background:#2a2a2a; color:white;">Atrás</button>
+                    <button onclick="if(!pedidoTipoEntrega){mostrarToast('Selecciona un tipo de entrega.');}else{avanzarCheckout(3);}" class="btn-admin-action" style="flex:1;">Siguiente</button>
+                `;
+            } else if (checkoutPaso === 3) {
+                tituloEl.textContent = "💳 Método de Pago";
+                bodyEl.innerHTML = `
+                    <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Elige cómo realizarás el pago:</p>
+                    <div style="display:flex; flex-direction:column; gap:10px;">
+                        <div onclick="seleccionarPago('Efectivo')" style="background:${pedidoMetodoPago==='Efectivo'?'rgba(212,175,55,0.15)':'#222'}; border:1px solid ${pedidoMetodoPago==='Efectivo'?'var(--color-principal)':'var(--border-color)'}; padding:14px; border-radius:12px; cursor:pointer;">
+                            <strong style="color:white; font-size:15px;">💵 Efectivo</strong>
+                        </div>
+                        <div onclick="seleccionarPago('SINPE Móvil')" style="background:${pedidoMetodoPago==='SINPE Móvil'?'rgba(212,175,55,0.15)':'#222'}; border:1px solid ${pedidoMetodoPago==='SINPE Móvil'?'var(--color-principal)':'var(--border-color)'}; padding:14px; border-radius:12px; cursor:pointer;">
+                            <strong style="color:white; font-size:15px;">📱 SINPE Móvil</strong>
+                            <span style="font-size:11px; color:var(--color-principal); display:block; margin-top:2px;">Tel: 8521-3829</span>
+                        </div>
+                        <div onclick="seleccionarPago('Datáfono')" style="background:${pedidoMetodoPago==='Datáfono'?'rgba(212,175,55,0.15)':'#222'}; border:1px solid ${pedidoMetodoPago==='Datáfono'?'var(--color-principal)':'var(--border-color)'}; padding:14px; border-radius:12px; cursor:pointer;">
+                            <strong style="color:white; font-size:15px;">💳 Datáfono (Tarjeta)</strong>
+                        </div>
+                    </div>
+                `;
+                footerEl.innerHTML = `
+                    <button onclick="avanzarCheckout(2)" class="action-pill" style="padding:10px 16px; border:none; background:#2a2a2a; color:white;">Atrás</button>
+                    <button onclick="if(!pedidoMetodoPago){mostrarToast('Selecciona un método de pago.');}else{avanzarCheckout(4);}" class="btn-admin-action" style="flex:1;">Siguiente</button>
+                `;
+            } else if (checkoutPaso === 4) {
+                tituloEl.textContent = "📝 Datos Finales";
+                bodyEl.innerHTML = `
+                    <div class="form-group">
+                        <label>Tu Nombre o Número de Mesa *</label>
+                        <input type="text" id="input-nombre-final" placeholder="Ej. Mesa 4 o Juan Pérez" value="${window.clienteActualNombre || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono (Opcional)</label>
+                        <input type="text" id="input-telefono-final" placeholder="Ej. 88888888">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Instrucciones Generales (Opcional)</label>
+                        <textarea id="input-nota-general" placeholder="Alguna indicación adicional para la cocina..." style="height:70px; resize:none;"></textarea>
+                    </div>
+                `;
+                footerEl.innerHTML = `
+                    <button onclick="avanzarCheckout(3)" class="action-pill" style="padding:10px 16px; border:none; background:#2a2a2a; color:white;">Atrás</button>
+                    <button onclick="enviarPedidoFinalDefinitivo()" class="btn-admin-action" style="flex:1; background:var(--color-principal);">Confirmar Pedido 🚀</button>
+                `;
+            }
+        }
+
+        window.cambiarCantidadItemCarrito = function(index, cambio) {
+            carritoItems[index].cantidad += cambio;
+            if (carritoItems[index].cantidad < 1) carritoItems[index].cantidad = 1;
+            renderizarPasoCarrito();
+            actualizarContadorCarrito();
+        }
+
+        window.actualizarNotaItem = function(index, val) {
+            carritoItems[index].nota = val;
+        }
+
+        window.avanzarCheckout = function(paso) {
+            checkoutPaso = paso;
+            renderizarPasoCarrito();
+        }
+
+        window.seleccionarEntrega = function(tipo) {
+            pedidoTipoEntrega = tipo;
+            renderizarPasoCarrito();
+        }
+
+        window.seleccionarPago = function(metodo) {
+            pedidoMetodoPago = metodo;
+            renderizarPasoCarrito();
+        }
+
+        window.enviarPedidoFinalDefinitivo = async function() {
+            const nombreFinal = document.getElementById('input-nombre-final').value.trim();
+            if (!nombreFinal) {
+                mostrarToast("⚠️ Por favor ingresa tu nombre o número de mesa.");
                 return;
             }
-            const nombreCliente = document.getElementById('carrito-nombre-cliente').value.trim() || window.clienteActualNombre || "Cliente General";
+            const telefonoFinal = document.getElementById('input-telefono-final').value.trim();
+            const notaGeneral = document.getElementById('input-nota-general').value.trim();
 
             try {
                 for (let item of carritoItems) {
+                    let detalleCompleto = `${item.detalle} | Cant: ${item.cantidad}`;
+                    if (item.nota) detalleCompleto += ` | Nota: ${item.nota}`;
+                    if (notaGeneral) detalleCompleto += ` | Gen: ${notaGeneral}`;
+
                     await addDoc(collection(db, "pedidos"), {
-                        nombre: `${nombreCliente} - ${item.nombre}`,
-                        detalle: item.detalle,
-                        total: item.total,
+                        nombre: `${nombreFinal} (${pedidoTipoEntrega})`,
+                        detalle: detalleCompleto,
+                        total: item.precioUnitario * item.cantidad,
                         estado: 'Preparación',
+                        metodoPago: pedidoMetodoPago,
+                        telefono: telefonoFinal,
                         fecha: new Date().toLocaleString()
                     });
                 }
                 mostrarToast("🎉 ¡Pedido enviado con éxito a cocina!");
                 carritoItems = [];
+                pedidoTipoEntrega = "";
+                pedidoMetodoPago = "";
                 actualizarContadorCarrito();
                 cerrarModalCarrito();
             } catch(e) {
@@ -1477,10 +1621,10 @@
 
             if (vista === 'menu') {
                 document.getElementById('view-menu').classList.add('active-view');
-                if (floatingBar) floatingBar.style.display = 'flex'; // Mostrar barra en menú público
+                if (floatingBar) floatingBar.style.display = 'flex';
             } else if (vista === 'admin') {
                 document.getElementById('view-admin').classList.add('active-view');
-                if (floatingBar) floatingBar.style.display = 'none'; // Ocultar barra en admin
+                if (floatingBar) floatingBar.style.display = 'none';
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -1496,11 +1640,13 @@
                     const p = d.data();
                     const id = d.id;
                     const estadoActual = p.estado || 'Preparación';
+                    let metodoPagoTxt = p.metodoPago ? `<br><span style="font-size:12px; color:#10b981;">Pago: ${p.metodoPago}</span>` : '';
                     contenedor.innerHTML += `
                         <div style="background:#252525; padding:15px; border-radius:12px; margin-bottom:12px; border:1px solid var(--border-color); border-left:4px solid var(--color-principal);">
                             <strong style="color:white; font-size:15px;">${p.nombre}</strong><br>
-                            <span style="font-size:13px; color:var(--color-principal);">${p.detalle || ''}</span><br>
-                            <strong style="color:white; font-size:14px;">₡${Number(p.total || 0).toLocaleString()}</strong>
+                            <span style="font-size:13px; color:var(--color-principal);">${p.detalle || ''}</span>
+                            ${metodoPagoTxt}<br>
+                            <strong style="color:white; font-size:14px; display:block; margin-top:4px;">₡${Number(p.total || 0).toLocaleString()}</strong>
                             <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
                                 <span style="font-size:11px; color:var(--text-muted);">Estado:</span>
                                 <button onclick="actualizarEstadoPedido('${id}', 'Preparación')" class="action-pill" style="padding:4px 8px; font-size:11px; ${estadoActual==='Preparación'?'background:var(--color-principal); color:#121212;':''}">Preparación</button>
