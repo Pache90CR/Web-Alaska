@@ -16,19 +16,6 @@
         %22icons%22: [{%22src%22: %22https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=192&q=80%22, %22sizes%22: %22192x192%22, %22type%22: %22image/jpeg%22}]
     }">
 
-    <!-- OneSignal SDK para Notificaciones Push -->
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      window.OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.init({
-          appId: "c31e133e-ad8e-4372-9da5-2fa4a33d1365",
-          safari_web_id: "",
-          notifyButton: { enable: true },
-        });
-      });
-    </script>
-
     <style>
         :root {
             --bg-dark: #121212;
@@ -348,11 +335,6 @@
 </head>
 <body>
 
-    <!-- Audio oculto para reproducir alarma fuerte de nuevo pedido -->
-    <audio id="audio-alarma" preload="auto">
-        <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg">
-    </audio>
-
     <div id="toast-notification">
         <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         <span id="toast-msg">Mensaje</span>
@@ -467,10 +449,6 @@
                 <button class="btn-abrir-menu-admin" onclick="abrirSidebar()">
                     <svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
                     Menú de Opciones
-                </button>
-                <!-- BOTÓN DE DESBLOQUEO DE ALARMA DE COCINA -->
-                <button type="button" onclick="activarAudioCocinaManual()" id="btn-activar-audio" style="background:rgba(212,175,55,0.2); border:1px solid var(--color-principal); color:var(--color-principal); padding:8px 14px; border-radius:8px; font-weight:800; font-size:12px; cursor:pointer;">
-                    🔔 Activar Alarma de Cocina
                 </button>
                 <span style="font-size:12px; color:var(--text-muted);">Panel Admin</span>
             </div>
@@ -949,49 +927,6 @@
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
 
-        // FUNCIÓN MANUAL PARA DESBLOQUEAR EL AUDIO EN EL NAVEGADOR MÓVIL
-        window.activarAudioCocinaManual = function() {
-            const audio = document.getElementById('audio-alarma');
-            if (audio) {
-                audio.play().then(() => {
-                    audio.pause();
-                    audio.currentTime = 0;
-                    mostrarToast("✅ ¡Alarma de cocina activada y lista!");
-                    const btn = document.getElementById('btn-activar-audio');
-                    if(btn) {
-                        btn.style.background = "rgba(16,185,129,0.2)";
-                        btn.style.borderColor = "#10b981";
-                        btn.style.color = "#10b981";
-                        btn.textContent = "🔊 Alarma Activa";
-                    }
-                }).catch(err => {
-                    mostrarToast("⚠️ Toca la pantalla de nuevo para autorizar el audio.");
-                });
-            }
-        };
-
-        // ESCUCHA EN TIEMPO REAL DE NUEVOS PEDIDOS (DISPARA ALARMA Y ACTUALIZA VISTA ADMIN)
-        let primerCargaPedidos = true;
-        onSnapshot(collection(db, "pedidos"), (snapshot) => {
-            if (primerCargaPedidos) {
-                primerCargaPedidos = false;
-                return;
-            }
-            snapshot.docChanges().forEach((change) => {
-                if (change.type === "added") {
-                    // ¡Nuevo pedido detectado! Reproducir alarma de cocina
-                    const audioAlarma = document.getElementById('audio-alarma');
-                    if (audioAlarma) {
-                        audioAlarma.play().catch(err => console.log("Audio bloqueado por navegador hasta interacción", err));
-                    }
-                    mostrarToast("🚨 ¡Nuevo pedido recibido en cocina!");
-                    if (adminAutenticado) {
-                        cargarPedidosAdmin();
-                    }
-                }
-            });
-        });
-
         async function cargarMenu() {
             try {
                 const querySnapshot = await getDocs(collection(db, "menu"));
@@ -1268,7 +1203,7 @@
                 `;
                 footerEl.innerHTML = `
                     <button type="button" onclick="avanzarCheckout(3)" class="action-pill" style="width:100%; padding:10px; border:none; background:#2a2a2a; color:white; justify-content:center;">Atrás</button>
-                    <button type="button" onclick="enviarPedidoFinalDefinitivo()" class="btn-admin-action" style="width:100%; padding:12px; background:var(--color-principal);">Confirmar Pedido 🚀</button>
+                    <button type="button" onclick="enviarPedidoFinalDefinitivo()" class="btn-admin-action" style="width:100%; padding:12px; background:var(--color-principal);">Confirmar y Enviar a WhatsApp 📱</button>
                 `;
             }
         }
@@ -1331,27 +1266,45 @@
             const notaGeneral = document.getElementById('input-nota-general').value.trim();
 
             try {
+                let resumenTextoWhatsApp = `🚨 *NUEVO PEDIDO - BAR ALASKA* 🚨\n\n*Cliente/Mesa:* ${nombreFinal} (${pedidoTipoEntrega})\n*Teléfono:* ${telefonoFinal || 'No indicado'}\n*Pago:* ${pedidoMetodoPago}\n\n*Detalle:*`;
+                let sumaTotalGeneral = 0;
+
                 for (let item of carritoItems) {
+                    let subtotalItem = item.precioUnitario * item.cantidad;
+                    sumaTotalGeneral += subtotalItem;
                     let detalleCompleto = `${item.detalle} | Cant: ${item.cantidad}`;
                     if (item.nota) detalleCompleto += ` | Nota: ${item.nota}`;
-                    if (notaGeneral) detalleCompleto += ` | Gen: ${notaGeneral}`;
+
+                    resumenTextoWhatsApp += `\n• ${item.cantidad}x ${item.nombre} (${detalleCompleto}) - ₡${subtotalItem.toLocaleString()}`;
 
                     await addDoc(collection(db, "pedidos"), {
                         nombre: `${nombreFinal} (${pedidoTipoEntrega})`,
                         detalle: detalleCompleto,
-                        total: item.precioUnitario * item.cantidad,
+                        total: subtotalItem,
                         estado: 'Preparación',
                         metodoPago: pedidoMetodoPago || 'Efectivo',
                         telefono: telefonoFinal,
                         fecha: new Date().toLocaleString()
                     });
                 }
-                mostrarToast("🎉 ¡Pedido enviado con éxito a cocina!");
+
+                if (notaGeneral) {
+                    resumenTextoWhatsApp += `\n\n*Nota General:* ${notaGeneral}`;
+                }
+                resumenTextoWhatsApp += `\n\n*TOTAL A PAGAR: ₡${sumaTotalGeneral.toLocaleString()}*`;
+
+                mostrarToast("🎉 ¡Pedido guardado y abriendo WhatsApp!");
                 carritoItems = [];
                 pedidoTipoEntrega = "";
                 pedidoMetodoPago = "";
                 actualizarContadorCarrito();
                 cerrarModalCarrito();
+
+                // Abrir WhatsApp automáticamente con la orden redactada (Reemplaza con tu número de teléfono del negocio en formato internacional, ej: 50688888888)
+                const numeroNegocioWhatsApp = "50685213829"; 
+                const urlWhatsApp = `https://wa.me/${numeroNegocioWhatsApp}?text=${encodeURIComponent(resumenTextoWhatsApp)}`;
+                window.open(urlWhatsApp, '_blank');
+
             } catch(e) {
                 mostrarToast("Error al enviar el pedido.");
             }
