@@ -367,7 +367,7 @@
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('caja')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span>Cierre de Caja y Ventas</span>
+                <span>Cierre de Caja y Cuadre</span>
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('categorias')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
@@ -500,13 +500,31 @@
                 </div>
 
                 <div id="admin-tab-caja" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">💰 Cierre de Caja y Reportes</h2>
-                    <div class="stats-cards-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom:20px;">
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">💰 Cierre de Caja y Cuadre Profesional</h2>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Calcula ingresos por método de pago e introduce el conteo físico para realizar el cuadre exacto.</p>
+
+                    <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:20px;">
                         <div class="stat-card total"><div class="stat-title">Ingresos Totales</div><div class="stat-value" id="stat-ingresos">₡0</div></div>
-                        <div class="stat-card visibles"><div class="stat-title">Total Transacciones</div><div class="stat-value" id="stat-total-pedidos">0</div></div>
+                        <div class="stat-card visibles"><div class="stat-title">Efectivo Sistema</div><div class="stat-value" id="stat-efectivo-sis" style="color:#3b82f6;">₡0</div></div>
+                        <div class="stat-card oferta"><div class="stat-title">SINPE / Tarjeta</div><div class="stat-value" id="stat-electronico-sis" style="color:#8b5cf6;">₡0</div></div>
                     </div>
-                    <button type="button" class="btn-admin-action" onclick="calcularCorteCaja()">Calcular Cierre de Caja del Día</button>
-                    <div id="resultado-corte-container" style="margin-top:15px; font-size:14px; color:white;"></div>
+
+                    <div style="background:#181818; padding:20px; border-radius:14px; border:1px solid var(--border-color); margin-bottom:20px;">
+                        <h3 style="margin-top:0; font-size:15px; color:white; margin-bottom:12px;">📊 Asistente de Cuadre de Caja</h3>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:15px;">
+                            <div class="form-group" style="flex:1; min-width:200px; margin-bottom:0;">
+                                <label>Fondo Inicial (Caja Chica ₡):</label>
+                                <input type="number" id="input-fondo-inicial" placeholder="Ej. 20000" value="20000">
+                            </div>
+                            <div class="form-group" style="flex:1; min-width:200px; margin-bottom:0;">
+                                <label>Efectivo Real Contado en Caja (₡):</label>
+                                <input type="number" id="input-efectivo-fisico" placeholder="Ej. 45000">
+                            </div>
+                        </div>
+                        <button type="button" class="btn-admin-action" onclick="ejecutarCuadreCaja()">Realizar Cuadre Exacto</button>
+                    </div>
+
+                    <div id="resultado-corte-container"></div>
                 </div>
 
                 <div id="admin-tab-categorias" class="admin-section-tab">
@@ -1258,12 +1276,12 @@
                         detalle: detalleCompleto,
                         total: item.precioUnitario * item.cantidad,
                         estado: 'Preparación',
-                        metodoPago: pedidoMetodoPago,
+                        metodoPago: pedidoMetodoPago || 'Efectivo',
                         telefono: telefonoFinal,
                         fecha: new Date().toLocaleString()
                     });
                 }
-                mostrarToast("🎉 ¡Pedido enviado con éxito à cocina!");
+                mostrarToast("🎉 ¡Pedido enviado con éxito a cocina!");
                 carritoItems = [];
                 pedidoTipoEntrega = "";
                 pedidoMetodoPago = "";
@@ -1605,7 +1623,7 @@
             if (seccion === 'pedidos') cargarPedidosAdmin();
             else if (seccion === 'platos') cargarAdminPlatosDashboard();
             else if (seccion === 'stock') cargarAdminStock();
-            else if (seccion === 'caja') cargarEstadisticasCaja();
+            else if (seccion === 'caja') calcularEstadisticasCaja();
             else if (seccion === 'categorias') renderizarTablaCategoriasAdmin();
             else if (seccion === 'clientes') cargarBaseClientesAdmin();
             else if (seccion === 'lealtad') cargarCodigoActivoAdmin();
@@ -1919,6 +1937,7 @@
                     detalle: `${cantidad} unidades vendidas`,
                     total: precioVenta * cantidad,
                     estado: 'Preparación',
+                    metodoPago: 'Efectivo',
                     fecha: new Date().toLocaleString()
                 });
                 mostrarToast(`✅ ¡Se vendieron ${cantidad} unidades y se sumaron a caja!`);
@@ -1926,28 +1945,72 @@
             } catch(e) { mostrarToast("Error al procesar venta."); }
         }
 
-        async function cargarEstadisticasCaja() {
+        let datosCajaGlobal = { total: 0, efectivo: 0, electronico: 0 };
+
+        async function calcularEstadisticasCaja() {
             try {
                 const qs = await getDocs(collection(db, "pedidos"));
                 let totalIngresos = 0;
-                qs.forEach(d => totalIngresos += Number(d.data().total || 0));
+                let totalEfectivo = 0;
+                let totalElectronico = 0;
+
+                qs.forEach(d => {
+                    let p = d.data();
+                    let monto = Number(p.total || 0);
+                    totalIngresos += monto;
+                    if (p.metodoPago === 'Efectivo' || !p.metodoPago) {
+                        totalEfectivo += monto;
+                    } else {
+                        totalElectronico += monto;
+                    }
+                });
+
+                datosCajaGlobal = { total: totalIngresos, efectivo: totalEfectivo, electronico: totalElectronico };
+
                 if (document.getElementById('stat-ingresos')) document.getElementById('stat-ingresos').textContent = `₡${totalIngresos.toLocaleString()}`;
-                if (document.getElementById('stat-total-pedidos')) document.getElementById('stat-total-pedidos').textContent = qs.size;
+                if (document.getElementById('stat-efectivo-sis')) document.getElementById('stat-efectivo-sis').textContent = `₡${totalEfectivo.toLocaleString()}`;
+                if (document.getElementById('stat-electronico-sis')) document.getElementById('stat-electronico-sis').textContent = `₡${totalElectronico.toLocaleString()}`;
             } catch(e) { console.log(e); }
         }
 
-        window.calcularCorteCaja = async function() {
-            try {
-                const qs = await getDocs(collection(db, "pedidos"));
-                let total = 0;
-                qs.forEach(d => total += Number(d.data().total || 0));
-                document.getElementById('resultado-corte-container').innerHTML = `
-                    <div style="background:#222; padding:15px; border-radius:10px; border:1px solid var(--color-principal);">
-                        <strong style="color:var(--color-principal); font-size:16px;">💰 Total Recaudado: ₡${total.toLocaleString()}</strong><br>
-                        <span style="font-size:12px; color:var(--text-muted);">Basado en ${qs.size} transacciones.</span>
+        window.ejecutarCuadreCaja = function() {
+            const fondoInicial = Number(document.getElementById('input-fondo-inicial').value || 0);
+            const efectivoFisico = Number(document.getElementById('input-efectivo-fisico').value || 0);
+
+            let efectivoEsperado = fondoInicial + datosCajaGlobal.efectivo;
+            let diferencia = efectivoFisico - efectivoEsperado;
+
+            let estadoDiferencia = "";
+            let colorDiferencia = "#4ade80"; // Verde si cuadra exacto
+
+            if (diferencia > 0) {
+                estadoDiferencia = `Sobrante de ₡${diferencia.toLocaleString()} ⭐`;
+                colorDiferencia = "#3b82f6";
+            } else if (diferencia < 0) {
+                estadoDiferencia = `Faltante de ₡${Math.abs(diferencia).toLocaleString()} ⚠️`;
+                colorDiferencia = "#ef4444";
+            } else {
+                estadoDiferencia = `¡Cuadre Exacto sin diferencias! 🎉`;
+            }
+
+            document.getElementById('resultado-corte-container').innerHTML = `
+                <div style="background:#222; padding:20px; border-radius:14px; border:1px solid var(--color-principal);">
+                    <h3 style="margin-top:0; font-size:16px; color:var(--color-principal); margin-bottom:12px;">🧾 Reporte de Cierre y Cuadre</h3>
+                    <div style="font-size:14px; line-height:1.6; display:flex; flex-direction:column; gap:6px;">
+                        <div>🔹 Fondo Inicial en Caja: <strong>₡${fondoInicial.toLocaleString()}</strong></div>
+                        <div>🔹 Ventas en Efectivo (Sistema): <strong>₡${datosCajaGlobal.efectivo.toLocaleString()}</strong></div>
+                        <div>🔹 Ventas Electrónicas (SINPE/Tarjeta): <strong>₡${datosCajaGlobal.electronico.toLocaleString()}</strong></div>
+                        <div style="border-top:1px solid #333; margin-top:8px; padding-top:8px;">
+                            🔹 Efectivo Esperado en Caja: <strong>₡${efectivoEsperado.toLocaleString()}</strong><br>
+                            🔹 Efectivo Real Contado: <strong>₡${efectivoFisico.toLocaleString()}</strong>
+                        </div>
+                        <div style="margin-top:10px; font-size:16px; font-weight:800; color:${colorDiferencia}; background:rgba(0,0,0,0.3); padding:10px; border-radius:8px; text-align:center;">
+                            Resultado: ${estadoDiferencia}
+                        </div>
                     </div>
-                `;
-            } catch(e) { mostrarToast("Error al calcular."); }
+                </div>
+            `;
+            mostrarToast("✅ Cuadre calculado con éxito.");
         }
 
         window.agregarVarianteTemporal = function() {
