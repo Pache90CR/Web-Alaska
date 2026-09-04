@@ -1098,20 +1098,20 @@
                     let subtotalItem = item.precioUnitario * item.cantidad;
                     sumaTotal += subtotalItem;
                     html += `
-                        <div style="background:#222; padding:14px; border-radius:12px; margin-bottom:10px; border:1px solid var(--border-color); position:relative;">
-                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                                <div style="padding-right: 25px;">
+                        <div style="background:#222; padding:14px; border-radius:12px; margin-bottom:10px; border:1px solid var(--border-color);">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                                <div>
                                     <strong style="color:white; font-size:15px;">${item.nombre}</strong><br>
                                     <span style="font-size:12px; color:var(--color-principal);">${item.detalle}</span><br>
                                     <strong style="color:white; font-size:13px;">₡${subtotalItem.toLocaleString()}</strong>
                                 </div>
-                                <button onclick="carritoItems.splice(${index},1); renderizarPasoCarrito(); actualizarContadorCarrito();" style="position:absolute; top:12px; right:12px; background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#ef4444; width:26px; height:26px; border-radius:50%; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center;" title="Eliminar">✕</button>
+                                <button type="button" onclick="eliminarItemCarrito(${index})" style="background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#ef4444; padding:6px 12px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:bold;">Eliminar ✕</button>
                             </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-top:10px; border-top:1px solid #333;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; padding-top:8px; border-top:1px solid #333;">
                                 <div style="display:flex; align-items:center; gap:8px;">
-                                    <button onclick="cambiarCantidadItemCarrito(${index}, -1)" style="background:#333; color:white; border:none; width:26px; height:26px; border-radius:6px; font-weight:bold; cursor:pointer;">-</button>
+                                    <button type="button" onclick="cambiarCantidadItemCarrito(${index}, -1)" style="background:#333; color:white; border:none; width:26px; height:26px; border-radius:6px; font-weight:bold; cursor:pointer;">-</button>
                                     <span style="font-size:14px; font-weight:800;">${item.cantidad}</span>
-                                    <button onclick="cambiarCantidadItemCarrito(${index}, 1)" style="background:var(--color-principal); color:#121212; border:none; width:26px; height:26px; border-radius:6px; font-weight:bold; cursor:pointer;">+</button>
+                                    <button type="button" onclick="cambiarCantidadItemCarrito(${index}, 1)" style="background:var(--color-principal); color:#121212; border:none; width:26px; height:26px; border-radius:6px; font-weight:bold; cursor:pointer;">+</button>
                                 </div>
                                 <input type="text" placeholder="Nota (ej. sin cebolla)" value="${item.nota || ''}" onchange="actualizarNotaItem(${index}, this.value)" style="width:55%; padding:8px 10px; font-size:12px; background:#181818; border-radius:8px;">
                             </div>
@@ -1125,7 +1125,7 @@
                         <span style="font-size:13px; color:var(--text-muted);">Total a Pagar:</span>
                         <span style="font-size:18px; font-weight:800; color:var(--color-principal);">₡${sumaTotal.toLocaleString()}</span>
                     </div>
-                    <button onclick="avanzarCheckout(2)" class="btn-admin-action" style="width:100%; padding:12px;">Continuar pedido 🚀</button>
+                    <button type="button" onclick="avanzarCheckout(2)" class="btn-admin-action" style="width:100%; padding:12px;">Continuar pedido 🚀</button>
                 `;
             } else if (checkoutPaso === 2) {
                 tituloEl.textContent = "📍 Tipo de Entrega";
@@ -1143,8 +1143,8 @@
                     </div>
                 `;
                 footerEl.innerHTML = `
-                    <button onclick="avanzarCheckout(1)" class="action-pill" style="width:100%; padding:10px; border:none; background:#2a2a2a; color:white; justify-content:center;">Atrás</button>
-                    <button onclick="if(!pedidoTipoEntrega){mostrarToast('Selecciona un tipo de entrega.');}else{avanzarCheckout(3);}" class="btn-admin-action" style="width:100%; padding:12px;">Siguiente</button>
+                    <button type="button" onclick="avanzarCheckout(1)" class="action-pill" style="width:100%; padding:10px; border:none; background:#2a2a2a; color:white; justify-content:center;">Atrás</button>
+                    <button type="button" onclick="ejecutarSiguienteEntrega()" class="btn-admin-action" style="width:100%; padding:12px;">Siguiente</button>
                 `;
             } else if (checkoutPaso === 3) {
                 tituloEl.textContent = "💳 Método de Pago";
@@ -1164,8 +1164,8 @@
                     </div>
                 `;
                 footerEl.innerHTML = `
-                    <button onclick="avanzarCheckout(2)" class="action-pill" style="width:100%; padding:10px; border:none; background:#2a2a2a; color:white; justify-content:center;">Atrás</button>
-                    <button onclick="if(!pedidoMetodoPago){mostrarToast('Selecciona un método de pago.');}else{avanzarCheckout(4);}" class="btn-admin-action" style="width:100%; padding:12px;">Siguiente</button>
+                    <button type="button" onclick="avanzarCheckout(2)" class="action-pill" style="width:100%; padding:10px; border:none; background:#2a2a2a; color:white; justify-content:center;">Atrás</button>
+                    <button type="button" onclick="ejecutarSiguientePago()" class="btn-admin-action" style="width:100%; padding:12px;">Siguiente</button>
                 `;
             } else if (checkoutPaso === 4) {
                 tituloEl.textContent = "📝 Datos Finales";
@@ -1184,10 +1184,16 @@
                     </div>
                 `;
                 footerEl.innerHTML = `
-                    <button onclick="avanzarCheckout(3)" class="action-pill" style="width:100%; padding:10px; border:none; background:#2a2a2a; color:white; justify-content:center;">Atrás</button>
-                    <button onclick="enviarPedidoFinalDefinitivo()" class="btn-admin-action" style="width:100%; padding:12px; background:var(--color-principal);">Confirmar Pedido 🚀</button>
+                    <button type="button" onclick="avanzarCheckout(3)" class="action-pill" style="width:100%; padding:10px; border:none; background:#2a2a2a; color:white; justify-content:center;">Atrás</button>
+                    <button type="button" onclick="enviarPedidoFinalDefinitivo()" class="btn-admin-action" style="width:100%; padding:12px; background:var(--color-principal);">Confirmar Pedido 🚀</button>
                 `;
             }
+        }
+
+        window.eliminarItemCarrito = function(index) {
+            carritoItems.splice(index, 1);
+            renderizarPasoCarrito();
+            actualizarContadorCarrito();
         }
 
         window.cambiarCantidadItemCarrito = function(index, cambio) {
@@ -1211,9 +1217,25 @@
             renderizarPasoCarrito();
         }
 
+        window.ejecutarSiguienteEntrega = function() {
+            if (!pedidoTipoEntrega) {
+                mostrarToast('⚠️ Selecciona un tipo de entrega.');
+                return;
+            }
+            avanzarCheckout(3);
+        }
+
         window.seleccionarPago = function(metodo) {
             pedidoMetodoPago = metodo;
             renderizarPasoCarrito();
+        }
+
+        window.ejecutarSiguientePago = function() {
+            if (!pedidoMetodoPago) {
+                mostrarToast('⚠️ Selecciona un método de pago.');
+                return;
+            }
+            avanzarCheckout(4);
         }
 
         window.enviarPedidoFinalDefinitivo = async function() {
@@ -1241,7 +1263,7 @@
                         fecha: new Date().toLocaleString()
                     });
                 }
-                mostrarToast("🎉 ¡Pedido enviado con éxito a cocina!");
+                mostrarToast("🎉 ¡Pedido enviado con éxito à cocina!");
                 carritoItems = [];
                 pedidoTipoEntrega = "";
                 pedidoMetodoPago = "";
@@ -1645,10 +1667,10 @@
                             <strong style="color:white; font-size:14px; display:block; margin-top:4px;">₡${Number(p.total || 0).toLocaleString()}</strong>
                             <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
                                 <span style="font-size:11px; color:var(--text-muted);">Estado:</span>
-                                <button onclick="actualizarEstadoPedido('${id}', 'Preparación')" class="action-pill" style="padding:4px 8px; font-size:11px; ${estadoActual==='Preparación'?'background:var(--color-principal); color:#121212;':''}">Preparación</button>
-                                <button onclick="actualizarEstadoPedido('${id}', 'En Camino')" class="action-pill" style="padding:4px 8px; font-size:11px; ${estadoActual==='En Camino'?'background:var(--color-principal); color:#121212;':''}">En Camino</button>
-                                <button onclick="actualizarEstadoPedido('${id}', 'Entregado')" class="action-pill" style="padding:4px 8px; font-size:11px; ${estadoActual==='Entregado'?'background:var(--color-principal); color:#121212;':''}">Entregado</button>
-                                <button onclick="eliminarPedido('${id}')" class="action-pill" style="padding:4px 8px; font-size:11px; background:#5c2222; color:#ff6b6b; border:none;">Eliminar</button>
+                                <button type="button" onclick="actualizarEstadoPedido('${id}', 'Preparación')" class="action-pill" style="padding:4px 8px; font-size:11px; ${estadoActual==='Preparación'?'background:var(--color-principal); color:#121212;':''}">Preparación</button>
+                                <button type="button" onclick="actualizarEstadoPedido('${id}', 'En Camino')" class="action-pill" style="padding:4px 8px; font-size:11px; ${estadoActual==='En Camino'?'background:var(--color-principal); color:#121212;':''}">En Camino</button>
+                                <button type="button" onclick="actualizarEstadoPedido('${id}', 'Entregado')" class="action-pill" style="padding:4px 8px; font-size:11px; ${estadoActual==='Entregado'?'background:var(--color-principal); color:#121212;':''}">Entregado</button>
+                                <button type="button" onclick="eliminarPedido('${id}')" class="action-pill" style="padding:4px 8px; font-size:11px; background:#5c2222; color:#ff6b6b; border:none;">Eliminar</button>
                             </div>
                         </div>
                     `;
@@ -1697,13 +1719,13 @@
                         <td>${p.categoria}</td>
                         <td style="color:var(--color-principal); font-weight:800;">₡${p.precio.toLocaleString()}</td>
                         <td>
-                            <button onclick="toggleDisponibilidadPlato('${p.id}', ${disponible})" class="action-pill" style="padding:4px 8px; font-size:11px; ${disponible ? 'background:rgba(16,185,129,0.2); color:#10b981; border-color:#10b981;' : 'background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444;'}">
+                            <button type="button" onclick="toggleDisponibilidadPlato('${p.id}', ${disponible})" class="action-pill" style="padding:4px 8px; font-size:11px; ${disponible ? 'background:rgba(16,185,129,0.2); color:#10b981; border-color:#10b981;' : 'background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444;'}">
                                 ${disponible ? 'Disponible' : 'Agotado'}
                             </button>
                         </td>
                         <td>
-                            <button onclick="abrirModalEditarPlato('${p.id}')" class="action-pill" style="padding:4px 8px; font-size:11px;">Editar</button>
-                            <button onclick="eliminarPlato('${p.id}')" class="action-pill" style="padding:4px 8px; font-size:11px; background:#5c2222; color:#ff6b6b; border:none;">Eliminar</button>
+                            <button type="button" onclick="abrirModalEditarPlato('${p.id}')" class="action-pill" style="padding:4px 8px; font-size:11px;">Editar</button>
+                            <button type="button" onclick="eliminarPlato('${p.id}')" class="action-pill" style="padding:4px 8px; font-size:11px; background:#5c2222; color:#ff6b6b; border:none;">Eliminar</button>
                         </td>
                     </tr>
                 `;
@@ -1848,9 +1870,9 @@
                                 <td>₡${vent.toLocaleString()}</td>
                                 <td>
                                     <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                                        <button onclick="ajustarCantidadStock('${s.id}', ${cant}, 'aumentar')" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(16,185,129,0.2); color:#10b981; border-color:#10b981;">+ Aumentar</button>
-                                        <button onclick="ajustarCantidadStock('${s.id}', ${cant}, 'disminuir')" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444;">- Disminuir</button>
-                                        <button onclick="venderCantidadStock('${s.id}', ${cant}, ${vent})" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(212,175,55,0.2);">🛒 Vender</button>
+                                        <button type="button" onclick="ajustarCantidadStock('${s.id}', ${cant}, 'aumentar')" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(16,185,129,0.2); color:#10b981; border-color:#10b981;">+ Aumentar</button>
+                                        <button type="button" onclick="ajustarCantidadStock('${s.id}', ${cant}, 'disminuir')" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444;">- Disminuir</button>
+                                        <button type="button" onclick="venderCantidadStock('${s.id}', ${cant}, ${vent})" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(212,175,55,0.2);">🛒 Vender</button>
                                     </div>
                                 </td>
                             </tr>
@@ -1996,7 +2018,7 @@
                             <td style="font-weight:750;">${c.nombre}</td>
                             <td>${c.telefono}</td>
                             <td style="color:var(--color-principal); font-weight:800;">${c.sellos || 0} / 5 ⭐</td>
-                            <td><button onclick="eliminarCliente('${id}')" class="action-pill" style="padding:4px 8px; font-size:11px; background:#5c2222; color:#ff6b6b; border:none;">Eliminar</button></td>
+                            <td><button type="button" onclick="eliminarCliente('${id}')" class="action-pill" style="padding:4px 8px; font-size:11px; background:#5c2222; color:#ff6b6b; border:none;">Eliminar</button></td>
                         </tr>
                     `;
                 });
@@ -2022,7 +2044,7 @@
                     <tr>
                         <td><img src="${imgUrl}" style="width:36px; height:36px; object-fit:contain; border-radius:6px; background:#222;"></td>
                         <td style="font-weight:700;">${cat}</td>
-                        <td><button onclick="abrirModalEditarCat('${cat}')" class="action-pill" style="padding:4px 10px; font-size:11px;">Editar Icono</button></td>
+                        <td><button type="button" onclick="abrirModalEditarCat('${cat}')" class="action-pill" style="padding:4px 10px; font-size:11px;">Editar Icono</button></td>
                     </tr>
                 `;
             });
