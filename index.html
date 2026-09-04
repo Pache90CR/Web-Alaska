@@ -16,6 +16,19 @@
         %22icons%22: [{%22src%22: %22https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=192&q=80%22, %22sizes%22: %22192x192%22, %22type%22: %22image/jpeg%22}]
     }">
 
+    <!-- OneSignal SDK para Notificaciones Push -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      window.OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "c31e133e-ad8e-4372-9da5-2fa4a33d1365",
+          safari_web_id: "",
+          notifyButton: { enable: true },
+        });
+      });
+    </script>
+
     <style>
         :root {
             --bg-dark: #121212;
@@ -334,6 +347,11 @@
     </style>
 </head>
 <body>
+
+    <!-- Audio oculto para reproducir alarma fuerte de nuevo pedido -->
+    <audio id="audio-alarma" preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg">
+    </audio>
 
     <div id="toast-notification">
         <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -886,7 +904,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD2JhmA4m7NMbRcC2RqaHVIz1NLgI2IzE",
@@ -912,7 +930,7 @@
         let adminAutenticado = false;
         let negocioAbiertoGlobal = true;
 
-        let checkoutPaso = 1; // 1: Lista items, 2: Tipo entrega, 3: Metodo pago, 4: Datos finales
+        let checkoutPaso = 1; 
         let pedidoTipoEntrega = "";
         let pedidoMetodoPago = "";
 
@@ -926,6 +944,28 @@
             toast.classList.add('show');
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
+
+        // ESCUCHA EN TIEMPO REAL DE NUEVOS PEDIDOS (DISPARA ALARMA Y ACTUALIZA VISTA ADMIN)
+        let primerCargaPedidos = true;
+        onSnapshot(collection(db, "pedidos"), (snapshot) => {
+            if (primerCargaPedidos) {
+                primerCargaPedidos = false;
+                return;
+            }
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === "added") {
+                    // ¡Nuevo pedido detectado! Reproducir alarma de cocina
+                    const audioAlarma = document.getElementById('audio-alarma');
+                    if (audioAlarma) {
+                        audioAlarma.play().catch(err => console.log("Audio bloqueado por navegador hasta interacción", err));
+                    }
+                    mostrarToast("🚨 ¡Nuevo pedido recibido en cocina!");
+                    if (adminAutenticado) {
+                        cargarPedidosAdmin();
+                    }
+                }
+            });
+        });
 
         async function cargarMenu() {
             try {
@@ -1981,7 +2021,7 @@
             let diferencia = efectivoFisico - efectivoEsperado;
 
             let estadoDiferencia = "";
-            let colorDiferencia = "#4ade80"; // Verde si cuadra exacto
+            let colorDiferencia = "#4ade80";
 
             if (diferencia > 0) {
                 estadoDiferencia = `Sobrante de ₡${diferencia.toLocaleString()} ⭐`;
