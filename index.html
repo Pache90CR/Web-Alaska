@@ -374,7 +374,7 @@
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('analisis')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg>
-                <span>Análisis Mensual</span>
+                <span>Análisis Mensual (Ventas vs Compras)</span>
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('categorias')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
@@ -1302,6 +1302,7 @@
                     let detalleCompleto = `${item.detalle} | Cant: ${item.cantidad}`;
                     if (item.nota) detalleCompleto += ` | Nota: ${item.nota}`;
 
+                    // 1. Guardar en Firebase (Pedidos en Vivo)
                     await addDoc(collection(db, "pedidos"), {
                         nombre: `${nombreFinal} (${pedidoTipoEntrega})`,
                         detalle: detalleCompleto,
@@ -1310,6 +1311,20 @@
                         metodoPago: pedidoMetodoPago || 'Efectivo',
                         telefono: telefonoFinal,
                         fecha: new Date().toISOString()
+                    });
+
+                    // 2. Enviar aviso automático a Make por Webhook (URL integrada)
+                    await fetch('https://hook.us2.make.com/dlrk5a5o4f75a76cjc3ci6bb5b4f7s3m', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            nombre: `${nombreFinal} (${pedidoTipoEntrega})`,
+                            detalle: detalleCompleto,
+                            total: subtotalItem,
+                            metodoPago: pedidoMetodoPago || 'Efectivo',
+                            telefono: telefonoFinal,
+                            notaGeneral: notaGeneral
+                        })
                     });
                 }
 
