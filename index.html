@@ -16,6 +16,9 @@
         %22icons%22: [{%22src%22: %22https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=192&q=80%22, %22sizes%22: %22192x192%22, %22type%22: %22image/jpeg%22}]
     }">
 
+    <!-- Chart.js para gráficas financieras -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         :root {
             --bg-dark: #121212;
@@ -369,6 +372,10 @@
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 <span>Cierre de Caja y Cuadre</span>
             </a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('analisis')">
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg>
+                <span>Análisis Mensual (Ventas vs Compras)</span>
+            </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('categorias')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
                 <span>Gestión de Categorías e Iconos</span>
@@ -525,6 +532,30 @@
                     </div>
 
                     <div id="resultado-corte-container"></div>
+                </div>
+
+                <!-- NUEVA SECCIÓN DE ANÁLISIS MENSUAL -->
+                <div id="admin-tab-analisis" class="admin-section-tab">
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">📈 Análisis Mensual: Ventas vs. Compras</h2>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Evalúa tu rendimiento financiero mes a mes para identificar periodos de ganancia o pérdida.</p>
+
+                    <div class="form-group" style="max-width: 250px; margin-bottom: 20px;">
+                        <label>Seleccionar Año:</label>
+                        <select id="select-ano-analisis" onchange="renderizarAnalisisMensual()">
+                            <option value="2026">2026</option>
+                            <option value="2025">2025</option>
+                        </select>
+                    </div>
+
+                    <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:25px;">
+                        <div class="stat-card total"><div class="stat-title">Ventas Anuales</div><div class="stat-value" id="analisis-stat-ventas">₡0</div></div>
+                        <div class="stat-card visibles"><div class="stat-title">Compras/Inversión</div><div class="stat-value" id="analisis-stat-compras" style="color:#ef4444;">₡0</div></div>
+                        <div class="stat-card oferta"><div class="stat-title">Ganancia Neta</div><div class="stat-value" id="analisis-stat-ganancia" style="color:#4ade80;">₡0</div></div>
+                    </div>
+
+                    <div style="background:#181818; padding:20px; border-radius:16px; border:1px solid var(--border-color); position: relative; height: 350px;">
+                        <canvas id="graficoVentasCompras"></canvas>
+                    </div>
                 </div>
 
                 <div id="admin-tab-categorias" class="admin-section-tab">
@@ -729,13 +760,9 @@
                 <button onclick="cerrarModalCarrito()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
             </div>
             
-            <div class="modal-body" id="carrito-body-contenido">
-                <!-- Se llena dinámicamente por pasos -->
-            </div>
+            <div class="modal-body" id="carrito-body-contenido"></div>
 
-            <div class="modal-footer" id="carrito-footer-contenido">
-                <!-- Botones dinámicos según el paso -->
-            </div>
+            <div class="modal-footer" id="carrito-footer-contenido"></div>
         </div>
     </div>
 
@@ -774,7 +801,7 @@
                     <input type="text" id="edit-plato-desc">
                 </div>
                 <div class="form-group" style="background:#222; padding:12px; border-radius:10px; border:1px solid var(--border-color);">
-                    <label>Acompañamientos / Extras (Límite 2 selecciones, control de agotados):</label>
+                    <label>Acompañamientos / Extras (Límite 2 selecciones):</label>
                     <div style="display:flex; gap:6px; margin-bottom:8px;">
                         <input type="text" id="edit-input-nombre-var" placeholder="Ej. Papas Gajo" style="flex:2;">
                         <input type="number" id="edit-input-precio-var" placeholder="₡ Extra" style="flex:1;">
@@ -832,7 +859,7 @@
         </div>
     </div>
 
-    <!-- BARRA FLOTANTE (EXCLUSIVA PARA MENÚ PÚBLICO) -->
+    <!-- BARRA FLOTANTE -->
     <div class="floating-bottom-bar" id="floating-bar">
         <div class="status-pill">
             <div class="status-dot" id="floating-status-dot"></div>
@@ -886,7 +913,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD2JhmA4m7NMbRcC2RqaHVIz1NLgI2IzE",
@@ -911,6 +938,7 @@
         let cantidadSeleccionadaModal = 1;
         let adminAutenticado = false;
         let negocioAbiertoGlobal = true;
+        let miGraficoFinanciero = null;
 
         let checkoutPaso = 1; 
         let pedidoTipoEntrega = "";
@@ -1203,7 +1231,7 @@
                 `;
                 footerEl.innerHTML = `
                     <button type="button" onclick="avanzarCheckout(3)" class="action-pill" style="width:100%; padding:10px; border:none; background:#2a2a2a; color:white; justify-content:center;">Atrás</button>
-                    <button type="button" onclick="enviarPedidoFinalDefinitivo()" class="btn-admin-action" style="width:100%; padding:12px; background:var(--color-principal);">Confirmar Pedido y Enviar SMS 📲</button>
+                    <button type="button" onclick="enviarPedidoFinalDefinitivo()" class="btn-admin-action" style="width:100%; padding:12px; background:var(--color-principal);">Confirmar Pedido 📲</button>
                 `;
             }
         }
@@ -1266,7 +1294,6 @@
             const notaGeneral = document.getElementById('input-nota-general').value.trim();
 
             try {
-                let resumenTextoSMS = `Nuevo pedido Alaska: ${nombreFinal} (${pedidoTipoEntrega}). Pago: ${pedidoMetodoPago}. `;
                 let sumaTotalGeneral = 0;
 
                 for (let item of carritoItems) {
@@ -1275,9 +1302,6 @@
                     let detalleCompleto = `${item.detalle} | Cant: ${item.cantidad}`;
                     if (item.nota) detalleCompleto += ` | Nota: ${item.nota}`;
 
-                    resumenTextoSMS += `[${item.cantidad}x ${item.nombre}] `;
-
-                    // Guarda el pedido en Firebase para tus "Pedidos en Vivo"
                     await addDoc(collection(db, "pedidos"), {
                         nombre: `${nombreFinal} (${pedidoTipoEntrega})`,
                         detalle: detalleCompleto,
@@ -1285,26 +1309,11 @@
                         estado: 'Preparación',
                         metodoPago: pedidoMetodoPago || 'Efectivo',
                         telefono: telefonoFinal,
-                        fecha: new Date().toLocaleString()
+                        fecha: new Date().toISOString()
                     });
                 }
 
-                if (notaGeneral) {
-                    resumenTextoSMS += ` Nota: ${notaGeneral}`;
-                }
-                resumenTextoSMS += ` Total: ₡${sumaTotalGeneral.toLocaleString()}`;
-
-                // Dispara el mensaje SMS mediante la función conectada a Twilio
-                await fetch('https://tu-servidor-o-funcion.cloudfunctions.net/enviarSmsTwilio', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        to: '+506TU_NUMERO_CELULAR', // Reemplaza con tu número personal
-                        message: resumenTextoSMS
-                    })
-                });
-
-                mostrarToast("🎉 ¡Pedido confirmado y SMS enviado a tu celular!");
+                mostrarToast("🎉 ¡Pedido confirmado con éxito!");
                 carritoItems = [];
                 pedidoTipoEntrega = "";
                 pedidoMetodoPago = "";
@@ -1313,7 +1322,7 @@
 
             } catch(e) {
                 console.error(e);
-                mostrarToast("Pedido guardado en Firebase, pero hubo un error al disparar el SMS.");
+                mostrarToast("Error al guardar el pedido.");
             }
         }
 
@@ -1649,6 +1658,7 @@
             else if (seccion === 'platos') cargarAdminPlatosDashboard();
             else if (seccion === 'stock') cargarAdminStock();
             else if (seccion === 'caja') calcularEstadisticasCaja();
+            else if (seccion === 'analisis') renderizarAnalisisMensual();
             else if (seccion === 'categorias') renderizarTablaCategoriasAdmin();
             else if (seccion === 'clientes') cargarBaseClientesAdmin();
             else if (seccion === 'lealtad') cargarCodigoActivoAdmin();
@@ -1963,7 +1973,7 @@
                     total: precioVenta * cantidad,
                     estado: 'Preparación',
                     metodoPago: 'Efectivo',
-                    fecha: new Date().toLocaleString()
+                    fecha: new Date().toISOString()
                 });
                 mostrarToast(`✅ ¡Se vendieron ${cantidad} unidades y se sumaron a caja!`);
                 cargarAdminStock();
@@ -2036,6 +2046,73 @@
                 </div>
             `;
             mostrarToast("✅ Cuadre calculado con éxito.");
+        }
+
+        window.renderizarAnalisisMensual = async function() {
+            const anoSeleccionado = document.getElementById('select-ano-analisis').value;
+            const mesesNombres = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+            let ventasPorMes = new Array(12).fill(0);
+            let comprasPorMes = new Array(12).fill(0);
+
+            try {
+                const pedidosSnap = await getDocs(collection(db, "pedidos"));
+                pedidosSnap.forEach(docSnap => {
+                    let p = docSnap.data();
+                    if (p.fecha) {
+                        let fechaObj = new Date(p.fecha);
+                        if (!isNaN(fechaObj) && fechaObj.getFullYear() == anoSeleccionado) {
+                            let mes = fechaObj.getMonth();
+                            ventasPorMes[mes] += Number(p.total || 0);
+                        }
+                    }
+                });
+
+                const menuSnap = await getDocs(collection(db, "menu"));
+                menuSnap.forEach(docSnap => {
+                    let item = docSnap.data();
+                    if (item.categoria === 'Stock_Interno') {
+                        let costoTotalItem = (Number(item.stockCantidad || 0) * Number(item.stockCompra || 0));
+                        let mesActual = new Date().getMonth();
+                        comprasPorMes[mesActual] += costoTotalItem;
+                    }
+                });
+
+                let totalVentasAnual = ventasPorMes.reduce((a, b) => a + b, 0);
+                let totalComprasAnual = comprasPorMes.reduce((a, b) => a + b, 0);
+                let gananciaNetaAnual = totalVentasAnual - totalComprasAnual;
+
+                document.getElementById('analisis-stat-ventas').textContent = `₡${totalVentasAnual.toLocaleString()}`;
+                document.getElementById('analisis-stat-compras').textContent = `₡${totalComprasAnual.toLocaleString()}`;
+                document.getElementById('analisis-stat-ganancia').textContent = `₡${gananciaNetaAnual.toLocaleString()}`;
+
+                const ctx = document.getElementById('graficoVentasCompras').getContext('2d');
+                if (miGraficoFinanciero) {
+                    miGraficoFinanciero.destroy();
+                }
+
+                miGraficoFinanciero = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: mesesNombres,
+                        datasets: [
+                            { label: 'Ventas (Ingresos)', data: ventasPorMes, backgroundColor: '#d4af37', borderRadius: 6 },
+                            { label: 'Compras (Inversión)', data: comprasPorMes, backgroundColor: '#ef4444', borderRadius: 6 }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#f5f5f5' } } },
+                        scales: {
+                            x: { ticks: { color: '#a0a0a0' }, grid: { color: '#333' } },
+                            y: { ticks: { color: '#a0a0a0' }, grid: { color: '#333' } }
+                        }
+                    }
+                });
+            } catch (e) {
+                console.error("Error al generar análisis financiero:", e);
+                mostrarToast("Error al cargar datos financieros.");
+            }
         }
 
         window.agregarVarianteTemporal = function() {
