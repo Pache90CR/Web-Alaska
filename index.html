@@ -1295,12 +1295,14 @@
 
             try {
                 let sumaTotalGeneral = 0;
+                let resumenDetallesArray = [];
 
                 for (let item of carritoItems) {
                     let subtotalItem = item.precioUnitario * item.cantidad;
                     sumaTotalGeneral += subtotalItem;
-                    let detalleCompleto = `${item.detalle} | Cant: ${item.cantidad}`;
-                    if (item.nota) detalleCompleto += ` | Nota: ${item.nota}`;
+                    let detalleCompleto = `${item.cantidad}x ${item.nombre} (${item.detalle})`;
+                    if (item.nota) detalleCompleto += ` [Nota: ${item.nota}]`;
+                    resumenDetallesArray.push(detalleCompleto);
 
                     // 1. Guardar en Firebase (Pedidos en Vivo)
                     await addDoc(collection(db, "pedidos"), {
@@ -1312,21 +1314,21 @@
                         telefono: telefonoFinal,
                         fecha: new Date().toISOString()
                     });
-
-                    // 2. Enviar aviso automático a Make por Webhook (URL integrada)
-                    await fetch('https://hook.us2.make.com/dlrk5a5o4f75a76cjc3ci6bb5b4f7s3m', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            nombre: `${nombreFinal} (${pedidoTipoEntrega})`,
-                            detalle: detalleCompleto,
-                            total: subtotalItem,
-                            metodoPago: pedidoMetodoPago || 'Efectivo',
-                            telefono: telefonoFinal,
-                            notaGeneral: notaGeneral
-                        })
-                    });
                 }
+
+                // 2. Enviar UN SOLO aviso consolidado a Make por Webhook
+                await fetch('https://hook.us2.make.com/dlrk5a5o4f75a76cjc3ci6bb5b4f7s3m', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nombre: `${nombreFinal} (${pedidoTipoEntrega})`,
+                        detalle: resumenDetallesArray.join(' | '),
+                        total: sumaTotalGeneral,
+                        metodoPago: pedidoMetodoPago || 'Efectivo',
+                        telefono: telefonoFinal,
+                        notaGeneral: notaGeneral || 'Ninguna'
+                    })
+                });
 
                 mostrarToast("🎉 ¡Pedido confirmado con éxito!");
                 carritoItems = [];
