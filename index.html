@@ -125,8 +125,10 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         
-        .card-image-container { position: relative; height: 210px; width: 100%; background: #181818; display: flex; align-items: center; justify-content: center; }
-        .card-image-container img { width: 100%; height: 100%; object-fit: contain; }
+        /* CAMBIO: Se ajustó a cover para que la imagen llene perfectamente la tarjeta sin verse lejana */
+        .card-image-container { position: relative; height: 210px; width: 100%; background: #181818; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .card-image-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+        .food-card:hover .card-image-container img { transform: scale(1.03); }
         
         .badge {
             position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.75); color: var(--color-principal);
@@ -376,6 +378,10 @@
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                 <span>Pedidos en Vivo</span>
             </a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('deudas')">
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span>Cuentas por Cobrar (Fiados)</span>
+            </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('historial')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 <span>Historial de Pedidos</span>
@@ -445,7 +451,6 @@
                 <h1 id="public-title-display">Bar Restaurante Alaska</h1>
                 <p id="public-subtitle-display">Descubre nuestras deliciosas opciones y gana premios</p>
                 
-                <!-- TIEMPO ESTIMADO VISIBLE AL CLIENTE -->
                 <div class="tiempo-estimado-banner" id="banner-tiempo-estimado">
                     ⏳ Tiempo estimado de preparación: <strong>20-30 min</strong>
                 </div>
@@ -462,7 +467,6 @@
                 </div>
             </div>
 
-            <!-- TARJETA DE LEALTAD INTERACTIVA -->
             <div class="loyalty-banner">
                 <h3 style="margin:0; color:var(--color-principal); font-size:17px; display:flex; align-items:center; gap:6px; justify-content:center;">
                     <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
@@ -473,7 +477,6 @@
                 <div class="stamps-grid" id="public-stamps-grid"></div>
             </div>
 
-            <!-- BUSCADOR EN VIVO DE PLATOS -->
             <div class="search-box-container">
                 <input type="text" id="input-buscador-menu" class="search-input-main" placeholder="🔍 Buscar plato, boca o bebida..." oninput="filtrarMenuPorTexto(this.value)">
             </div>
@@ -507,13 +510,33 @@
                 
                 <div id="admin-tab-pedidos" class="admin-section-tab active-admin-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">📦 Pedidos Recientes en Vivo</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Monitorea órdenes y actualiza su estado operativo.</p>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Monitorea órdenes, actualiza su estado o elimínalas si es necesario.</p>
                     <div id="admin-pedidos-container" style="max-height:500px; overflow-y:auto;">
                         <p style="color:var(--text-muted); font-size:13px;">Cargando pedidos...</p>
                     </div>
                 </div>
 
-                <!-- HISTORIAL DE PEDIDOS -->
+                <!-- SECCIÓN DE CUENTAS POR COBRAR (DEUDAS / FIADOS) -->
+                <div id="admin-tab-deudas" class="admin-section-tab">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+                        <div>
+                            <h2 style="margin:0; font-size:18px; color:var(--color-principal);">💳 Cuentas por Cobrar (Fiados y Crédito)</h2>
+                            <p style="font-size:13px; color:var(--text-muted); margin:2px 0 0 0;">Controla saldos pendientes, registra abonos y gestiona deudas.</p>
+                        </div>
+                        <button type="button" onclick="abrirModalNuevaDeuda()" class="action-pill" style="background:var(--color-principal); color:#121212; border:none; padding:10px 16px; font-weight:bold;">➕ Registrar Nueva Deuda</button>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr><th>Cliente</th><th>Teléfono</th><th>Deuda Total (₡)</th><th>Saldo Pendiente (₡)</th><th>Último Movimiento / Alerta</th><th>Acciones (Abonar / Saldar)</th></tr>
+                            </thead>
+                            <tbody id="admin-tabla-deudas-body">
+                                <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Cargando cuentas por cobrar...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <div id="admin-tab-historial" class="admin-section-tab">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
                         <div>
@@ -527,7 +550,6 @@
                     </div>
                 </div>
 
-                <!-- RANKING DE PLATOS MÁS PEDIDOS -->
                 <div id="admin-tab-ranking" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">⭐ Ranking de Platos Más Pedidos</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Conoce cuáles son las estrellas de tu menú según el volumen de ventas.</p>
@@ -607,7 +629,6 @@
                     <div id="resultado-corte-container"></div>
                 </div>
 
-                <!-- SECCIÓN DE ANÁLISIS MENSUAL -->
                 <div id="admin-tab-analisis" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">📈 Análisis Mensual: Ventas vs. Compras</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Evalúa tu rendimiento financiero mes a mes para identificar periodos de ganancia o pérdida.</p>
@@ -814,7 +835,6 @@
                     <input type="text" id="modal-nota-plato-individual" placeholder="Ej. Sin culantro, término medio..." style="font-size:13px;">
                 </div>
 
-                <!-- SECCIÓN DE CALIFICACIÓN Y RESEÑAS -->
                 <div style="background:#222; padding:14px; border-radius:12px; margin-top:15px; border:1px solid var(--border-color);">
                     <label style="color:var(--color-principal); font-weight:700; margin-bottom:8px;">⭐ Califica este plato:</label>
                     <div style="display:flex; gap:10px; font-size:22px; cursor:pointer; margin-bottom:10px;" id="selector-estrellas-modal">
@@ -840,6 +860,38 @@
             <div class="modal-footer" style="display:flex; flex-direction:row; justify-content:space-between; align-items:center;">
                 <div id="modal-detalle-precio-total" style="font-size:18px; font-weight:800; color:var(--color-principal);">₡0</div>
                 <button onclick="agregarPlatoConExtrasAlCarrito()" class="btn-admin-action" id="btn-hacer-pedido" style="flex:1; margin-left:15px; padding:10px;">Agregar al Carrito 🛒</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL NUEVA DEUDA -->
+    <div id="modal-nueva-deuda" class="modal-overlay">
+        <div class="modal-content">
+            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="margin:0; font-size:16px;">➕ Registrar Cuenta Fiada</h3>
+                <button onclick="cerrarModalNuevaDeuda()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nombre del Cliente *</label>
+                    <input type="text" id="deuda-nombre" placeholder="Ej. Carlos Mora">
+                </div>
+                <div class="form-group">
+                    <label>Teléfono o WhatsApp *</label>
+                    <input type="text" id="deuda-telefono" placeholder="Ej. 88888888">
+                </div>
+                <div class="form-group">
+                    <label>Monto Total Deuda (₡) *</label>
+                    <input type="number" id="deuda-monto" placeholder="Ej. 15000">
+                </div>
+                <div class="form-group">
+                    <label>Descripción / Detalle (Opcional)</label>
+                    <input type="text" id="deuda-detalle" placeholder="Ej. Cervezas y bocas pendientes">
+                </div>
+            </div>
+            <div class="modal-footer" style="flex-direction:row;">
+                <button onclick="cerrarModalNuevaDeuda()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer; flex:1;">Cancelar</button>
+                <button onclick="guardarNuevaDeudaNube()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Guardar Deuda</button>
             </div>
         </div>
     </div>
@@ -1220,7 +1272,6 @@
                     totalResenas: nuevoTotal
                 });
 
-                // Guardar la reseña en subcolección opcional o registro general
                 await addDoc(collection(db, "resenas"), {
                     platoId: platoId,
                     platoNombre: platoSeleccionadoParaPedir.nombre,
@@ -1911,6 +1962,7 @@
             document.getElementById(`admin-tab-${seccion}`).classList.add('active-admin-tab');
             
             if (seccion === 'pedidos') cargarPedidosAdmin();
+            else if (seccion === 'deudas') cargarDeudasAdmin();
             else if (seccion === 'historial') cargarHistorialPedidosAdmin();
             else if (seccion === 'ranking') cargarRankingPlatosAdmin();
             else if (seccion === 'platos') cargarAdminPlatosDashboard();
@@ -1975,10 +2027,15 @@
                         let metodoPagoTxt = p.metodoPago ? `<br><span style="font-size:12px; color:#10b981;">Pago: ${p.metodoPago}</span>` : '';
                         contenedor.innerHTML += `
                             <div style="background:#252525; padding:15px; border-radius:12px; margin-bottom:12px; border:1px solid var(--border-color); border-left:4px solid var(--color-principal);">
-                                <strong style="color:white; font-size:15px;">${p.nombre}</strong><br>
-                                <span style="font-size:13px; color:var(--color-principal);">${p.detalle || ''}</span>
-                                ${metodoPagoTxt}<br>
-                                <strong style="color:white; font-size:14px; display:block; margin-top:4px;">₡${Number(p.total || 0).toLocaleString()}</strong>
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <div>
+                                        <strong style="color:white; font-size:15px;">${p.nombre}</strong><br>
+                                        <span style="font-size:13px; color:var(--color-principal);">${p.detalle || ''}</span>
+                                        ${metodoPagoTxt}<br>
+                                        <strong style="color:white; font-size:14px; display:block; margin-top:4px;">₡${Number(p.total || 0).toLocaleString()}</strong>
+                                    </div>
+                                    <button type="button" onclick="eliminarPedidoAdmin('${id}')" style="background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#ef4444; padding:6px 10px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:bold;">Eliminar ✕</button>
+                                </div>
                                 <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
                                     <span style="font-size:11px; color:var(--text-muted);">Estado:</span>
                                     <button type="button" onclick="actualizarEstadoPedido('${id}', 'Preparación')" class="action-pill" style="padding:4px 8px; font-size:11px; ${estadoActual==='Preparación'?'background:var(--color-principal); color:#121212;':''}">Preparación</button>
@@ -1991,6 +2048,185 @@
                 });
                 if (!hayPendientes) contenedor.innerHTML = "<p style='color:var(--text-muted); font-size:13px;'>No hay pedidos pendientes en este momento.</p>";
             } catch(e) { contenedor.innerHTML = "<p style='color:#ef4444;'>Error al cargar pedidos.</p>"; }
+        }
+
+        window.eliminarPedidoAdmin = async function(idPedido) {
+            if (confirm("¿Estás seguro de eliminar este pedido en vivo?")) {
+                try {
+                    await deleteDoc(doc(db, "pedidos", idPedido));
+                    mostrarToast("Pedido eliminado correctamente.");
+                    cargarPedidosAdmin();
+                } catch(e) {
+                    mostrarToast("Error al eliminar pedido.");
+                }
+            }
+        }
+
+        // FUNCIONES DE CUENTAS POR COBRAR (DEUDAS) Y ALERTA CADA 15 DÍAS
+        window.abrirModalNuevaDeuda = function() {
+            document.getElementById('deuda-nombre').value = '';
+            document.getElementById('deuda-telefono').value = '';
+            document.getElementById('deuda-monto').value = '';
+            document.getElementById('deuda-detalle').value = '';
+            document.getElementById('modal-nueva-deuda').style.display = 'flex';
+        }
+
+        window.cerrarModalNuevaDeuda = function() {
+            document.getElementById('modal-nueva-deuda').style.display = 'none';
+        }
+
+        window.guardarNuevaDeudaNube = async function() {
+            const nombre = document.getElementById('deuda-nombre').value.trim();
+            const telefono = document.getElementById('deuda-telefono').value.trim();
+            const monto = Number(document.getElementById('deuda-monto').value || 0);
+            const detalle = document.getElementById('deuda-detalle').value.trim();
+
+            if (!nombre || monto <= 0) {
+                mostrarToast("⚠️ Ingresa el nombre del cliente y un monto válido.");
+                return;
+            }
+
+            try {
+                const ahoraIso = new Date().toISOString();
+                await addDoc(collection(db, "deudas"), {
+                    nombre,
+                    telefono,
+                    montoTotal: monto,
+                    saldoPendiente: monto,
+                    detalle: detalle || 'Cuenta fiada',
+                    fechaCreacion: ahoraIso,
+                    ultimaNotificacion: ahoraIso
+                });
+                cerrarModalNuevaDeuda();
+                mostrarToast("✅ Cuenta fiada registrada con éxito.");
+                cargarDeudasAdmin();
+            } catch(e) {
+                mostrarToast("Error al registrar deuda.");
+            }
+        }
+
+        async function cargarDeudasAdmin() {
+            const tbody = document.getElementById('admin-tabla-deudas-body');
+            if (!tbody) return;
+            try {
+                const qs = await getDocs(collection(db, "deudas"));
+                if (qs.empty) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No hay cuentas por cobrar registradas.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = "";
+                const ahora = new Date();
+
+                qs.forEach(async (docSnap) => {
+                    let d = docSnap.data();
+                    let id = docSnap.id;
+                    let saldo = Number(d.saldoPendiente || 0);
+                    if (saldo <= 0) return; // Si ya está pagado no se muestra o se omite
+
+                    let fechaCreacion = new Date(d.fechaCreacion || ahora);
+                    let diffDias = Math.floor((ahora - fechaCreacion) / (1000 * 60 * 60 * 24));
+                    let ultimaNotif = new Date(d.ultimaNotificacion || d.fechaCreacion || ahora);
+                    let diffDiasNotif = Math.floor((ahora - ultimaNotif) / (1000 * 60 * 60 * 24));
+
+                    let alertaHtml = `<span style="font-size:11px; color:#10b981;">Activa (${diffDias} días)</span>`;
+                    
+                    // REGLA DE 15 DÍAS: Si han pasado 15 días o más desde la última notificación, enviamos alerta al correo vía Make
+                    if (diffDiasNotif >= 15) {
+                        alertaHtml = `<span style="font-size:11px; color:#ef4444; font-weight:bold;">⚠️ Más de 15 días sin abono</span>`;
+                        enviarAlertaDeudaWebhook(d.nombre, saldo, diffDias);
+                        // Actualizar fecha de última notificación en Firestore para repetir en 15 días
+                        await updateDoc(doc(db, "deudas", id), { ultimaNotificacion: ahora.toISOString() });
+                    }
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="font-weight:700;">${d.nombre}</td>
+                            <td>${d.telefono || 'Sin tel'}</td>
+                            <td>₡${Number(d.montoTotal || 0).toLocaleString()}</td>
+                            <td style="color:#ef4444; font-weight:800;">₡${saldo.toLocaleString()}</td>
+                            <td>${alertaHtml}<br><span style="font-size:10px; color:var(--text-muted);">${d.detalle || ''}</span></td>
+                            <td>
+                                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                    <button type="button" onclick="abonarDeuda('${id}', ${saldo})" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(212,175,55,0.2); color:var(--color-principal); border-color:var(--color-principal);">Abonar</button>
+                                    <button type="button" onclick="saldarDeuda('${id}', ${saldo})" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(16,185,129,0.2); color:#10b981; border-color:#10b981;">Saldar</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch(e) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#ef4444;">Error al cargar deudas.</td></tr>`;
+            }
+        }
+
+        window.abonarDeuda = async function(idDeuda, saldoActual) {
+            let abonoStr = prompt(`Saldo pendiente: ₡${saldoActual.toLocaleString()}\n¿De cuánto es el abono realizado?`, "0");
+            if (!abonoStr) return;
+            let abono = Number(abonoStr);
+            if (isNaN(abono) || abono <= 0) { mostrarToast("Monto inválido."); return; }
+            if (abono > saldoActual) { mostrarToast("⚠️ El abono no puede ser mayor al saldo pendiente."); return; }
+
+            let nuevoSaldo = saldoActual - abono;
+            try {
+                await updateDoc(doc(db, "deudas", idDeuda), { saldoPendiente: nuevoSaldo });
+                
+                // Registrar también el ingreso en caja/pedidos para que sume a las finanzas del día
+                await addDoc(collection(db, "pedidos"), {
+                    nombre: `Abono Deuda (${idDeuda.slice(0,5)})`,
+                    detalle: `Abono de cliente`,
+                    total: abono,
+                    estado: 'Entregado',
+                    metodoPago: 'Efectivo',
+                    fecha: new Date().toISOString()
+                });
+
+                mostrarToast(`✅ Abono de ₡${abono.toLocaleString()} registrado con éxito.`);
+                cargarDeudasAdmin();
+            } catch(e) {
+                mostrarToast("Error al registrar abono.");
+            }
+        }
+
+        window.saldarDeuda = async function(idDeuda, saldoActual) {
+            if (confirm(`¿Marcar esta cuenta como totalmente pagada (Saldar ₡${saldoActual.toLocaleString()})?`)) {
+                try {
+                    await updateDoc(doc(db, "deudas", idDeuda), { saldoPendiente: 0 });
+                    
+                    await addDoc(collection(db, "pedidos"), {
+                        nombre: `Pago Total Deuda`,
+                        detalle: `S Saldó cuenta pendiente`,
+                        total: saldoActual,
+                        estado: 'Entregado',
+                        metodoPago: 'Efectivo',
+                        fecha: new Date().toISOString()
+                    });
+
+                    mostrarToast("🎉 ¡Cuenta saldada correctamente!");
+                    cargarDeudasAdmin();
+                } catch(e) {
+                    mostrarToast("Error al saldar deuda.");
+                }
+            }
+        }
+
+        async function enviarAlertaDeudaWebhook(nombreCliente, saldoPendiente, diasAntiguedad) {
+            try {
+                await fetch('https://hook.us2.make.com/dlrk5a5o4f75a76cjc3ci6bb5b4f7s3m', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nombre: `⚠️ ALERTA DEUDA VENCIDA: ${nombreCliente}`,
+                        detalle: `El cliente ${nombreCliente} mantiene una deuda pendiente de ₡${saldoPendiente.toLocaleString()} con una antigüedad de ${diasAntiguedad} días.`,
+                        total: saldoPendiente,
+                        metodoPago: 'Crédito / Fiado',
+                        telefono: 'N/A',
+                        notaGeneral: 'Notificación automática de 15 días sin liquidación.'
+                    })
+                });
+            } catch(e) {
+                console.log("Error enviando alerta de deuda a Make:", e);
+            }
         }
 
         async function cargarHistorialPedidosAdmin() {
