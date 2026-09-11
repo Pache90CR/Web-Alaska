@@ -141,7 +141,7 @@
         .card-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
         .food-card h3 { margin: 0; font-size: 18px; color: var(--text-main); font-weight: 700; }
         .price { font-size: 18px; font-weight: 800; color: var(--color-principal); }
-        .stars { color: var(--color-principal); font-size: 13px; margin-bottom: 12px; }
+        .stars { color: var(--color-principal); font-size: 13px; margin-bottom: 12px; display: flex; align-items: center; gap: 4px; }
         
         .order-btn {
             width: 100%; background: rgba(212, 175, 55, 0.15); color: var(--color-principal);
@@ -797,7 +797,7 @@
 
     </div>
 
-    <!-- MODAL DETALLE DE PLATO Y SELECCIÓN DE EXTRAS (CON CANTIDAD) -->
+    <!-- MODAL DETALLE DE PLATO, EXTRAS Y CALIFICACIÓN -->
     <div id="modal-detalle-plato" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -812,6 +812,20 @@
                 <div class="form-group" style="margin-top:15px; margin-bottom:0;">
                     <label>Nota específica para este plato (Opcional):</label>
                     <input type="text" id="modal-nota-plato-individual" placeholder="Ej. Sin culantro, término medio..." style="font-size:13px;">
+                </div>
+
+                <!-- SECCIÓN DE CALIFICACIÓN Y RESEÑAS -->
+                <div style="background:#222; padding:14px; border-radius:12px; margin-top:15px; border:1px solid var(--border-color);">
+                    <label style="color:var(--color-principal); font-weight:700; margin-bottom:8px;">⭐ Califica este plato:</label>
+                    <div style="display:flex; gap:10px; font-size:22px; cursor:pointer; margin-bottom:10px;" id="selector-estrellas-modal">
+                        <span onclick="seleccionarEstrellasCalificacion(1)" id="star-1">★</span>
+                        <span onclick="seleccionarEstrellasCalificacion(2)" id="star-2">★</span>
+                        <span onclick="seleccionarEstrellasCalificacion(3)" id="star-3">★</span>
+                        <span onclick="seleccionarEstrellasCalificacion(4)" id="star-4">★</span>
+                        <span onclick="seleccionarEstrellasCalificacion(5)" id="star-5">★</span>
+                    </div>
+                    <input type="text" id="input-comentario-resena" placeholder="Escribe un comentario breve (opcional)..." style="font-size:12px; margin-bottom:8px;">
+                    <button type="button" onclick="enviarCalificacionPlato()" class="action-pill" style="width:100%; justify-content:center; background:rgba(212,175,55,0.2); border-color:var(--color-principal); color:var(--color-principal);">Enviar Calificación ⭐</button>
                 </div>
 
                 <div style="display:flex; align-items:center; justify-content:space-between; background:#222; padding:12px; border-radius:10px; margin-top:15px; border:1px solid var(--border-color);">
@@ -1014,6 +1028,7 @@
         let variantesEdicionActual = [];
         let platoSeleccionadoParaPedir = null;
         let cantidadSeleccionadaModal = 1;
+        let calificacionSeleccionadaModal = 5;
         let adminAutenticado = false;
         let negocioAbiertoGlobal = true;
         let pedidosOnlinePausados = false;
@@ -1061,6 +1076,9 @@
                 let disponible = plato.disponible !== false;
                 let badgeAgotadoHTML = !disponible ? `<span class="badge-agotado">Agotado</span>` : '';
 
+                let promedioEstrellas = plato.ratingPromedio ? Number(plato.ratingPromedio).toFixed(1) : "5.0";
+                let totalResenas = plato.totalResenas || 0;
+
                 let btnClase = "";
                 let btnTexto = "";
                 let accionClick = "";
@@ -1096,7 +1114,9 @@
                                     <h3>${plato.nombre}</h3>
                                     <div class="price">₡${plato.precio.toLocaleString()}</div>
                                 </div>
-                                <div class="stars">★★★★★</div>
+                                <div class="stars">
+                                    <span>★</span> ${promedioEstrellas} <span style="font-size:11px; color:var(--text-muted);">(${totalResenas} reseñas)</span>
+                                </div>
                             </div>
                             <button class="${btnClase}" onclick="${accionClick}">${btnTexto}</button>
                         </div>
@@ -1127,8 +1147,11 @@
             if (!plato || plato.disponible === false) return;
             platoSeleccionadoParaPedir = plato;
             cantidadSeleccionadaModal = 1;
+            calificacionSeleccionadaModal = 5;
+            actualizarEstrellasVisuales(5);
             document.getElementById('modal-cantidad-valor').textContent = "1";
             document.getElementById('modal-nota-plato-individual').value = "";
+            document.getElementById('input-comentario-resena').value = "";
 
             document.getElementById('modal-detalle-titulo').textContent = plato.nombre;
             document.getElementById('modal-detalle-img').src = plato.imagenUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
@@ -1164,6 +1187,57 @@
 
         window.cerrarModalDetallePlato = function() {
             document.getElementById('modal-detalle-plato').style.display = 'none';
+        }
+
+        window.seleccionarEstrellasCalificacion = function(num) {
+            calificacionSeleccionadaModal = num;
+            actualizarEstrellasVisuales(num);
+        }
+
+        function actualizarEstrellasVisuales(num) {
+            for (let i = 1; i <= 5; i++) {
+                const starEl = document.getElementById(`star-${i}`);
+                if (starEl) {
+                    starEl.style.color = i <= num ? 'var(--color-principal)' : '#555';
+                }
+            }
+        }
+
+        window.enviarCalificacionPlato = async function() {
+            if (!platoSeleccionadoParaPedir) return;
+            const comentario = document.getElementById('input-comentario-resena').value.trim();
+            const platoId = platoSeleccionadoParaPedir.id;
+
+            try {
+                let totalActual = Number(platoSeleccionadoParaPedir.totalResenas || 0);
+                let promedioActual = Number(platoSeleccionadoParaPedir.ratingPromedio || 5.0);
+
+                let nuevoTotal = totalActual + 1;
+                let nuevoPromedio = ((promedioActual * totalActual) + calificacionSeleccionadaModal) / nuevoTotal;
+
+                await updateDoc(doc(db, "menu", platoId), {
+                    ratingPromedio: nuevoPromedio,
+                    totalResenas: nuevoTotal
+                });
+
+                // Guardar la reseña en subcolección opcional o registro general
+                await addDoc(collection(db, "resenas"), {
+                    platoId: platoId,
+                    platoNombre: platoSeleccionadoParaPedir.nombre,
+                    estrellas: calificacionSeleccionadaModal,
+                    comentario: comentario || "Sin comentario",
+                    fecha: new Date().toISOString()
+                });
+
+                platoSeleccionadoParaPedir.ratingPromedio = nuevoPromedio;
+                platoSeleccionadoParaPedir.totalResenas = nuevoTotal;
+
+                mostrarToast("⭐ ¡Gracias por calificar este plato!");
+                document.getElementById('input-comentario-resena').value = "";
+                cargarMenu();
+            } catch(e) {
+                mostrarToast("Error al enviar calificación.");
+            }
         }
 
         window.cambiarCantidadModal = function(cambio) {
@@ -2439,7 +2513,7 @@
 
             const guardarConImagen = async (imagenUrlFinal) => {
                 try {
-                    let dataPlato = { nombre, categoria, precio, descripcion, disponible: true, variantes: variantesTemporales };
+                    let dataPlato = { nombre, categoria, precio, descripcion, disponible: true, ratingPromedio: 5.0, totalResenas: 0, variantes: variantesTemporales };
                     if(imagenUrlFinal) dataPlato.imagenUrl = imagenUrlFinal;
                     if (categoria === 'Stock_Interno') {
                         dataPlato.stockCantidad = Number(document.getElementById('stock-cantidad').value || 0);
