@@ -125,8 +125,8 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         
-        /* CAMBIO: Se ajustó a cover para que la imagen llene perfectamente la tarjeta sin verse lejana */
-        .card-image-container { position: relative; height: 210px; width: 100%; background: #181818; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        /* CAMBIO: Altura reducida de 210px a 160px para que las fotos no se vean tan grandes */
+        .card-image-container { position: relative; height: 160px; width: 100%; background: #181818; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .card-image-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
         .food-card:hover .card-image-container img { transform: scale(1.03); }
         
@@ -516,7 +516,6 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN DE CUENTAS POR COBRAR (DEUDAS / FIADOS) -->
                 <div id="admin-tab-deudas" class="admin-section-tab">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
                         <div>
@@ -579,9 +578,15 @@
                     </div>
                 </div>
 
+                <!-- SECCIÓN DE STOCK INTERNO ACTUALIZADA CON EDICIÓN, ELIMINACIÓN Y DECIMALES -->
                 <div id="admin-tab-stock" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">📦 Control de Stock Interno</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Inventario privado. Sube, baja o vende unidades y controla tu inversión.</p>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+                        <div>
+                            <h2 style="margin:0; font-size:18px; color:var(--color-principal);">📦 Control de Stock Interno</h2>
+                            <p style="font-size:13px; color:var(--text-muted); margin:2px 0 0 0;">Inventario privado. Precios con decimales y gestión completa.</p>
+                        </div>
+                        <button type="button" onclick="abrirModalNuevoStock()" class="action-pill" style="background:var(--color-principal); color:#121212; border:none; padding:10px 16px; font-weight:bold;">➕ Registrar Artículo Stock</button>
+                    </div>
                     
                     <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:20px;">
                         <div class="stat-card total"><div class="stat-title">Inversión Stock</div><div class="stat-value" id="stock-stat-inversion">₡0</div></div>
@@ -592,7 +597,7 @@
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
-                                <tr><th>Artículo</th><th>Stock</th><th>Compra</th><th>Venta</th><th>Acciones (Aumentar / Disminuir / Vender)</th></tr>
+                                <tr><th>Artículo</th><th>Stock</th><th>Compra (₡)</th><th>Venta (₡)</th><th>Acciones</th></tr>
                             </thead>
                             <tbody id="admin-tabla-stock-body">
                                 <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>
@@ -616,11 +621,11 @@
                         <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:15px;">
                             <div class="form-group" style="flex:1; min-width:200px; margin-bottom:0;">
                                 <label>Fondo Inicial (Caja Chica ₡):</label>
-                                <input type="number" id="input-fondo-inicial" placeholder="Ej. 20000" value="20000">
+                                <input type="number" id="input-fondo-inicial" placeholder="Ej. 20000" value="20000" step="0.01">
                             </div>
                             <div class="form-group" style="flex:1; min-width:200px; margin-bottom:0;">
                                 <label>Efectivo Real Contado en Caja (₡):</label>
-                                <input type="number" id="input-efectivo-fisico" placeholder="Ej. 45000">
+                                <input type="number" id="input-efectivo-fisico" placeholder="Ej. 45000" step="0.01">
                             </div>
                         </div>
                         <button type="button" class="btn-admin-action" onclick="ejecutarCuadreCaja()">Realizar Cuadre Exacto</button>
@@ -667,41 +672,27 @@
                 </div>
 
                 <div id="admin-tab-nuevo-plato" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">➕ Registrar Nuevo Ítem / Stock</h2>
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">➕ Registrar Nuevo Ítem del Menú</h2>
                     <form id="productForm">
                         <div class="form-group">
                             <label>Nombre del Ítem:</label>
-                            <input type="text" id="nombre" required placeholder="Ej. Costilla Cerdo o Botella guaro">
+                            <input type="text" id="nombre" required placeholder="Ej. Costilla Cerdo">
                         </div>
                         <div style="display:flex; gap:10px;">
                             <div class="form-group" style="flex:1;">
                                 <label>Categoría:</label>
-                                <select id="categoria" required onchange="toggleCamposStock(this.value)">
+                                <select id="categoria" required>
                                     <option value="Bocas">Bocas</option>
                                     <option value="Comidas Rápidas">Comidas Rápidas</option>
                                     <option value="Arroces">Arroces</option>
                                     <option value="Batidos">Batidos</option>
                                     <option value="Casados">Casados</option>
                                     <option value="Ofertas">Ofertas</option>
-                                    <option value="Stock_Interno">📦 Stock Interno (Oculto)</option>
                                 </select>
                             </div>
                             <div class="form-group" style="flex:1;">
                                 <label>Precio de Venta (₡):</label>
-                                <input type="number" id="precio" required placeholder="5000">
-                            </div>
-                        </div>
-
-                        <div id="campos-stock-extra" style="display:none; background:#181818; padding:12px; border-radius:10px; border:1px solid var(--border-color); margin-bottom:16px;">
-                            <div style="display:flex; gap:10px;">
-                                <div class="form-group" style="flex:1; margin-bottom:0;">
-                                    <label>Cantidad Stock:</label>
-                                    <input type="number" id="stock-cantidad" placeholder="Ej. 24">
-                                </div>
-                                <div class="form-group" style="flex:1; margin-bottom:0;">
-                                    <label>Precio Compra (₡):</label>
-                                    <input type="number" id="stock-compra" placeholder="Ej. 3500">
-                                </div>
+                                <input type="number" id="precio" required placeholder="5000" step="0.01">
                             </div>
                         </div>
 
@@ -714,7 +705,7 @@
                             <label>Acompañamientos / Extras (Límite 2 selecciones):</label>
                             <div style="display:flex; gap:6px; margin-bottom:8px;">
                                 <input type="text" id="input-nombre-var" placeholder="Ej. Papas Gajo" style="flex:2;">
-                                <input type="number" id="input-precio-var" placeholder="₡ Extra" style="flex:1;">
+                                <input type="number" id="input-precio-var" placeholder="₡ Extra" style="flex:1;" step="0.01">
                                 <button type="button" onclick="agregarVarianteTemporal()" style="background:var(--color-principal); color:#121212; border:none; padding:0 14px; border-radius:8px; font-weight:bold; cursor:pointer;">+</button>
                             </div>
                             <div id="lista-variantes-temp" style="font-size:12px; color:var(--text-muted);">Sin extras añadidos.</div>
@@ -882,7 +873,7 @@
                 </div>
                 <div class="form-group">
                     <label>Monto Total Deuda (₡) *</label>
-                    <input type="number" id="deuda-monto" placeholder="Ej. 15000">
+                    <input type="number" id="deuda-monto" placeholder="Ej. 15000" step="0.01">
                 </div>
                 <div class="form-group">
                     <label>Descripción / Detalle (Opcional)</label>
@@ -892,6 +883,41 @@
             <div class="modal-footer" style="flex-direction:row;">
                 <button onclick="cerrarModalNuevaDeuda()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer; flex:1;">Cancelar</button>
                 <button onclick="guardarNuevaDeudaNube()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Guardar Deuda</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL NUEVO / EDITAR STOCK INTERNO -->
+    <div id="modal-stock-item" class="modal-overlay">
+        <div class="modal-content">
+            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                <h3 id="modal-stock-titulo" style="margin:0; font-size:16px;">📦 Registrar Artículo de Stock</h3>
+                <button onclick="cerrarModalStockItem()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="stock-edit-id">
+                <div class="form-group">
+                    <label>Nombre del Artículo *</label>
+                    <input type="text" id="stock-input-nombre" placeholder="Ej. Botella Guaro Cacique">
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <div class="form-group" style="flex:1;">
+                        <label>Cantidad Inicial *</label>
+                        <input type="number" id="stock-input-cantidad" placeholder="Ej. 24" step="1">
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label>Precio Compra (₡) *</label>
+                        <input type="number" id="stock-input-compra" placeholder="Ej. 3500.50" step="0.01">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Precio Venta Est. (₡) *</label>
+                    <input type="number" id="stock-input-venta" placeholder="Ej. 5000.00" step="0.01">
+                </div>
+            </div>
+            <div class="modal-footer" style="flex-direction:row;">
+                <button onclick="cerrarModalStockItem()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer; flex:1;">Cancelar</button>
+                <button onclick="guardarStockItemNube()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Guardar Stock</button>
             </div>
         </div>
     </div>
@@ -937,7 +963,7 @@
                     </div>
                     <div class="form-group" style="flex:1;">
                         <label>Precio Venta (₡)</label>
-                        <input type="number" id="edit-plato-precio">
+                        <input type="number" id="edit-plato-precio" step="0.01">
                     </div>
                 </div>
                 <div class="form-group">
@@ -948,7 +974,7 @@
                     <label>Acompañamientos / Extras (Límite 2 selecciones):</label>
                     <div style="display:flex; gap:6px; margin-bottom:8px;">
                         <input type="text" id="edit-input-nombre-var" placeholder="Ej. Papas Gajo" style="flex:2;">
-                        <input type="number" id="edit-input-precio-var" placeholder="₡ Extra" style="flex:1;">
+                        <input type="number" id="edit-input-precio-var" placeholder="₡ Extra" style="flex:1;" step="0.01">
                         <button type="button" onclick="agregarVarianteEdicion()" style="background:var(--color-principal); color:#121212; border:none; padding:0 14px; border-radius:8px; font-weight:bold; cursor:pointer;">+</button>
                     </div>
                     <div id="edit-lista-variantes" style="font-size:12px; color:var(--text-muted);">Sin extras añadidos.</div>
@@ -1164,7 +1190,7 @@
                             <div>
                                 <div class="card-header-flex">
                                     <h3>${plato.nombre}</h3>
-                                    <div class="price">₡${plato.precio.toLocaleString()}</div>
+                                    <div class="price">₡${Number(plato.precio).toLocaleString()}</div>
                                 </div>
                                 <div class="stars">
                                     <span>★</span> ${promedioEstrellas} <span style="font-size:11px; color:var(--text-muted);">(${totalResenas} reseñas)</span>
@@ -1224,7 +1250,7 @@
                                     <input type="checkbox" class="chk-extra-item" value="${index}" data-nombre="${v.nombre}" data-precio="${v.precio}" onchange="validarLimiteExtras()" style="width:16px; height:16px;">
                                     <span>${v.nombre}</span>
                                 </div>
-                                <span style="color:var(--color-principal); font-weight:bold;">+₡${v.precio.toLocaleString()}</span>
+                                <span style="color:var(--color-principal); font-weight:bold;">+₡${Number(v.precio).toLocaleString()}</span>
                             </label>
                         `;
                     }
@@ -1309,7 +1335,7 @@
 
         function actualizarPrecioTotalModal() {
             if (!platoSeleccionadoParaPedir) return;
-            let totalUnitario = platoSeleccionadoParaPedir.precio;
+            let totalUnitario = Number(platoSeleccionadoParaPedir.precio);
             const checkboxes = document.querySelectorAll('.chk-extra-item:checked');
             checkboxes.forEach(chk => {
                 totalUnitario += Number(chk.getAttribute('data-precio') || 0);
@@ -1334,7 +1360,7 @@
             });
 
             let detalleTexto = extrasSeleccionados.length > 0 ? `Con: ${extrasSeleccionados.join(', ')}` : 'Sin extras';
-            let precioUnitario = platoSeleccionadoParaPedir.precio + adicionalPrecio;
+            let precioUnitario = Number(platoSeleccionadoParaPedir.precio) + adicionalPrecio;
             let notaPlatoIndividual = document.getElementById('modal-nota-plato-individual').value.trim();
 
             carritoItems.push({
@@ -2062,7 +2088,6 @@
             }
         }
 
-        // FUNCIONES DE CUENTAS POR COBRAR (DEUDAS) Y ALERTA CADA 15 DÍAS
         window.abrirModalNuevaDeuda = function() {
             document.getElementById('deuda-nombre').value = '';
             document.getElementById('deuda-telefono').value = '';
@@ -2122,7 +2147,7 @@
                     let d = docSnap.data();
                     let id = docSnap.id;
                     let saldo = Number(d.saldoPendiente || 0);
-                    if (saldo <= 0) return; // Si ya está pagado no se muestra o se omite
+                    if (saldo <= 0) return;
 
                     let fechaCreacion = new Date(d.fechaCreacion || ahora);
                     let diffDias = Math.floor((ahora - fechaCreacion) / (1000 * 60 * 60 * 24));
@@ -2131,11 +2156,9 @@
 
                     let alertaHtml = `<span style="font-size:11px; color:#10b981;">Activa (${diffDias} días)</span>`;
                     
-                    // REGLA DE 15 DÍAS: Si han pasado 15 días o más desde la última notificación, enviamos alerta al correo vía Make
                     if (diffDiasNotif >= 15) {
                         alertaHtml = `<span style="font-size:11px; color:#ef4444; font-weight:bold;">⚠️ Más de 15 días sin abono</span>`;
                         enviarAlertaDeudaWebhook(d.nombre, saldo, diffDias);
-                        // Actualizar fecha de última notificación en Firestore para repetir en 15 días
                         await updateDoc(doc(db, "deudas", id), { ultimaNotificacion: ahora.toISOString() });
                     }
 
@@ -2171,7 +2194,6 @@
             try {
                 await updateDoc(doc(db, "deudas", idDeuda), { saldoPendiente: nuevoSaldo });
                 
-                // Registrar también el ingreso en caja/pedidos para que sume a las finanzas del día
                 await addDoc(collection(db, "pedidos"), {
                     nombre: `Abono Deuda (${idDeuda.slice(0,5)})`,
                     detalle: `Abono de cliente`,
@@ -2195,7 +2217,7 @@
                     
                     await addDoc(collection(db, "pedidos"), {
                         nombre: `Pago Total Deuda`,
-                        detalle: `S Saldó cuenta pendiente`,
+                        detalle: `Se saldó cuenta pendiente`,
                         total: saldoActual,
                         estado: 'Entregado',
                         metodoPago: 'Efectivo',
@@ -2227,6 +2249,150 @@
             } catch(e) {
                 console.log("Error enviando alerta de deuda a Make:", e);
             }
+        }
+
+        // FUNCIONES DE CONTROL DE STOCK INTERNO MEJORADAS CON EDICIÓN, ELIMINACIÓN Y DECIMALES
+        window.abrirModalNuevoStock = function() {
+            document.getElementById('stock-edit-id').value = '';
+            document.getElementById('stock-input-nombre').value = '';
+            document.getElementById('stock-input-cantidad').value = '';
+            document.getElementById('stock-input-compra').value = '';
+            document.getElementById('stock-input-venta').value = '';
+            document.getElementById('modal-stock-titulo').textContent = "📦 Registrar Artículo de Stock";
+            document.getElementById('modal-stock-item').style.display = 'flex';
+        }
+
+        window.cerrarModalStockItem = function() {
+            document.getElementById('modal-stock-item').style.display = 'none';
+        }
+
+        window.guardarStockItemNube = async function() {
+            const idDoc = document.getElementById('stock-edit-id').value;
+            const nombre = document.getElementById('stock-input-nombre').value.trim();
+            const cantidad = Number(document.getElementById('stock-input-cantidad').value || 0);
+            const compra = Number(document.getElementById('stock-input-compra').value || 0);
+            const venta = Number(document.getElementById('stock-input-venta').value || 0);
+
+            if (!nombre || compra <= 0 || venta <= 0) {
+                mostrarToast("⚠️ Rellena todos los campos con valores válidos.");
+                return;
+            }
+
+            try {
+                let dataObj = {
+                    nombre: nombre,
+                    categoria: 'Stock_Interno',
+                    stockCantidad: cantidad,
+                    stockCompra: compra,
+                    precio: venta,
+                    disponible: true
+                };
+
+                if (idDoc) {
+                    await updateDoc(doc(db, "menu", idDoc), dataObj);
+                    mostrarToast("✅ ¡Artículo de stock actualizado!");
+                } else {
+                    await addDoc(collection(db, "menu"), dataObj);
+                    mostrarToast("✅ ¡Artículo de stock registrado!");
+                }
+
+                cerrarModalStockItem();
+                cargarAdminStock();
+            } catch(e) {
+                mostrarToast("Error al guardar stock.");
+            }
+        }
+
+        async function cargarAdminStock() {
+            const tbody = document.getElementById('admin-tabla-stock-body');
+            if (!tbody) return;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>`;
+            try {
+                const qs = await getDocs(collection(db, "menu"));
+                tbody.innerHTML = "";
+                let hayStock = false;
+                let totalInversion = 0;
+                let totalVentaEst = 0;
+
+                qs.forEach(d => {
+                    let s = { id: d.id, ...d.data() };
+                    if (s.categoria === 'Stock_Interno') {
+                        hayStock = true;
+                        let cant = Number(s.stockCantidad || 0);
+                        let comp = Number(s.stockCompra || 0);
+                        let vent = Number(s.precio || 0);
+
+                        totalInversion += (cant * comp);
+                        totalVentaEst += (cant * vent);
+
+                        tbody.innerHTML += `
+                            <tr>
+                                <td style="font-weight:700;">${s.nombre}</td>
+                                <td style="font-weight:800; color:var(--color-principal);">${cant} unids</td>
+                                <td>₡${comp.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                <td>₡${vent.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                <td>
+                                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                        <button type="button" onclick="ajustarCantidadStock('${s.id}', ${cant}, 'aumentar')" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(16,185,129,0.2); color:#10b981; border-color:#10b981;">+ Stock</button>
+                                        <button type="button" onclick="abrirModalEditarStock('${s.id}')" class="action-pill" style="padding:4px 8px; font-size:11px;">Editar</button>
+                                        <button type="button" onclick="eliminarStockItem('${s.id}')" class="action-pill" style="padding:4px 8px; font-size:11px; background:#5c2222; color:#ff6b6b; border:none;">Eliminar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                });
+
+                document.getElementById('stock-stat-inversion').textContent = `₡${totalInversion.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                document.getElementById('stock-stat-venta').textContent = `₡${totalVentaEst.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                document.getElementById('stock-stat-ganancia').textContent = `₡${(totalVentaEst - totalInversion).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+                if (!hayStock) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No hay stock interno registrado.</td></tr>`;
+            } catch(e) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#ef4444;">Error al cargar stock.</td></tr>`; }
+        }
+
+        window.abrirModalEditarStock = async function(id) {
+            try {
+                const docSnap = await getDoc(doc(db, "menu", id));
+                if (docSnap.exists()) {
+                    let d = docSnap.data();
+                    document.getElementById('stock-edit-id').value = id;
+                    document.getElementById('stock-input-nombre').value = d.nombre || '';
+                    document.getElementById('stock-input-cantidad').value = d.stockCantidad || 0;
+                    document.getElementById('stock-input-compra').value = d.stockCompra || 0;
+                    document.getElementById('stock-input-venta').value = d.precio || 0;
+                    document.getElementById('modal-stock-titulo').textContent = "✏️ Editar Artículo de Stock";
+                    document.getElementById('modal-stock-item').style.display = 'flex';
+                }
+            } catch(e) {
+                mostrarToast("Error al cargar artículo.");
+            }
+        }
+
+        window.eliminarStockItem = async function(id) {
+            if (confirm("¿Estás seguro de eliminar este artículo del stock?")) {
+                try {
+                    await deleteDoc(doc(db, "menu", id));
+                    mostrarToast("Artículo eliminado.");
+                    cargarAdminStock();
+                } catch(e) {
+                    mostrarToast("Error al eliminar.");
+                }
+            }
+        }
+
+        window.ajustarCantidadStock = async function(idPlato, stockActual, tipoAccion) {
+            let cantidadStr = prompt("¿Cuántas unidades deseas AUMENTAR al stock?", "1");
+            if (!cantidadStr) return;
+            let cantidad = Number(cantidadStr);
+            if (isNaN(cantidad) || cantidad <= 0) { mostrarToast("Cantidad inválida."); return; }
+
+            let nuevoStock = stockActual + cantidad;
+            try {
+                await updateDoc(doc(db, "menu", idPlato), { stockCantidad: nuevoStock });
+                mostrarToast("✅ ¡Stock aumentado con éxito!");
+                cargarAdminStock();
+            } catch(e) { mostrarToast("Error al actualizar stock."); }
         }
 
         async function cargarHistorialPedidosAdmin() {
@@ -2374,7 +2540,7 @@
                         <td><img src="${p.imagenUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=100&q=80'}" style="width:36px; height:36px; border-radius:6px; object-fit:cover;"></td>
                         <td style="font-weight:700;">${p.nombre}</td>
                         <td>${p.categoria}</td>
-                        <td style="color:var(--color-principal); font-weight:800;">₡${p.precio.toLocaleString()}</td>
+                        <td style="color:var(--color-principal); font-weight:800;">₡${Number(p.precio).toLocaleString()}</td>
                         <td>
                             <button type="button" onclick="toggleDisponibilidadPlato('${p.id}', ${disponible})" class="action-pill" style="padding:4px 8px; font-size:11px; ${disponible ? 'background:rgba(16,185,129,0.2); color:#10b981; border-color:#10b981;' : 'background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444;'}">
                                 ${disponible ? 'Disponible' : 'Agotado'}
@@ -2437,7 +2603,7 @@
                 let extraAgotado = v.agotado === true;
                 html += `
                     <div style="display:flex; justify-content:space-between; align-items:center; background:#181818; padding:8px; border-radius:6px; margin-bottom:4px;">
-                        <span>${v.nombre} (+₡${v.precio.toLocaleString()})</span>
+                        <span>${v.nombre} (+₡${Number(v.precio).toLocaleString()})</span>
                         <div style="display:flex; gap:6px;">
                             <button type="button" onclick="toggleAgotadoExtraEdicion(${idx})" style="font-size:10px; padding:2px 6px; border-radius:4px; border:none; cursor:pointer; background:${extraAgotado ? 'rgba(239,68,68,0.2)' : 'rgba(16,185,129,0.2)'}; color:${extraAgotado ? '#ef4444' : '#10b981'};">
                                 ${extraAgotado ? 'Agotado' : 'Disponible'}
@@ -2491,97 +2657,6 @@
                     cargarMenu();
                 } catch(e) { mostrarToast("Error al eliminar."); }
             }
-        }
-
-        window.toggleCamposStock = function(val) {
-            document.getElementById('campos-stock-extra').style.display = (val === 'Stock_Interno') ? 'block' : 'none';
-        }
-
-        async function cargarAdminStock() {
-            const tbody = document.getElementById('admin-tabla-stock-body');
-            if (!tbody) return;
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>`;
-            try {
-                const qs = await getDocs(collection(db, "menu"));
-                tbody.innerHTML = "";
-                let hayStock = false;
-                let totalInversion = 0;
-                let totalVentaEst = 0;
-
-                qs.forEach(d => {
-                    let s = { id: d.id, ...d.data() };
-                    if (s.categoria === 'Stock_Interno') {
-                        hayStock = true;
-                        let cant = Number(s.stockCantidad || 0);
-                        let comp = Number(s.stockCompra || 0);
-                        let vent = Number(s.precio || 0);
-
-                        totalInversion += (cant * comp);
-                        totalVentaEst += (cant * vent);
-
-                        tbody.innerHTML += `
-                            <tr>
-                                <td style="font-weight:700;">${s.nombre}</td>
-                                <td style="font-weight:800; color:var(--color-principal);">${cant} unids</td>
-                                <td>₡${comp.toLocaleString()}</td>
-                                <td>₡${vent.toLocaleString()}</td>
-                                <td>
-                                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                                        <button type="button" onclick="ajustarCantidadStock('${s.id}', ${cant}, 'aumentar')" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(16,185,129,0.2); color:#10b981; border-color:#10b981;">+ Aumentar</button>
-                                        <button type="button" onclick="ajustarCantidadStock('${s.id}', ${cant}, 'disminuir')" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444;">- Disminuir</button>
-                                        <button type="button" onclick="venderCantidadStock('${s.id}', ${cant}, ${vent})" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(212,175,55,0.2);">🛒 Vender</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
-                    }
-                });
-
-                document.getElementById('stock-stat-inversion').textContent = `₡${totalInversion.toLocaleString()}`;
-                document.getElementById('stock-stat-venta').textContent = `₡${totalVentaEst.toLocaleString()}`;
-                document.getElementById('stock-stat-ganancia').textContent = `₡${(totalVentaEst - totalInversion).toLocaleString()}`;
-
-                if (!hayStock) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No hay stock interno.</td></tr>`;
-            } catch(e) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#ef4444;">Error al cargar stock.</td></tr>`; }
-        }
-
-        window.ajustarCantidadStock = async function(idPlato, stockActual, tipoAccion) {
-            let mensajePrompt = tipoAccion === 'aumentar' ? "¿Cuántas unidades deseas AUMENTAR al stock?" : "¿Cuántas unidades deseas DISMINUIR del stock?";
-            let cantidadStr = prompt(mensajePrompt, "1");
-            if (!cantidadStr) return;
-            let cantidad = Number(cantidadStr);
-            if (isNaN(cantidad) || cantidad <= 0) { mostrarToast("Cantidad inválida."); return; }
-
-            let nuevoStock = tipoAccion === 'aumentar' ? (stockActual + cantidad) : (stockActual - cantidad);
-            if (nuevoStock < 0) nuevoStock = 0;
-
-            try {
-                await updateDoc(doc(db, "menu", idPlato), { stockCantidad: nuevoStock });
-                mostrarToast(tipoAccion === 'aumentar' ? `✅ ¡Stock aumentado con éxito!` : `⚠️ ¡Stock disminuido con éxito!`);
-                cargarAdminStock();
-            } catch(e) { mostrarToast("Error al actualizar stock."); }
-        }
-
-        window.venderCantidadStock = async function(idPlato, stockActual, precioVenta) {
-            let cantidadStr = prompt("¿Cuántas unidades deseas vender?", "1");
-            if (!cantidadStr) return;
-            let cantidad = Number(cantidadStr);
-            if (isNaN(cantidad) || cantidad <= 0) { mostrarToast("Cantidad inválida."); return; }
-            if (cantidad > stockActual) { mostrarToast("⚠️ No hay suficiente stock disponible."); return; }
-
-            try {
-                await updateDoc(doc(db, "menu", idPlato), { stockCantidad: stockActual - cantidad });
-                await addDoc(collection(db, "pedidos"), {
-                    nombre: "Venta Stock Interno",
-                    detalle: `${cantidad} unidades vendidas`,
-                    total: precioVenta * cantidad,
-                    estado: 'Entregado',
-                    metodoPago: 'Efectivo',
-                    fecha: new Date().toISOString()
-                });
-                mostrarToast(`✅ ¡Se vendieron ${cantidad} unidades y se sumaron a caja!`);
-                cargarAdminStock();
-            } catch(e) { mostrarToast("Error al procesar venta."); }
         }
 
         let datosCajaGlobal = { total: 0, efectivo: 0, electronico: 0 };
@@ -2734,7 +2809,7 @@
             if (variantesTemporales.length === 0) { container.innerHTML = "Sin extras añadidos."; return; }
             let html = "";
             variantesTemporales.forEach((v, idx) => {
-                html += `<div>• ${v.nombre} (+₡${v.precio.toLocaleString()}) <button type="button" onclick="variantesTemporales.splice(${idx},1); actualizarListaVariantesTempUI();" style="color:#ff6b6b; background:none; border:none; cursor:pointer;">✕</button></div>`;
+                html += `<div>• ${v.nombre} (+₡${Number(v.precio).toLocaleString()}) <button type="button" onclick="variantesTemporales.splice(${idx},1); actualizarListaVariantesTempUI();" style="color:#ff6b6b; background:none; border:none; cursor:pointer;">✕</button></div>`;
             });
             container.innerHTML = html;
         }
@@ -2751,16 +2826,11 @@
                 try {
                     let dataPlato = { nombre, categoria, precio, descripcion, disponible: true, ratingPromedio: 5.0, totalResenas: 0, variantes: variantesTemporales };
                     if(imagenUrlFinal) dataPlato.imagenUrl = imagenUrlFinal;
-                    if (categoria === 'Stock_Interno') {
-                        dataPlato.stockCantidad = Number(document.getElementById('stock-cantidad').value || 0);
-                        dataPlato.stockCompra = Number(document.getElementById('stock-compra').value || 0);
-                    }
                     await addDoc(collection(db, "menu"), dataPlato);
                     mostrarToast("✅ ¡Ítem registrado con éxito!");
                     document.getElementById('productForm').reset();
                     variantesTemporales = [];
                     actualizarListaVariantesTempUI();
-                    toggleCamposStock('Bocas');
                     cargarMenu();
                 } catch(err) { mostrarToast("Error al registrar ítem."); }
             };
