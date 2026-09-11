@@ -58,7 +58,11 @@
         .action-pill { background: var(--color-secundario); color: var(--color-principal); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; border: 1px solid var(--border-color); cursor: pointer; display: flex; align-items: center; gap: 6px; transition: color 0.2s, border-color 0.2s; }
         .action-pill:hover { background: #333; }
 
-        /* Barra de búsqueda en vivo */
+        .tiempo-estimado-banner {
+            background: rgba(212, 175, 55, 0.1); border: 1px solid var(--color-principal); color: var(--color-principal);
+            padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 15px;
+        }
+
         .search-box-container { margin-bottom: 20px; }
         .search-input-main {
             width: 100%; padding: 12px 18px; background: var(--card-bg); border: 1px solid var(--border-color);
@@ -376,6 +380,10 @@
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 <span>Historial de Pedidos</span>
             </a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('ranking')">
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <span>Ranking de Platos ⭐</span>
+            </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('platos')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2H3zm7 0v20M3 18h18v2H3v-2z"/></svg>
                 <span>Gestión de Platos</span>
@@ -437,6 +445,11 @@
                 <h1 id="public-title-display">Bar Restaurante Alaska</h1>
                 <p id="public-subtitle-display">Descubre nuestras deliciosas opciones y gana premios</p>
                 
+                <!-- TIEMPO ESTIMADO VISIBLE AL CLIENTE -->
+                <div class="tiempo-estimado-banner" id="banner-tiempo-estimado">
+                    ⏳ Tiempo estimado de preparación: <strong>20-30 min</strong>
+                </div>
+
                 <div class="header-actions">
                     <a href="#" class="action-pill" onclick="abrirLealtadModal(event)">
                         <svg class="icon-svg" style="color:var(--color-principal);" viewBox="0 0 24 24"><path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
@@ -478,7 +491,13 @@
                     <svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
                     Menú de Opciones
                 </button>
-                <div style="display:flex; gap:10px; align-items:center;">
+                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                    <select id="select-tiempo-admin" onchange="actualizarTiempoEstimadoNube(this.value)" style="padding:6px 12px; font-size:11px; background:#222; border-radius:8px; border:1px solid var(--border-color); color:var(--color-principal); cursor:pointer;">
+                        <option value="15-20 min">⏱️ 15-20 min (Rápido)</option>
+                        <option value="20-30 min" selected>⏱️ 20-30 min (Normal)</option>
+                        <option value="30-45 min">⏱️ 30-45 min (Ocupado)</option>
+                        <option value="45-60 min">⏱️ 45-60 min (Alta Demanda)</option>
+                    </select>
                     <button type="button" onclick="togglePausarPedidosOnline()" id="btn-pausa-online" class="action-pill" style="background:rgba(16,185,129,0.2); color:#10b981; border-color:#10b981; padding:6px 12px; font-size:11px;">🟢 Recibiendo Pedidos Online</button>
                     <span style="font-size:12px; color:var(--text-muted);">Panel Admin</span>
                 </div>
@@ -496,10 +515,31 @@
 
                 <!-- HISTORIAL DE PEDIDOS -->
                 <div id="admin-tab-historial" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">📜 Historial de Pedidos</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Registro de todos los pedidos procesados y entregados.</p>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+                        <div>
+                            <h2 style="margin:0; font-size:18px; color:var(--color-principal);">📜 Historial y Reporte de Ventas</h2>
+                            <p style="font-size:13px; color:var(--text-muted); margin:2px 0 0 0;">Registro de órdenes y exportación para contabilidad.</p>
+                        </div>
+                        <button type="button" onclick="descargarReporteCSV()" class="action-pill" style="background:var(--color-principal); color:#121212; border:none; padding:10px 16px; font-weight:bold;">📥 Descargar Reporte CSV (Excel)</button>
+                    </div>
                     <div id="admin-historial-container" style="max-height:500px; overflow-y:auto;">
                         <p style="color:var(--text-muted); font-size:13px;">Cargando historial...</p>
+                    </div>
+                </div>
+
+                <!-- RANKING DE PLATOS MÁS PEDIDOS -->
+                <div id="admin-tab-ranking" class="admin-section-tab">
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">⭐ Ranking de Platos Más Pedidos</h2>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Conoce cuáles son las estrellas de tu menú según el volumen de ventas.</p>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr><th>Posición</th><th>Plato / Ítem</th><th>Total Vendidos</th><th>Ingresos Generados</th></tr>
+                            </thead>
+                            <tbody id="admin-tabla-ranking-body">
+                                <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Calculando ranking...</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -1682,6 +1722,14 @@
             mostrarPlatos(listaPlatos);
         }
 
+        window.actualizarTiempoEstimadoNube = async function(nuevoTiempo) {
+            try {
+                await setDoc(doc(db, "configuracion", "tiempoEstimado"), { texto: nuevoTiempo }, { merge: true });
+                document.getElementById('banner-tiempo-estimado').innerHTML = `⏳ Tiempo estimado de preparación: <strong>${nuevoTiempo}</strong>`;
+                mostrarToast(`⏱️ Tiempo estimado actualizado a: ${nuevoTiempo}`);
+            } catch(e) { mostrarToast("Error al actualizar tiempo."); }
+        }
+
         async function cargarConfiguracionVisualNube() {
             try {
                 const docRef = doc(db, "configuracion", "estilosGenerales");
@@ -1720,6 +1768,15 @@
                         if(document.getElementById('settings-logo-preview')) document.getElementById('settings-logo-preview').src = data.logoUrl;
                     }
                 }
+
+                const docRefT = doc(db, "configuracion", "tiempoEstimado");
+                const docSnapT = await getDoc(docRefT);
+                if (docSnapT.exists() && docSnapT.data().texto) {
+                    let tVal = docSnapT.data().texto;
+                    document.getElementById('banner-tiempo-estimado').innerHTML = `⏳ Tiempo estimado de preparación: <strong>${tVal}</strong>`;
+                    if (document.getElementById('select-tiempo-admin')) document.getElementById('select-tiempo-admin').value = tVal;
+                }
+
                 const docRefH = doc(db, "configuracion", "horariosAtencion");
                 const docSnapH = await getDoc(docRefH);
                 let horariosData = docSnapH.exists() ? docSnapH.data() : {};
@@ -1781,6 +1838,7 @@
             
             if (seccion === 'pedidos') cargarPedidosAdmin();
             else if (seccion === 'historial') cargarHistorialPedidosAdmin();
+            else if (seccion === 'ranking') cargarRankingPlatosAdmin();
             else if (seccion === 'platos') cargarAdminPlatosDashboard();
             else if (seccion === 'stock') cargarAdminStock();
             else if (seccion === 'caja') calcularEstadisticasCaja();
@@ -1871,7 +1929,6 @@
                 let hayEntregados = false;
                 qs.forEach(d => {
                     const p = d.data();
-                    const id = d.id;
                     const estadoActual = p.estado || 'Preparación';
                     if (estadoActual === 'Entregado') {
                         hayEntregados = true;
@@ -1893,6 +1950,87 @@
                 });
                 if (!hayEntregados) contenedor.innerHTML = "<p style='color:var(--text-muted); font-size:13px;'>No hay pedidos entregados en el historial aún.</p>";
             } catch(e) { contenedor.innerHTML = "<p style='color:#ef4444;'>Error al cargar historial.</p>"; }
+        }
+
+        window.descargarReporteCSV = async function() {
+            try {
+                const qs = await getDocs(collection(db, "pedidos"));
+                if (qs.empty) { mostrarToast("No hay datos para exportar."); return; }
+                
+                let csvContent = "data:text/csv;charset=utf-8,Cliente,Detalle,MetodoPago,Total,Estado,Fecha\n";
+                qs.forEach(d => {
+                    let p = d.data();
+                    let cliente = `"${(p.nombre || '').replace(/"/g, '""')}"`;
+                    let detalle = `"${(p.detalle || '').replace(/"/g, '""')}"`;
+                    let pago = `"${(p.metodoPago || 'Efectivo')}"`;
+                    let total = p.total || 0;
+                    let estado = `"${(p.estado || 'Preparación')}"`;
+                    let fecha = `"${(p.fecha || '')}"`;
+                    csvContent += `${cliente},${detalle},${pago},${total},${estado},${fecha}\n`;
+                });
+
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `reporte_ventas_alaska_${new Date().toISOString().slice(0,10)}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                mostrarToast("✅ ¡Reporte CSV descargado con éxito!");
+            } catch(e) { mostrarToast("Error al exportar reporte."); }
+        }
+
+        async function cargarRankingPlatosAdmin() {
+            const tbody = document.getElementById("admin-tabla-ranking-body");
+            if (!tbody) return;
+            try {
+                const qs = await getDocs(collection(db, "pedidos"));
+                let conteoPlatos = {};
+
+                qs.forEach(d => {
+                    let p = d.data();
+                    let detalle = p.detalle || "";
+                    let partes = detalle.split(" | ");
+                    partes.forEach(parte => {
+                        let match = parte.match(/^(\d+)x\s+(.+?)\s+\(/);
+                        if (match) {
+                            let cantidad = Number(match[1]);
+                            let nombrePlato = match[2].trim();
+                            let subtotalEstimado = Number(p.total || 0);
+
+                            if (!conteoPlatos[nombrePlato]) {
+                                conteoPlatos[nombrePlato] = { cantidad: 0, ingresos: 0 };
+                            }
+                            conteoPlatos[nombrePlato].cantidad += cantidad;
+                            conteoPlatos[nombrePlato].ingresos += subtotalEstimado;
+                        }
+                    });
+                });
+
+                let arrayRanking = Object.keys(conteoPlatos).map(nombre => ({
+                    nombre: nombre,
+                    cantidad: conteoPlatos[nombre].cantidad,
+                    ingresos: conteoPlatos[nombre].ingresos
+                })).sort((a, b) => b.cantidad - a.cantidad);
+
+                if (arrayRanking.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin datos de ventas suficientes para el ranking.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = "";
+                arrayRanking.forEach((item, idx) => {
+                    let medalla = idx === 0 ? "🥇 1er Lugar" : (idx === 1 ? "🥈 2do Lugar" : (idx === 2 ? "🥉 3er Lugar" : `#${idx + 1}`));
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="font-weight:bold; color:var(--color-principal);">${medalla}</td>
+                            <td style="font-weight:700;">${item.nombre}</td>
+                            <td>${item.cantidad} unidades</td>
+                            <td style="color:#10b981; font-weight:800;">₡${item.ingresos.toLocaleString()}</td>
+                        </tr>
+                    `;
+                });
+            } catch(e) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;">Error al calcular ranking.</td></tr>`; }
         }
 
         window.actualizarEstadoPedido = async function(idPedido, nuevoEstado) {
