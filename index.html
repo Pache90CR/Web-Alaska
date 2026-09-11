@@ -534,7 +534,7 @@
                     <div id="resultado-corte-container"></div>
                 </div>
 
-                <!-- NUEVA SECCIÓN DE ANÁLISIS MENSUAL -->
+                <!-- SECCIÓN DE ANÁLISIS MENSUAL -->
                 <div id="admin-tab-analisis" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">📈 Análisis Mensual: Ventas vs. Compras</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Evalúa tu rendimiento financiero mes a mes para identificar periodos de ganancia o pérdida.</p>
@@ -1304,7 +1304,6 @@
                     if (item.nota) detalleCompleto += ` [Nota: ${item.nota}]`;
                     resumenDetallesArray.push(detalleCompleto);
 
-                    // 1. Guardar en Firebase (Pedidos en Vivo)
                     await addDoc(collection(db, "pedidos"), {
                         nombre: `${nombreFinal} (${pedidoTipoEntrega})`,
                         detalle: detalleCompleto,
@@ -1316,7 +1315,6 @@
                     });
                 }
 
-                // 2. Enviar UN SOLO aviso consolidado a Make por Webhook
                 await fetch('https://hook.us2.make.com/dlrk5a5o4f75a76cjc3ci6bb5b4f7s3m', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -1362,14 +1360,26 @@
         function renderizarCategoriasPublicas() {
             const container = document.getElementById('category-container');
             if (!container) return;
-            let html = `<button class="cat-btn active">Todos</button>`;
+            let html = `<button class="cat-btn active" onclick="filtrarMenuPorCategoria('Todos', this)">Todos</button>`;
             categoriasDefault.forEach(cat => {
                 let catData = categoriasNube[cat] || {};
                 let iconoHtml = catData.icono ? `<img src="${catData.icono}" class="cat-icon-img">` : '';
                 let claseExtra = (cat === 'Ofertas') ? 'full-width' : '';
-                html += `<button class="cat-btn ${claseExtra}">${iconoHtml} ${cat}</button>`;
+                html += `<button class="cat-btn ${claseExtra}" onclick="filtrarMenuPorCategoria('${cat}', this)">${iconoHtml} ${cat}</button>`;
             });
             container.innerHTML = html;
+        }
+
+        window.filtrarMenuPorCategoria = function(categoriaSeleccionada, elementoBtn) {
+            document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+            if (elementoBtn) elementoBtn.classList.add('active');
+
+            if (categoriaSeleccionada === 'Todos') {
+                mostrarPlatos(listaPlatos);
+            } else {
+                const filtrados = listaPlatos.filter(p => p.categoria === categoriaSeleccionada);
+                mostrarPlatos(filtrados);
+            }
         }
 
         window.hacerClickCasillaSello = function(numeroCasilla) {
