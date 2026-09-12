@@ -16,7 +16,6 @@
         %22icons%22: [{%22src%22: %22https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=192&q=80%22, %22sizes%22: %22192x192%22, %22type%22: %22image/jpeg%22}]
     }">
 
-    <!-- Chart.js para gráficas financieras -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
@@ -125,7 +124,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         
-        .card-image-container { position: relative; height: 300px; width: 100%; background: #181818; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .card-image-container { position: relative; height: 160px; width: 100%; background: #181818; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .card-image-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
         .food-card:hover .card-image-container img { transform: scale(1.03); }
         
@@ -577,7 +576,6 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN DE STOCK INTERNO CON BOTÓN DE MERMA -->
                 <div id="admin-tab-stock" class="admin-section-tab">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
                         <div>
@@ -702,16 +700,19 @@
 
                         <div class="form-group" style="background:#222; padding:12px; border-radius:10px; border:1px solid var(--border-color);">
                             <label>Acompañamientos / Extras (Límite 2 selecciones):</label>
-                            <div style="display:flex; gap:6px; margin-bottom:8px;">
+                            <div style="display:flex; gap:6px; margin-bottom:8px; align-items:center;">
                                 <input type="text" id="input-nombre-var" placeholder="Ej. Papas Gajo" style="flex:2;">
                                 <input type="number" id="input-precio-var" placeholder="₡ Extra" style="flex:1;" step="0.01">
-                                <button type="button" onclick="agregarVarianteTemporal()" style="background:var(--color-principal); color:#121212; border:none; padding:0 14px; border-radius:8px; font-weight:bold; cursor:pointer;">+</button>
+                                <label style="cursor:pointer; background:#333; padding:0 12px; height:42px; border-radius:8px; display:flex; align-items:center; justify-content:center;" title="Añadir foto a esta variante">
+                                    📷 <input type="file" id="input-img-var" accept="image/*" style="display:none;">
+                                </label>
+                                <button type="button" onclick="agregarVarianteTemporal()" style="background:var(--color-principal); color:#121212; border:none; padding:0 14px; border-radius:8px; font-weight:bold; cursor:pointer; height:42px;">+</button>
                             </div>
                             <div id="lista-variantes-temp" style="font-size:12px; color:var(--text-muted);">Sin extras añadidos.</div>
                         </div>
 
                         <div class="form-group">
-                            <label>Fotografía (Opcional):</label>
+                            <label>Fotografía Principal (Opcional):</label>
                             <input type="file" id="imagenFile" accept="image/*">
                         </div>
                         <button type="submit" class="btn-admin-action">Guardar Ítem</button>
@@ -808,7 +809,6 @@
 
     </div>
 
-    <!-- MODAL DETALLE DE PLATO, EXTRAS Y CALIFICACIÓN -->
     <div id="modal-detalle-plato" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -816,7 +816,7 @@
                 <button onclick="cerrarModalDetallePlato()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
             </div>
             <div class="modal-body">
-                <img id="modal-detalle-img" src="" style="width:100%; height:160px; object-fit:cover; border-radius:10px; margin-bottom:12px;">
+                <img id="modal-detalle-img" src="" style="width:100%; height:160px; object-fit:cover; border-radius:10px; margin-bottom:12px; transition: opacity 0.2s ease-in-out;">
                 <p id="modal-detalle-desc" style="font-size:13px; color:var(--text-muted); margin-top:0;"></p>
                 <div id="modal-detalle-extras-container" style="margin-top:15px;"></div>
                 
@@ -854,7 +854,6 @@
         </div>
     </div>
 
-    <!-- MODAL NUEVA DEUDA -->
     <div id="modal-nueva-deuda" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -886,7 +885,6 @@
         </div>
     </div>
 
-    <!-- MODAL NUEVO / EDITAR STOCK INTERNO -->
     <div id="modal-stock-item" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -921,7 +919,6 @@
         </div>
     </div>
 
-    <!-- MODAL CARRITO DE COMPRAS / CHECKOUT EN PASOS -->
     <div id="modal-carrito" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -935,7 +932,6 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR PLATO -->
     <div id="modal-editar-plato" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -971,15 +967,18 @@
                 </div>
                 <div class="form-group" style="background:#222; padding:12px; border-radius:10px; border:1px solid var(--border-color);">
                     <label>Acompañamientos / Extras (Límite 2 selecciones):</label>
-                    <div style="display:flex; gap:6px; margin-bottom:8px;">
+                    <div style="display:flex; gap:6px; margin-bottom:8px; align-items:center;">
                         <input type="text" id="edit-input-nombre-var" placeholder="Ej. Papas Gajo" style="flex:2;">
                         <input type="number" id="edit-input-precio-var" placeholder="₡ Extra" style="flex:1;" step="0.01">
-                        <button type="button" onclick="agregarVarianteEdicion()" style="background:var(--color-principal); color:#121212; border:none; padding:0 14px; border-radius:8px; font-weight:bold; cursor:pointer;">+</button>
+                        <label style="cursor:pointer; background:#333; padding:0 12px; height:42px; border-radius:8px; display:flex; align-items:center; justify-content:center;" title="Añadir foto a esta variante">
+                            📷 <input type="file" id="edit-input-img-var" accept="image/*" style="display:none;">
+                        </label>
+                        <button type="button" onclick="agregarVarianteEdicion()" style="background:var(--color-principal); color:#121212; border:none; padding:0 14px; border-radius:8px; font-weight:bold; cursor:pointer; height:42px;">+</button>
                     </div>
                     <div id="edit-lista-variantes" style="font-size:12px; color:var(--text-muted);">Sin extras añadidos.</div>
                 </div>
                 <div class="form-group">
-                    <label>Cambiar Fotografía</label>
+                    <label>Cambiar Fotografía Principal</label>
                     <input type="file" id="edit-plato-file" accept="image/*">
                 </div>
             </div>
@@ -990,7 +989,6 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR CATEGORÍA -->
     <div id="modal-editar-categoria" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -1011,7 +1009,6 @@
         </div>
     </div>
 
-    <!-- MODAL SELLO -->
     <div id="modal-sello-interactivo" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -1028,7 +1025,6 @@
         </div>
     </div>
 
-    <!-- BARRA FLOTANTE -->
     <div class="floating-bottom-bar" id="floating-bar">
         <div class="status-pill">
             <div class="status-dot" id="floating-status-dot"></div>
@@ -1095,6 +1091,16 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
+        // FUNCIÓN AUXILIAR PARA CONVERTIR FOTOS A TEXTO BASE64 DE FORMA SENCILLA
+        const fileToBase64 = (file) => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        };
 
         let listaPlatos = [];
         let carritoItems = [];
@@ -1242,12 +1248,17 @@
                 let htmlExtras = `<label style="font-weight:700; color:var(--color-principal); margin-bottom:8px;">Acompañamientos / Extras (Elige hasta 2):</label>`;
                 plato.variantes.forEach((v, index) => {
                     let agotado = v.agotado === true;
+                    // Si el extra tiene imagen, le asignamos la data y ponemos el icono 📷
+                    let imgUrlAttr = v.imagenUrl ? v.imagenUrl : '';
+                    let imgIconHtml = v.imagenUrl ? `<span style="font-size:10px;">📷</span> ` : '';
+                    
                     if (!agotado) {
+                        // Cambiamos el onchange de "validarLimiteExtras()" a "manejarCambioExtra(this)"
                         htmlExtras += `
                             <label style="display:flex; align-items:center; justify-content:space-between; background:#222; padding:10px; border-radius:8px; margin-bottom:6px; cursor:pointer;">
                                 <div style="display:flex; align-items:center; gap:8px;">
-                                    <input type="checkbox" class="chk-extra-item" value="${index}" data-nombre="${v.nombre}" data-precio="${v.precio}" onchange="validarLimiteExtras()" style="width:16px; height:16px;">
-                                    <span>${v.nombre}</span>
+                                    <input type="checkbox" class="chk-extra-item" value="${index}" data-nombre="${v.nombre}" data-precio="${v.precio}" data-img="${imgUrlAttr}" onchange="manejarCambioExtra(this)" style="width:16px; height:16px;">
+                                    <span>${imgIconHtml}${v.nombre}</span>
                                 </div>
                                 <span style="color:var(--color-principal); font-weight:bold;">+₡${Number(v.precio).toLocaleString()}</span>
                             </label>
@@ -1264,6 +1275,38 @@
 
         window.cerrarModalDetallePlato = function() {
             document.getElementById('modal-detalle-plato').style.display = 'none';
+        }
+
+        // NUEVA FUNCIÓN: MANEJAR EL CAMBIO DINÁMICO DE IMAGEN
+        window.manejarCambioExtra = function(chk) {
+            // 1. Validamos el límite igual que antes
+            const checkboxes = document.querySelectorAll('.chk-extra-item:checked');
+            if (checkboxes.length > 2) {
+                mostrarToast("⚠️ Solo puedes seleccionar un máximo de 2 acompañamientos.");
+                chk.checked = false;
+            }
+            actualizarPrecioTotalModal();
+
+            // 2. Lógica para el Swap de Imagen Dinámica
+            const imgEl = document.getElementById('modal-detalle-img');
+            const imgOriginal = platoSeleccionadoParaPedir.imagenUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
+            
+            let imgActual = imgOriginal; // Por defecto, es la foto original
+
+            // Recorremos los checkboxes ACTIVOS para ver si alguno tiene imagen de reemplazo
+            document.querySelectorAll('.chk-extra-item:checked').forEach(c => {
+                let imgExtra = c.getAttribute('data-img');
+                if (imgExtra && imgExtra !== 'null' && imgExtra !== '') {
+                    imgActual = imgExtra; // Si hay foto, la asignamos (tomará la de la última casilla seleccionada si hay varias)
+                }
+            });
+
+            // Si hay un cambio real, hacemos el efecto de transición
+            imgEl.style.opacity = 0.4;
+            setTimeout(() => {
+                imgEl.src = imgActual;
+                imgEl.style.opacity = 1;
+            }, 200); // 200ms para que se sienta la transición
         }
 
         window.seleccionarEstrellasCalificacion = function(num) {
@@ -1320,15 +1363,6 @@
             cantidadSeleccionadaModal += cambio;
             if (cantidadSeleccionadaModal < 1) cantidadSeleccionadaModal = 1;
             document.getElementById('modal-cantidad-valor').textContent = cantidadSeleccionadaModal;
-            actualizarPrecioTotalModal();
-        }
-
-        window.validarLimiteExtras = function() {
-            const checkboxes = document.querySelectorAll('.chk-extra-item:checked');
-            if (checkboxes.length > 2) {
-                mostrarToast("⚠️ Solo puedes seleccionar un máximo de 2 acompañamientos.");
-                event.target.checked = false;
-            }
             actualizarPrecioTotalModal();
         }
 
@@ -2394,7 +2428,6 @@
             } catch(e) { mostrarToast("Error al actualizar stock."); }
         }
 
-        // NUEVA FUNCIÓN PARA RESTAR MERMA
         window.ajustarMermaStock = async function(idPlato, stockActual) {
             let cantidadStr = prompt(`Stock actual: ${stockActual} unidades\n¿Cuántas unidades deseas descontar por MERMA o pérdida?`, "1");
             if (!cantidadStr) return;
@@ -2601,13 +2634,23 @@
             document.getElementById('modal-editar-plato').style.display = 'none';
         }
 
-        window.agregarVarianteEdicion = function() {
+        // AGREGAR VARIANTE EN EDICIÓN (AHORA CON FOTO)
+        window.agregarVarianteEdicion = async function() {
             const nombreVar = document.getElementById('edit-input-nombre-var').value.trim();
             const precioVar = Number(document.getElementById('edit-input-precio-var').value || 0);
+            const fileInput = document.getElementById('edit-input-img-var');
+            
             if (!nombreVar) { mostrarToast("Escribe el nombre del extra."); return; }
-            variantesEdicionActual.push({ nombre: nombreVar, precio: precioVar, agotado: false });
+            
+            let imgBase64 = null;
+            if (fileInput.files && fileInput.files[0]) {
+                imgBase64 = await fileToBase64(fileInput.files[0]);
+            }
+
+            variantesEdicionActual.push({ nombre: nombreVar, precio: precioVar, agotado: false, imagenUrl: imgBase64 });
             document.getElementById('edit-input-nombre-var').value = "";
             document.getElementById('edit-input-precio-var').value = "";
+            fileInput.value = ""; // Limpiamos el input file
             actualizarListaVariantesEdicionUI();
         }
 
@@ -2618,9 +2661,10 @@
             let html = "";
             variantesEdicionActual.forEach((v, idx) => {
                 let extraAgotado = v.agotado === true;
+                let iconoFoto = v.imagenUrl ? "📷 " : "";
                 html += `
                     <div style="display:flex; justify-content:space-between; align-items:center; background:#181818; padding:8px; border-radius:6px; margin-bottom:4px;">
-                        <span>${v.nombre} (+₡${Number(v.precio).toLocaleString()})</span>
+                        <span>${iconoFoto}${v.nombre} (+₡${Number(v.precio).toLocaleString()})</span>
                         <div style="display:flex; gap:6px;">
                             <button type="button" onclick="toggleAgotadoExtraEdicion(${idx})" style="font-size:10px; padding:2px 6px; border-radius:4px; border:none; cursor:pointer; background:${extraAgotado ? 'rgba(239,68,68,0.2)' : 'rgba(16,185,129,0.2)'}; color:${extraAgotado ? '#ef4444' : '#10b981'};">
                                 ${extraAgotado ? 'Agotado' : 'Disponible'}
@@ -2811,13 +2855,23 @@
             }
         }
 
-        window.agregarVarianteTemporal = function() {
+        // AGREGAR VARIANTE NUEVA (AHORA CON FOTO)
+        window.agregarVarianteTemporal = async function() {
             const nombreVar = document.getElementById('input-nombre-var').value.trim();
             const precioVar = Number(document.getElementById('input-precio-var').value || 0);
+            const fileInput = document.getElementById('input-img-var');
+            
             if (!nombreVar) { mostrarToast("Escribe el nombre del extra."); return; }
-            variantesTemporales.push({ nombre: nombreVar, precio: precioVar, agotado: false });
+            
+            let imgBase64 = null;
+            if (fileInput.files && fileInput.files[0]) {
+                imgBase64 = await fileToBase64(fileInput.files[0]);
+            }
+
+            variantesTemporales.push({ nombre: nombreVar, precio: precioVar, agotado: false, imagenUrl: imgBase64 });
             document.getElementById('input-nombre-var').value = "";
             document.getElementById('input-precio-var').value = "";
+            fileInput.value = ""; // Limpiamos el input file
             actualizarListaVariantesTempUI();
         }
 
@@ -2826,7 +2880,8 @@
             if (variantesTemporales.length === 0) { container.innerHTML = "Sin extras añadidos."; return; }
             let html = "";
             variantesTemporales.forEach((v, idx) => {
-                html += `<div>• ${v.nombre} (+₡${Number(v.precio).toLocaleString()}) <button type="button" onclick="variantesTemporales.splice(${idx},1); actualizarListaVariantesTempUI();" style="color:#ff6b6b; background:none; border:none; cursor:pointer;">✕</button></div>`;
+                let iconoFoto = v.imagenUrl ? "📷 " : "";
+                html += `<div>• ${iconoFoto}${v.nombre} (+₡${Number(v.precio).toLocaleString()}) <button type="button" onclick="variantesTemporales.splice(${idx},1); actualizarListaVariantesTempUI();" style="color:#ff6b6b; background:none; border:none; cursor:pointer;">✕</button></div>`;
             });
             container.innerHTML = html;
         }
