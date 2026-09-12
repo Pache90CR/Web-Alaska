@@ -125,8 +125,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         
-        /* CAMBIO: Altura reducida de 210px a 160px para que las fotos no se vean tan grandes */
-        .card-image-container { position: relative; height: 300px; width: 100%; background: #181818; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .card-image-container { position: relative; height: 160px; width: 100%; background: #181818; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .card-image-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
         .food-card:hover .card-image-container img { transform: scale(1.03); }
         
@@ -578,12 +577,12 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN DE STOCK INTERNO ACTUALIZADA CON EDICIÓN, ELIMINACIÓN Y DECIMALES -->
+                <!-- SECCIÓN DE STOCK INTERNO CON BOTÓN DE MERMA -->
                 <div id="admin-tab-stock" class="admin-section-tab">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
                         <div>
                             <h2 style="margin:0; font-size:18px; color:var(--color-principal);">📦 Control de Stock Interno</h2>
-                            <p style="font-size:13px; color:var(--text-muted); margin:2px 0 0 0;">Inventario privado. Precios con decimales y gestión completa.</p>
+                            <p style="font-size:13px; color:var(--text-muted); margin:2px 0 0 0;">Inventario privado. Precios con decimales y gestión de mermas.</p>
                         </div>
                         <button type="button" onclick="abrirModalNuevoStock()" class="action-pill" style="background:var(--color-principal); color:#121212; border:none; padding:10px 16px; font-weight:bold;">➕ Registrar Artículo Stock</button>
                     </div>
@@ -2251,7 +2250,6 @@
             }
         }
 
-        // FUNCIONES DE CONTROL DE STOCK INTERNO MEJORADAS CON EDICIÓN, ELIMINACIÓN Y DECIMALES
         window.abrirModalNuevoStock = function() {
             document.getElementById('stock-edit-id').value = '';
             document.getElementById('stock-input-nombre').value = '';
@@ -2334,6 +2332,7 @@
                                 <td>
                                     <div style="display:flex; gap:6px; flex-wrap:wrap;">
                                         <button type="button" onclick="ajustarCantidadStock('${s.id}', ${cant}, 'aumentar')" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(16,185,129,0.2); color:#10b981; border-color:#10b981;">+ Stock</button>
+                                        <button type="button" onclick="ajustarMermaStock('${s.id}', ${cant})" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444;">- Merma</button>
                                         <button type="button" onclick="abrirModalEditarStock('${s.id}')" class="action-pill" style="padding:4px 8px; font-size:11px;">Editar</button>
                                         <button type="button" onclick="eliminarStockItem('${s.id}')" class="action-pill" style="padding:4px 8px; font-size:11px; background:#5c2222; color:#ff6b6b; border:none;">Eliminar</button>
                                     </div>
@@ -2393,6 +2392,24 @@
                 mostrarToast("✅ ¡Stock aumentado con éxito!");
                 cargarAdminStock();
             } catch(e) { mostrarToast("Error al actualizar stock."); }
+        }
+
+        // NUEVA FUNCIÓN PARA RESTAR MERMA
+        window.ajustarMermaStock = async function(idPlato, stockActual) {
+            let cantidadStr = prompt(`Stock actual: ${stockActual} unidades\n¿Cuántas unidades deseas descontar por MERMA o pérdida?`, "1");
+            if (!cantidadStr) return;
+            let cantidad = Number(cantidadStr);
+            if (isNaN(cantidad) || cantidad <= 0) { mostrarToast("Cantidad inválida."); return; }
+            if (cantidad > stockActual) { mostrarToast("⚠️ No puedes restar más de las unidades disponibles en stock."); return; }
+
+            let nuevoStock = stockActual - cantidad;
+            try {
+                await updateDoc(doc(db, "menu", idPlato), { stockCantidad: nuevoStock });
+                mostrarToast(`📉 Se descontaron ${cantidad} unids por merma correctamente.`);
+                cargarAdminStock();
+            } catch(e) {
+                mostrarToast("Error al registrar merma.");
+            }
         }
 
         async function cargarHistorialPedidosAdmin() {
