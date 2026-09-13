@@ -124,7 +124,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         
-        .card-image-container { position: relative; height: 350px; width: 100%; background: #181818; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .card-image-container { position: relative; height: 160px; width: 100%; background: #181818; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .card-image-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
         .food-card:hover .card-image-container img { transform: scale(1.03); }
         
@@ -708,7 +708,7 @@
                                 </label>
                                 <button type="button" onclick="agregarVarianteTemporal()" style="background:var(--color-principal); color:#121212; border:none; padding:0 14px; border-radius:8px; font-weight:bold; cursor:pointer; height:42px;">+</button>
                             </div>
-                            <div id="lista-variantes-temp" style="font-size:12px; color:var(--text-muted);">Sin extras añadidos.</div>
+                            <div id="lista-variantes-temp" style="font-size:12px; color:var(--text-muted); display:flex; flex-direction:column; gap:6px;">Sin extras añadidos.</div>
                         </div>
 
                         <div class="form-group">
@@ -854,6 +854,39 @@
         </div>
     </div>
 
+    <div id="modal-vender-stock" class="modal-overlay">
+        <div class="modal-content">
+            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="margin:0; font-size:16px;">💰 Venta Directa de Stock</h3>
+                <button onclick="cerrarModalVenderStock()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="vender-stock-id">
+                <input type="hidden" id="vender-stock-precio">
+                <input type="hidden" id="vender-stock-max">
+                <input type="hidden" id="vender-stock-nombre-real">
+                
+                <p id="vender-stock-nombre-display" style="font-weight:bold; margin-top:0; color:var(--color-principal);"></p>
+                <div class="form-group">
+                    <label>Cantidad a Vender:</label>
+                    <input type="number" id="vender-stock-cantidad" value="1" min="1" step="1">
+                </div>
+                <div class="form-group">
+                    <label>Método de Pago:</label>
+                    <select id="vender-stock-pago">
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="SINPE Móvil">SINPE Móvil</option>
+                        <option value="Datáfono">Datáfono (Tarjeta)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer" style="flex-direction:row;">
+                <button onclick="cerrarModalVenderStock()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer; flex:1;">Cancelar</button>
+                <button onclick="confirmarVentaStock()" style="flex:1; background:#3b82f6; color:white; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Confirmar Venta</button>
+            </div>
+        </div>
+    </div>
+
     <div id="modal-nueva-deuda" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -925,9 +958,7 @@
                 <h3 id="modal-carrito-titulo" style="margin:0; font-size:16px;">🛒 Tu Pedido</h3>
                 <button onclick="cerrarModalCarrito()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
             </div>
-            
             <div class="modal-body" id="carrito-body-contenido"></div>
-
             <div class="modal-footer" id="carrito-footer-contenido"></div>
         </div>
     </div>
@@ -975,7 +1006,7 @@
                         </label>
                         <button type="button" onclick="agregarVarianteEdicion()" style="background:var(--color-principal); color:#121212; border:none; padding:0 14px; border-radius:8px; font-weight:bold; cursor:pointer; height:42px;">+</button>
                     </div>
-                    <div id="edit-lista-variantes" style="font-size:12px; color:var(--text-muted);">Sin extras añadidos.</div>
+                    <div id="edit-lista-variantes" style="font-size:12px; color:var(--text-muted); display:flex; flex-direction:column; gap:6px;">Sin extras añadidos.</div>
                 </div>
                 <div class="form-group">
                     <label>Cambiar Fotografía Principal</label>
@@ -1092,7 +1123,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // FUNCIÓN AUXILIAR PARA CONVERTIR FOTOS A TEXTO BASE64 DE FORMA SENCILLA
         const fileToBase64 = (file) => {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -1248,12 +1278,10 @@
                 let htmlExtras = `<label style="font-weight:700; color:var(--color-principal); margin-bottom:8px;">Acompañamientos / Extras (Elige hasta 2):</label>`;
                 plato.variantes.forEach((v, index) => {
                     let agotado = v.agotado === true;
-                    // Si el extra tiene imagen, le asignamos la data y ponemos el icono 📷
                     let imgUrlAttr = v.imagenUrl ? v.imagenUrl : '';
                     let imgIconHtml = v.imagenUrl ? `<span style="font-size:10px;">📷</span> ` : '';
                     
                     if (!agotado) {
-                        // Cambiamos el onchange de "validarLimiteExtras()" a "manejarCambioExtra(this)"
                         htmlExtras += `
                             <label style="display:flex; align-items:center; justify-content:space-between; background:#222; padding:10px; border-radius:8px; margin-bottom:6px; cursor:pointer;">
                                 <div style="display:flex; align-items:center; gap:8px;">
@@ -1277,9 +1305,7 @@
             document.getElementById('modal-detalle-plato').style.display = 'none';
         }
 
-        // NUEVA FUNCIÓN: MANEJAR EL CAMBIO DINÁMICO DE IMAGEN
         window.manejarCambioExtra = function(chk) {
-            // 1. Validamos el límite igual que antes
             const checkboxes = document.querySelectorAll('.chk-extra-item:checked');
             if (checkboxes.length > 2) {
                 mostrarToast("⚠️ Solo puedes seleccionar un máximo de 2 acompañamientos.");
@@ -1287,26 +1313,23 @@
             }
             actualizarPrecioTotalModal();
 
-            // 2. Lógica para el Swap de Imagen Dinámica
             const imgEl = document.getElementById('modal-detalle-img');
             const imgOriginal = platoSeleccionadoParaPedir.imagenUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
             
-            let imgActual = imgOriginal; // Por defecto, es la foto original
+            let imgActual = imgOriginal;
 
-            // Recorremos los checkboxes ACTIVOS para ver si alguno tiene imagen de reemplazo
             document.querySelectorAll('.chk-extra-item:checked').forEach(c => {
                 let imgExtra = c.getAttribute('data-img');
                 if (imgExtra && imgExtra !== 'null' && imgExtra !== '') {
-                    imgActual = imgExtra; // Si hay foto, la asignamos (tomará la de la última casilla seleccionada si hay varias)
+                    imgActual = imgExtra; 
                 }
             });
 
-            // Si hay un cambio real, hacemos el efecto de transición
             imgEl.style.opacity = 0.4;
             setTimeout(() => {
                 imgEl.src = imgActual;
                 imgEl.style.opacity = 1;
-            }, 200); // 200ms para que se sienta la transición
+            }, 200); 
         }
 
         window.seleccionarEstrellasCalificacion = function(num) {
@@ -2365,6 +2388,7 @@
                                 <td>₡${vent.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                                 <td>
                                     <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                        <button type="button" onclick="abrirModalVenderStock('${s.id}', '${s.nombre}', ${vent}, ${cant})" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(59,130,246,0.2); color:#3b82f6; border-color:#3b82f6;">💰 Vender</button>
                                         <button type="button" onclick="ajustarCantidadStock('${s.id}', ${cant}, 'aumentar')" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(16,185,129,0.2); color:#10b981; border-color:#10b981;">+ Stock</button>
                                         <button type="button" onclick="ajustarMermaStock('${s.id}', ${cant})" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444;">- Merma</button>
                                         <button type="button" onclick="abrirModalEditarStock('${s.id}')" class="action-pill" style="padding:4px 8px; font-size:11px;">Editar</button>
@@ -2382,6 +2406,67 @@
 
                 if (!hayStock) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No hay stock interno registrado.</td></tr>`;
             } catch(e) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#ef4444;">Error al cargar stock.</td></tr>`; }
+        }
+
+        // LÓGICA DEL NUEVO MODAL DE VENTA DIRECTA DESDE STOCK
+        window.abrirModalVenderStock = function(id, nombre, precio, stockActual) {
+            if (stockActual <= 0) {
+                mostrarToast("⚠️ No hay stock disponible para vender.");
+                return;
+            }
+            document.getElementById('vender-stock-id').value = id;
+            document.getElementById('vender-stock-nombre-real').value = nombre;
+            document.getElementById('vender-stock-nombre-display').textContent = "Artículo: " + nombre + " (₡" + precio.toLocaleString() + " c/u)";
+            document.getElementById('vender-stock-precio').value = precio;
+            document.getElementById('vender-stock-max').value = stockActual;
+            document.getElementById('vender-stock-cantidad').value = 1;
+            document.getElementById('vender-stock-pago').value = 'Efectivo';
+            
+            document.getElementById('modal-vender-stock').style.display = 'flex';
+        }
+
+        window.cerrarModalVenderStock = function() {
+            document.getElementById('modal-vender-stock').style.display = 'none';
+        }
+
+        window.confirmarVentaStock = async function() {
+            const id = document.getElementById('vender-stock-id').value;
+            const nombreReal = document.getElementById('vender-stock-nombre-real').value;
+            const cantidad = Number(document.getElementById('vender-stock-cantidad').value);
+            const metodoPago = document.getElementById('vender-stock-pago').value;
+            const max = Number(document.getElementById('vender-stock-max').value);
+            const precio = Number(document.getElementById('vender-stock-precio').value);
+
+            if (cantidad <= 0 || cantidad > max) {
+                mostrarToast("⚠️ Cantidad inválida o supera el stock (" + max + ").");
+                return;
+            }
+
+            const nuevoStock = max - cantidad;
+            const totalVenta = cantidad * precio;
+
+            try {
+                // 1. Descontar del inventario general
+                await updateDoc(doc(db, "menu", id), { stockCantidad: nuevoStock });
+                
+                // 2. Registrar en el historial de pedidos como venta lista y cobrada
+                await addDoc(collection(db, "pedidos"), {
+                    nombre: "Venta Directa de Stock",
+                    detalle: cantidad + "x " + nombreReal,
+                    total: totalVenta,
+                    estado: 'Entregado',
+                    metodoPago: metodoPago,
+                    fecha: new Date().toISOString()
+                });
+
+                mostrarToast(`✅ Venta de ₡${totalVenta.toLocaleString()} registrada.`);
+                cerrarModalVenderStock();
+                cargarAdminStock();
+                // Si justo tenías la pestaña de caja abierta, esto la actualizará por detrás.
+                calcularEstadisticasCaja(); 
+            } catch(e) {
+                mostrarToast("Error al procesar la venta de stock.");
+            }
         }
 
         window.abrirModalEditarStock = async function(id) {
@@ -2634,7 +2719,7 @@
             document.getElementById('modal-editar-plato').style.display = 'none';
         }
 
-        // AGREGAR VARIANTE EN EDICIÓN (AHORA CON FOTO)
+        // AGREGAR VARIANTE EN EDICIÓN
         window.agregarVarianteEdicion = async function() {
             const nombreVar = document.getElementById('edit-input-nombre-var').value.trim();
             const precioVar = Number(document.getElementById('edit-input-precio-var').value || 0);
@@ -2650,7 +2735,18 @@
             variantesEdicionActual.push({ nombre: nombreVar, precio: precioVar, agotado: false, imagenUrl: imgBase64 });
             document.getElementById('edit-input-nombre-var').value = "";
             document.getElementById('edit-input-precio-var').value = "";
-            fileInput.value = ""; // Limpiamos el input file
+            fileInput.value = "";
+            actualizarListaVariantesEdicionUI();
+        }
+
+        // NUEVAS FUNCIONES PARA ELIMINAR VARIANTES (EXTRAS) LIMPIAMENTE
+        window.eliminarVarianteTemporal = function(idx) {
+            variantesTemporales.splice(idx, 1);
+            actualizarListaVariantesTempUI();
+        }
+
+        window.eliminarVarianteEdicion = function(idx) {
+            variantesEdicionActual.splice(idx, 1);
             actualizarListaVariantesEdicionUI();
         }
 
@@ -2665,11 +2761,11 @@
                 html += `
                     <div style="display:flex; justify-content:space-between; align-items:center; background:#181818; padding:8px; border-radius:6px; margin-bottom:4px;">
                         <span>${iconoFoto}${v.nombre} (+₡${Number(v.precio).toLocaleString()})</span>
-                        <div style="display:flex; gap:6px;">
-                            <button type="button" onclick="toggleAgotadoExtraEdicion(${idx})" style="font-size:10px; padding:2px 6px; border-radius:4px; border:none; cursor:pointer; background:${extraAgotado ? 'rgba(239,68,68,0.2)' : 'rgba(16,185,129,0.2)'}; color:${extraAgotado ? '#ef4444' : '#10b981'};">
+                        <div style="display:flex; gap:6px; align-items:center;">
+                            <button type="button" onclick="toggleAgotadoExtraEdicion(${idx})" style="font-size:10px; padding:4px 8px; border-radius:6px; border:none; cursor:pointer; font-weight:bold; background:${extraAgotado ? 'rgba(239,68,68,0.2)' : 'rgba(16,185,129,0.2)'}; color:${extraAgotado ? '#ef4444' : '#10b981'};">
                                 ${extraAgotado ? 'Agotado' : 'Disponible'}
                             </button>
-                            <button type="button" onclick="variantesEdicionActual.splice(${idx},1); actualizarListaVariantesEdicionUI();" style="color:#ff6b6b; background:none; border:none; cursor:pointer;">✕</button>
+                            <button type="button" onclick="eliminarVarianteEdicion(${idx})" style="color:#ff6b6b; background:rgba(239,68,68,0.2); border:1px solid #ef4444; border-radius:6px; cursor:pointer; padding:4px 8px; font-size:10px; font-weight:bold;">✕ Eliminar</button>
                         </div>
                     </div>
                 `;
@@ -2720,142 +2816,7 @@
             }
         }
 
-        let datosCajaGlobal = { total: 0, efectivo: 0, electronico: 0 };
-
-        async function calcularEstadisticasCaja() {
-            try {
-                const qs = await getDocs(collection(db, "pedidos"));
-                let totalIngresos = 0;
-                let totalEfectivo = 0;
-                let totalElectronico = 0;
-
-                qs.forEach(d => {
-                    let p = d.data();
-                    let monto = Number(p.total || 0);
-                    totalIngresos += monto;
-                    if (p.metodoPago === 'Efectivo' || !p.metodoPago) {
-                        totalEfectivo += monto;
-                    } else {
-                        totalElectronico += monto;
-                    }
-                });
-
-                datosCajaGlobal = { total: totalIngresos, efectivo: totalEfectivo, electronico: totalElectronico };
-
-                if (document.getElementById('stat-ingresos')) document.getElementById('stat-ingresos').textContent = `₡${totalIngresos.toLocaleString()}`;
-                if (document.getElementById('stat-efectivo-sis')) document.getElementById('stat-efectivo-sis').textContent = `₡${totalEfectivo.toLocaleString()}`;
-                if (document.getElementById('stat-electronico-sis')) document.getElementById('stat-electronico-sis').textContent = `₡${totalElectronico.toLocaleString()}`;
-            } catch(e) { console.log(e); }
-        }
-
-        window.ejecutarCuadreCaja = function() {
-            const fondoInicial = Number(document.getElementById('input-fondo-inicial').value || 0);
-            const efectivoFisico = Number(document.getElementById('input-efectivo-fisico').value || 0);
-
-            let efectivoEsperado = fondoInicial + datosCajaGlobal.efectivo;
-            let diferencia = efectivoFisico - efectivoEsperado;
-
-            let estadoDiferencia = "";
-            let colorDiferencia = "#4ade80";
-
-            if (diferencia > 0) {
-                estadoDiferencia = `Sobrante de ₡${diferencia.toLocaleString()} ⭐`;
-                colorDiferencia = "#3b82f6";
-            } else if (diferencia < 0) {
-                estadoDiferencia = `Faltante de ₡${Math.abs(diferencia).toLocaleString()} ⚠️`;
-                colorDiferencia = "#ef4444";
-            } else {
-                estadoDiferencia = `¡Cuadre Exacto sin diferencias! 🎉`;
-            }
-
-            document.getElementById('resultado-corte-container').innerHTML = `
-                <div style="background:#222; padding:20px; border-radius:14px; border:1px solid var(--color-principal);">
-                    <h3 style="margin-top:0; font-size:16px; color:var(--color-principal); margin-bottom:12px;">🧾 Reporte de Cierre y Cuadre</h3>
-                    <div style="font-size:14px; line-height:1.6; display:flex; flex-direction:column; gap:6px;">
-                        <div>🔹 Fondo Inicial en Caja: <strong>₡${fondoInicial.toLocaleString()}</strong></div>
-                        <div>🔹 Ventas en Efectivo (Sistema): <strong>₡${datosCajaGlobal.efectivo.toLocaleString()}</strong></div>
-                        <div>🔹 Ventas Electrónicas (SINPE/Tarjeta): <strong>₡${datosCajaGlobal.electronico.toLocaleString()}</strong></div>
-                        <div style="border-top:1px solid #333; margin-top:8px; padding-top:8px;">
-                            🔹 Efectivo Esperado en Caja: <strong>₡${efectivoEsperado.toLocaleString()}</strong><br>
-                            🔹 Efectivo Real Contado: <strong>₡${efectivoFisico.toLocaleString()}</strong>
-                        </div>
-                        <div style="margin-top:10px; font-size:16px; font-weight:800; color:${colorDiferencia}; background:rgba(0,0,0,0.3); padding:10px; border-radius:8px; text-align:center;">
-                            Resultado: ${estadoDiferencia}
-                        </div>
-                    </div>
-                </div>
-            `;
-            mostrarToast("✅ Cuadre calculado con éxito.");
-        }
-
-        window.renderizarAnalisisMensual = async function() {
-            const anoSeleccionado = document.getElementById('select-ano-analisis').value;
-            const mesesNombres = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-            let ventasPorMes = new Array(12).fill(0);
-            let comprasPorMes = new Array(12).fill(0);
-
-            try {
-                const pedidosSnap = await getDocs(collection(db, "pedidos"));
-                pedidosSnap.forEach(docSnap => {
-                    let p = docSnap.data();
-                    if (p.fecha) {
-                        let fechaObj = new Date(p.fecha);
-                        if (!isNaN(fechaObj) && fechaObj.getFullYear() == anoSeleccionado) {
-                            let mes = fechaObj.getMonth();
-                            ventasPorMes[mes] += Number(p.total || 0);
-                        }
-                    }
-                });
-
-                const menuSnap = await getDocs(collection(db, "menu"));
-                menuSnap.forEach(docSnap => {
-                    let item = docSnap.data();
-                    if (item.categoria === 'Stock_Interno') {
-                        let costoTotalItem = (Number(item.stockCantidad || 0) * Number(item.stockCompra || 0));
-                        let mesActual = new Date().getMonth();
-                        comprasPorMes[mesActual] += costoTotalItem;
-                    }
-                });
-
-                let totalVentasAnual = ventasPorMes.reduce((a, b) => a + b, 0);
-                let totalComprasAnual = comprasPorMes.reduce((a, b) => a + b, 0);
-                let gananciaNetaAnual = totalVentasAnual - totalComprasAnual;
-
-                document.getElementById('analisis-stat-ventas').textContent = `₡${totalVentasAnual.toLocaleString()}`;
-                document.getElementById('analisis-stat-compras').textContent = `₡${totalComprasAnual.toLocaleString()}`;
-                document.getElementById('analisis-stat-ganancia').textContent = `₡${gananciaNetaAnual.toLocaleString()}`;
-
-                const ctx = document.getElementById('graficoVentasCompras').getContext('2d');
-                if (miGraficoFinanciero) {
-                    miGraficoFinanciero.destroy();
-                }
-
-                miGraficoFinanciero = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: mesesNombres,
-                        datasets: [
-                            { label: 'Ventas (Ingresos)', data: ventasPorMes, backgroundColor: '#d4af37', borderRadius: 6 },
-                            { label: 'Compras (Inversión)', data: comprasPorMes, backgroundColor: '#ef4444', borderRadius: 6 }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { labels: { color: '#f5f5f5' } } },
-                        scales: {
-                            x: { ticks: { color: '#a0a0a0' }, grid: { color: '#333' } },
-                            y: { ticks: { color: '#a0a0a0' }, grid: { color: '#333' } }
-                        }
-                    }
-                });
-            } catch (e) {
-                console.error("Error al generar análisis financiero:", e);
-                mostrarToast("Error al cargar datos financieros.");
-            }
-        }
-
-        // AGREGAR VARIANTE NUEVA (AHORA CON FOTO)
+        // AGREGAR VARIANTE NUEVA
         window.agregarVarianteTemporal = async function() {
             const nombreVar = document.getElementById('input-nombre-var').value.trim();
             const precioVar = Number(document.getElementById('input-precio-var').value || 0);
@@ -2871,7 +2832,7 @@
             variantesTemporales.push({ nombre: nombreVar, precio: precioVar, agotado: false, imagenUrl: imgBase64 });
             document.getElementById('input-nombre-var').value = "";
             document.getElementById('input-precio-var').value = "";
-            fileInput.value = ""; // Limpiamos el input file
+            fileInput.value = "";
             actualizarListaVariantesTempUI();
         }
 
@@ -2881,7 +2842,11 @@
             let html = "";
             variantesTemporales.forEach((v, idx) => {
                 let iconoFoto = v.imagenUrl ? "📷 " : "";
-                html += `<div>• ${iconoFoto}${v.nombre} (+₡${Number(v.precio).toLocaleString()}) <button type="button" onclick="variantesTemporales.splice(${idx},1); actualizarListaVariantesTempUI();" style="color:#ff6b6b; background:none; border:none; cursor:pointer;">✕</button></div>`;
+                html += `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#181818; padding:8px; border-radius:6px; margin-bottom:4px;">
+                    <span>${iconoFoto}${v.nombre} (+₡${Number(v.precio).toLocaleString()})</span>
+                    <button type="button" onclick="eliminarVarianteTemporal(${idx})" style="color:#ff6b6b; background:rgba(239,68,68,0.2); border:1px solid #ef4444; border-radius:6px; cursor:pointer; padding:4px 8px; font-size:10px; font-weight:bold;">✕ Eliminar</button>
+                </div>`;
             });
             container.innerHTML = html;
         }
