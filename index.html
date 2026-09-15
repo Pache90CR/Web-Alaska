@@ -204,7 +204,10 @@
             position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
             width: 90%; max-width: 400px; background: #181818; border: 1px solid var(--border-color);
             border-radius: 30px; padding: 8px 20px; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 999;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 999; transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .floating-bottom-bar.hidden {
+            opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(50px);
         }
 
         .status-pill { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #a3e635; white-space: nowrap; }
@@ -1196,9 +1199,11 @@
         window.cambiarVista = function(vista) {
             document.getElementById('view-menu').classList.remove('active-view');
             document.getElementById('view-admin').classList.remove('active-view');
+            const floatingBar = document.getElementById('floating-bar');
 
             if (vista === 'menu') {
                 document.getElementById('view-menu').classList.add('active-view');
+                if(floatingBar) floatingBar.classList.remove('hidden');
                 window.scrollTo(0,0);
             } else if (vista === 'admin') {
                 if (!adminAutenticado) {
@@ -1206,6 +1211,7 @@
                     return;
                 }
                 document.getElementById('view-admin').classList.add('active-view');
+                if(floatingBar) floatingBar.classList.add('hidden');
                 seleccionarSeccionAdmin('pedidos');
                 window.scrollTo(0,0);
             }
@@ -1491,7 +1497,7 @@
 
         window.agregarPlatoConExtrasAlCarrito = function() {
             if (!negocioAbiertoGlobal || pedidosOnlinePausados) {
-                mostrarToast("⚠️ El establecimiento no está recibiendo pedidos online.");
+                mostrarToast("⚠️ El establecimiento não está recibiendo pedidos online.");
                 return;
             }
             if (!platoSeleccionadoParaPedir) return;
@@ -1877,7 +1883,7 @@
         }
 
         // ==========================================
-        // VENTA DE STOCK EN PAQUETE
+        // VENTA DE STOCK EN PAQUETE (CON CAMPO DIRECTO)
         // ==========================================
         window.agregarAlCarritoStock = function(id, nombre, precio, stockMax) {
             if(stockMax <= 0) {
@@ -1900,14 +1906,16 @@
             renderizarCarritoStock();
         }
 
-        window.cambiarCantidadCarritoStock = function(idx, cambio) {
+        window.actualizarCantidadStockInput = function(idx, valorStr) {
+            let val = parseInt(valorStr);
             let item = carritoStock[idx];
-            item.cantidad += cambio;
-            if (item.cantidad < 1) {
-                carritoStock.splice(idx, 1);
-            } else if (item.cantidad > item.max) {
+            if (isNaN(val) || val < 1) {
+                item.cantidad = 1;
+            } else if (val > item.max) {
                 item.cantidad = item.max;
-                mostrarToast("⚠️ Límite de stock alcanzado.");
+                mostrarToast(`⚠️ El stock máximo disponible es ${item.max}.`);
+            } else {
+                item.cantidad = val;
             }
             renderizarCarritoStock();
         }
@@ -1930,14 +1938,13 @@
                 let sub = item.precio * item.cantidad;
                 suma += sub;
                 html += `
-                    <div style="display:flex; justify-content:space-between; align-items:center; background:#222; padding:8px 12px; border-radius:8px; margin-bottom:6px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#222; padding:8px 12px; border-radius:8px; margin-bottom:6px; gap:10px;">
                         <span style="color:white; font-size:14px; font-weight:bold; flex:1;">${item.nombre}</span>
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <button type="button" onclick="cambiarCantidadCarritoStock(${idx}, -1)" style="background:#333; color:white; border:none; width:26px; height:26px; border-radius:6px; font-weight:bold; cursor:pointer;">-</button>
-                            <span style="color:white; font-size:15px; font-weight:bold; min-width:20px; text-align:center;">${item.cantidad}</span>
-                            <button type="button" onclick="cambiarCantidadCarritoStock(${idx}, 1)" style="background:var(--color-principal); color:#121212; border:none; width:26px; height:26px; border-radius:6px; font-weight:bold; cursor:pointer;">+</button>
-                            <span style="color:var(--color-principal); font-size:14px; font-weight:bold; min-width:80px; text-align:right;">₡${sub.toLocaleString()}</span>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <input type="number" min="1" max="${item.max}" value="${item.cantidad}" oninput="actualizarCantidadStockInput(${idx}, this.value)" style="width:75px; padding:6px; text-align:center; font-weight:bold; font-size:14px; background:#121212; border:1px solid var(--border-color); border-radius:6px; color:white;">
+                            <button type="button" onclick="carritoStock.splice(${idx}, 1); renderizarCarritoStock();" style="background:rgba(239,68,68,0.2); color:#ef4444; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; cursor:pointer;" title="Quitar">✕</button>
                         </div>
+                        <span style="color:var(--color-principal); font-size:14px; font-weight:bold; min-width:80px; text-align:right;">₡${sub.toLocaleString()}</span>
                     </div>
                 `;
             });
