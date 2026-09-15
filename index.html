@@ -125,7 +125,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         
-        .card-image-container { position: relative; height: 160px; width: 100%; background: #181818; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .card-image-container { position: relative; height: 360px; width: 100%; background: #181818; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .card-image-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
         .food-card:hover .card-image-container img { transform: scale(1.03); }
         
@@ -202,9 +202,9 @@
 
         .floating-bottom-bar {
             position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 420px; background: #181818; border: 1px solid var(--border-color);
-            border-radius: 30px; padding: 8px 16px; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 999; gap: 10px;
+            width: 90%; max-width: 400px; background: #181818; border: 1px solid var(--border-color);
+            border-radius: 30px; padding: 8px 20px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 999;
         }
 
         .status-pill { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #a3e635; white-space: nowrap; }
@@ -445,6 +445,7 @@
 
         <div id="view-menu" class="view-section active-view">
             <div class="store-header">
+                <!-- ACCESO ADMIN: DOBLE CLIC AQUÍ EN EL LOGO -->
                 <img id="logo-display" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80" alt="Logo Negocio" class="store-logo" ondblclick="intentarAccesoAdmin()" title="Haz doble clic para abrir administración">
                 
                 <h1 id="public-title-display">Bar Restaurante Alaska</h1>
@@ -1065,24 +1066,16 @@
         </div>
     </div>
 
-    <!-- BARRA FLOTANTE CON ACCESO DIRECTO AL ADMIN -->
+    <!-- BARRA FLOTANTE -->
     <div class="floating-bottom-bar" id="floating-bar">
         <div class="status-pill">
             <div class="status-dot" id="floating-status-dot"></div>
             <span id="floating-status-text">Abierto</span>
         </div>
-        
-        <div style="display:flex; gap:8px; align-items:center;">
-            <!-- BOTÓN DIRECTO DE ADMINISTRACIÓN (NUEVO) -->
-            <button class="action-pill" onclick="intentarAccesoAdmin()" style="background:var(--color-secundario); color:var(--color-principal); padding:8px 12px; font-size:12px; border:1px solid var(--color-principal);">
-                ⚙️ Admin
-            </button>
-            
-            <button class="cart-icon-btn" onclick="abrirModalCarrito()" title="Ver Carrito">
-                <svg class="icon-svg-lg" style="color:#121212;" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                <span class="cart-count-badge" id="cart-count">0</span>
-            </button>
-        </div>
+        <button class="cart-icon-btn" onclick="abrirModalCarrito()" title="Ver Carrito">
+            <svg class="icon-svg-lg" style="color:#121212;" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <span class="cart-count-badge" id="cart-count">0</span>
+        </button>
     </div>
 
     <!-- MODAL LEALTAD Y SEGUIMIENTO -->
@@ -1174,7 +1167,7 @@
         }
 
         // ==========================================
-        // CONTROL DE VISTAS Y ADMINISTRACIÓN
+        // CONTROL DE VISTAS Y ADMINISTRACIÓN (DOBLE CLIC)
         // ==========================================
         window.intentarAccesoAdmin = function() {
             if (!adminAutenticado) {
@@ -1272,7 +1265,6 @@
                 document.getElementById('admin-tab-ajustes').classList.add('active-admin-tab');
             }
 
-            // Marcar activo en el sidebar
             event && event.currentTarget && event.currentTarget.classList.add('active');
             cerrarSidebar();
         }
