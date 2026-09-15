@@ -124,7 +124,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         
-        .card-image-container { position: relative; height: 360px; width: 100%; background: #181818; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .card-image-container { position: relative; height: 160px; width: 100%; background: #181818; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .card-image-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
         .food-card:hover .card-image-container img { transform: scale(1.03); }
         
@@ -394,7 +394,7 @@
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('stock')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
-                <span>Control de Stock (Oculto)</span>
+                <span>Control de Stock (Ventas)</span>
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('caja')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -579,8 +579,8 @@
                 <div id="admin-tab-stock" class="admin-section-tab">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
                         <div>
-                            <h2 style="margin:0; font-size:18px; color:var(--color-principal);">📦 Control de Stock Interno</h2>
-                            <p style="font-size:13px; color:var(--text-muted); margin:2px 0 0 0;">Inventario privado. Precios con decimales y gestión de mermas.</p>
+                            <h2 style="margin:0; font-size:18px; color:var(--color-principal);">📦 Control de Stock (Ventas Rápidas)</h2>
+                            <p style="font-size:13px; color:var(--text-muted); margin:2px 0 0 0;">Agrega productos al paquete para vender varios de una vez.</p>
                         </div>
                         <button type="button" onclick="abrirModalNuevoStock()" class="action-pill" style="background:var(--color-principal); color:#121212; border:none; padding:10px 16px; font-weight:bold;">➕ Registrar Artículo Stock</button>
                     </div>
@@ -589,6 +589,15 @@
                         <div class="stat-card total"><div class="stat-title">Inversión Stock</div><div class="stat-value" id="stock-stat-inversion">₡0</div></div>
                         <div class="stat-card visibles"><div class="stat-title">Valor Venta Est.</div><div class="stat-value" id="stock-stat-venta">₡0</div></div>
                         <div class="stat-card oferta"><div class="stat-title">Ganancia Est.</div><div class="stat-value" id="stock-stat-ganancia" style="color:#4ade80;">₡0</div></div>
+                    </div>
+
+                    <div id="panel-carrito-stock" style="display:none; background:#181818; padding:15px; border:1px solid var(--color-principal); border-radius:12px; margin-bottom:20px;">
+                        <h3 style="margin:0 0 10px 0; color:white; font-size:15px;">🛒 Paquete de Venta (Stock)</h3>
+                        <div id="lista-carrito-stock" style="margin-bottom:10px;"></div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #333; padding-top:10px;">
+                            <strong style="color:var(--color-principal); font-size:18px;" id="total-carrito-stock">₡0</strong>
+                            <button class="btn-admin-action" onclick="abrirModalCobrarPaqueteStock()" style="width:auto; padding:10px 20px; background:#3b82f6; color:white;">Cobrar Paquete</button>
+                        </div>
                     </div>
 
                     <div style="overflow-x:auto;">
@@ -605,11 +614,11 @@
 
                 <div id="admin-tab-caja" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">💰 Cierre de Caja y Cuadre Profesional</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Calcula ingresos por método de pago e introduce el conteo físico para realizar el cuadre exacto.</p>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Calcula ingresos por método de pago de HOY e introduce el conteo físico para realizar el cuadre exacto.</p>
 
                     <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:20px;">
-                        <div class="stat-card total"><div class="stat-title">Ingresos Totales</div><div class="stat-value" id="stat-ingresos">₡0</div></div>
-                        <div class="stat-card visibles"><div class="stat-title">Efectivo Sistema</div><div class="stat-value" id="stat-efectivo-sis" style="color:#3b82f6;">₡0</div></div>
+                        <div class="stat-card total"><div class="stat-title">Ingresos Hoy</div><div class="stat-value" id="stat-ingresos">₡0</div></div>
+                        <div class="stat-card visibles"><div class="stat-title">Efectivo Sistema</div><div class="stat-value" id="stat-efectivo-sis" style="color:#3b82f6;" data-valor="0">₡0</div></div>
                         <div class="stat-card oferta"><div class="stat-title">SINPE / Tarjeta</div><div class="stat-value" id="stat-electronico-sis" style="color:#8b5cf6;">₡0</div></div>
                     </div>
 
@@ -638,15 +647,15 @@
                     <div class="form-group" style="max-width: 250px; margin-bottom: 20px;">
                         <label>Seleccionar Año:</label>
                         <select id="select-ano-analisis" onchange="renderizarAnalisisMensual()">
-                            <option value="2026">2026</option>
+                            <option value="2026" selected>2026</option>
                             <option value="2025">2025</option>
                         </select>
                     </div>
 
                     <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:25px;">
                         <div class="stat-card total"><div class="stat-title">Ventas Anuales</div><div class="stat-value" id="analisis-stat-ventas">₡0</div></div>
-                        <div class="stat-card visibles"><div class="stat-title">Compras/Inversión</div><div class="stat-value" id="analisis-stat-compras" style="color:#ef4444;">₡0</div></div>
-                        <div class="stat-card oferta"><div class="stat-title">Ganancia Neta</div><div class="stat-value" id="analisis-stat-ganancia" style="color:#4ade80;">₡0</div></div>
+                        <div class="stat-card visibles"><div class="stat-title">Inversión Stock Actual</div><div class="stat-value" id="analisis-stat-compras" style="color:#ef4444;">₡0</div></div>
+                        <div class="stat-card oferta"><div class="stat-title">Ganancia Est.</div><div class="stat-value" id="analisis-stat-ganancia" style="color:#4ade80;">₡0</div></div>
                     </div>
 
                     <div style="background:#181818; padding:20px; border-radius:16px; border:1px solid var(--border-color); position: relative; height: 350px;">
@@ -854,39 +863,6 @@
         </div>
     </div>
 
-    <div id="modal-vender-stock" class="modal-overlay">
-        <div class="modal-content">
-            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-size:16px;">💰 Venta Directa de Stock</h3>
-                <button onclick="cerrarModalVenderStock()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="vender-stock-id">
-                <input type="hidden" id="vender-stock-precio">
-                <input type="hidden" id="vender-stock-max">
-                <input type="hidden" id="vender-stock-nombre-real">
-                
-                <p id="vender-stock-nombre-display" style="font-weight:bold; margin-top:0; color:var(--color-principal);"></p>
-                <div class="form-group">
-                    <label>Cantidad a Vender:</label>
-                    <input type="number" id="vender-stock-cantidad" value="1" min="1" step="1">
-                </div>
-                <div class="form-group">
-                    <label>Método de Pago:</label>
-                    <select id="vender-stock-pago">
-                        <option value="Efectivo">Efectivo</option>
-                        <option value="SINPE Móvil">SINPE Móvil</option>
-                        <option value="Datáfono">Datáfono (Tarjeta)</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer" style="flex-direction:row;">
-                <button onclick="cerrarModalVenderStock()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer; flex:1;">Cancelar</button>
-                <button onclick="confirmarVentaStock()" style="flex:1; background:#3b82f6; color:white; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Confirmar Venta</button>
-            </div>
-        </div>
-    </div>
-
     <div id="modal-nueva-deuda" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -960,6 +936,30 @@
             </div>
             <div class="modal-body" id="carrito-body-contenido"></div>
             <div class="modal-footer" id="carrito-footer-contenido"></div>
+        </div>
+    </div>
+
+    <div id="modal-cobrar-paquete" class="modal-overlay">
+        <div class="modal-content">
+            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="margin:0; font-size:16px;">💰 Cobrar Paquete de Stock</h3>
+                <button onclick="cerrarModalCobrarPaquete()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Selecciona el método de pago para registrar esta venta.</p>
+                <div class="form-group">
+                    <label>Método de Pago:</label>
+                    <select id="paquete-metodo-pago">
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="SINPE Móvil">SINPE Móvil</option>
+                        <option value="Datáfono">Datáfono (Tarjeta)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer" style="flex-direction:row;">
+                <button onclick="cerrarModalCobrarPaquete()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer; flex:1;">Cancelar</button>
+                <button onclick="confirmarVentaPaqueteStock()" style="flex:1; background:#3b82f6; color:white; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Confirmar Venta</button>
+            </div>
         </div>
     </div>
 
@@ -1139,6 +1139,8 @@
         const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
         let variantesTemporales = [];
         let variantesEdicionActual = [];
+        let carritoStock = []; // Carrito global para el stock interno
+        
         let platoSeleccionadoParaPedir = null;
         let cantidadSeleccionadaModal = 1;
         let calificacionSeleccionadaModal = 5;
@@ -1666,6 +1668,262 @@
             }
         }
 
+        // ==========================================
+        // NUEVAS FUNCIONES Y FIXES: CAJA Y ANÁLISIS
+        // ==========================================
+
+        window.calcularEstadisticasCaja = async function() {
+            try {
+                const qs = await getDocs(collection(db, "pedidos"));
+                let totalEfectivo = 0;
+                let totalElectronico = 0;
+                
+                // Filtramos por HOY para que la caja cierre limpia cada día
+                let hoy = new Date();
+
+                qs.forEach(d => {
+                    let p = d.data();
+                    if (p.estado === 'Entregado' && p.fecha) {
+                        let fechaDoc = new Date(p.fecha);
+                        if (fechaDoc.getDate() === hoy.getDate() && 
+                            fechaDoc.getMonth() === hoy.getMonth() && 
+                            fechaDoc.getFullYear() === hoy.getFullYear()) {
+                            
+                            let monto = Number(p.total || 0);
+                            if (p.metodoPago === 'Efectivo') totalEfectivo += monto;
+                            else totalElectronico += monto;
+                        }
+                    }
+                });
+
+                let totalIngresos = totalEfectivo + totalElectronico;
+                document.getElementById('stat-ingresos').textContent = `₡${totalIngresos.toLocaleString()}`;
+                document.getElementById('stat-efectivo-sis').textContent = `₡${totalEfectivo.toLocaleString()}`;
+                document.getElementById('stat-electronico-sis').textContent = `₡${totalElectronico.toLocaleString()}`;
+                
+                // Lo guardamos en un atributo de datos para que el cuadre matemático lo pueda leer
+                document.getElementById('stat-efectivo-sis').setAttribute('data-valor', totalEfectivo);
+            } catch(e) {
+                console.error(e);
+                mostrarToast("Error al calcular la caja de hoy.");
+            }
+        }
+
+        window.ejecutarCuadreCaja = function() {
+            let fondo = Number(document.getElementById('input-fondo-inicial').value || 0);
+            let fisico = Number(document.getElementById('input-efectivo-fisico').value || 0);
+            let efectivoSistema = Number(document.getElementById('stat-efectivo-sis').getAttribute('data-valor') || 0);
+
+            let esperado = fondo + efectivoSistema;
+            let diferencia = fisico - esperado;
+
+            let divRes = document.getElementById('resultado-corte-container');
+            if (diferencia === 0) {
+                divRes.innerHTML = `<div style="background:rgba(16,185,129,0.2); border:1px solid #10b981; color:#10b981; padding:15px; border-radius:10px; text-align:center; font-weight:bold; font-size:15px;">✅ ¡Cuadre Exacto! Todo está en orden.</div>`;
+            } else if (diferencia > 0) {
+                divRes.innerHTML = `<div style="background:rgba(59,130,246,0.2); border:1px solid #3b82f6; color:#3b82f6; padding:15px; border-radius:10px; text-align:center; font-weight:bold; font-size:15px;">⚠️ Hay un SOBRANTE de ₡${Math.abs(diferencia).toLocaleString()} en caja física.</div>`;
+            } else {
+                divRes.innerHTML = `<div style="background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#ef4444; padding:15px; border-radius:10px; text-align:center; font-weight:bold; font-size:15px;">❌ Hay un FALTANTE de ₡${Math.abs(diferencia).toLocaleString()} en caja física.</div>`;
+            }
+        }
+
+        window.renderizarAnalisisMensual = async function() {
+            let anioSeleccionado = document.getElementById('select-ano-analisis').value;
+            let ventasMensuales = new Array(12).fill(0);
+            
+            try {
+                // 1. Calculamos ventas mensuales
+                const qsPedidos = await getDocs(collection(db, "pedidos"));
+                qsPedidos.forEach(d => {
+                    let p = d.data();
+                    if (p.estado === 'Entregado' && p.fecha) {
+                        let fecha = new Date(p.fecha);
+                        if (fecha.getFullYear().toString() === anioSeleccionado) {
+                            let mes = fecha.getMonth(); // 0 a 11
+                            ventasMensuales[mes] += Number(p.total || 0);
+                        }
+                    }
+                });
+
+                let totalAnualVentas = ventasMensuales.reduce((a, b) => a + b, 0);
+                document.getElementById('analisis-stat-ventas').textContent = `₡${totalAnualVentas.toLocaleString()}`;
+
+                // 2. Calculamos Inversión Actual (Tomado directo del inventario actual para referencia)
+                let inversionActual = 0;
+                const qsMenu = await getDocs(collection(db, "menu"));
+                qsMenu.forEach(d => {
+                    let s = d.data();
+                    if (s.categoria === 'Stock_Interno') {
+                        inversionActual += (Number(s.stockCantidad || 0) * Number(s.stockCompra || 0));
+                    }
+                });
+                
+                document.getElementById('analisis-stat-compras').textContent = `₡${inversionActual.toLocaleString()}`;
+                document.getElementById('analisis-stat-ganancia').textContent = `₡${(totalAnualVentas - inversionActual).toLocaleString()}`;
+
+                // 3. Renderizamos Gráfico
+                const ctx = document.getElementById('graficoVentasCompras').getContext('2d');
+                if (window.miGraficoFinanciero) {
+                    window.miGraficoFinanciero.destroy();
+                }
+                
+                window.miGraficoFinanciero = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                        datasets: [
+                            {
+                                label: 'Ingresos por Ventas (₡)',
+                                data: ventasMensuales,
+                                backgroundColor: '#d4af37'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { labels: { color: '#fff' } }
+                        },
+                        scales: {
+                            x: { ticks: { color: '#a0a0a0' }, grid: { color: '#333' } },
+                            y: { ticks: { color: '#a0a0a0' }, grid: { color: '#333' } }
+                        }
+                    }
+                });
+            } catch (e) {
+                console.error(e);
+                mostrarToast("Error al cargar análisis mensual.");
+            }
+        }
+
+        // ==========================================
+        // FUNCIONES DE VENTA DE STOCK EN PAQUETE
+        // ==========================================
+
+        window.agregarAlCarritoStock = function(id, nombre, precio, stockMax) {
+            if(stockMax <= 0) {
+                mostrarToast("⚠️ Ese artículo está agotado.");
+                return;
+            }
+            
+            let existente = carritoStock.find(item => item.id === id);
+            if (existente) {
+                if (existente.cantidad < stockMax) {
+                    existente.cantidad++;
+                    mostrarToast("✅ Añadida otra unidad al paquete.");
+                } else {
+                    mostrarToast("⚠️ Límite de stock alcanzado.");
+                }
+            } else {
+                carritoStock.push({ id, nombre, precio, max: stockMax, cantidad: 1 });
+                mostrarToast("✅ Artículo añadido al paquete.");
+            }
+            renderizarCarritoStock();
+        }
+
+        window.cambiarCantidadCarritoStock = function(idx, cambio) {
+            let item = carritoStock[idx];
+            item.cantidad += cambio;
+            if (item.cantidad < 1) {
+                carritoStock.splice(idx, 1);
+            } else if (item.cantidad > item.max) {
+                item.cantidad = item.max;
+                mostrarToast("⚠️ Límite de stock alcanzado.");
+            }
+            renderizarCarritoStock();
+        }
+
+        window.renderizarCarritoStock = function() {
+            const panel = document.getElementById('panel-carrito-stock');
+            const lista = document.getElementById('lista-carrito-stock');
+            const totalText = document.getElementById('total-carrito-stock');
+            
+            if (carritoStock.length === 0) {
+                panel.style.display = 'none';
+                return;
+            }
+            
+            panel.style.display = 'block';
+            let html = '';
+            let suma = 0;
+            
+            carritoStock.forEach((item, idx) => {
+                let sub = item.precio * item.cantidad;
+                suma += sub;
+                html += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#222; padding:8px 12px; border-radius:8px; margin-bottom:6px;">
+                        <span style="color:white; font-size:14px; font-weight:bold; flex:1;">${item.nombre}</span>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <button type="button" onclick="cambiarCantidadCarritoStock(${idx}, -1)" style="background:#333; color:white; border:none; width:26px; height:26px; border-radius:6px; font-weight:bold; cursor:pointer;">-</button>
+                            <span style="color:white; font-size:15px; font-weight:bold; min-width:20px; text-align:center;">${item.cantidad}</span>
+                            <button type="button" onclick="cambiarCantidadCarritoStock(${idx}, 1)" style="background:var(--color-principal); color:#121212; border:none; width:26px; height:26px; border-radius:6px; font-weight:bold; cursor:pointer;">+</button>
+                            <span style="color:var(--color-principal); font-size:14px; font-weight:bold; min-width:80px; text-align:right;">₡${sub.toLocaleString()}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            lista.innerHTML = html;
+            totalText.textContent = `₡${suma.toLocaleString()}`;
+        }
+
+        window.abrirModalCobrarPaqueteStock = function() {
+            if(carritoStock.length === 0) return;
+            document.getElementById('modal-cobrar-paquete').style.display = 'flex';
+        }
+
+        window.cerrarModalCobrarPaquete = function() {
+            document.getElementById('modal-cobrar-paquete').style.display = 'none';
+        }
+
+        window.confirmarVentaPaqueteStock = async function() {
+            if (carritoStock.length === 0) return;
+            
+            const metodoPago = document.getElementById('paquete-metodo-pago').value;
+            let totalVenta = 0;
+            let detallesArray = [];
+
+            try {
+                // Descontamos cada producto de su stock individual
+                for (let item of carritoStock) {
+                    totalVenta += (item.precio * item.cantidad);
+                    detallesArray.push(`${item.cantidad}x ${item.nombre}`);
+                    
+                    let nuevoStock = item.max - item.cantidad;
+                    await updateDoc(doc(db, "menu", item.id), { stockCantidad: nuevoStock });
+                }
+
+                // Generamos 1 SOLO registro de pedido en la BD con todos los productos juntos
+                await addDoc(collection(db, "pedidos"), {
+                    nombre: "Venta Paquete de Stock",
+                    detalle: detallesArray.join(" | "),
+                    total: totalVenta,
+                    estado: 'Entregado',
+                    metodoPago: metodoPago,
+                    fecha: new Date().toISOString()
+                });
+
+                mostrarToast(`✅ ¡Paquete vendido por ₡${totalVenta.toLocaleString()}!`);
+                carritoStock = [];
+                renderizarCarritoStock();
+                cerrarModalCobrarPaquete();
+                cargarAdminStock();
+                
+                // Como ya se vendió, refrescamos la caja por si estás monitoreándola
+                calcularEstadisticasCaja(); 
+
+            } catch(e) {
+                console.error(e);
+                mostrarToast("Error al procesar la venta en paquete.");
+            }
+        }
+
+
+        // ==========================================
+        // FUNCIONES GENERALES DEL SISTEMA
+        // ==========================================
+
         async function inicializarCategoriasNube() {
             try {
                 const qs = await getDocs(collection(db, "categorias"));
@@ -2028,345 +2286,10 @@
             } else { await guardarFin(null); }
         }
 
-        window.abrirSidebar = function() {
-            document.getElementById('sidebar-drawer').classList.add('open');
-            document.getElementById('sidebar-overlay').style.display = 'block';
-        }
-        window.cerrarSidebar = function() {
-            document.getElementById('sidebar-drawer').classList.remove('open');
-            document.getElementById('sidebar-overlay').style.display = 'none';
-        }
-
-        window.seleccionarSeccionAdmin = function(seccion) {
-            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            document.querySelectorAll('.admin-section-tab').forEach(el => el.classList.remove('active-admin-tab'));
-            document.getElementById(`admin-tab-${seccion}`).classList.add('active-admin-tab');
-            
-            if (seccion === 'pedidos') cargarPedidosAdmin();
-            else if (seccion === 'deudas') cargarDeudasAdmin();
-            else if (seccion === 'historial') cargarHistorialPedidosAdmin();
-            else if (seccion === 'ranking') cargarRankingPlatosAdmin();
-            else if (seccion === 'platos') cargarAdminPlatosDashboard();
-            else if (seccion === 'stock') cargarAdminStock();
-            else if (seccion === 'caja') calcularEstadisticasCaja();
-            else if (seccion === 'analisis') renderizarAnalisisMensual();
-            else if (seccion === 'categorias') renderizarTablaCategoriasAdmin();
-            else if (seccion === 'clientes') cargarBaseClientesAdmin();
-            else if (seccion === 'lealtad') cargarCodigoActivoAdmin();
-
-            cerrarSidebar();
-        }
-
-        window.cerrarSesionAdmin = function() {
-            adminAutenticado = false;
-            cerrarSidebar();
-            cambiarVista('menu');
-            mostrarToast("Sesión cerrada.");
-        }
-
-        window.intentarAccesoAdmin = function() {
-            if (adminAutenticado) { abrirSidebar(); } 
-            else {
-                const pass = prompt("Contraseña de Administrador:");
-                if (pass === "alaska2026") {
-                    adminAutenticado = true;
-                    cambiarVista('admin');
-                    abrirSidebar();
-                    cargarPedidosAdmin();
-                } else if (pass !== null) { mostrarToast("Contraseña incorrecta."); }
-            }
-        }
-
-        window.cambiarVista = function(vista) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active-view'));
-            const floatingBar = document.getElementById('floating-bar');
-
-            if (vista === 'menu') {
-                document.getElementById('view-menu').classList.add('active-view');
-                if (floatingBar) floatingBar.style.display = 'flex';
-            } else if (vista === 'admin') {
-                document.getElementById('view-admin').classList.add('active-view');
-                if (floatingBar) floatingBar.style.display = 'none';
-            }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        async function cargarPedidosAdmin() {
-            const contenedor = document.getElementById("admin-pedidos-container");
-            if (!contenedor) return;
-            try {
-                const qs = await getDocs(collection(db, "pedidos"));
-                if (qs.empty) { contenedor.innerHTML = "<p style='color:var(--text-muted); font-size:13px;'>Sin pedidos recientes.</p>"; return; }
-                contenedor.innerHTML = "";
-                let hayPendientes = false;
-                qs.forEach(d => {
-                    const p = d.data();
-                    const id = d.id;
-                    const estadoActual = p.estado || 'Preparación';
-                    if (estadoActual !== 'Entregado') {
-                        hayPendientes = true;
-                        let metodoPagoTxt = p.metodoPago ? `<br><span style="font-size:12px; color:#10b981;">Pago: ${p.metodoPago}</span>` : '';
-                        contenedor.innerHTML += `
-                            <div style="background:#252525; padding:15px; border-radius:12px; margin-bottom:12px; border:1px solid var(--border-color); border-left:4px solid var(--color-principal);">
-                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                                    <div>
-                                        <strong style="color:white; font-size:15px;">${p.nombre}</strong><br>
-                                        <span style="font-size:13px; color:var(--color-principal);">${p.detalle || ''}</span>
-                                        ${metodoPagoTxt}<br>
-                                        <strong style="color:white; font-size:14px; display:block; margin-top:4px;">₡${Number(p.total || 0).toLocaleString()}</strong>
-                                    </div>
-                                    <button type="button" onclick="eliminarPedidoAdmin('${id}')" style="background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#ef4444; padding:6px 10px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:bold;">Eliminar ✕</button>
-                                </div>
-                                <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
-                                    <span style="font-size:11px; color:var(--text-muted);">Estado:</span>
-                                    <button type="button" onclick="actualizarEstadoPedido('${id}', 'Preparación')" class="action-pill" style="padding:4px 8px; font-size:11px; ${estadoActual==='Preparación'?'background:var(--color-principal); color:#121212;':''}">Preparación</button>
-                                    <button type="button" onclick="actualizarEstadoPedido('${id}', 'En Camino')" class="action-pill" style="padding:4px 8px; font-size:11px; ${estadoActual==='En Camino'?'background:var(--color-principal); color:#121212;':''}">En Camino</button>
-                                    <button type="button" onclick="actualizarEstadoPedido('${id}', 'Entregado')" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(16,185,129,0.2); color:#10b981; border-color:#10b981;">Marcar Entregado ✓</button>
-                                </div>
-                            </div>
-                        `;
-                    }
-                });
-                if (!hayPendientes) contenedor.innerHTML = "<p style='color:var(--text-muted); font-size:13px;'>No hay pedidos pendientes en este momento.</p>";
-            } catch(e) { contenedor.innerHTML = "<p style='color:#ef4444;'>Error al cargar pedidos.</p>"; }
-        }
-
-        window.eliminarPedidoAdmin = async function(idPedido) {
-            if (confirm("¿Estás seguro de eliminar este pedido en vivo?")) {
-                try {
-                    await deleteDoc(doc(db, "pedidos", idPedido));
-                    mostrarToast("Pedido eliminado correctamente.");
-                    cargarPedidosAdmin();
-                } catch(e) {
-                    mostrarToast("Error al eliminar pedido.");
-                }
-            }
-        }
-
-        window.abrirModalNuevaDeuda = function() {
-            document.getElementById('deuda-nombre').value = '';
-            document.getElementById('deuda-telefono').value = '';
-            document.getElementById('deuda-monto').value = '';
-            document.getElementById('deuda-detalle').value = '';
-            document.getElementById('modal-nueva-deuda').style.display = 'flex';
-        }
-
-        window.cerrarModalNuevaDeuda = function() {
-            document.getElementById('modal-nueva-deuda').style.display = 'none';
-        }
-
-        window.guardarNuevaDeudaNube = async function() {
-            const nombre = document.getElementById('deuda-nombre').value.trim();
-            const telefono = document.getElementById('deuda-telefono').value.trim();
-            const monto = Number(document.getElementById('deuda-monto').value || 0);
-            const detalle = document.getElementById('deuda-detalle').value.trim();
-
-            if (!nombre || monto <= 0) {
-                mostrarToast("⚠️ Ingresa el nombre del cliente y un monto válido.");
-                return;
-            }
-
-            try {
-                const ahoraIso = new Date().toISOString();
-                await addDoc(collection(db, "deudas"), {
-                    nombre,
-                    telefono,
-                    montoTotal: monto,
-                    saldoPendiente: monto,
-                    detalle: detalle || 'Cuenta fiada',
-                    fechaCreacion: ahoraIso,
-                    ultimaNotificacion: ahoraIso
-                });
-                cerrarModalNuevaDeuda();
-                mostrarToast("✅ Cuenta fiada registrada con éxito.");
-                cargarDeudasAdmin();
-            } catch(e) {
-                mostrarToast("Error al registrar deuda.");
-            }
-        }
-
-        async function cargarDeudasAdmin() {
-            const tbody = document.getElementById('admin-tabla-deudas-body');
-            if (!tbody) return;
-            try {
-                const qs = await getDocs(collection(db, "deudas"));
-                if (qs.empty) {
-                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">No hay cuentas por cobrar registradas.</td></tr>`;
-                    return;
-                }
-
-                tbody.innerHTML = "";
-                const ahora = new Date();
-
-                qs.forEach(async (docSnap) => {
-                    let d = docSnap.data();
-                    let id = docSnap.id;
-                    let saldo = Number(d.saldoPendiente || 0);
-                    if (saldo <= 0) return;
-
-                    let fechaCreacionObj = new Date(d.fechaCreacion || ahora);
-                    let diffDias = Math.floor((ahora - fechaCreacionObj) / (1000 * 60 * 60 * 24));
-                    let ultimaNotif = new Date(d.ultimaNotificacion || d.fechaCreacion || ahora);
-                    let diffDiasNotif = Math.floor((ahora - ultimaNotif) / (1000 * 60 * 60 * 24));
-
-                    let fechaLocal = fechaCreacionObj.toLocaleDateString('es-CR');
-                    let alertaHtml = `<span style="font-size:11px; color:#10b981;">Activa (${diffDias} días)</span>`;
-                    
-                    if (diffDiasNotif >= 15) {
-                        alertaHtml = `<span style="font-size:11px; color:#ef4444; font-weight:bold;">⚠️ Más de 15 días sin abono</span>`;
-                        enviarAlertaDeudaWebhook(d.nombre, saldo, diffDias);
-                        await updateDoc(doc(db, "deudas", id), { ultimaNotificacion: ahora.toISOString() });
-                    }
-
-                    // Limpiar el teléfono para WhatsApp (dejamos solo dígitos)
-                    let telClean = d.telefono ? d.telefono.replace(/\D/g, '') : '';
-                    if(telClean.length === 8) telClean = '506' + telClean; // Prefijo CR si son 8 dígitos
-                    let msjWa = encodeURIComponent(`Hola ${d.nombre}, te saludamos de Bar Restaurante Alaska. Te escribimos para recordarte amablemente tu saldo pendiente de ₡${saldo.toLocaleString()}. ¡Gracias!`);
-                    let btnWa = telClean ? `<a href="https://wa.me/${telClean}?text=${msjWa}" target="_blank" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(37,211,102,0.2); color:#25D366; border-color:#25D366; text-decoration:none;">💬 WhatsApp</a>` : '';
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td style="font-weight:700;">${d.nombre}</td>
-                            <td>${d.telefono || 'Sin tel'}</td>
-                            <td>${fechaLocal}</td>
-                            <td>₡${Number(d.montoTotal || 0).toLocaleString()}</td>
-                            <td style="color:#ef4444; font-weight:800;">₡${saldo.toLocaleString()}</td>
-                            <td>${alertaHtml}<br><span style="font-size:10px; color:var(--text-muted);">${d.detalle || ''}</span></td>
-                            <td>
-                                <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                                    ${btnWa}
-                                    <button type="button" onclick="abonarDeuda('${id}', ${saldo})" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(212,175,55,0.2); color:var(--color-principal); border-color:var(--color-principal);">Abonar</button>
-                                    <button type="button" onclick="saldarDeuda('${id}', ${saldo})" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(16,185,129,0.2); color:#10b981; border-color:#10b981;">Saldar</button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                });
-            } catch(e) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ef4444;">Error al cargar deudas.</td></tr>`;
-            }
-        }
-
-        window.abonarDeuda = async function(idDeuda, saldoActual) {
-            let abonoStr = prompt(`Saldo pendiente: ₡${saldoActual.toLocaleString()}\n¿De cuánto es el abono realizado?`, "0");
-            if (!abonoStr) return;
-            let abono = Number(abonoStr);
-            if (isNaN(abono) || abono <= 0) { mostrarToast("Monto inválido."); return; }
-            if (abono > saldoActual) { mostrarToast("⚠️ El abono no puede ser mayor al saldo pendiente."); return; }
-
-            let nuevoSaldo = saldoActual - abono;
-            try {
-                await updateDoc(doc(db, "deudas", idDeuda), { saldoPendiente: nuevoSaldo });
-                
-                await addDoc(collection(db, "pedidos"), {
-                    nombre: `Abono Deuda (${idDeuda.slice(0,5)})`,
-                    detalle: `Abono de cliente`,
-                    total: abono,
-                    estado: 'Entregado',
-                    metodoPago: 'Efectivo',
-                    fecha: new Date().toISOString()
-                });
-
-                mostrarToast(`✅ Abono de ₡${abono.toLocaleString()} registrado con éxito.`);
-                cargarDeudasAdmin();
-            } catch(e) {
-                mostrarToast("Error al registrar abono.");
-            }
-        }
-
-        window.saldarDeuda = async function(idDeuda, saldoActual) {
-            if (confirm(`¿Marcar esta cuenta como totalmente pagada (Saldar ₡${saldoActual.toLocaleString()})?`)) {
-                try {
-                    await updateDoc(doc(db, "deudas", idDeuda), { saldoPendiente: 0 });
-                    
-                    await addDoc(collection(db, "pedidos"), {
-                        nombre: `Pago Total Deuda`,
-                        detalle: `Se saldó cuenta pendiente`,
-                        total: saldoActual,
-                        estado: 'Entregado',
-                        metodoPago: 'Efectivo',
-                        fecha: new Date().toISOString()
-                    });
-
-                    mostrarToast("🎉 ¡Cuenta saldada correctamente!");
-                    cargarDeudasAdmin();
-                } catch(e) {
-                    mostrarToast("Error al saldar deuda.");
-                }
-            }
-        }
-
-        async function enviarAlertaDeudaWebhook(nombreCliente, saldoPendiente, diasAntiguedad) {
-            try {
-                await fetch('https://hook.us2.make.com/dlrk5a5o4f75a76cjc3ci6bb5b4f7s3m', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        nombre: `⚠️ ALERTA DEUDA VENCIDA: ${nombreCliente}`,
-                        detalle: `El cliente ${nombreCliente} mantiene una deuda pendiente de ₡${saldoPendiente.toLocaleString()} con una antigüedad de ${diasAntiguedad} días.`,
-                        total: saldoPendiente,
-                        metodoPago: 'Crédito / Fiado',
-                        telefono: 'N/A',
-                        notaGeneral: 'Notificación automática de 15 días sin liquidación.'
-                    })
-                });
-            } catch(e) {
-                console.log("Error enviando alerta de deuda a Make:", e);
-            }
-        }
-
-        window.abrirModalNuevoStock = function() {
-            document.getElementById('stock-edit-id').value = '';
-            document.getElementById('stock-input-nombre').value = '';
-            document.getElementById('stock-input-cantidad').value = '';
-            document.getElementById('stock-input-compra').value = '';
-            document.getElementById('stock-input-venta').value = '';
-            document.getElementById('modal-stock-titulo').textContent = "📦 Registrar Artículo de Stock";
-            document.getElementById('modal-stock-item').style.display = 'flex';
-        }
-
-        window.cerrarModalStockItem = function() {
-            document.getElementById('modal-stock-item').style.display = 'none';
-        }
-
-        window.guardarStockItemNube = async function() {
-            const idDoc = document.getElementById('stock-edit-id').value;
-            const nombre = document.getElementById('stock-input-nombre').value.trim();
-            const cantidad = Number(document.getElementById('stock-input-cantidad').value || 0);
-            const compra = Number(document.getElementById('stock-input-compra').value || 0);
-            const venta = Number(document.getElementById('stock-input-venta').value || 0);
-
-            if (!nombre || compra <= 0 || venta <= 0) {
-                mostrarToast("⚠️ Rellena todos los campos con valores válidos.");
-                return;
-            }
-
-            try {
-                let dataObj = {
-                    nombre: nombre,
-                    categoria: 'Stock_Interno',
-                    stockCantidad: cantidad,
-                    stockCompra: compra,
-                    precio: venta,
-                    disponible: true
-                };
-
-                if (idDoc) {
-                    await updateDoc(doc(db, "menu", idDoc), dataObj);
-                    mostrarToast("✅ ¡Artículo de stock actualizado!");
-                } else {
-                    await addDoc(collection(db, "menu"), dataObj);
-                    mostrarToast("✅ ¡Artículo de stock registrado!");
-                }
-
-                cerrarModalStockItem();
-                cargarAdminStock();
-            } catch(e) {
-                mostrarToast("Error al guardar stock.");
-            }
-        }
-
+        // ===============================================
+        //  EL RESTO DE LAS FUNCIONES ADMINISTRATIVAS 
+        // ===============================================
+        
         async function cargarAdminStock() {
             const tbody = document.getElementById('admin-tabla-stock-body');
             if (!tbody) return;
@@ -2389,6 +2312,7 @@
                         totalInversion += (cant * comp);
                         totalVentaEst += (cant * vent);
 
+                        // NOTA EL BOTÓN AÑADIR A PAQUETE EN LA QUINTA COLUMNA
                         tbody.innerHTML += `
                             <tr>
                                 <td style="font-weight:700;">${s.nombre}</td>
@@ -2397,7 +2321,7 @@
                                 <td>₡${vent.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                                 <td>
                                     <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                                        <button type="button" onclick="abrirModalVenderStock('${s.id}', '${s.nombre}', ${vent}, ${cant})" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(59,130,246,0.2); color:#3b82f6; border-color:#3b82f6;">💰 Vender</button>
+                                        <button type="button" onclick="agregarAlCarritoStock('${s.id}', '${s.nombre.replace(/'/g,"\\'")}', ${vent}, ${cant})" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(59,130,246,0.2); color:#3b82f6; border-color:#3b82f6;">➕ Añadir a Paquete</button>
                                         <button type="button" onclick="ajustarCantidadStock('${s.id}', ${cant}, 'aumentar')" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(16,185,129,0.2); color:#10b981; border-color:#10b981;">+ Stock</button>
                                         <button type="button" onclick="ajustarMermaStock('${s.id}', ${cant})" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444;">- Merma</button>
                                         <button type="button" onclick="abrirModalEditarStock('${s.id}')" class="action-pill" style="padding:4px 8px; font-size:11px;">Editar</button>
@@ -2415,67 +2339,6 @@
 
                 if (!hayStock) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No hay stock interno registrado.</td></tr>`;
             } catch(e) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#ef4444;">Error al cargar stock.</td></tr>`; }
-        }
-
-        // LÓGICA DEL NUEVO MODAL DE VENTA DIRECTA DESDE STOCK
-        window.abrirModalVenderStock = function(id, nombre, precio, stockActual) {
-            if (stockActual <= 0) {
-                mostrarToast("⚠️ No hay stock disponible para vender.");
-                return;
-            }
-            document.getElementById('vender-stock-id').value = id;
-            document.getElementById('vender-stock-nombre-real').value = nombre;
-            document.getElementById('vender-stock-nombre-display').textContent = "Artículo: " + nombre + " (₡" + precio.toLocaleString() + " c/u)";
-            document.getElementById('vender-stock-precio').value = precio;
-            document.getElementById('vender-stock-max').value = stockActual;
-            document.getElementById('vender-stock-cantidad').value = 1;
-            document.getElementById('vender-stock-pago').value = 'Efectivo';
-            
-            document.getElementById('modal-vender-stock').style.display = 'flex';
-        }
-
-        window.cerrarModalVenderStock = function() {
-            document.getElementById('modal-vender-stock').style.display = 'none';
-        }
-
-        window.confirmarVentaStock = async function() {
-            const id = document.getElementById('vender-stock-id').value;
-            const nombreReal = document.getElementById('vender-stock-nombre-real').value;
-            const cantidad = Number(document.getElementById('vender-stock-cantidad').value);
-            const metodoPago = document.getElementById('vender-stock-pago').value;
-            const max = Number(document.getElementById('vender-stock-max').value);
-            const precio = Number(document.getElementById('vender-stock-precio').value);
-
-            if (cantidad <= 0 || cantidad > max) {
-                mostrarToast("⚠️ Cantidad inválida o supera el stock (" + max + ").");
-                return;
-            }
-
-            const nuevoStock = max - cantidad;
-            const totalVenta = cantidad * precio;
-
-            try {
-                // 1. Descontar del inventario general
-                await updateDoc(doc(db, "menu", id), { stockCantidad: nuevoStock });
-                
-                // 2. Registrar en el historial de pedidos como venta lista y cobrada
-                await addDoc(collection(db, "pedidos"), {
-                    nombre: "Venta Directa de Stock",
-                    detalle: cantidad + "x " + nombreReal,
-                    total: totalVenta,
-                    estado: 'Entregado',
-                    metodoPago: metodoPago,
-                    fecha: new Date().toISOString()
-                });
-
-                mostrarToast(`✅ Venta de ₡${totalVenta.toLocaleString()} registrada.`);
-                cerrarModalVenderStock();
-                cargarAdminStock();
-                // Si justo tenías la pestaña de caja abierta, esto la actualizará por detrás.
-                calcularEstadisticasCaja(); 
-            } catch(e) {
-                mostrarToast("Error al procesar la venta de stock.");
-            }
         }
 
         window.abrirModalEditarStock = async function(id) {
@@ -2538,452 +2401,6 @@
                 mostrarToast("Error al registrar merma.");
             }
         }
-
-        async function cargarHistorialPedidosAdmin() {
-            const contenedor = document.getElementById("admin-historial-container");
-            if (!contenedor) return;
-            try {
-                const qs = await getDocs(collection(db, "pedidos"));
-                if (qs.empty) { contenedor.innerHTML = "<p style='color:var(--text-muted); font-size:13px;'>Sin historial de pedidos.</p>"; return; }
-                contenedor.innerHTML = "";
-                let hayEntregados = false;
-                qs.forEach(d => {
-                    const p = d.data();
-                    const estadoActual = p.estado || 'Preparación';
-                    if (estadoActual === 'Entregado') {
-                        hayEntregados = true;
-                        let fechaStr = p.fecha ? new Date(p.fecha).toLocaleString() : 'Fecha no registrada';
-                        contenedor.innerHTML += `
-                            <div style="background:#202020; padding:14px; border-radius:12px; margin-bottom:10px; border:1px solid var(--border-color);">
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                                    <strong style="color:white; font-size:14px;">${p.nombre}</strong>
-                                    <span style="font-size:11px; color:#10b981; font-weight:bold;">Entregado ✓</span>
-                                </div>
-                                <span style="font-size:12px; color:var(--text-muted);">${p.detalle || ''}</span><br>
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
-                                    <span style="font-size:12px; color:var(--color-principal); font-weight:bold;">₡${Number(p.total || 0).toLocaleString()}</span>
-                                    <span style="font-size:10px; color:var(--text-muted);">${fechaStr}</span>
-                                </div>
-                            </div>
-                        `;
-                    }
-                });
-                if (!hayEntregados) contenedor.innerHTML = "<p style='color:var(--text-muted); font-size:13px;'>No hay pedidos entregados en el historial aún.</p>";
-            } catch(e) { contenedor.innerHTML = "<p style='color:#ef4444;'>Error al cargar historial.</p>"; }
-        }
-
-        window.descargarReporteCSV = async function() {
-            try {
-                const qs = await getDocs(collection(db, "pedidos"));
-                if (qs.empty) { mostrarToast("No hay datos para exportar."); return; }
-                
-                let csvContent = "data:text/csv;charset=utf-8,Cliente,Detalle,MetodoPago,Total,Estado,Fecha\n";
-                qs.forEach(d => {
-                    let p = d.data();
-                    let cliente = `"${(p.nombre || '').replace(/"/g, '""')}"`;
-                    let detalle = `"${(p.detalle || '').replace(/"/g, '""')}"`;
-                    let pago = `"${(p.metodoPago || 'Efectivo')}"`;
-                    let total = p.total || 0;
-                    let estado = `"${(p.estado || 'Preparación')}"`;
-                    let fecha = `"${(p.fecha || '')}"`;
-                    csvContent += `${cliente},${detalle},${pago},${total},${estado},${fecha}\n`;
-                });
-
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement("a");
-                link.setAttribute("href", encodedUri);
-                link.setAttribute("download", `reporte_ventas_alaska_${new Date().toISOString().slice(0,10)}.csv`);
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                mostrarToast("✅ ¡Reporte CSV descargado con éxito!");
-            } catch(e) { mostrarToast("Error al exportar reporte."); }
-        }
-
-        async function cargarRankingPlatosAdmin() {
-            const tbody = document.getElementById("admin-tabla-ranking-body");
-            if (!tbody) return;
-            try {
-                const qs = await getDocs(collection(db, "pedidos"));
-                let conteoPlatos = {};
-
-                qs.forEach(d => {
-                    let p = d.data();
-                    let detalle = p.detalle || "";
-                    let partes = detalle.split(" | ");
-                    partes.forEach(parte => {
-                        let match = parte.match(/^(\d+)x\s+(.+?)\s+\(/);
-                        if (match) {
-                            let cantidad = Number(match[1]);
-                            let nombrePlato = match[2].trim();
-                            let subtotalEstimado = Number(p.total || 0);
-
-                            if (!conteoPlatos[nombrePlato]) {
-                                conteoPlatos[nombrePlato] = { cantidad: 0, ingresos: 0 };
-                            }
-                            conteoPlatos[nombrePlato].cantidad += cantidad;
-                            conteoPlatos[nombrePlato].ingresos += subtotalEstimado;
-                        }
-                    });
-                });
-
-                let arrayRanking = Object.keys(conteoPlatos).map(nombre => ({
-                    nombre: nombre,
-                    cantidad: conteoPlatos[nombre].cantidad,
-                    ingresos: conteoPlatos[nombre].ingresos
-                })).sort((a, b) => b.cantidad - a.cantidad);
-
-                if (arrayRanking.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin datos de ventas suficientes para el ranking.</td></tr>`;
-                    return;
-                }
-
-                tbody.innerHTML = "";
-                arrayRanking.forEach((item, idx) => {
-                    let medalla = idx === 0 ? "🥇 1er Lugar" : (idx === 1 ? "🥈 2do Lugar" : (idx === 2 ? "🥉 3er Lugar" : `#${idx + 1}`));
-                    tbody.innerHTML += `
-                        <tr>
-                            <td style="font-weight:bold; color:var(--color-principal);">${medalla}</td>
-                            <td style="font-weight:700;">${item.nombre}</td>
-                            <td>${item.cantidad} unidades</td>
-                            <td style="color:#10b981; font-weight:800;">₡${item.ingresos.toLocaleString()}</td>
-                        </tr>
-                    `;
-                });
-            } catch(e) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;">Error al calcular ranking.</td></tr>`; }
-        }
-
-        window.actualizarEstadoPedido = async function(idPedido, nuevoEstado) {
-            try {
-                await updateDoc(doc(db, "pedidos", idPedido), { estado: nuevoEstado });
-                mostrarToast(`Estado actualizado a: ${nuevoEstado}`);
-                cargarPedidosAdmin();
-            } catch(e) { mostrarToast("Error al actualizar estado."); }
-        }
-
-        async function cargarAdminPlatosDashboard() {
-            try {
-                const qs = await getDocs(collection(db, "menu"));
-                let platos = [];
-                qs.forEach(d => platos.push({ id: d.id, ...d.data() }));
-                renderizarTablaAdminPlatos(platos);
-            } catch(e) { console.log(e); }
-        }
-
-        function renderizarTablaAdminPlatos(platos) {
-            const tbody = document.getElementById('admin-tabla-platos-body');
-            if (!tbody) return;
-            let visibles = platos.filter(p => p.categoria !== 'Stock_Interno');
-            if (visibles.length === 0) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">No hay platos registrados.</td></tr>`; return; }
-            tbody.innerHTML = "";
-            visibles.forEach((p, idx) => {
-                let disponible = p.disponible !== false;
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${idx + 1}</td>
-                        <td><img src="${p.imagenUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=100&q=80'}" style="width:36px; height:36px; border-radius:6px; object-fit:cover;"></td>
-                        <td style="font-weight:700;">${p.nombre}</td>
-                        <td>${p.categoria}</td>
-                        <td style="color:var(--color-principal); font-weight:800;">₡${Number(p.precio).toLocaleString()}</td>
-                        <td>
-                            <button type="button" onclick="toggleDisponibilidadPlato('${p.id}', ${disponible})" class="action-pill" style="padding:4px 8px; font-size:11px; ${disponible ? 'background:rgba(16,185,129,0.2); color:#10b981; border-color:#10b981;' : 'background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444;'}">
-                                ${disponible ? 'Disponible' : 'Agotado'}
-                            </button>
-                        </td>
-                        <td>
-                            <button type="button" onclick="abrirModalEditarPlato('${p.id}')" class="action-pill" style="padding:4px 8px; font-size:11px;">Editar</button>
-                            <button type="button" onclick="eliminarPlato('${p.id}')" class="action-pill" style="padding:4px 8px; font-size:11px; background:#5c2222; color:#ff6b6b; border:none;">Eliminar</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        window.toggleDisponibilidadPlato = async function(id, estadoActual) {
-            try {
-                await updateDoc(doc(db, "menu", id), { disponible: !estadoActual });
-                mostrarToast(!estadoActual ? "✅ Plato marcado como Disponible" : "⚠️ Plato marcado como Agotado");
-                cargarAdminPlatosDashboard();
-                cargarMenu();
-            } catch(e) { mostrarToast("Error al cambiar estado."); }
-        }
-
-        window.abrirModalEditarPlato = function(id) {
-            const p = listaPlatos.find(item => item.id === id);
-            if(!p) return;
-            document.getElementById('edit-plato-id').value = p.id;
-            document.getElementById('edit-plato-nombre').value = p.nombre || '';
-            document.getElementById('edit-plato-categoria').value = p.categoria || 'Bocas';
-            document.getElementById('edit-plato-precio').value = p.precio || 0;
-            document.getElementById('edit-plato-desc').value = p.descripcion || '';
-            document.getElementById('edit-plato-file').value = '';
-            
-            variantesEdicionActual = p.variantes ? [...p.variantes] : [];
-            actualizarListaVariantesEdicionUI();
-            
-            document.getElementById('modal-editar-plato').style.display = 'flex';
-        }
-
-        window.cerrarModalEditarPlato = function() {
-            document.getElementById('modal-editar-plato').style.display = 'none';
-        }
-
-        // AGREGAR VARIANTE EN EDICIÓN
-        window.agregarVarianteEdicion = async function() {
-            const nombreVar = document.getElementById('edit-input-nombre-var').value.trim();
-            const precioVar = Number(document.getElementById('edit-input-precio-var').value || 0);
-            const fileInput = document.getElementById('edit-input-img-var');
-            
-            if (!nombreVar) { mostrarToast("Escribe el nombre del extra."); return; }
-            
-            let imgBase64 = null;
-            if (fileInput.files && fileInput.files[0]) {
-                imgBase64 = await fileToBase64(fileInput.files[0]);
-            }
-
-            variantesEdicionActual.push({ nombre: nombreVar, precio: precioVar, agotado: false, imagenUrl: imgBase64 });
-            document.getElementById('edit-input-nombre-var').value = "";
-            document.getElementById('edit-input-precio-var').value = "";
-            fileInput.value = "";
-            actualizarListaVariantesEdicionUI();
-        }
-
-        // NUEVAS FUNCIONES PARA ELIMINAR VARIANTES (EXTRAS) LIMPIAMENTE
-        window.eliminarVarianteTemporal = function(idx) {
-            variantesTemporales.splice(idx, 1);
-            actualizarListaVariantesTempUI();
-        }
-
-        window.eliminarVarianteEdicion = function(idx) {
-            variantesEdicionActual.splice(idx, 1);
-            actualizarListaVariantesEdicionUI();
-        }
-
-        function actualizarListaVariantesEdicionUI() {
-            const container = document.getElementById('edit-lista-variantes');
-            if (!container) return;
-            if (variantesEdicionActual.length === 0) { container.innerHTML = "Sin extras añadidos."; return; }
-            let html = "";
-            variantesEdicionActual.forEach((v, idx) => {
-                let extraAgotado = v.agotado === true;
-                let iconoFoto = v.imagenUrl ? "📷 " : "";
-                html += `
-                    <div style="display:flex; justify-content:space-between; align-items:center; background:#181818; padding:8px; border-radius:6px; margin-bottom:4px;">
-                        <span>${iconoFoto}${v.nombre} (+₡${Number(v.precio).toLocaleString()})</span>
-                        <div style="display:flex; gap:6px; align-items:center;">
-                            <button type="button" onclick="toggleAgotadoExtraEdicion(${idx})" style="font-size:10px; padding:4px 8px; border-radius:6px; border:none; cursor:pointer; font-weight:bold; background:${extraAgotado ? 'rgba(239,68,68,0.2)' : 'rgba(16,185,129,0.2)'}; color:${extraAgotado ? '#ef4444' : '#10b981'};">
-                                ${extraAgotado ? 'Agotado' : 'Disponible'}
-                            </button>
-                            <button type="button" onclick="eliminarVarianteEdicion(${idx})" style="color:#ff6b6b; background:rgba(239,68,68,0.2); border:1px solid #ef4444; border-radius:6px; cursor:pointer; padding:4px 8px; font-size:10px; font-weight:bold;">✕ Eliminar</button>
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-
-        window.toggleAgotadoExtraEdicion = function(idx) {
-            variantesEdicionActual[idx].agotado = !variantesEdicionActual[idx].agotado;
-            actualizarListaVariantesEdicionUI();
-        }
-
-        window.guardarPlatoEditado = async function() {
-            const id = document.getElementById('edit-plato-id').value;
-            const nombre = document.getElementById('edit-plato-nombre').value.trim();
-            const categoria = document.getElementById('edit-plato-categoria').value;
-            const precio = Number(document.getElementById('edit-plato-precio').value);
-            const descripcion = document.getElementById('edit-plato-desc').value.trim();
-            const fileInput = document.getElementById('edit-plato-file');
-
-            const actualizarDatos = async (imagenUrlFinal) => {
-                try {
-                    let obj = { nombre, categoria, precio, descripcion, variantes: variantesEdicionActual };
-                    if(imagenUrlFinal) obj.imagenUrl = imagenUrlFinal;
-                    await updateDoc(doc(db, "menu", id), obj);
-                    cerrarModalEditarPlato();
-                    mostrarToast("✅ ¡Plato actualizado con éxito!");
-                    cargarAdminPlatosDashboard();
-                    cargarMenu();
-                } catch(e) { mostrarToast("Error al actualizar plato."); }
-            };
-
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.readAsDataURL(fileInput.files[0]);
-                reader.onload = async function() { await actualizarDatos(reader.result); };
-            } else { await actualizarDatos(null); }
-        }
-
-        window.eliminarPlato = async function(id) {
-            if(confirm("¿Estás seguro de eliminar este ítem?")) {
-                try {
-                    await deleteDoc(doc(db, "menu", id));
-                    mostrarToast("Ítem eliminado.");
-                    cargarAdminPlatosDashboard();
-                    cargarMenu();
-                } catch(e) { mostrarToast("Error al eliminar."); }
-            }
-        }
-
-        // AGREGAR VARIANTE NUEVA
-        window.agregarVarianteTemporal = async function() {
-            const nombreVar = document.getElementById('input-nombre-var').value.trim();
-            const precioVar = Number(document.getElementById('input-precio-var').value || 0);
-            const fileInput = document.getElementById('input-img-var');
-            
-            if (!nombreVar) { mostrarToast("Escribe el nombre del extra."); return; }
-            
-            let imgBase64 = null;
-            if (fileInput.files && fileInput.files[0]) {
-                imgBase64 = await fileToBase64(fileInput.files[0]);
-            }
-
-            variantesTemporales.push({ nombre: nombreVar, precio: precioVar, agotado: false, imagenUrl: imgBase64 });
-            document.getElementById('input-nombre-var').value = "";
-            document.getElementById('input-precio-var').value = "";
-            fileInput.value = "";
-            actualizarListaVariantesTempUI();
-        }
-
-        function actualizarListaVariantesTempUI() {
-            const container = document.getElementById('lista-variantes-temp');
-            if (variantesTemporales.length === 0) { container.innerHTML = "Sin extras añadidos."; return; }
-            let html = "";
-            variantesTemporales.forEach((v, idx) => {
-                let iconoFoto = v.imagenUrl ? "📷 " : "";
-                html += `
-                <div style="display:flex; justify-content:space-between; align-items:center; background:#181818; padding:8px; border-radius:6px; margin-bottom:4px;">
-                    <span>${iconoFoto}${v.nombre} (+₡${Number(v.precio).toLocaleString()})</span>
-                    <button type="button" onclick="eliminarVarianteTemporal(${idx})" style="color:#ff6b6b; background:rgba(239,68,68,0.2); border:1px solid #ef4444; border-radius:6px; cursor:pointer; padding:4px 8px; font-size:10px; font-weight:bold;">✕ Eliminar</button>
-                </div>`;
-            });
-            container.innerHTML = html;
-        }
-
-        document.getElementById('productForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const nombre = document.getElementById('nombre').value.trim();
-            const categoria = document.getElementById('categoria').value;
-            const precio = Number(document.getElementById('precio').value);
-            const descripcion = document.getElementById('descripcion').value.trim();
-            const fileInput = document.getElementById('imagenFile');
-
-            const guardarConImagen = async (imagenUrlFinal) => {
-                try {
-                    let dataPlato = { nombre, categoria, precio, descripcion, disponible: true, ratingPromedio: 5.0, totalResenas: 0, variantes: variantesTemporales };
-                    if(imagenUrlFinal) dataPlato.imagenUrl = imagenUrlFinal;
-                    await addDoc(collection(db, "menu"), dataPlato);
-                    mostrarToast("✅ ¡Ítem registrado con éxito!");
-                    document.getElementById('productForm').reset();
-                    variantesTemporales = [];
-                    actualizarListaVariantesTempUI();
-                    cargarMenu();
-                } catch(err) { mostrarToast("Error al registrar ítem."); }
-            };
-
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.readAsDataURL(fileInput.files[0]);
-                reader.onload = async function() { await guardarConImagen(reader.result); };
-            } else { await guardarConImagen(null); }
-        });
-
-        async function cargarBaseClientesAdmin() {
-            const tbody = document.getElementById('admin-tabla-clientes-body');
-            if (!tbody) return;
-            try {
-                const qs = await getDocs(collection(db, "clientes"));
-                if (qs.empty) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin clientes.</td></tr>`; return; }
-                tbody.innerHTML = "";
-                qs.forEach(d => {
-                    const c = d.data();
-                    const id = d.id;
-                    tbody.innerHTML += `
-                        <tr>
-                            <td style="font-weight:750;">${c.nombre}</td>
-                            <td>${c.telefono}</td>
-                            <td style="color:var(--color-principal); font-weight:800;">${c.sellos || 0} / 5 ⭐</td>
-                            <td><button type="button" onclick="eliminarCliente('${id}')" class="action-pill" style="padding:4px 8px; font-size:11px; background:#5c2222; color:#ff6b6b; border:none;">Eliminar</button></td>
-                        </tr>
-                    `;
-                });
-            } catch(e) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;">Error.</td></tr>`; }
-        }
-
-        window.eliminarCliente = async function(id) {
-            if(confirm("¿Eliminar este cliente de la base de datos?")) {
-                await deleteDoc(doc(db, "clientes", id));
-                mostrarToast("Cliente eliminado.");
-                cargarBaseClientesAdmin();
-            }
-        }
-
-        async function renderizarTablaCategoriasAdmin() {
-            const tbody = document.getElementById('admin-tabla-categorias-body');
-            if (!tbody) return;
-            tbody.innerHTML = "";
-            categoriasDefault.forEach(cat => {
-                let catData = categoriasNube[cat] || {};
-                let imgUrl = catData.icono || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=100&q=80';
-                tbody.innerHTML += `
-                    <tr>
-                        <td><img src="${imgUrl}" style="width:36px; height:36px; object-fit:contain; border-radius:6px; background:#222;"></td>
-                        <td style="font-weight:700;">${cat}</td>
-                        <td><button type="button" onclick="abrirModalEditarCat('${cat}')" class="action-pill" style="padding:4px 10px; font-size:11px;">Editar Icono</button></td>
-                    </tr>
-                `;
-            });
-        }
-
-        window.abrirModalEditarCat = function(catNombre) {
-            document.getElementById('edit-cat-nombre').value = catNombre;
-            document.getElementById('edit-cat-file').value = "";
-            document.getElementById('modal-editar-categoria').style.display = 'flex';
-        }
-        window.cerrarModalEditarCat = function() { document.getElementById('modal-editar-categoria').style.display = 'none'; }
-
-        window.guardarCategoriaEditadaNube = async function() {
-            const catNombre = document.getElementById('edit-cat-nombre').value;
-            const fileInput = document.getElementById('edit-cat-file');
-            if (!fileInput.files || !fileInput.files[0]) { mostrarToast("Selecciona una imagen."); return; }
-
-            const reader = new FileReader();
-            reader.readAsDataURL(fileInput.files[0]);
-            reader.onload = async function() {
-                try {
-                    let iconoBase64 = reader.result;
-                    await setDoc(doc(db, "categorias", catNombre), { nombre: catNombre, icono: iconoBase64 }, { merge: true });
-                    if(!categoriasNube[catNombre]) categoriasNube[catNombre] = {};
-                    categoriasNube[catNombre].icono = iconoBase64;
-                    renderizarCategoriasPublicas();
-                    renderizarTablaCategoriasAdmin();
-                    cerrarModalEditarCat();
-                    mostrarToast("✅ ¡Icono actualizado!");
-                } catch(e) { mostrarToast("Error al guardar."); }
-            };
-        }
-
-        async function cargarCodigoActivoAdmin() {
-            try {
-                const docRef = doc(db, "configuracion", "selloActivo");
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists() && docSnap.data().codigo) {
-                    document.getElementById('codigo-activo-display').textContent = docSnap.data().codigo;
-                } else { document.getElementById('codigo-activo-display').textContent = "----"; }
-            } catch(e) { document.getElementById('codigo-activo-display').textContent = "Error"; }
-        }
-
-        window.generarNuevoCodigoSello = async function() {
-            const nuevoCodigo = Math.floor(1000 + Math.random() * 9000).toString();
-            try {
-                await setDoc(doc(db, "configuracion", "selloActivo"), { codigo: nuevoCodigo });
-                document.getElementById('codigo-activo-display').textContent = nuevoCodigo;
-                mostrarToast("¡Código generado (Un solo uso): " + nuevoCodigo);
-            } catch(e) { mostrarToast("Error al generar."); }
-        }
-
-        window.abrirSeguimientoModal = function(e) { e.preventDefault(); document.getElementById('modal-seguimiento').style.display = 'flex'; }
-        window.cerrarSeguimientoModal = function() { document.getElementById('modal-seguimiento').style.display = 'none'; }
 
         cargarConfiguracionVisualNube();
         actualizarUILealtadPublica();
