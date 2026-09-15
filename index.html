@@ -1124,7 +1124,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD2JhmA4m7NMbRcC2RqaHVIz1NLgI2IzE",
@@ -1212,7 +1212,7 @@
                 }
                 document.getElementById('view-admin').classList.add('active-view');
                 if(floatingBar) floatingBar.classList.add('hidden');
-                seleccionarSeccionAdmin('historial'); // Se abre directo en historial para revisar paquetes cobrados
+                seleccionarSeccionAdmin('historial');
                 window.scrollTo(0,0);
             }
         }
@@ -1762,7 +1762,7 @@
         }
 
         // ==========================================
-        // CARGAR HISTORIAL DE PEDIDOS (OPTIMIZADO)
+        // CARGAR HISTORIAL DE PEDIDOS (CON BOTÓN ELIMINAR)
         // ==========================================
         window.cargarAdminHistorial = async function() {
             const container = document.getElementById('admin-historial-container');
@@ -1770,7 +1770,6 @@
             container.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">Cargando historial de pedidos y paquetes cobrados...</p>`;
             
             try {
-                // Consulta optimizada para evitar bloqueos por índices complejos
                 const q = query(collection(db, "pedidos"), limit(100));
                 const querySnapshot = await getDocs(q);
                 
@@ -1779,7 +1778,6 @@
                     pedidos.push({ id: d.id, ...d.data() });
                 });
 
-                // Ordenar localmente por fecha descendiente para mostrar lo más reciente primero
                 pedidos.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
 
                 if (pedidos.length === 0) {
@@ -1796,6 +1794,7 @@
                                 <th>Detalle del Pedido o Paquete</th>
                                 <th>Método de Pago</th>
                                 <th>Total (₡)</th>
+                                <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1813,6 +1812,9 @@
                             <td>${p.detalle || 'Sin detalle'}</td>
                             <td><span style="background:#222; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:bold; color:var(--color-principal);">${p.metodoPago || 'Efectivo'}</span></td>
                             <td><strong style="color:var(--color-principal);">₡${Number(p.total || 0).toLocaleString()}</strong></td>
+                            <td>
+                                <button type="button" onclick="eliminarRegistroHistorial('${p.id}')" class="action-pill" style="padding:4px 10px; font-size:11px; background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444;">Eliminar ✕</button>
+                            </td>
                         </tr>
                     `;
                 });
@@ -1822,6 +1824,18 @@
             } catch(e) {
                 console.error(e);
                 container.innerHTML = `<p style="color:#ef4444; font-size:13px;">Error al cargar el historial. Revisa tu conexión a internet.</p>`;
+            }
+        }
+
+        window.eliminarRegistroHistorial = async function(idPedido) {
+            if (confirm("¿Estás seguro de eliminar este registro del historial?")) {
+                try {
+                    await deleteDoc(doc(db, "pedidos", idPedido));
+                    mostrarToast("🗑️ Registro eliminado correctamente.");
+                    cargarAdminHistorial();
+                } catch(e) {
+                    mostrarToast("Error al eliminar el registro.");
+                }
             }
         }
 
