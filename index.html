@@ -125,7 +125,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         
-        .card-image-container { position: relative; height: 360px; width: 100%; background: #181818; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .card-image-container { position: relative; height: 160px; width: 100%; background: #181818; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .card-image-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
         .food-card:hover .card-image-container img { transform: scale(1.03); }
         
@@ -1124,7 +1124,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD2JhmA4m7NMbRcC2RqaHVIz1NLgI2IzE",
@@ -1212,7 +1212,7 @@
                 }
                 document.getElementById('view-admin').classList.add('active-view');
                 if(floatingBar) floatingBar.classList.add('hidden');
-                seleccionarSeccionAdmin('pedidos');
+                seleccionarSeccionAdmin('historial'); // Se abre directo en historial para revisar paquetes cobrados
                 window.scrollTo(0,0);
             }
         }
@@ -1497,7 +1497,7 @@
 
         window.agregarPlatoConExtrasAlCarrito = function() {
             if (!negocioAbiertoGlobal || pedidosOnlinePausados) {
-                mostrarToast("⚠️ El establecimiento não está recibiendo pedidos online.");
+                mostrarToast("⚠️ El establecimiento no está recibiendo pedidos online.");
                 return;
             }
             if (!platoSeleccionadoParaPedir) return;
@@ -1758,6 +1758,99 @@
             } catch(e) {
                 console.error(e);
                 mostrarToast("Error al guardar el pedido.");
+            }
+        }
+
+        // ==========================================
+        // CARGAR HISTORIAL DE PEDIDOS (OPTIMIZADO)
+        // ==========================================
+        window.cargarAdminHistorial = async function() {
+            const container = document.getElementById('admin-historial-container');
+            if (!container) return;
+            container.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">Cargando historial de pedidos y paquetes cobrados...</p>`;
+            
+            try {
+                // Consulta optimizada para evitar bloqueos por índices complejos
+                const q = query(collection(db, "pedidos"), limit(100));
+                const querySnapshot = await getDocs(q);
+                
+                let pedidos = [];
+                querySnapshot.forEach(d => {
+                    pedidos.push({ id: d.id, ...d.data() });
+                });
+
+                // Ordenar localmente por fecha descendiente para mostrar lo más reciente primero
+                pedidos.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
+
+                if (pedidos.length === 0) {
+                    container.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">No hay registros en el historial.</p>`;
+                    return;
+                }
+
+                let html = `
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha / Hora</th>
+                                <th>Tipo / Cliente</th>
+                                <th>Detalle del Pedido o Paquete</th>
+                                <th>Método de Pago</th>
+                                <th>Total (₡)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                pedidos.forEach(p => {
+                    let fechaFormateada = p.fecha ? new Date(p.fecha).toLocaleString() : 'Fecha no registrada';
+                    let esPaquete = p.nombre && p.nombre.includes("Paquete de Stock");
+                    let estiloFila = esPaquete ? `background: rgba(59, 130, 246, 0.08);` : '';
+                    
+                    html += `
+                        <tr style="${estiloFila}">
+                            <td style="font-size:12px; color:var(--text-muted);">${fechaFormateada}</td>
+                            <td><strong style="color:${esPaquete ? '#3b82f6' : 'white'};">${p.nombre || 'General'}</strong></td>
+                            <td>${p.detalle || 'Sin detalle'}</td>
+                            <td><span style="background:#222; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:bold; color:var(--color-principal);">${p.metodoPago || 'Efectivo'}</span></td>
+                            <td><strong style="color:var(--color-principal);">₡${Number(p.total || 0).toLocaleString()}</strong></td>
+                        </tr>
+                    `;
+                });
+
+                html += `</tbody></table>`;
+                container.innerHTML = html;
+            } catch(e) {
+                console.error(e);
+                container.innerHTML = `<p style="color:#ef4444; font-size:13px;">Error al cargar el historial. Revisa tu conexión a internet.</p>`;
+            }
+        }
+
+        window.descargarReporteCSV = async function() {
+            try {
+                const qs = await getDocs(collection(db, "pedidos"));
+                let csvContent = "data:text/csv;charset=utf-8,ID,Fecha,Cliente,Detalle,MetodoPago,Total\n";
+                
+                qs.forEach(d => {
+                    let p = d.data();
+                    let fecha = p.fecha ? new Date(p.fecha).toLocaleString() : '';
+                    let cliente = `"${(p.nombre || '').replace(/"/g, '""')}"`;
+                    let detalle = `"${(p.detalle || '').replace(/"/g, '""')}"`;
+                    let pago = p.metodoPago || 'Efectivo';
+                    let total = p.total || 0;
+                    
+                    csvContent += `${d.id},"${fecha}",${cliente},${detalle},${pago},${total}\n`;
+                });
+
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `reporte_ventas_alaska_${new Date().toISOString().slice(0,10)}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                mostrarToast("📥 Reporte descargado con éxito.");
+            } catch(e) {
+                mostrarToast("Error al generar el reporte CSV.");
             }
         }
 
