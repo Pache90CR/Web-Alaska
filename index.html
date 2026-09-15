@@ -16,6 +16,7 @@
         %22icons%22: [{%22src%22: %22https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=192&q=80%22, %22sizes%22: %22192x192%22, %22type%22: %22image/jpeg%22}]
     }">
 
+    <!-- Chart.js para gráficas financieras -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
@@ -201,9 +202,9 @@
 
         .floating-bottom-bar {
             position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 400px; background: #181818; border: 1px solid var(--border-color);
-            border-radius: 30px; padding: 8px 20px; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 999;
+            width: 90%; max-width: 420px; background: #181818; border: 1px solid var(--border-color);
+            border-radius: 30px; padding: 8px 16px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 999; gap: 10px;
         }
 
         .status-pill { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #a3e635; white-space: nowrap; }
@@ -818,6 +819,7 @@
 
     </div>
 
+    <!-- MODAL DETALLE DE PLATO, EXTRAS Y CALIFICACIÓN -->
     <div id="modal-detalle-plato" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -863,6 +865,7 @@
         </div>
     </div>
 
+    <!-- MODAL NUEVA DEUDA -->
     <div id="modal-nueva-deuda" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -894,6 +897,7 @@
         </div>
     </div>
 
+    <!-- MODAL NUEVO / EDITAR STOCK INTERNO -->
     <div id="modal-stock-item" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -928,6 +932,7 @@
         </div>
     </div>
 
+    <!-- MODAL CARRITO DE COMPRAS PÚBLICO -->
     <div id="modal-carrito" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -939,6 +944,7 @@
         </div>
     </div>
 
+    <!-- MODAL COBRAR PAQUETE STOCK -->
     <div id="modal-cobrar-paquete" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -963,6 +969,7 @@
         </div>
     </div>
 
+    <!-- MODAL EDITAR PLATO -->
     <div id="modal-editar-plato" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -1020,6 +1027,7 @@
         </div>
     </div>
 
+    <!-- MODAL EDITAR CATEGORÍA -->
     <div id="modal-editar-categoria" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -1040,6 +1048,7 @@
         </div>
     </div>
 
+    <!-- MODAL SELLO -->
     <div id="modal-sello-interactivo" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -1056,17 +1065,27 @@
         </div>
     </div>
 
+    <!-- BARRA FLOTANTE CON ACCESO DIRECTO AL ADMIN -->
     <div class="floating-bottom-bar" id="floating-bar">
         <div class="status-pill">
             <div class="status-dot" id="floating-status-dot"></div>
             <span id="floating-status-text">Abierto</span>
         </div>
-        <button class="cart-icon-btn" onclick="abrirModalCarrito()" title="Ver Carrito">
-            <svg class="icon-svg-lg" style="color:#121212;" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-            <span class="cart-count-badge" id="cart-count">0</span>
-        </button>
+        
+        <div style="display:flex; gap:8px; align-items:center;">
+            <!-- BOTÓN DIRECTO DE ADMINISTRACIÓN (NUEVO) -->
+            <button class="action-pill" onclick="intentarAccesoAdmin()" style="background:var(--color-secundario); color:var(--color-principal); padding:8px 12px; font-size:12px; border:1px solid var(--color-principal);">
+                ⚙️ Admin
+            </button>
+            
+            <button class="cart-icon-btn" onclick="abrirModalCarrito()" title="Ver Carrito">
+                <svg class="icon-svg-lg" style="color:#121212;" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                <span class="cart-count-badge" id="cart-count">0</span>
+            </button>
+        </div>
     </div>
 
+    <!-- MODAL LEALTAD Y SEGUIMIENTO -->
     <div id="modal-lealtad" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -1123,23 +1142,13 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        const fileToBase64 = (file) => {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-        };
-
         let listaPlatos = [];
         let carritoItems = [];
         let categoriasNube = {};
         const categoriasDefault = ["Bocas", "Comidas Rápidas", "Arroces", "Batidos", "Casados", "Ofertas"];
         const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
         let variantesTemporales = [];
-        let variantesEdicionActual = [];
-        let carritoStock = []; // Carrito global para el stock interno
+        let carritoStock = [];
         
         let platoSeleccionadoParaPedir = null;
         let cantidadSeleccionadaModal = 1;
@@ -1162,6 +1171,110 @@
             document.getElementById('toast-msg').textContent = mensaje;
             toast.classList.add('show');
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        // ==========================================
+        // CONTROL DE VISTAS Y ADMINISTRACIÓN
+        // ==========================================
+        window.intentarAccesoAdmin = function() {
+            if (!adminAutenticado) {
+                let clave = prompt("Introduce la contraseña de administración:");
+                if (clave === "1234" || clave === "alaska2026") {
+                    adminAutenticado = true;
+                    mostrarToast("🔓 ¡Acceso de Administrador Concedido!");
+                    cambiarVista('admin');
+                    abrirSidebar();
+                } else if (clave !== null) {
+                    mostrarToast("❌ Contraseña incorrecta.");
+                }
+            } else {
+                cambiarVista('admin');
+                abrirSidebar();
+            }
+        }
+
+        window.cerrarSesionAdmin = function() {
+            adminAutenticado = false;
+            cambiarVista('menu');
+            cerrarSidebar();
+            mostrarToast("🔒 Sesión de administrador cerrada.");
+        }
+
+        window.cambiarVista = function(vista) {
+            document.getElementById('view-menu').classList.remove('active-view');
+            document.getElementById('view-admin').classList.remove('active-view');
+
+            if (vista === 'menu') {
+                document.getElementById('view-menu').classList.add('active-view');
+                window.scrollTo(0,0);
+            } else if (vista === 'admin') {
+                if (!adminAutenticado) {
+                    intentarAccesoAdmin();
+                    return;
+                }
+                document.getElementById('view-admin').classList.add('active-view');
+                seleccionarSeccionAdmin('pedidos');
+                window.scrollTo(0,0);
+            }
+        }
+
+        window.abrirSidebar = function() {
+            document.getElementById('sidebar-drawer').classList.add('open');
+            document.getElementById('sidebar-overlay').style.display = 'block';
+        }
+
+        window.cerrarSidebar = function() {
+            document.getElementById('sidebar-drawer').classList.remove('open');
+            document.getElementById('sidebar-overlay').style.display = 'none';
+        }
+
+        window.seleccionarSeccionAdmin = function(seccion) {
+            document.querySelectorAll('.admin-section-tab').forEach(tab => tab.classList.remove('active-admin-tab'));
+            document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+
+            if (seccion === 'pedidos') {
+                document.getElementById('admin-tab-pedidos').classList.add('active-admin-tab');
+                cargarAdminPedidos();
+            } else if (seccion === 'deudas') {
+                document.getElementById('admin-tab-deudas').classList.add('active-admin-tab');
+                cargarAdminDeudas();
+            } else if (seccion === 'historial') {
+                document.getElementById('admin-tab-historial').classList.add('active-admin-tab');
+                cargarAdminHistorial();
+            } else if (seccion === 'ranking') {
+                document.getElementById('admin-tab-ranking').classList.add('active-admin-tab');
+                cargarAdminRanking();
+            } else if (seccion === 'platos') {
+                document.getElementById('admin-tab-platos').classList.add('active-admin-tab');
+                cargarAdminPlatos();
+            } else if (seccion === 'stock') {
+                document.getElementById('admin-tab-stock').classList.add('active-admin-tab');
+                cargarAdminStock();
+            } else if (seccion === 'caja') {
+                document.getElementById('admin-tab-caja').classList.add('active-admin-tab');
+                calcularEstadisticasCaja();
+            } else if (seccion === 'analisis') {
+                document.getElementById('admin-tab-analisis').classList.add('active-admin-tab');
+                renderizarAnalisisMensual();
+            } else if (seccion === 'categorias') {
+                document.getElementById('admin-tab-categorias').classList.add('active-admin-tab');
+                cargarAdminCategorias();
+            } else if (seccion === 'nuevo-plato') {
+                document.getElementById('admin-tab-nuevo-plato').classList.add('active-admin-tab');
+            } else if (seccion === 'lealtad') {
+                document.getElementById('admin-tab-lealtad').classList.add('active-admin-tab');
+            } else if (seccion === 'clientes') {
+                document.getElementById('admin-tab-clientes').classList.add('active-admin-tab');
+                cargarAdminClientes();
+            } else if (seccion === 'horarios') {
+                document.getElementById('admin-tab-horarios').classList.add('active-admin-tab');
+            } else if (seccion === 'ajustes') {
+                document.getElementById('admin-tab-ajustes').classList.add('active-admin-tab');
+            }
+
+            // Marcar activo en el sidebar
+            event && event.currentTarget && event.currentTarget.classList.add('active');
+            cerrarSidebar();
         }
 
         async function cargarMenu() {
@@ -1314,24 +1427,6 @@
                 chk.checked = false;
             }
             actualizarPrecioTotalModal();
-
-            const imgEl = document.getElementById('modal-detalle-img');
-            const imgOriginal = platoSeleccionadoParaPedir.imagenUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
-            
-            let imgActual = imgOriginal;
-
-            document.querySelectorAll('.chk-extra-item:checked').forEach(c => {
-                let imgExtra = c.getAttribute('data-img');
-                if (imgExtra && imgExtra !== 'null' && imgExtra !== '') {
-                    imgActual = imgExtra; 
-                }
-            });
-
-            imgEl.style.opacity = 0.4;
-            setTimeout(() => {
-                imgEl.src = imgActual;
-                imgEl.style.opacity = 1;
-            }, 200); 
         }
 
         window.seleccionarEstrellasCalificacion = function(num) {
@@ -1669,16 +1764,13 @@
         }
 
         // ==========================================
-        // NUEVAS FUNCIONES Y FIXES: CAJA Y ANÁLISIS
+        // CAJA Y ANÁLISIS
         // ==========================================
-
         window.calcularEstadisticasCaja = async function() {
             try {
                 const qs = await getDocs(collection(db, "pedidos"));
                 let totalEfectivo = 0;
                 let totalElectronico = 0;
-                
-                // Filtramos por HOY para que la caja cierre limpia cada día
                 let hoy = new Date();
 
                 qs.forEach(d => {
@@ -1700,8 +1792,6 @@
                 document.getElementById('stat-ingresos').textContent = `₡${totalIngresos.toLocaleString()}`;
                 document.getElementById('stat-efectivo-sis').textContent = `₡${totalEfectivo.toLocaleString()}`;
                 document.getElementById('stat-electronico-sis').textContent = `₡${totalElectronico.toLocaleString()}`;
-                
-                // Lo guardamos en un atributo de datos para que el cuadre matemático lo pueda leer
                 document.getElementById('stat-efectivo-sis').setAttribute('data-valor', totalEfectivo);
             } catch(e) {
                 console.error(e);
@@ -1732,14 +1822,13 @@
             let ventasMensuales = new Array(12).fill(0);
             
             try {
-                // 1. Calculamos ventas mensuales
                 const qsPedidos = await getDocs(collection(db, "pedidos"));
                 qsPedidos.forEach(d => {
                     let p = d.data();
                     if (p.estado === 'Entregado' && p.fecha) {
                         let fecha = new Date(p.fecha);
                         if (fecha.getFullYear().toString() === anioSeleccionado) {
-                            let mes = fecha.getMonth(); // 0 a 11
+                            let mes = fecha.getMonth();
                             ventasMensuales[mes] += Number(p.total || 0);
                         }
                     }
@@ -1748,7 +1837,6 @@
                 let totalAnualVentas = ventasMensuales.reduce((a, b) => a + b, 0);
                 document.getElementById('analisis-stat-ventas').textContent = `₡${totalAnualVentas.toLocaleString()}`;
 
-                // 2. Calculamos Inversión Actual (Tomado directo del inventario actual para referencia)
                 let inversionActual = 0;
                 const qsMenu = await getDocs(collection(db, "menu"));
                 qsMenu.forEach(d => {
@@ -1761,7 +1849,6 @@
                 document.getElementById('analisis-stat-compras').textContent = `₡${inversionActual.toLocaleString()}`;
                 document.getElementById('analisis-stat-ganancia').textContent = `₡${(totalAnualVentas - inversionActual).toLocaleString()}`;
 
-                // 3. Renderizamos Gráfico
                 const ctx = document.getElementById('graficoVentasCompras').getContext('2d');
                 if (window.miGraficoFinanciero) {
                     window.miGraficoFinanciero.destroy();
@@ -1798,9 +1885,8 @@
         }
 
         // ==========================================
-        // FUNCIONES DE VENTA DE STOCK EN PAQUETE
+        // VENTA DE STOCK EN PAQUETE
         // ==========================================
-
         window.agregarAlCarritoStock = function(id, nombre, precio, stockMax) {
             if(stockMax <= 0) {
                 mostrarToast("⚠️ Ese artículo está agotado.");
@@ -1885,7 +1971,6 @@
             let detallesArray = [];
 
             try {
-                // Descontamos cada producto de su stock individual
                 for (let item of carritoStock) {
                     totalVenta += (item.precio * item.cantidad);
                     detallesArray.push(`${item.cantidad}x ${item.nombre}`);
@@ -1894,7 +1979,6 @@
                     await updateDoc(doc(db, "menu", item.id), { stockCantidad: nuevoStock });
                 }
 
-                // Generamos 1 SOLO registro de pedido en la BD con todos los productos juntos
                 await addDoc(collection(db, "pedidos"), {
                     nombre: "Venta Paquete de Stock",
                     detalle: detallesArray.join(" | "),
@@ -1909,8 +1993,6 @@
                 renderizarCarritoStock();
                 cerrarModalCobrarPaquete();
                 cargarAdminStock();
-                
-                // Como ya se vendió, refrescamos la caja por si estás monitoreándola
                 calcularEstadisticasCaja(); 
 
             } catch(e) {
@@ -1919,11 +2001,9 @@
             }
         }
 
-
         // ==========================================
         // FUNCIONES GENERALES DEL SISTEMA
         // ==========================================
-
         async function inicializarCategoriasNube() {
             try {
                 const qs = await getDocs(collection(db, "categorias"));
@@ -2286,10 +2366,6 @@
             } else { await guardarFin(null); }
         }
 
-        // ===============================================
-        //  EL RESTO DE LAS FUNCIONES ADMINISTRATIVAS 
-        // ===============================================
-        
         async function cargarAdminStock() {
             const tbody = document.getElementById('admin-tabla-stock-body');
             if (!tbody) return;
@@ -2312,7 +2388,6 @@
                         totalInversion += (cant * comp);
                         totalVentaEst += (cant * vent);
 
-                        // NOTA EL BOTÓN AÑADIR A PAQUETE EN LA QUINTA COLUMNA
                         tbody.innerHTML += `
                             <tr>
                                 <td style="font-weight:700;">${s.nombre}</td>
