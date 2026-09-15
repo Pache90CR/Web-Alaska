@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title id="page-title">Bar Restaurante Alaska - Menú Digital y Lealtad</title>
+    
+    <meta name="theme-color" content="#d4af37">
+    
+    <!-- Chart.js para gráficas financieras -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Hoja de estilos separada -->
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+    <div id="toast-notification">
+        <span id="toast-msg">Mensaje</span>
+    </div>
+
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="cerrarSidebar()"></div>
+    <div id="sidebar-drawer" class="sidebar-drawer">
+        <div class="sidebar-top-brand">
+            <div class="sidebar-brand-info">
+                <h3 id="sidebar-brand-title">Bar Alaska</h3>
+                <span>Admin Panel</span>
+            </div>
+            <button class="sidebar-close-btn" onclick="cerrarSidebar()">✕</button>
+        </div>
+        
+        <div class="sidebar-menu-scroll">
+            <div class="sidebar-section-title">Operación</div>
+            <a href="#" class="sidebar-item active" onclick="seleccionarSeccionAdmin('pedidos')"><span>Pedidos en Vivo</span></a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('deudas')"><span>Cuentas por Cobrar (Fiados)</span></a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('historial')"><span>Historial de Pedidos</span></a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('ranking')"><span>Ranking de Platos</span></a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('platos')"><span>Gestión de Platos</span></a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('stock')"><span>Control de Stock (Ventas)</span></a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('caja')"><span>Cierre de Caja y Cuadre</span></a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('analisis')"><span>Análisis Mensual</span></a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('categorias')"><span>Gestión de Categorías</span></a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('nuevo-plato')"><span>Registrar Ítem</span></a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('lealtad')"><span>Generador de Sellos</span></a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('clientes')"><span>Base de Clientes</span></a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('horarios')"><span>Horarios de Atención</span></a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('ajustes')"><span>Ajustes</span></a>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-status-pill" id="sidebar-status-pill-box">
+                <div class="status-dot" id="sidebar-status-dot"></div>
+                <span id="sidebar-status-text">VERIFICANDO...</span>
+            </div>
+            <button onclick="cambiarVista('menu'); cerrarSidebar();" class="action-pill" style="width:100%; justify-content:center; border:none; background:#252525;">Ver Menú Público</button>
+            <button onclick="cerrarSesionAdmin()" class="action-pill" style="width:100%; justify-content:center; border:none; background:#2a1a1a; color:#ff6b6b;">Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- VISTA MENÚ PÚBLICO -->
+        <div id="view-menu" class="view-section active-view">
+            <div class="store-header">
+                <img id="logo-display" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80" alt="Logo Negocio" class="store-logo" ondblclick="intentarAccesoAdmin()" title="Haz doble clic para abrir administración">
+                <h1 id="public-title-display">Bar Restaurante Alaska</h1>
+                <p id="public-subtitle-display">Descubre nuestras deliciosas opciones y gana premios</p>
+                
+                <div class="tiempo-estimado-banner" id="banner-tiempo-estimado">
+                    Tiempo estimado de preparación: <strong>20-30 min</strong>
+                </div>
+
+                <div class="header-actions">
+                    <a href="#" class="action-pill" onclick="abrirLealtadModal(event)">Mi Tarjeta de Lealtad</a>
+                    <a href="#" class="action-pill" onclick="abrirSeguimientoModal(event)">Ver Estado de mi Pedido</a>
+                </div>
+            </div>
+
+            <div class="loyalty-banner">
+                <h3 style="margin:0; color:var(--color-principal); font-size:17px;">Club Bar Alaska</h3>
+                <div id="loyalty-counter-text" style="font-weight:800; font-size:15px; background:#111; padding:8px 16px; border-radius:12px; border:1px solid var(--border-color); color:white;">0 / 5 Sellos</div>
+                <p style="margin:0; font-size:12px; color:var(--text-muted);">Haz clic en el cuadro para introducir tu código y ganar tu sello</p>
+                <div class="stamps-grid" id="public-stamps-grid"></div>
+            </div>
+
+            <div class="search-box-container">
+                <input type="text" id="input-buscador-menu" class="search-input-main" placeholder="Buscar plato, boca o bebida..." oninput="filtrarMenuPorTexto(this.value)">
+            </div>
+
+            <div class="category-grid" id="category-container"></div>
+            <div id="menu-grid" class="menu-grid">
+                <p style="text-align:center; color:var(--text-muted);">Cargando menú...</p>
+            </div>
+        </div>
+
+        <!-- VISTA ADMIN -->
+        <div id="view-admin" class="view-section">
+            <div class="admin-top-bar">
+                <button class="btn-abrir-menu-admin" onclick="abrirSidebar()">Menú de Opciones</button>
+                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                    <select id="select-tiempo-admin" onchange="actualizarTiempoEstimadoNube(this.value)" style="padding:6px 12px; font-size:11px; background:#222; border-radius:8px; border:1px solid var(--border-color); color:var(--color-principal); cursor:pointer;">
+                        <option value="15-20 min">15-20 min</option>
+                        <option value="20-30 min" selected>20-30 min</option>
+                        <option value="30-45 min">30-45 min</option>
+                        <option value="45-60 min">45-60 min</option>
+                    </select>
+                    <button type="button" onclick="togglePausarPedidosOnline()" id="btn-pausa-online" class="action-pill" style="background:rgba(16,185,129,0.2); color:#10b981; border-color:#10b981; padding:6px 12px; font-size:11px;">Recibiendo Pedidos Online</button>
+                    <span style="font-size:12px; color:var(--text-muted);">Panel Admin</span>
+                </div>
+            </div>
+
+            <div class="admin-wrapper">
+                <div id="admin-tab-pedidos" class="admin-section-tab active-admin-tab">
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">Pedidos Recientes en Vivo</h2>
+                    <div id="admin-pedidos-container" style="max-height:500px; overflow-y:auto;"><p style="color:var(--text-muted); font-size:13px;">Cargando pedidos...</p></div>
+                </div>
+
+                <div id="admin-tab-deudas" class="admin-section-tab">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+                        <h2 style="margin:0; font-size:18px; color:var(--color-principal);">Cuentas por Cobrar (Fiados)</h2>
+                        <button type="button" onclick="abrirModalNuevaDeuda()" class="action-pill" style="background:var(--color-principal); color:#121212; border:none; padding:10px 16px; font-weight:bold;">Registrar Nueva Deuda</button>
+                    </div>
+                    <table class="admin-table">
+                        <thead><tr><th>Cliente</th><th>Teléfono</th><th>Fecha</th><th>Deuda (&#8353;)</th><th>Saldo (&#8353;)</th><th>Alerta</th><th>Acciones</th></tr></thead>
+                        <tbody id="admin-tabla-deudas-body"><tr><td colspan="7" style="text-align:center;">Cargando...</td></tr></tbody>
+                    </table>
+                </div>
+
+                <div id="admin-tab-historial" class="admin-section-tab">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+                        <h2 style="margin:0; font-size:18px; color:var(--color-principal);">Historial de Ventas</h2>
+                        <button type="button" onclick="descargarReporteCSV()" class="action-pill" style="background:var(--color-principal); color:#121212; border:none; padding:10px 16px; font-weight:bold;">Descargar Reporte CSV</button>
+                    </div>
+                    <div id="admin-historial-container" style="max-height:500px; overflow-y:auto;"><p>Cargando historial...</p></div>
+                </div>
+
+                <div id="admin-tab-ranking" class="admin-section-tab">
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">Ranking de Platos</h2>
+                    <table class="admin-table">
+                        <thead><tr><th>Pos</th><th>Plato</th><th>Vendidos</th><th>Ingresos (&#8353;)</th></tr></thead>
+                        <tbody id="admin-tabla-ranking-body"><tr><td colspan="4">Calculando...</td></tr></tbody>
+                    </table>
+                </div>
+
+                <div id="admin-tab-platos" class="admin-section-tab">
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">Gestión de Platos</h2>
+                    <table class="admin-table">
+                        <thead><tr><th>Img</th><th>Nombre</th><th>Categoría</th><th>Precio (&#8353;)</th><th>Estado</th><th>Acciones</th></tr></thead>
+                        <tbody id="admin-tabla-platos-body"><tr><td colspan="6">Cargando...</td></tr></tbody>
+                    </table>
+                </div>
+
+                <div id="admin-tab-stock" class="admin-section-tab">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                        <h2 style="margin:0; font-size:18px; color:var(--color-principal);">Control de Stock</h2>
+                        <button type="button" onclick="abrirModalNuevoStock()" class="action-pill" style="background:var(--color-principal); color:#121212; border:none; padding:10px 16px; font-weight:bold;">Registrar Stock</button>
+                    </div>
+                    <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:20px;">
+                        <div class="stat-card total"><div class="stat-title">Inversión</div><div class="stat-value" id="stock-stat-inversion">&#8353;0</div></div>
+                        <div class="stat-card visibles"><div class="stat-title">Venta Est.</div><div class="stat-value" id="stock-stat-venta">&#8353;0</div></div>
+                        <div class="stat-card oferta"><div class="stat-title">Ganancia</div><div class="stat-value" id="stock-stat-ganancia" style="color:#4ade80;">&#8353;0</div></div>
+                    </div>
+                    <div id="panel-carrito-stock" style="display:none; background:#181818; padding:15px; border:1px solid var(--color-principal); border-radius:12px; margin-bottom:20px;">
+                        <h3 style="margin:0 0 10px 0; color:white; font-size:15px;">Paquete de Venta</h3>
+                        <div id="lista-carrito-stock" style="margin-bottom:10px;"></div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #333; padding-top:10px;">
+                            <strong style="color:var(--color-principal); font-size:18px;" id="total-carrito-stock">&#8353;0</strong>
+                            <button class="btn-admin-action" onclick="abrirModalCobrarPaqueteStock()" style="width:auto; padding:10px 20px; background:#3b82f6; color:white;">Cobrar Paquete</button>
+                        </div>
+                    </div>
+                    <table class="admin-table">
+                        <thead><tr><th>Artículo</th><th>Stock</th><th>Compra (&#8353;)</th><th>Venta (&#8353;)</th><th>Acciones</th></tr></thead>
+                        <tbody id="admin-tabla-stock-body"><tr><td colspan="5">Cargando...</td></tr></tbody>
+                    </table>
+                </div>
+
+                <div id="admin-tab-caja" class="admin-section-tab">
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">Cierre de Caja</h2>
+                    <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:20px;">
+                        <div class="stat-card total"><div class="stat-title">Ingresos Hoy</div><div class="stat-value" id="stat-ingresos">&#8353;0</div></div>
+                        <div class="stat-card visibles"><div class="stat-title">Efectivo</div><div class="stat-value" id="stat-efectivo-sis" data-valor="0">&#8353;0</div></div>
+                        <div class="stat-card oferta"><div class="stat-title">Electrónico</div><div class="stat-value" id="stat-electronico-sis">&#8353;0</div></div>
+                    </div>
+                    <div style="background:#181818; padding:20px; border-radius:14px; border:1px solid var(--border-color); margin-bottom:20px;">
+                        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:15px;">
+                            <div class="form-group" style="flex:1; margin-bottom:0;"><label>Fondo Inicial (&#8353;):</label><input type="number" id="input-fondo-inicial" value="20000"></div>
+                            <div class="form-group" style="flex:1; margin-bottom:0;"><label>Efectivo Real (&#8353;):</label><input type="number" id="input-efectivo-fisico"></div>
+                        </div>
+                        <button type="button" class="btn-admin-action" onclick="ejecutarCuadreCaja()">Realizar Cuadre</button>
+                    </div>
+                    <div id="resultado-corte-container"></div>
+                </div>
+
+                <div id="admin-tab-analisis" class="admin-section-tab">
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">Análisis Mensual</h2>
+                    <div class="form-group" style="max-width: 250px; margin-bottom: 20px;">
+                        <label>Seleccionar Año:</label>
+                        <select id="select-ano-analisis" onchange="renderizarAnalisisMensual()"><option value="2026" selected>2026</option><option value="2025">2025</option></select>
+                    </div>
+                    <div style="background:#181818; padding:20px; border-radius:16px; border:1px solid var(--border-color); position: relative; height: 350px;">
+                        <canvas id="graficoVentasCompras"></canvas>
+                    </div>
+                </div>
+
+                <div id="admin-tab-categorias" class="admin-section-tab">
+                    <h2 style="margin:0; font-size:18px; color:var(--color-principal); margin-bottom:15px;">Categorías</h2>
+                    <table class="admin-table">
+                        <thead><tr><th>Categoría</th><th>Acción</th></tr></thead>
+                        <tbody id="admin-tabla-categorias-body"><tr><td colspan="2">Cargando...</td></tr></tbody>
+                    </table>
+                </div>
+
+                <div id="admin-tab-nuevo-plato" class="admin-section-tab">
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">Registrar Nuevo Ítem</h2>
+                    <form id="productForm">
+                        <div class="form-group"><label>Nombre:</label><input type="text" id="nombre" required></div>
+                        <div style="display:flex; gap:10px;">
+                            <div class="form-group" style="flex:1;"><label>Categoría:</label><select id="categoria"><option value="Bocas">Bocas</option><option value="Comidas Rápidas">Comidas Rápidas</option><option value="Arroces">Arroces</option><option value="Batidos">Batidos</option><option value="Casados">Casados</option><option value="Ofertas">Ofertas</option></select></div>
+                            <div class="form-group" style="flex:1;"><label>Precio (&#8353;):</label><input type="number" id="precio" required></div>
+                        </div>
+                        <div class="form-group"><label>Descripción:</label><input type="text" id="descripcion"></div>
+                        <div class="form-group"><label>Foto:</label><input type="file" id="imagenFile" accept="image/*"></div>
+                        <button type="submit" class="btn-admin-action">Guardar Ítem</button>
+                    </form>
+                </div>
+
+                <div id="admin-tab-lealtad" class="admin-section-tab">
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">Generador de Sello</h2>
+                    <div style="background:#181818; padding:18px; border-radius:14px; text-align:center;">
+                        <span id="codigo-activo-display" style="font-size:28px; font-weight:900; letter-spacing:4px; color:var(--color-principal); display:block; margin-bottom:15px;">----</span>
+                        <button type="button" class="btn-admin-action" onclick="generarNuevoCodigoSello()">Generar Código Nuevo</button>
+                    </div>
+                </div>
+
+                <div id="admin-tab-clientes" class="admin-section-tab">
+                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal);">Clientes</h2>
+                    <table class="admin-table">
+                        <thead><tr><th>Cliente</th><th>Teléfono</th><th>Sellos</th><th>Acción</th></tr></thead>
+                        <tbody id="admin-tabla-clientes-body"><tr><td colspan="4">Cargando...</td></tr></tbody>
+                    </table>
+                </div>
+
+                <div id="admin-tab-horarios" class="admin-section-tab">
+                    <h2 style="margin-top:0; font-size:20px; color:var(--text-main);">Horarios de Atención</h2>
+                    <div id="days-schedule-container"></div>
+                    <button type="button" class="btn-admin-action" onclick="guardarHorariosNube()" style="margin-top:10px;">Guardar Horarios</button>
+                </div>
+
+                <div id="admin-tab-ajustes" class="admin-section-tab">
+                    <h2 style="margin-top:0; font-size:20px; color:var(--text-main);">Ajustes</h2>
+                    <div class="settings-card">
+                        <h3>Configuración</h3>
+                        <div class="form-group"><label>Título Público</label><input type="text" id="input-titulo-publico"></div>
+                        <div class="form-group"><label>Subtítulo</label><input type="text" id="input-subtitulo-publico"></div>
+                        <div class="form-group"><label>Color Principal</label><input type="color" id="input-color-principal" value="#d4af37"></div>
+                    </div>
+                    <button type="button" class="btn-admin-action" onclick="guardarAjustesYConfiguracionNube()">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Archivos JavaScript separados -->
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/menu.js"></script>
+    <script type="module" src="js/admin.js"></script>
+</body>
+</html>
