@@ -16,9 +16,6 @@
         %22icons%22: [{%22src%22: %22https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=192&q=80%22, %22sizes%22: %22192x192%22, %22type%22: %22image/jpeg%22}]
     }">
 
-    <!-- Chart.js para gráficas financieras -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
         :root {
             --bg-dark: #121212;
@@ -303,28 +300,6 @@
         .day-header-flex h4 { margin: 0; font-size: 15px; color: white; }
         .checkbox-label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); cursor: pointer; }
 
-        .stats-cards-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 25px;
-        }
-        @media (min-width: 768px) {
-            .stats-cards-grid { grid-template-columns: repeat(3, 1fr); }
-        }
-        .stat-card {
-            background: #222;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 14px;
-            text-align: center;
-        }
-        .stat-card.total { border-left: 4px solid #3b82f6; }
-        .stat-card.visibles { border-left: 4px solid #10b981; }
-        .stat-card.oferta { border-left: 4px solid #8b5cf6; }
-        .stat-title { font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
-        .stat-value { font-size: 20px; font-weight: 900; color: white; }
-
         .admin-table {
             width: 100%;
             border-collapse: collapse;
@@ -380,10 +355,6 @@
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                 <span>Pedidos en Vivo</span>
             </a>
-            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('deudas')">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span>Cuentas por Cobrar (Fiados)</span>
-            </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('historial')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 <span>Historial de Pedidos</span>
@@ -395,18 +366,6 @@
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('platos')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2H3zm7 0v20M3 18h18v2H3v-2z"/></svg>
                 <span>Gestión de Platos</span>
-            </a>
-            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('stock')">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
-                <span>Control de Stock (Ventas)</span>
-            </a>
-            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('caja')">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span>Cierre de Caja y Cuadre</span>
-            </a>
-            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('analisis')">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg>
-                <span>Análisis Mensual (Ventas vs Compras)</span>
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('categorias')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
@@ -448,7 +407,6 @@
 
         <div id="view-menu" class="view-section active-view">
             <div class="store-header">
-                <!-- ACCESO ADMIN: DOBLE CLIC AQUÍ EN EL LOGO -->
                 <img id="logo-display" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80" alt="Logo Negocio" class="store-logo" ondblclick="intentarAccesoAdmin()" title="Haz doble clic para abrir administración">
                 
                 <h1 id="public-title-display">Bar Restaurante Alaska</h1>
@@ -519,26 +477,6 @@
                     </div>
                 </div>
 
-                <div id="admin-tab-deudas" class="admin-section-tab">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
-                        <div>
-                            <h2 style="margin:0; font-size:18px; color:var(--color-principal);">💳 Cuentas por Cobrar (Fiados y Crédito)</h2>
-                            <p style="font-size:13px; color:var(--text-muted); margin:2px 0 0 0;">Controla saldos pendientes, registra abonos y gestiona deudas.</p>
-                        </div>
-                        <button type="button" onclick="abrirModalNuevaDeuda()" class="action-pill" style="background:var(--color-principal); color:#121212; border:none; padding:10px 16px; font-weight:bold;">➕ Registrar Nueva Deuda</button>
-                    </div>
-                    <div style="overflow-x:auto;">
-                        <table class="admin-table">
-                            <thead>
-                                <tr><th>Cliente</th><th>Teléfono</th><th>Fecha Crédito</th><th>Deuda Total (₡)</th><th>Saldo Pendiente (₡)</th><th>Último Movimiento / Alerta</th><th>Acciones</th></tr>
-                            </thead>
-                            <tbody id="admin-tabla-deudas-body">
-                                <tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Cargando cuentas por cobrar...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
                 <div id="admin-tab-historial" class="admin-section-tab">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
                         <div>
@@ -578,93 +516,6 @@
                                 <tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Cargando platos...</td></tr>
                             </tbody>
                         </table>
-                    </div>
-                </div>
-
-                <div id="admin-tab-stock" class="admin-section-tab">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
-                        <div>
-                            <h2 style="margin:0; font-size:18px; color:var(--color-principal);">📦 Control de Stock (Ventas Rápidas)</h2>
-                            <p style="font-size:13px; color:var(--text-muted); margin:2px 0 0 0;">Agrega productos al paquete para vender varios de una vez.</p>
-                        </div>
-                        <button type="button" onclick="abrirModalNuevoStock()" class="action-pill" style="background:var(--color-principal); color:#121212; border:none; padding:10px 16px; font-weight:bold;">➕ Registrar Artículo Stock</button>
-                    </div>
-                    
-                    <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:20px;">
-                        <div class="stat-card total"><div class="stat-title">Inversión Stock</div><div class="stat-value" id="stock-stat-inversion">₡0</div></div>
-                        <div class="stat-card visibles"><div class="stat-title">Valor Venta Est.</div><div class="stat-value" id="stock-stat-venta">₡0</div></div>
-                        <div class="stat-card oferta"><div class="stat-title">Ganancia Est.</div><div class="stat-value" id="stock-stat-ganancia" style="color:#4ade80;">₡0</div></div>
-                    </div>
-
-                    <div id="panel-carrito-stock" style="display:none; background:#181818; padding:15px; border:1px solid var(--color-principal); border-radius:12px; margin-bottom:20px;">
-                        <h3 style="margin:0 0 10px 0; color:white; font-size:15px;">🛒 Paquete de Venta (Stock)</h3>
-                        <div id="lista-carrito-stock" style="margin-bottom:10px;"></div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #333; padding-top:10px;">
-                            <strong style="color:var(--color-principal); font-size:18px;" id="total-carrito-stock">₡0</strong>
-                            <button class="btn-admin-action" onclick="abrirModalCobrarPaqueteStock()" style="width:auto; padding:10px 20px; background:#3b82f6; color:white;">Cobrar Paquete</button>
-                        </div>
-                    </div>
-
-                    <div style="overflow-x:auto;">
-                        <table class="admin-table">
-                            <thead>
-                                <tr><th>Artículo</th><th>Stock</th><th>Compra (₡)</th><th>Venta (₡)</th><th>Acciones</th></tr>
-                            </thead>
-                            <tbody id="admin-tabla-stock-body">
-                                <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div id="admin-tab-caja" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">💰 Cierre de Caja y Cuadre Profesional</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Calcula ingresos por método de pago de HOY e introduce el conteo físico para realizar el cuadre exacto.</p>
-
-                    <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:20px;">
-                        <div class="stat-card total"><div class="stat-title">Ingresos Hoy</div><div class="stat-value" id="stat-ingresos">₡0</div></div>
-                        <div class="stat-card visibles"><div class="stat-title">Efectivo Sistema</div><div class="stat-value" id="stat-efectivo-sis" style="color:#3b82f6;" data-valor="0">₡0</div></div>
-                        <div class="stat-card oferta"><div class="stat-title">SINPE / Tarjeta</div><div class="stat-value" id="stat-electronico-sis" style="color:#8b5cf6;">₡0</div></div>
-                    </div>
-
-                    <div style="background:#181818; padding:20px; border-radius:14px; border:1px solid var(--border-color); margin-bottom:20px;">
-                        <h3 style="margin-top:0; font-size:15px; color:white; margin-bottom:12px;">📊 Asistente de Cuadre de Caja</h3>
-                        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:15px;">
-                            <div class="form-group" style="flex:1; min-width:200px; margin-bottom:0;">
-                                <label>Fondo Inicial (Caja Chica ₡):</label>
-                                <input type="number" id="input-fondo-inicial" placeholder="Ej. 20000" value="20000" step="0.01">
-                            </div>
-                            <div class="form-group" style="flex:1; min-width:200px; margin-bottom:0;">
-                                <label>Efectivo Real Contado en Caja (₡):</label>
-                                <input type="number" id="input-efectivo-fisico" placeholder="Ej. 45000" step="0.01">
-                            </div>
-                        </div>
-                        <button type="button" class="btn-admin-action" onclick="ejecutarCuadreCaja()">Realizar Cuadre Exacto</button>
-                    </div>
-
-                    <div id="resultado-corte-container"></div>
-                </div>
-
-                <div id="admin-tab-analisis" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:18px; color:var(--color-principal); margin-bottom:5px;">📈 Análisis Mensual: Ventas vs. Compras</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Evalúa tu rendimiento financiero mes a mes para identificar periodos de ganancia o pérdida.</p>
-
-                    <div class="form-group" style="max-width: 250px; margin-bottom: 20px;">
-                        <label>Seleccionar Año:</label>
-                        <select id="select-ano-analisis" onchange="renderizarAnalisisMensual()">
-                            <option value="2026" selected>2026</option>
-                            <option value="2025">2025</option>
-                        </select>
-                    </div>
-
-                    <div class="stats-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:25px;">
-                        <div class="stat-card total"><div class="stat-title">Ventas Anuales</div><div class="stat-value" id="analisis-stat-ventas">₡0</div></div>
-                        <div class="stat-card visibles"><div class="stat-title">Inversión Stock Actual</div><div class="stat-value" id="analisis-stat-compras" style="color:#ef4444;">₡0</div></div>
-                        <div class="stat-card oferta"><div class="stat-title">Ganancia Est.</div><div class="stat-value" id="analisis-stat-ganancia" style="color:#4ade80;">₡0</div></div>
-                    </div>
-
-                    <div style="background:#181818; padding:20px; border-radius:16px; border:1px solid var(--border-color); position: relative; height: 350px;">
-                        <canvas id="graficoVentasCompras"></canvas>
                     </div>
                 </div>
 
@@ -869,73 +720,6 @@
         </div>
     </div>
 
-    <!-- MODAL NUEVA DEUDA -->
-    <div id="modal-nueva-deuda" class="modal-overlay">
-        <div class="modal-content">
-            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-size:16px;">➕ Registrar Cuenta Fiada</h3>
-                <button onclick="cerrarModalNuevaDeuda()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Nombre del Cliente *</label>
-                    <input type="text" id="deuda-nombre" placeholder="Ej. Carlos Mora">
-                </div>
-                <div class="form-group">
-                    <label>Teléfono o WhatsApp *</label>
-                    <input type="text" id="deuda-telefono" placeholder="Ej. 88888888">
-                </div>
-                <div class="form-group">
-                    <label>Monto Total Deuda (₡) *</label>
-                    <input type="number" id="deuda-monto" placeholder="Ej. 15000" step="0.01">
-                </div>
-                <div class="form-group">
-                    <label>Descripción / Detalle (Opcional)</label>
-                    <input type="text" id="deuda-detalle" placeholder="Ej. Cervezas y bocas pendientes">
-                </div>
-            </div>
-            <div class="modal-footer" style="flex-direction:row;">
-                <button onclick="cerrarModalNuevaDeuda()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer; flex:1;">Cancelar</button>
-                <button onclick="guardarNuevaDeudaNube()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Guardar Deuda</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL NUEVO / EDITAR STOCK INTERNO -->
-    <div id="modal-stock-item" class="modal-overlay">
-        <div class="modal-content">
-            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 id="modal-stock-titulo" style="margin:0; font-size:16px;">📦 Registrar Artículo de Stock</h3>
-                <button onclick="cerrarModalStockItem()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="stock-edit-id">
-                <div class="form-group">
-                    <label>Nombre del Artículo *</label>
-                    <input type="text" id="stock-input-nombre" placeholder="Ej. Botella Guaro Cacique">
-                </div>
-                <div style="display:flex; gap:10px;">
-                    <div class="form-group" style="flex:1;">
-                        <label>Cantidad Inicial *</label>
-                        <input type="number" id="stock-input-cantidad" placeholder="Ej. 24" step="1">
-                    </div>
-                    <div class="form-group" style="flex:1;">
-                        <label>Precio Compra (₡) *</label>
-                        <input type="number" id="stock-input-compra" placeholder="Ej. 3500.50" step="0.01">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Precio Venta Est. (₡) *</label>
-                    <input type="number" id="stock-input-venta" placeholder="Ej. 5000.00" step="0.01">
-                </div>
-            </div>
-            <div class="modal-footer" style="flex-direction:row;">
-                <button onclick="cerrarModalStockItem()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer; flex:1;">Cancelar</button>
-                <button onclick="guardarStockItemNube()" style="flex:1; background:var(--color-principal); color:#121212; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Guardar Stock</button>
-            </div>
-        </div>
-    </div>
-
     <!-- MODAL CARRITO DE COMPRAS PÚBLICO -->
     <div id="modal-carrito" class="modal-overlay">
         <div class="modal-content">
@@ -945,31 +729,6 @@
             </div>
             <div class="modal-body" id="carrito-body-contenido"></div>
             <div class="modal-footer" id="carrito-footer-contenido"></div>
-        </div>
-    </div>
-
-    <!-- MODAL COBRAR PAQUETE STOCK -->
-    <div id="modal-cobrar-paquete" class="modal-overlay">
-        <div class="modal-content">
-            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-size:16px;">💰 Cobrar Paquete de Stock</h3>
-                <button onclick="cerrarModalCobrarPaquete()" style="background:none; border:none; font-size:18px; color:white; cursor:pointer;">✕</button>
-            </div>
-            <div class="modal-body">
-                <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Selecciona el método de pago para registrar esta venta.</p>
-                <div class="form-group">
-                    <label>Método de Pago:</label>
-                    <select id="paquete-metodo-pago">
-                        <option value="Efectivo">Efectivo</option>
-                        <option value="SINPE Móvil">SINPE Móvil</option>
-                        <option value="Datáfono">Datáfono (Tarjeta)</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer" style="flex-direction:row;">
-                <button onclick="cerrarModalCobrarPaquete()" style="background:#2a2a2a; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; cursor:pointer; flex:1;">Cancelar</button>
-                <button onclick="confirmarVentaPaqueteStock()" style="flex:1; background:#3b82f6; color:white; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer;">Confirmar Venta</button>
-            </div>
         </div>
     </div>
 
@@ -1144,7 +903,6 @@
         const categoriasDefault = ["Bocas", "Comidas Rápidas", "Arroces", "Batidos", "Casados", "Ofertas"];
         const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
         let variantesTemporales = [];
-        let carritoStock = [];
         
         let platoSeleccionadoParaPedir = null;
         let cantidadSeleccionadaModal = 1;
@@ -1152,7 +910,6 @@
         let adminAutenticado = false;
         let negocioAbiertoGlobal = true;
         let pedidosOnlinePausados = false;
-        let miGraficoFinanciero = null;
 
         let checkoutPaso = 1; 
         let pedidoTipoEntrega = "";
@@ -1169,9 +926,6 @@
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
 
-        // ==========================================
-        // CONTROL DE VISTAS Y ADMINISTRACIÓN (DOBLE CLIC)
-        // ==========================================
         window.intentarAccesoAdmin = function() {
             if (!adminAutenticado) {
                 let clave = prompt("Introduce la contraseña de administración:");
@@ -1234,9 +988,6 @@
             if (seccion === 'pedidos') {
                 document.getElementById('admin-tab-pedidos').classList.add('active-admin-tab');
                 cargarAdminPedidos();
-            } else if (seccion === 'deudas') {
-                document.getElementById('admin-tab-deudas').classList.add('active-admin-tab');
-                cargarAdminDeudas();
             } else if (seccion === 'historial') {
                 document.getElementById('admin-tab-historial').classList.add('active-admin-tab');
                 cargarAdminHistorial();
@@ -1246,15 +997,6 @@
             } else if (seccion === 'platos') {
                 document.getElementById('admin-tab-platos').classList.add('active-admin-tab');
                 cargarAdminPlatos();
-            } else if (seccion === 'stock') {
-                document.getElementById('admin-tab-stock').classList.add('active-admin-tab');
-                cargarAdminStock();
-            } else if (seccion === 'caja') {
-                document.getElementById('admin-tab-caja').classList.add('active-admin-tab');
-                calcularEstadisticasCaja();
-            } else if (seccion === 'analisis') {
-                document.getElementById('admin-tab-analisis').classList.add('active-admin-tab');
-                renderizarAnalisisMensual();
             } else if (seccion === 'categorias') {
                 document.getElementById('admin-tab-categorias').classList.add('active-admin-tab');
                 cargarAdminCategorias();
@@ -1497,7 +1239,7 @@
 
         window.agregarPlatoConExtrasAlCarrito = function() {
             if (!negocioAbiertoGlobal || pedidosOnlinePausados) {
-                mostrarToast("⚠️ El establecimiento no está recibiendo pedidos online.");
+                mostrarToast("⚠️ El establecimiento não está recibiendo pedidos online.");
                 return;
             }
             if (!platoSeleccionadoParaPedir) return;
@@ -1761,13 +1503,10 @@
             }
         }
 
-        // ==========================================
-        // CARGAR HISTORIAL DE PEDIDOS (CON BOTÓN ELIMINAR)
-        // ==========================================
         window.cargarAdminHistorial = async function() {
             const container = document.getElementById('admin-historial-container');
             if (!container) return;
-            container.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">Cargando historial de pedidos y paquetes cobrados...</p>`;
+            container.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">Cargando historial de pedidos...</p>`;
             
             try {
                 const q = query(collection(db, "pedidos"), limit(100));
@@ -1791,7 +1530,7 @@
                             <tr>
                                 <th>Fecha / Hora</th>
                                 <th>Tipo / Cliente</th>
-                                <th>Detalle del Pedido o Paquete</th>
+                                <th>Detalle del Pedido</th>
                                 <th>Método de Pago</th>
                                 <th>Total (₡)</th>
                                 <th>Acción</th>
@@ -1868,248 +1607,6 @@
             }
         }
 
-        // ==========================================
-        // CAJA Y ANÁLISIS
-        // ==========================================
-        window.calcularEstadisticasCaja = async function() {
-            try {
-                const qs = await getDocs(collection(db, "pedidos"));
-                let totalEfectivo = 0;
-                let totalElectronico = 0;
-                let hoy = new Date();
-
-                qs.forEach(d => {
-                    let p = d.data();
-                    if (p.estado === 'Entregado' && p.fecha) {
-                        let fechaDoc = new Date(p.fecha);
-                        if (fechaDoc.getDate() === hoy.getDate() && 
-                            fechaDoc.getMonth() === hoy.getMonth() && 
-                            fechaDoc.getFullYear() === hoy.getFullYear()) {
-                            
-                            let monto = Number(p.total || 0);
-                            if (p.metodoPago === 'Efectivo') totalEfectivo += monto;
-                            else totalElectronico += monto;
-                        }
-                    }
-                });
-
-                let totalIngresos = totalEfectivo + totalElectronico;
-                document.getElementById('stat-ingresos').textContent = `₡${totalIngresos.toLocaleString()}`;
-                document.getElementById('stat-efectivo-sis').textContent = `₡${totalEfectivo.toLocaleString()}`;
-                document.getElementById('stat-electronico-sis').textContent = `₡${totalElectronico.toLocaleString()}`;
-                document.getElementById('stat-efectivo-sis').setAttribute('data-valor', totalEfectivo);
-            } catch(e) {
-                console.error(e);
-                mostrarToast("Error al calcular la caja de hoy.");
-            }
-        }
-
-        window.ejecutarCuadreCaja = function() {
-            let fondo = Number(document.getElementById('input-fondo-inicial').value || 0);
-            let fisico = Number(document.getElementById('input-efectivo-fisico').value || 0);
-            let efectivoSistema = Number(document.getElementById('stat-efectivo-sis').getAttribute('data-valor') || 0);
-
-            let esperado = fondo + efectivoSistema;
-            let diferencia = fisico - esperado;
-
-            let divRes = document.getElementById('resultado-corte-container');
-            if (diferencia === 0) {
-                divRes.innerHTML = `<div style="background:rgba(16,185,129,0.2); border:1px solid #10b981; color:#10b981; padding:15px; border-radius:10px; text-align:center; font-weight:bold; font-size:15px;">✅ ¡Cuadre Exacto! Todo está en orden.</div>`;
-            } else if (diferencia > 0) {
-                divRes.innerHTML = `<div style="background:rgba(59,130,246,0.2); border:1px solid #3b82f6; color:#3b82f6; padding:15px; border-radius:10px; text-align:center; font-weight:bold; font-size:15px;">⚠️ Hay un SOBRANTE de ₡${Math.abs(diferencia).toLocaleString()} en caja física.</div>`;
-            } else {
-                divRes.innerHTML = `<div style="background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#ef4444; padding:15px; border-radius:10px; text-align:center; font-weight:bold; font-size:15px;">❌ Hay un FALTANTE de ₡${Math.abs(diferencia).toLocaleString()} en caja física.</div>`;
-            }
-        }
-
-        window.renderizarAnalisisMensual = async function() {
-            let anioSeleccionado = document.getElementById('select-ano-analisis').value;
-            let ventasMensuales = new Array(12).fill(0);
-            
-            try {
-                const qsPedidos = await getDocs(collection(db, "pedidos"));
-                qsPedidos.forEach(d => {
-                    let p = d.data();
-                    if (p.estado === 'Entregado' && p.fecha) {
-                        let fecha = new Date(p.fecha);
-                        if (fecha.getFullYear().toString() === anioSeleccionado) {
-                            let mes = fecha.getMonth();
-                            ventasMensuales[mes] += Number(p.total || 0);
-                        }
-                    }
-                });
-
-                let totalAnualVentas = ventasMensuales.reduce((a, b) => a + b, 0);
-                document.getElementById('analisis-stat-ventas').textContent = `₡${totalAnualVentas.toLocaleString()}`;
-
-                let inversionActual = 0;
-                const qsMenu = await getDocs(collection(db, "menu"));
-                qsMenu.forEach(d => {
-                    let s = d.data();
-                    if (s.categoria === 'Stock_Interno') {
-                        inversionActual += (Number(s.stockCantidad || 0) * Number(s.stockCompra || 0));
-                    }
-                });
-                
-                document.getElementById('analisis-stat-compras').textContent = `₡${inversionActual.toLocaleString()}`;
-                document.getElementById('analisis-stat-ganancia').textContent = `₡${(totalAnualVentas - inversionActual).toLocaleString()}`;
-
-                const ctx = document.getElementById('graficoVentasCompras').getContext('2d');
-                if (window.miGraficoFinanciero) {
-                    window.miGraficoFinanciero.destroy();
-                }
-                
-                window.miGraficoFinanciero = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-                        datasets: [
-                            {
-                                label: 'Ingresos por Ventas (₡)',
-                                data: ventasMensuales,
-                                backgroundColor: '#d4af37'
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { labels: { color: '#fff' } }
-                        },
-                        scales: {
-                            x: { ticks: { color: '#a0a0a0' }, grid: { color: '#333' } },
-                            y: { ticks: { color: '#a0a0a0' }, grid: { color: '#333' } }
-                        }
-                    }
-                });
-            } catch (e) {
-                console.error(e);
-                mostrarToast("Error al cargar análisis mensual.");
-            }
-        }
-
-        // ==========================================
-        // VENTA DE STOCK EN PAQUETE (CON CAMPO DIRECTO)
-        // ==========================================
-        window.agregarAlCarritoStock = function(id, nombre, precio, stockMax) {
-            if(stockMax <= 0) {
-                mostrarToast("⚠️ Ese artículo está agotado.");
-                return;
-            }
-            
-            let existente = carritoStock.find(item => item.id === id);
-            if (existente) {
-                if (existente.cantidad < stockMax) {
-                    existente.cantidad++;
-                    mostrarToast("✅ Añadida otra unidad al paquete.");
-                } else {
-                    mostrarToast("⚠️ Límite de stock alcanzado.");
-                }
-            } else {
-                carritoStock.push({ id, nombre, precio, max: stockMax, cantidad: 1 });
-                mostrarToast("✅ Artículo añadido al paquete.");
-            }
-            renderizarCarritoStock();
-        }
-
-        window.actualizarCantidadStockInput = function(idx, valorStr) {
-            let val = parseInt(valorStr);
-            let item = carritoStock[idx];
-            if (isNaN(val) || val < 1) {
-                item.cantidad = 1;
-            } else if (val > item.max) {
-                item.cantidad = item.max;
-                mostrarToast(`⚠️ El stock máximo disponible es ${item.max}.`);
-            } else {
-                item.cantidad = val;
-            }
-            renderizarCarritoStock();
-        }
-
-        window.renderizarCarritoStock = function() {
-            const panel = document.getElementById('panel-carrito-stock');
-            const lista = document.getElementById('lista-carrito-stock');
-            const totalText = document.getElementById('total-carrito-stock');
-            
-            if (carritoStock.length === 0) {
-                panel.style.display = 'none';
-                return;
-            }
-            
-            panel.style.display = 'block';
-            let html = '';
-            let suma = 0;
-            
-            carritoStock.forEach((item, idx) => {
-                let sub = item.precio * item.cantidad;
-                suma += sub;
-                html += `
-                    <div style="display:flex; justify-content:space-between; align-items:center; background:#222; padding:8px 12px; border-radius:8px; margin-bottom:6px; gap:10px;">
-                        <span style="color:white; font-size:14px; font-weight:bold; flex:1;">${item.nombre}</span>
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <input type="number" min="1" max="${item.max}" value="${item.cantidad}" oninput="actualizarCantidadStockInput(${idx}, this.value)" style="width:75px; padding:6px; text-align:center; font-weight:bold; font-size:14px; background:#121212; border:1px solid var(--border-color); border-radius:6px; color:white;">
-                            <button type="button" onclick="carritoStock.splice(${idx}, 1); renderizarCarritoStock();" style="background:rgba(239,68,68,0.2); color:#ef4444; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; cursor:pointer;" title="Quitar">✕</button>
-                        </div>
-                        <span style="color:var(--color-principal); font-size:14px; font-weight:bold; min-width:80px; text-align:right;">₡${sub.toLocaleString()}</span>
-                    </div>
-                `;
-            });
-            
-            lista.innerHTML = html;
-            totalText.textContent = `₡${suma.toLocaleString()}`;
-        }
-
-        window.abrirModalCobrarPaqueteStock = function() {
-            if(carritoStock.length === 0) return;
-            document.getElementById('modal-cobrar-paquete').style.display = 'flex';
-        }
-
-        window.cerrarModalCobrarPaquete = function() {
-            document.getElementById('modal-cobrar-paquete').style.display = 'none';
-        }
-
-        window.confirmarVentaPaqueteStock = async function() {
-            if (carritoStock.length === 0) return;
-            
-            const metodoPago = document.getElementById('paquete-metodo-pago').value;
-            let totalVenta = 0;
-            let detallesArray = [];
-
-            try {
-                for (let item of carritoStock) {
-                    totalVenta += (item.precio * item.cantidad);
-                    detallesArray.push(`${item.cantidad}x ${item.nombre}`);
-                    
-                    let nuevoStock = item.max - item.cantidad;
-                    await updateDoc(doc(db, "menu", item.id), { stockCantidad: nuevoStock });
-                }
-
-                await addDoc(collection(db, "pedidos"), {
-                    nombre: "Venta Paquete de Stock",
-                    detalle: detallesArray.join(" | "),
-                    total: totalVenta,
-                    estado: 'Entregado',
-                    metodoPago: metodoPago,
-                    fecha: new Date().toISOString()
-                });
-
-                mostrarToast(`✅ ¡Paquete vendido por ₡${totalVenta.toLocaleString()}!`);
-                carritoStock = [];
-                renderizarCarritoStock();
-                cerrarModalCobrarPaquete();
-                cargarAdminStock();
-                calcularEstadisticasCaja(); 
-
-            } catch(e) {
-                console.error(e);
-                mostrarToast("Error al procesar la venta en paquete.");
-            }
-        }
-
-        // ==========================================
-        // FUNCIONES GENERALES DEL SISTEMA
-        // ==========================================
         async function inicializarCategoriasNube() {
             try {
                 const qs = await getDocs(collection(db, "categorias"));
@@ -2470,117 +1967,6 @@
                 reader.readAsDataURL(fileInput.files[0]);
                 reader.onload = async function() { await guardarFin(reader.result); };
             } else { await guardarFin(null); }
-        }
-
-        async function cargarAdminStock() {
-            const tbody = document.getElementById('admin-tabla-stock-body');
-            if (!tbody) return;
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Cargando stock...</td></tr>`;
-            try {
-                const qs = await getDocs(collection(db, "menu"));
-                tbody.innerHTML = "";
-                let hayStock = false;
-                let totalInversion = 0;
-                let totalVentaEst = 0;
-
-                qs.forEach(d => {
-                    let s = { id: d.id, ...d.data() };
-                    if (s.categoria === 'Stock_Interno') {
-                        hayStock = true;
-                        let cant = Number(s.stockCantidad || 0);
-                        let comp = Number(s.stockCompra || 0);
-                        let vent = Number(s.precio || 0);
-
-                        totalInversion += (cant * comp);
-                        totalVentaEst += (cant * vent);
-
-                        tbody.innerHTML += `
-                            <tr>
-                                <td style="font-weight:700;">${s.nombre}</td>
-                                <td style="font-weight:800; color:var(--color-principal);">${cant} unids</td>
-                                <td>₡${comp.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                                <td>₡${vent.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                                <td>
-                                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                                        <button type="button" onclick="agregarAlCarritoStock('${s.id}', '${s.nombre.replace(/'/g,"\\'")}', ${vent}, ${cant})" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(59,130,246,0.2); color:#3b82f6; border-color:#3b82f6;">➕ Añadir a Paquete</button>
-                                        <button type="button" onclick="ajustarCantidadStock('${s.id}', ${cant}, 'aumentar')" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(16,185,129,0.2); color:#10b981; border-color:#10b981;">+ Stock</button>
-                                        <button type="button" onclick="ajustarMermaStock('${s.id}', ${cant})" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444;">- Merma</button>
-                                        <button type="button" onclick="abrirModalEditarStock('${s.id}')" class="action-pill" style="padding:4px 8px; font-size:11px;">Editar</button>
-                                        <button type="button" onclick="eliminarStockItem('${s.id}')" class="action-pill" style="padding:4px 8px; font-size:11px; background:#5c2222; color:#ff6b6b; border:none;">Eliminar</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
-                    }
-                });
-
-                document.getElementById('stock-stat-inversion').textContent = `₡${totalInversion.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                document.getElementById('stock-stat-venta').textContent = `₡${totalVentaEst.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                document.getElementById('stock-stat-ganancia').textContent = `₡${(totalVentaEst - totalInversion).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-
-                if (!hayStock) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No hay stock interno registrado.</td></tr>`;
-            } catch(e) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#ef4444;">Error al cargar stock.</td></tr>`; }
-        }
-
-        window.abrirModalEditarStock = async function(id) {
-            try {
-                const docSnap = await getDoc(doc(db, "menu", id));
-                if (docSnap.exists()) {
-                    let d = docSnap.data();
-                    document.getElementById('stock-edit-id').value = id;
-                    document.getElementById('stock-input-nombre').value = d.nombre || '';
-                    document.getElementById('stock-input-cantidad').value = d.stockCantidad || 0;
-                    document.getElementById('stock-input-compra').value = d.stockCompra || 0;
-                    document.getElementById('stock-input-venta').value = d.precio || 0;
-                    document.getElementById('modal-stock-titulo').textContent = "✏️ Editar Artículo de Stock";
-                    document.getElementById('modal-stock-item').style.display = 'flex';
-                }
-            } catch(e) {
-                mostrarToast("Error al cargar artículo.");
-            }
-        }
-
-        window.eliminarStockItem = async function(id) {
-            if (confirm("¿Estás seguro de eliminar este artículo del stock?")) {
-                try {
-                    await deleteDoc(doc(db, "menu", id));
-                    mostrarToast("Artículo eliminado.");
-                    cargarAdminStock();
-                } catch(e) {
-                    mostrarToast("Error al eliminar.");
-                }
-            }
-        }
-
-        window.ajustarCantidadStock = async function(idPlato, stockActual, tipoAccion) {
-            let cantidadStr = prompt("¿Cuántas unidades deseas AUMENTAR al stock?", "1");
-            if (!cantidadStr) return;
-            let cantidad = Number(cantidadStr);
-            if (isNaN(cantidad) || cantidad <= 0) { mostrarToast("Cantidad inválida."); return; }
-
-            let nuevoStock = stockActual + cantidad;
-            try {
-                await updateDoc(doc(db, "menu", idPlato), { stockCantidad: nuevoStock });
-                mostrarToast("✅ ¡Stock aumentado con éxito!");
-                cargarAdminStock();
-            } catch(e) { mostrarToast("Error al actualizar stock."); }
-        }
-
-        window.ajustarMermaStock = async function(idPlato, stockActual) {
-            let cantidadStr = prompt(`Stock actual: ${stockActual} unidades\n¿Cuántas unidades deseas descontar por MERMA o pérdida?`, "1");
-            if (!cantidadStr) return;
-            let cantidad = Number(cantidadStr);
-            if (isNaN(cantidad) || cantidad <= 0) { mostrarToast("Cantidad inválida."); return; }
-            if (cantidad > stockActual) { mostrarToast("⚠️ No puedes restar más de las unidades disponibles en stock."); return; }
-
-            let nuevoStock = stockActual - cantidad;
-            try {
-                await updateDoc(doc(db, "menu", idPlato), { stockCantidad: nuevoStock });
-                mostrarToast(`📉 Se descontaron ${cantidad} unids por merma correctamente.`);
-                cargarAdminStock();
-            } catch(e) {
-                mostrarToast("Error al registrar merma.");
-            }
         }
 
         cargarConfiguracionVisualNube();
