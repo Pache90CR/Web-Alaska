@@ -903,6 +903,7 @@
         const categoriasDefault = ["Bocas", "Comidas Rápidas", "Arroces", "Batidos", "Casados", "Ofertas"];
         const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
         let variantesTemporales = [];
+        let variantesEdicion = [];
         
         let platoSeleccionadoParaPedir = null;
         let cantidadSeleccionadaModal = 1;
@@ -1108,7 +1109,7 @@
 
         window.abrirModalDetallePlato = function(id) {
             if (!negocioAbiertoGlobal || pedidosOnlinePausados) {
-                mostrarToast("⚠️ El sistema de pedidos online no está disponible en este momento.");
+                mostrarToast("⚠️ El sistema de pedidos online não está disponible en este momento.");
                 return;
             }
             const plato = listaPlatos.find(p => p.id === id);
@@ -1165,7 +1166,26 @@
             if (checkboxes.length > 2) {
                 mostrarToast("⚠️ Solo puedes seleccionar un máximo de 2 acompañamientos.");
                 chk.checked = false;
+                return;
             }
+
+            // Cambiar imagen dinámicamente si el extra seleccionado tiene una foto asociada
+            const imgPlatoModal = document.getElementById('modal-detalle-img');
+            let ultimaFotoAsignada = null;
+
+            checkboxes.forEach(c => {
+                let fotoExtra = c.getAttribute('data-img');
+                if (fotoExtra && fotoExtra.trim() !== "") {
+                    ultimaFotoAsignada = fotoExtra;
+                }
+            });
+
+            if (ultimaFotoAsignada) {
+                imgPlatoModal.src = ultimaFotoAsignada;
+            } else if (platoSeleccionadoParaPedir) {
+                imgPlatoModal.src = platoSeleccionadoParaPedir.imagenUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
+            }
+
             actualizarPrecioTotalModal();
         }
 
@@ -1239,7 +1259,7 @@
 
         window.agregarPlatoConExtrasAlCarrito = function() {
             if (!negocioAbiertoGlobal || pedidosOnlinePausados) {
-                mostrarToast("⚠️ El establecimiento não está recibiendo pedidos online.");
+                mostrarToast("⚠️ El establecimiento no está recibiendo pedidos online.");
                 return;
             }
             if (!platoSeleccionadoParaPedir) return;
@@ -1503,20 +1523,54 @@
             }
         }
 
+        // ==========================================
+        // FUNCIONES DE ADMINISTRACIÓN RESTABLECIDAS
+        // ==========================================
+        window.cargarAdminPedidos = async function() {
+            const container = document.getElementById('admin-pedidos-container');
+            if (!container) return;
+            container.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">Cargando pedidos en vivo...</p>`;
+            try {
+                const qs = await getDocs(collection(db, "pedidos"));
+                let pedidos = [];
+                qs.forEach(d => pedidos.push({ id: d.id, ...d.data() }));
+                pedidos.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
+
+                if (pedidos.length === 0) {
+                    container.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">No hay pedidos en este momento.</p>`;
+                    return;
+                }
+
+                let html = `<div style="display:flex; flex-direction:column; gap:10px;">`;
+                pedidos.forEach(p => {
+                    let fecha = p.fecha ? new Date(p.fecha).toLocaleTimeString() : '';
+                    html += `
+                        <div style="background:#222; padding:12px; border-radius:10px; border:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <strong style="color:var(--color-principal);">${p.nombre || 'Cliente'}</strong> <span style="font-size:11px; color:var(--text-muted);">(${fecha})</span><br>
+                                <span style="font-size:13px; color:white;">${p.detalle}</span><br>
+                                <span style="font-size:12px; color:#4ade80;">Pago: ${p.metodoPago || 'Efectivo'} - Total: ₡${Number(p.total || 0).toLocaleString()}</span>
+                            </div>
+                            <button type="button" onclick="eliminarRegistroHistorial('${p.id}')" class="action-pill" style="background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444; font-size:11px;">Eliminar ✕</button>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                container.innerHTML = html;
+            } catch(e) {
+                container.innerHTML = `<p style="color:#ef4444; font-size:13px;">Error al cargar pedidos.</p>`;
+            }
+        }
+
         window.cargarAdminHistorial = async function() {
             const container = document.getElementById('admin-historial-container');
             if (!container) return;
-            container.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">Cargando historial de pedidos...</p>`;
-            
+            container.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">Cargando historial...</p>`;
             try {
                 const q = query(collection(db, "pedidos"), limit(100));
-                const querySnapshot = await getDocs(q);
-                
+                const qs = await getDocs(q);
                 let pedidos = [];
-                querySnapshot.forEach(d => {
-                    pedidos.push({ id: d.id, ...d.data() });
-                });
-
+                qs.forEach(d => pedidos.push({ id: d.id, ...d.data() }));
                 pedidos.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
 
                 if (pedidos.length === 0) {
@@ -1527,62 +1581,228 @@
                 let html = `
                     <table class="admin-table">
                         <thead>
-                            <tr>
-                                <th>Fecha / Hora</th>
-                                <th>Tipo / Cliente</th>
-                                <th>Detalle del Pedido</th>
-                                <th>Método de Pago</th>
-                                <th>Total (₡)</th>
-                                <th>Acción</th>
-                            </tr>
+                            <tr><th>Fecha / Hora</th><th>Tipo / Cliente</th><th>Detalle del Pedido</th><th>Método de Pago</th><th>Total (₡)</th><th>Acción</th></tr>
                         </thead>
                         <tbody>
                 `;
-
                 pedidos.forEach(p => {
-                    let fechaFormateada = p.fecha ? new Date(p.fecha).toLocaleString() : 'Fecha no registrada';
+                    let fecha = p.fecha ? new Date(p.fecha).toLocaleString() : '';
                     let esPaquete = p.nombre && p.nombre.includes("Paquete de Stock");
-                    let estiloFila = esPaquete ? `background: rgba(59, 130, 246, 0.08);` : '';
-                    
                     html += `
-                        <tr style="${estiloFila}">
-                            <td style="font-size:12px; color:var(--text-muted);">${fechaFormateada}</td>
+                        <tr style="${esPaquete ? 'background: rgba(59, 130, 246, 0.08);' : ''}">
+                            <td style="font-size:12px; color:var(--text-muted);">${fecha}</td>
                             <td><strong style="color:${esPaquete ? '#3b82f6' : 'white'};">${p.nombre || 'General'}</strong></td>
                             <td>${p.detalle || 'Sin detalle'}</td>
                             <td><span style="background:#222; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:bold; color:var(--color-principal);">${p.metodoPago || 'Efectivo'}</span></td>
                             <td><strong style="color:var(--color-principal);">₡${Number(p.total || 0).toLocaleString()}</strong></td>
-                            <td>
-                                <button type="button" onclick="eliminarRegistroHistorial('${p.id}')" class="action-pill" style="padding:4px 10px; font-size:11px; background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444;">Eliminar ✕</button>
-                            </td>
+                            <td><button type="button" onclick="eliminarRegistroHistorial('${p.id}')" class="action-pill" style="padding:4px 10px; font-size:11px; background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444;">Eliminar ✕</button></td>
                         </tr>
                     `;
                 });
-
                 html += `</tbody></table>`;
                 container.innerHTML = html;
             } catch(e) {
-                console.error(e);
-                container.innerHTML = `<p style="color:#ef4444; font-size:13px;">Error al cargar el historial. Revisa tu conexión a internet.</p>`;
+                container.innerHTML = `<p style="color:#ef4444; font-size:13px;">Error al cargar historial.</p>`;
             }
         }
 
         window.eliminarRegistroHistorial = async function(idPedido) {
-            if (confirm("¿Estás seguro de eliminar este registro del historial?")) {
+            if (confirm("¿Estás seguro de eliminar este registro?")) {
                 try {
                     await deleteDoc(doc(db, "pedidos", idPedido));
-                    mostrarToast("🗑️ Registro eliminado correctamente.");
+                    mostrarToast("🗑️ Registro eliminado.");
                     cargarAdminHistorial();
+                    cargarAdminPedidos();
                 } catch(e) {
-                    mostrarToast("Error al eliminar el registro.");
+                    mostrarToast("Error al eliminar.");
                 }
             }
+        }
+
+        window.cargarAdminRanking = async function() {
+            const tbody = document.getElementById('admin-tabla-ranking-body');
+            if (!tbody) return;
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Calculando ranking...</td></tr>`;
+            try {
+                let conteoPlatos = {};
+                const qs = await getDocs(collection(db, "pedidos"));
+                qs.forEach(d => {
+                    let p = d.data();
+                    let nombrePlato = p.detalle || 'Desconocido';
+                    if (!conteoPlatos[nombrePlato]) conteoPlatos[nombrePlato] = { cantidad: 0, ingresos: 0 };
+                    conteoPlatos[nombrePlato].cantidad += 1;
+                    conteoPlatos[nombrePlato].ingresos += Number(p.total || 0);
+                });
+
+                let arrayRanking = Object.keys(conteoPlatos).map(k => ({ nombre: k, ...conteoPlatos[k] }));
+                arrayRanking.sort((a, b) => b.cantidad - a.cantidad);
+
+                if (arrayRanking.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin datos de ventas para el ranking.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = "";
+                arrayRanking.forEach((r, idx) => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>#${idx + 1}</td>
+                            <td style="font-weight:bold;">${r.nombre}</td>
+                            <td>${r.cantidad} unids</td>
+                            <td style="color:var(--color-principal);">₡${r.ingresos.toLocaleString()}</td>
+                        </tr>
+                    `;
+                });
+            } catch(e) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;">Error al calcular ranking.</td></tr>`;
+            }
+        }
+
+        window.cargarAdminPlatos = async function() {
+            const tbody = document.getElementById('admin-tabla-platos-body');
+            if (!tbody) return;
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Cargando platos...</td></tr>`;
+            try {
+                const qs = await getDocs(collection(db, "menu"));
+                tbody.innerHTML = "";
+                qs.forEach(d => {
+                    let p = { id: d.id, ...d.data() };
+                    if (p.categoria !== 'Stock_Interno') {
+                        let img = p.imagenUrl ? `<img src="${p.imagenUrl}" style="width:35px; height:35px; object-fit:cover; border-radius:6px;">` : 'Sin foto';
+                        let estado = p.disponible !== false ? '<span style="color:#4ade80;">Disponible</span>' : '<span style="color:#ef4444;">Agotado</span>';
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>-</td>
+                                <td>${img}</td>
+                                <td style="font-weight:bold;">${p.nombre}</td>
+                                <td>${p.categoria}</td>
+                                <td>₡${Number(p.precio).toLocaleString()}</td>
+                                <td>${estado}</td>
+                                <td>
+                                    <button type="button" onclick="toggleDisponibilidadPlato('${p.id}', ${p.disponible !== false})" class="action-pill" style="padding:4px 8px; font-size:11px; margin-bottom:4px;">Cambiar Estado</button>
+                                    <button type="button" onclick="eliminarPlato('${p.id}')" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444;">Eliminar</button>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                });
+            } catch(e) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ef4444;">Error al cargar platos.</td></tr>`;
+            }
+        }
+
+        window.toggleDisponibilidadPlato = async function(id, estadoActual) {
+            try {
+                await updateDoc(doc(db, "menu", id), { disponible: !estadoActual });
+                mostrarToast("✅ Estado del plato actualizado.");
+                cargarAdminPlatos();
+                cargarMenu();
+            } catch(e) { mostrarToast("Error al actualizar estado."); }
+        }
+
+        window.eliminarPlato = async function(id) {
+            if (confirm("¿Estás seguro de eliminar este ítem del menú?")) {
+                try {
+                    await deleteDoc(doc(db, "menu", id));
+                    mostrarToast("🗑️ Plato eliminado.");
+                    cargarAdminPlatos();
+                    cargarMenu();
+                } catch(e) { mostrarToast("Error al eliminar."); }
+            }
+        }
+
+        window.cargarAdminCategorias = async function() {
+            const tbody = document.getElementById('admin-tabla-categorias-body');
+            if (!tbody) return;
+            tbody.innerHTML = "";
+            categoriasDefault.forEach(cat => {
+                let cData = categoriasNube[cat] || {};
+                let iconImg = cData.icono ? `<img src="${cData.icono}" style="width:25px; height:25px; object-fit:contain;">` : 'Sin icono';
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${iconImg}</td>
+                        <td style="font-weight:bold;">${cat}</td>
+                        <td><button type="button" onclick="abrirModalEditarCat('${cat}')" class="action-pill" style="padding:4px 10px; font-size:11px;">Editar Icono</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.abrirModalEditarCat = function(catNombre) {
+            document.getElementById('edit-cat-nombre').value = catNombre;
+            document.getElementById('modal-editar-categoria').style.display = 'flex';
+        }
+
+        window.cerrarModalEditarCat = function() {
+            document.getElementById('modal-editar-categoria').style.display = 'none';
+        }
+
+        window.guardarCategoriaEditadaNube = async function() {
+            let catNombre = document.getElementById('edit-cat-nombre').value;
+            let fileInput = document.getElementById('edit-cat-file');
+            if (!fileInput.files || !fileInput.files[0]) {
+                mostrarToast("Selecciona una imagen.");
+                return;
+            }
+            const reader = new FileReader();
+            reader.readAsDataURL(fileInput.files[0]);
+            reader.onload = async function() {
+                try {
+                    await setDoc(doc(db, "categorias", catNombre), { nombre: catNombre, visible: true, icono: reader.result }, { merge: true });
+                    mostrarToast("✅ Icono de categoría actualizado.");
+                    cerrarModalEditarCat();
+                    inicializarCategoriasNube();
+                } catch(e) { mostrarToast("Error al guardar icono."); }
+            };
+        }
+
+        window.cargarAdminClientes = async function() {
+            const tbody = document.getElementById('admin-tabla-clientes-body');
+            if (!tbody) return;
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando clientes...</td></tr>`;
+            try {
+                const qs = await getDocs(collection(db, "clientes"));
+                tbody.innerHTML = "";
+                let hayClientes = false;
+                qs.forEach(d => {
+                    hayClientes = true;
+                    let c = d.data();
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="font-weight:bold;">${c.nombre}</td>
+                            <td>${c.telefono}</td>
+                            <td style="color:var(--color-principal); font-weight:bold;">${c.sellos || 0} ⭐</td>
+                            <td><button type="button" onclick="eliminarCliente('${d.id}')" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444;">Eliminar</button></td>
+                        </tr>
+                    `;
+                });
+                if(!hayClientes) tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No hay clientes registrados.</td></tr>`;
+            } catch(e) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;">Error al cargar clientes.</td></tr>`; }
+        }
+
+        window.eliminarCliente = async function(id) {
+            if (confirm("¿Estás seguro de eliminar este cliente?")) {
+                try {
+                    await deleteDoc(doc(db, "clientes", id));
+                    mostrarToast("Cliente eliminado.");
+                    cargarAdminClientes();
+                } catch(e) { mostrarToast("Error al eliminar."); }
+            }
+        }
+
+        window.generarNuevoCodigoSello = async function() {
+            let codigoAleatorio = Math.floor(1000 + Math.random() * 9000).toString();
+            try {
+                await setDoc(doc(db, "configuracion", "selloActivo"), { codigo: codigoAleatorio });
+                document.getElementById('codigo-activo-display').textContent = codigoAleatorio;
+                mostrarToast("🔐 Nuevo código generado con éxito.");
+            } catch(e) { mostrarToast("Error al generar código."); }
         }
 
         window.descargarReporteCSV = async function() {
             try {
                 const qs = await getDocs(collection(db, "pedidos"));
                 let csvContent = "data:text/csv;charset=utf-8,ID,Fecha,Cliente,Detalle,MetodoPago,Total\n";
-                
                 qs.forEach(d => {
                     let p = d.data();
                     let fecha = p.fecha ? new Date(p.fecha).toLocaleString() : '';
@@ -1590,10 +1810,8 @@
                     let detalle = `"${(p.detalle || '').replace(/"/g, '""')}"`;
                     let pago = p.metodoPago || 'Efectivo';
                     let total = p.total || 0;
-                    
                     csvContent += `${d.id},"${fecha}",${cliente},${detalle},${pago},${total}\n`;
                 });
-
                 const encodedUri = encodeURI(csvContent);
                 const link = document.createElement("a");
                 link.setAttribute("href", encodedUri);
@@ -1602,9 +1820,72 @@
                 link.click();
                 document.body.removeChild(link);
                 mostrarToast("📥 Reporte descargado con éxito.");
-            } catch(e) {
-                mostrarToast("Error al generar el reporte CSV.");
-            }
+            } catch(e) { mostrarToast("Error al generar reporte."); }
+        }
+
+        // Formulario para registrar nuevo plato
+        const productForm = document.getElementById('productForm');
+        if (productForm) {
+            productForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const nombre = document.getElementById('nombre').value.trim();
+                const categoria = document.getElementById('categoria').value;
+                const precio = Number(document.getElementById('precio').value);
+                const descripcion = document.getElementById('descripcion').value.trim();
+                const imagenFile = document.getElementById('imagenFile');
+
+                const guardarPlatoFinal = async (imagenUrl) => {
+                    try {
+                        await addDoc(collection(db, "menu"), {
+                            nombre, categoria, precio, descripcion,
+                            imagenUrl: imagenUrl || "",
+                            variantes: variantesTemporales,
+                            disponible: true,
+                            ratingPromedio: 5.0,
+                            totalResenas: 0
+                        });
+                        mostrarToast("✅ ¡Plato registrado con éxito!");
+                        productForm.reset();
+                        variantesTemporales = [];
+                        document.getElementById('lista-variantes-temp').textContent = "Sin extras añadidos.";
+                        cargarMenu();
+                    } catch(e) { mostrarToast("Error al guardar plato."); }
+                };
+
+                if (imagenFile.files && imagenFile.files[0]) {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(imagenFile.files[0]);
+                    reader.onload = async function() { await guardarPlatoFinal(reader.result); };
+                } else { await guardarPlatoFinal(""); }
+            });
+        }
+
+        window.agregarVarianteTemporal = function() {
+            let nombre = document.getElementById('input-nombre-var').value.trim();
+            let precio = Number(document.getElementById('input-precio-var').value || 0);
+            let fileInput = document.getElementById('input-img-var');
+
+            if (!nombre) { mostrarToast("Introduce el nombre del extra."); return; }
+
+            const registrarVarConFoto = (fotoUrl) => {
+                variantesTemporales.push({ nombre, precio, imagenUrl: fotoUrl || "" });
+                document.getElementById('input-nombre-var').value = "";
+                document.getElementById('input-precio-var').value = "";
+                fileInput.value = "";
+                
+                let html = "";
+                variantesTemporales.forEach((v, idx) => {
+                    let fotoLabel = v.imagenUrl ? ' 📷[Foto]' : '';
+                    html += `<div>• ${v.nombre} (+₡${v.precio})${fotoLabel} <button type="button" onclick="variantesTemporales.splice(${idx},1); agregarVarianteTemporal();" style="color:red; background:none; border:none; cursor:pointer;">✕</button></div>`;
+                });
+                document.getElementById('lista-variantes-temp').innerHTML = html;
+            };
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.readAsDataURL(fileInput.files[0]);
+                reader.onload = function() { registrarVarConFoto(reader.result); };
+            } else { registrarVarConFoto(""); }
         }
 
         async function inicializarCategoriasNube() {
