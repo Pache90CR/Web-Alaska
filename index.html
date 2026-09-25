@@ -510,10 +510,10 @@
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
-                                <tr><th>Orden</th><th>Img</th><th>Nombre</th><th>Categoría</th><th>Precio (₡)</th><th>Estado</th><th>Acciones</th></tr>
+                                <tr><th>Img</th><th>Nombre</th><th>Categoría</th><th>Precio (₡)</th><th>Estado</th><th>Acciones</th></tr>
                             </thead>
                             <tbody id="admin-tabla-platos-body">
-                                <tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Cargando platos...</td></tr>
+                                <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Cargando platos...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -1109,7 +1109,7 @@
 
         window.abrirModalDetallePlato = function(id) {
             if (!negocioAbiertoGlobal || pedidosOnlinePausados) {
-                mostrarToast("⚠️ El sistema de pedidos online não está disponible en este momento.");
+                mostrarToast("⚠️ El sistema de pedidos online no está disponible en este momento.");
                 return;
             }
             const plato = listaPlatos.find(p => p.id === id);
@@ -1169,7 +1169,6 @@
                 return;
             }
 
-            // Cambiar imagen dinámicamente si el extra seleccionado tiene una foto asociada
             const imgPlatoModal = document.getElementById('modal-detalle-img');
             let ultimaFotoAsignada = null;
 
@@ -1524,7 +1523,7 @@
         }
 
         // ==========================================
-        // FUNCIONES DE ADMINISTRACIÓN RESTABLECIDAS
+        // FUNCIONES DE ADMINISTRACIÓN
         // ==========================================
         window.cargarAdminPedidos = async function() {
             const container = document.getElementById('admin-pedidos-container');
@@ -1661,7 +1660,7 @@
         window.cargarAdminPlatos = async function() {
             const tbody = document.getElementById('admin-tabla-platos-body');
             if (!tbody) return;
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Cargando platos...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Cargando platos...</td></tr>`;
             try {
                 const qs = await getDocs(collection(db, "menu"));
                 tbody.innerHTML = "";
@@ -1669,29 +1668,31 @@
                     let p = { id: d.id, ...d.data() };
                     if (p.categoria !== 'Stock_Interno') {
                         let img = p.imagenUrl ? `<img src="${p.imagenUrl}" style="width:35px; height:35px; object-fit:cover; border-radius:6px;">` : 'Sin foto';
-                        let estado = p.disponible !== false ? '<span style="color:#4ade80;">Disponible</span>' : '<span style="color:#ef4444;">Agotado</span>';
+                        let disponible = p.disponible !== false;
+                        let estadoEstilo = disponible ? 'color:#4ade80; cursor:pointer; font-weight:bold;' : 'color:#ef4444; cursor:pointer; font-weight:bold;';
+                        let estadoTexto = disponible ? 'Disponible' : 'Agotado';
+
                         tbody.innerHTML += `
                             <tr>
-                                <td>-</td>
                                 <td>${img}</td>
                                 <td style="font-weight:bold;">${p.nombre}</td>
                                 <td>${p.categoria}</td>
                                 <td>₡${Number(p.precio).toLocaleString()}</td>
-                                <td>${estado}</td>
+                                <td><span style="${estadoEstilo}" onclick="cambiarDisponibilidadPlato('${p.id}', ${disponible})" title="Haz clic para cambiar estado">${estadoTexto}</span></td>
                                 <td>
-                                    <button type="button" onclick="toggleDisponibilidadPlato('${p.id}', ${p.disponible !== false})" class="action-pill" style="padding:4px 8px; font-size:11px; margin-bottom:4px;">Cambiar Estado</button>
-                                    <button type="button" onclick="eliminarPlato('${p.id}')" class="action-pill" style="padding:4px 8px; font-size:11px; background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444;">Eliminar</button>
+                                    <button type="button" onclick="abrirModalEditarPlato('${p.id}')" class="action-pill" style="padding:4px 10px; font-size:11px; margin-bottom:4px; display:inline-block;">✏️ Editar</button>
+                                    <button type="button" onclick="eliminarPlato('${p.id}')" class="action-pill" style="padding:4px 10px; font-size:11px; background:rgba(239,68,68,0.2); color:#ef4444; border-color:#ef4444; display:inline-block;">Eliminar</button>
                                 </td>
                             </tr>
                         `;
                     }
                 });
             } catch(e) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ef4444;">Error al cargar platos.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#ef4444;">Error al cargar platos.</td></tr>`;
             }
         }
 
-        window.toggleDisponibilidadPlato = async function(id, estadoActual) {
+        window.cambiarDisponibilidadPlato = async function(id, estadoActual) {
             try {
                 await updateDoc(doc(db, "menu", id), { disponible: !estadoActual });
                 mostrarToast("✅ Estado del plato actualizado.");
@@ -1708,6 +1709,110 @@
                     cargarAdminPlatos();
                     cargarMenu();
                 } catch(e) { mostrarToast("Error al eliminar."); }
+            }
+        }
+
+        window.abrirModalEditarPlato = function(id) {
+            const plato = listaPlatos.find(p => p.id === id);
+            if (!plato) return;
+
+            document.getElementById('edit-plato-id').value = plato.id;
+            document.getElementById('edit-plato-nombre').value = plato.nombre || '';
+            document.getElementById('edit-plato-categoria').value = plato.categoria || 'Bocas';
+            document.getElementById('edit-plato-precio').value = plato.precio || 0;
+            document.getElementById('edit-plato-desc').value = plato.descripcion || '';
+            document.getElementById('edit-plato-file').value = '';
+
+            variantesEdicion = plato.variantes ? JSON.parse(JSON.stringify(plato.variantes)) : [];
+            renderizarVariantesEdicion();
+
+            document.getElementById('modal-editar-plato').style.display = 'flex';
+        }
+
+        window.cerrarModalEditarPlato = function() {
+            document.getElementById('modal-editar-plato').style.display = 'none';
+        }
+
+        window.agregarVarianteEdicion = function() {
+            let nombre = document.getElementById('edit-input-nombre-var').value.trim();
+            let precio = Number(document.getElementById('edit-input-precio-var').value || 0);
+            let fileInput = document.getElementById('edit-input-img-var');
+
+            if (!nombre) { mostrarToast("Introduce el nombre del extra."); return; }
+
+            const registrarConFoto = (fotoUrl) => {
+                variantesEdicion.push({ nombre, precio, imagenUrl: fotoUrl || "", agotado: false });
+                document.getElementById('edit-input-nombre-var').value = "";
+                document.getElementById('edit-input-precio-var').value = "";
+                fileInput.value = "";
+                renderizarVariantesEdicion();
+            };
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.readAsDataURL(fileInput.files[0]);
+                reader.onload = function() { registrarConFoto(reader.result); };
+            } else { registrarConFoto(""); }
+        }
+
+        window.renderizarVariantesEdicion = function() {
+            let html = "";
+            if (variantesEdicion.length === 0) {
+                document.getElementById('edit-lista-variantes').innerHTML = "Sin extras añadidos.";
+                return;
+            }
+            variantesEdicion.forEach((v, idx) => {
+                let fotoTxt = v.imagenUrl ? ' 📷[Foto]' : '';
+                let estadoAgotado = v.agotado ? ' [Agotado]' : '';
+                let colorEstado = v.agotado ? 'color: #ef4444;' : 'color: #4ade80;';
+                html += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#181818; padding:6px 10px; border-radius:6px; margin-bottom:4px;">
+                        <span>• ${v.nombre} (+₡${v.precio})${fotoTxt} <strong style="${colorEstado}">${estadoAgotado}</strong></span>
+                        <div style="display:flex; gap:6px;">
+                            <button type="button" onclick="toggleAgotadoVariante(${idx})" class="action-pill" style="padding:2px 6px; font-size:10px;">Cambiar Estado</button>
+                            <button type="button" onclick="variantesEdicion.splice(${idx},1); renderizarVariantesEdicion();" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">✕</button>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('edit-lista-variantes').innerHTML = html;
+        }
+
+        window.toggleAgotadoVariante = function(idx) {
+            variantesEdicion[idx].agotado = !variantesEdicion[idx].agotado;
+            renderizarVariantesEdicion();
+        }
+
+        window.guardarPlatoEditado = async function() {
+            let id = document.getElementById('edit-plato-id').value;
+            let nombre = document.getElementById('edit-plato-nombre').value.trim();
+            let categoria = document.getElementById('edit-plato-categoria').value;
+            let precio = Number(document.getElementById('edit-plato-precio').value);
+            let descripcion = document.getElementById('edit-plato-desc').value.trim();
+            let fileInput = document.getElementById('edit-plato-file');
+
+            const platoAnterior = listaPlatos.find(p => p.id === id) || {};
+
+            const ejecutarGuardadoFinal = async (urlImagenFinal) => {
+                try {
+                    await updateDoc(doc(db, "menu", id), {
+                        nombre, categoria, precio, descripcion,
+                        variantes: variantesEdicion,
+                        imagenUrl: urlImagenFinal
+                    });
+                    mostrarToast("✅ ¡Plato actualizado con éxito!");
+                    cerrarModalEditarPlato();
+                    cargarAdminPlatos();
+                    cargarMenu();
+                } catch(e) { mostrarToast("Error al guardar cambios."); }
+            };
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.readAsDataURL(fileInput.files[0]);
+                reader.onload = async function() { await ejecutarGuardadoFinal(reader.result); };
+            } else {
+                await ejecutarGuardadoFinal(platoAnterior.imagenUrl || "");
             }
         }
 
@@ -1868,7 +1973,7 @@
             if (!nombre) { mostrarToast("Introduce el nombre del extra."); return; }
 
             const registrarVarConFoto = (fotoUrl) => {
-                variantesTemporales.push({ nombre, precio, imagenUrl: fotoUrl || "" });
+                variantesTemporales.push({ nombre, precio, imagenUrl: fotoUrl || "", agotado: false });
                 document.getElementById('input-nombre-var').value = "";
                 document.getElementById('input-precio-var').value = "";
                 fileInput.value = "";
