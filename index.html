@@ -230,9 +230,6 @@
         .cart-icon-btn:hover { transform: scale(1.08); }
         .cart-count-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; font-size: 11px; padding: 2px 7px; border-radius: 12px; font-weight: 800; border: 2px solid var(--card-bg); }
 
-        /* ==========================================
-           ESTILOS EJECUTIVOS PARA EL PANEL ADMIN
-           ========================================== */
         .admin-top-bar { 
             display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; 
             background: linear-gradient(145deg, #181a1f 0%, #13151a 100%); 
@@ -415,7 +412,7 @@
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('ranking')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                <span>Ranking de Platos ⭐</span>
+                <span>Ranking de Platos</span>
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('platos')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2H3zm7 0v20M3 18h18v2H3v-2z"/></svg>
@@ -452,8 +449,8 @@
                 <div class="status-dot" id="sidebar-status-dot"></div>
                 <span id="sidebar-status-text">VERIFICANDO...</span>
             </div>
-            <button onclick="cambiarVista('menu'); cerrarSidebar();" class="action-pill" style="width:100%; justify-content:center; border:none; background:#1b1e26; color:var(--text-main);">📋 Ver Menú Público</button>
-            <button onclick="cerrarSesionAdmin()" class="action-pill" style="width:100%; justify-content:center; border:none; background:rgba(239, 68, 68, 0.12); color:#f87171;">🚪 Cerrar Sesión</button>
+            <button onclick="cambiarVista('menu'); cerrarSidebar();" class="action-pill" style="width:100%; justify-content:center; border:none; background:#1b1e26; color:var(--text-main);">Ver Menú Público</button>
+            <button onclick="cerrarSesionAdmin()" class="action-pill" style="width:100%; justify-content:center; border:none; background:rgba(239, 68, 68, 0.12); color:#f87171;">Cerrar Sesión</button>
         </div>
     </div>
 
@@ -467,7 +464,7 @@
                 <p id="public-subtitle-display">Descubre nuestras deliciosas opciones y gana premios</p>
                 
                 <div class="tiempo-estimado-banner" id="banner-tiempo-estimado">
-                    ⏳ Tiempo estimado de preparación: <strong>20-30 min</strong>
+                    Tiempo estimado de preparación: <strong>20-30 min</strong>
                 </div>
 
                 <div class="header-actions">
@@ -488,12 +485,12 @@
                     Club Bar Alaska
                 </h3>
                 <div id="loyalty-counter-text" style="font-weight:800; font-size:15px; background:#111; padding:8px 18px; border-radius:12px; border:1px solid var(--border-color); color:white;">0 / 5 Sellos</div>
-                <p style="margin:0; font-size:12px; color:var(--text-muted); line-height: 1.4;">¡Haz clic en el siguiente cuadro para introducir tu código y ganar tu sello!</p>
+                <p style="margin:0; font-size:12px; color:var(--text-muted); line-height: 1.4;">Haz clic en el siguiente cuadro para introducir tu código y ganar tu sello</p>
                 <div class="stamps-grid" id="public-stamps-grid"></div>
             </div>
 
             <div class="search-box-container">
-                <input type="text" id="input-buscador-menu" class="search-input-main" placeholder="🔍 Buscar plato, boca o bebida..." oninput="filtrarMenuPorTexto(this.value)">
+                <input type="text" id="input-buscador-menu" class="search-input-main" placeholder="Buscar plato, boca o bebida..." oninput="filtrarMenuPorTexto(this.value)">
             </div>
 
             <div class="category-grid" id="category-container"></div>
@@ -511,12 +508,12 @@
                 </button>
                 <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
                     <select id="select-tiempo-admin" onchange="actualizarTiempoEstimadoNube(this.value)" style="padding:8px 14px; font-size:12px; background:#121419; border-radius:10px; border:1px solid var(--border-color); color:var(--color-principal); cursor:pointer; font-weight:600;">
-                        <option value="15-20 min">⏱️ 15-20 min (Rápido)</option>
-                        <option value="20-30 min" selected>⏱️ 20-30 min (Normal)</option>
-                        <option value="30-45 min">⏱️ 30-45 min (Ocupado)</option>
-                        <option value="45-60 min">⏱️ 45-60 min (Alta Demanda)</option>
+                        <option value="15-20 min">15-20 min (Rápido)</option>
+                        <option value="20-30 min" selected>20-30 min (Normal)</option>
+                        <option value="30-45 min">30-45 min (Ocupado)</option>
+                        <option value="45-60 min">45-60 min (Alta Demanda)</option>
                     </select>
-                    <button type="button" onclick="togglePausarPedidosOnline()" id="btn-pausa-online" class="action-pill" style="background:rgba(16,185,129,0.15); color:#4ade80; border-color:rgba(16,185,129,0.3); padding:8px 14px; font-size:12px;">🟢 Recibiendo Pedidos Online</button>
+                    <button type="button" onclick="togglePausarPedidosOnline()" id="btn-pausa-online" class="action-pill" style="background:rgba(16,185,129,0.15); color:#4ade80; border-color:rgba(16,185,129,0.3); padding:8px 14px; font-size:12px;">Recibiendo Pedidos Online</button>
                     <span style="font-size:13px; color:var(--text-muted); font-weight:600;">Panel Ejecutivo</span>
                 </div>
             </div>
@@ -524,7 +521,7 @@
             <div class="admin-wrapper">
                 
                 <div id="admin-tab-pedidos" class="admin-section-tab active-admin-tab">
-                    <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; letter-spacing:-0.3px;">📦 Pedidos Recientes en Vivo</h2>
+                    <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; letter-spacing:-0.3px;">Pedidos Recientes en Vivo</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Monitorea órdenes activas en tiempo real, actualiza su estado o elimínalas.</p>
                     <div id="admin-pedidos-container" style="max-height:550px; overflow-y:auto; display:flex; flex-direction:column; gap:12px;">
                         <p style="color:var(--text-muted); font-size:13px;">Cargando pedidos...</p>
@@ -534,10 +531,10 @@
                 <div id="admin-tab-historial" class="admin-section-tab">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:14px;">
                         <div>
-                            <h2 style="margin:0; font-size:20px; color:var(--color-principal); font-weight:800; letter-spacing:-0.3px;">📜 Historial y Reporte de Ventas</h2>
+                            <h2 style="margin:0; font-size:20px; color:var(--color-principal); font-weight:800; letter-spacing:-0.3px;">Historial y Reporte de Ventas</h2>
                             <p style="font-size:13px; color:var(--text-muted); margin:4px 0 0 0;">Registro detallado de órdenes y exportación contable.</p>
                         </div>
-                        <button type="button" onclick="descargarReporteCSV()" class="action-pill" style="background:var(--color-principal); color:#121212; border:none; padding:11px 20px; font-weight:800; box-shadow: 0 4px 15px rgba(212,175,55,0.3);">📥 Descargar Reporte CSV (Excel)</button>
+                        <button type="button" onclick="descargarReporteCSV()" class="action-pill" style="background:var(--color-principal); color:#121212; border:none; padding:11px 20px; font-weight:800; box-shadow: 0 4px 15px rgba(212,175,55,0.3);">Descargar Reporte CSV</button>
                     </div>
                     <div id="admin-historial-container" style="max-height:550px; overflow-y:auto;">
                         <p style="color:var(--text-muted); font-size:13px;">Cargando historial...</p>
@@ -545,7 +542,7 @@
                 </div>
 
                 <div id="admin-tab-ranking" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:6px;">⭐ Ranking de Platos Más Pedidos</h2>
+                    <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:6px;">Ranking de Platos Más Pedidos</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Descubre cuáles son los productos estrella del menú según el volumen de ventas.</p>
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
@@ -560,7 +557,7 @@
                 </div>
 
                 <div id="admin-tab-platos" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:20px;">🍽️ Gestión de Platos</h2>
+                    <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:20px;">Gestión de Platos</h2>
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
@@ -574,7 +571,7 @@
                 </div>
 
                 <div id="admin-tab-categorias" class="admin-section-tab">
-                    <h2 style="margin:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:20px;">📁 Gestión de Categorías e Iconos</h2>
+                    <h2 style="margin:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:20px;">Gestión de Categorías e Iconos</h2>
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
@@ -588,7 +585,7 @@
                 </div>
 
                 <div id="admin-tab-nuevo-plato" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:20px;">➕ Registrar Nuevo Ítem del Menú</h2>
+                    <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:20px;">Registrar Nuevo Ítem del Menú</h2>
                     <form id="productForm">
                         <div class="form-group">
                             <label>Nombre del Ítem:</label>
@@ -623,7 +620,7 @@
                                 <input type="text" id="input-nombre-var" placeholder="Ej. Papas Gajo" style="flex:2;">
                                 <input type="number" id="input-precio-var" placeholder="₡ Extra" style="flex:1;" step="0.01">
                                 <label style="cursor:pointer; background:#22252e; border:1px solid var(--border-color); padding:0 14px; height:46px; border-radius:10px; display:flex; align-items:center; justify-content:center;" title="Añadir foto a esta variante">
-                                    📷 <input type="file" id="input-img-var" accept="image/*" style="display:none;">
+                                    <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Foto</span> <input type="file" id="input-img-var" accept="image/*" style="display:none;">
                                 </label>
                                 <button type="button" onclick="agregarVarianteTemporal()" style="background:var(--color-principal); color:#121212; border:none; padding:0 18px; border-radius:10px; font-weight:bold; cursor:pointer; height:46px;">+</button>
                             </div>
@@ -639,7 +636,7 @@
                 </div>
 
                 <div id="admin-tab-lealtad" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:6px;">🔐 Generador de Sello (Un Solo Uso)</h2>
+                    <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:6px;">Generador de Sello (Un Solo Uso)</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Genera un código seguro para validar el sello de fidelidad del cliente.</p>
                     <div style="background:#13151a; padding:28px; border-radius:18px; border:1px solid var(--border-color); text-align:center; box-shadow: 0 8px 25px rgba(0,0,0,0.3);">
                         <span id="codigo-activo-display" style="font-size:36px; font-weight:900; letter-spacing:6px; color:var(--color-principal); display:block; margin-bottom:20px; text-shadow: 0 0 20px rgba(212,175,55,0.3);">----</span>
@@ -648,12 +645,12 @@
                 </div>
 
                 <div id="admin-tab-clientes" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:6px;">👥 Base de Clientes</h2>
+                    <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:6px;">Base de Clientes</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Listado de clientes registrados en el Club de Lealtad.</p>
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
-                                <tr><th>Cliente</th><th>Teléfono</th><th>Sellos ⭐</th><th>Acción</th></tr>
+                                <tr><th>Cliente</th><th>Teléfono</th><th>Sellos</th><th>Acción</th></tr>
                             </thead>
                             <tbody id="admin-tabla-clientes-body">
                                 <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando clientes...</td></tr>
@@ -751,7 +748,7 @@
                 </div>
 
                 <div style="background:#121419; padding:16px; border-radius:14px; margin-top:16px; border:1px solid var(--border-color);">
-                    <label style="color:var(--color-principal); font-weight:700; margin-bottom:8px;">⭐ Califica este plato:</label>
+                    <label style="color:var(--color-principal); font-weight:700; margin-bottom:8px;">Califica este plato:</label>
                     <div style="display:flex; gap:10px; font-size:24px; cursor:pointer; margin-bottom:12px;" id="selector-estrellas-modal">
                         <span onclick="seleccionarEstrellasCalificacion(1)" id="star-1">★</span>
                         <span onclick="seleccionarEstrellasCalificacion(2)" id="star-2">★</span>
@@ -760,7 +757,7 @@
                         <span onclick="seleccionarEstrellasCalificacion(5)" id="star-5">★</span>
                     </div>
                     <input type="text" id="input-comentario-resena" placeholder="Escribe un comentario breve (opcional)..." style="font-size:12px; margin-bottom:10px;">
-                    <button type="button" onclick="enviarCalificacionPlato()" class="action-pill" style="width:100%; justify-content:center; background:rgba(212,175,55,0.15); border-color:var(--color-principal); color:var(--color-principal); font-weight:700;">Enviar Calificación ⭐</button>
+                    <button type="button" onclick="enviarCalificacionPlato()" class="action-pill" style="width:100%; justify-content:center; background:rgba(212,175,55,0.15); border-color:var(--color-principal); color:var(--color-principal); font-weight:700;">Enviar Calificación</button>
                 </div>
 
                 <div style="display:flex; align-items:center; justify-content:space-between; background:#121419; padding:14px; border-radius:12px; margin-top:16px; border:1px solid var(--border-color);">
@@ -774,7 +771,7 @@
             </div>
             <div class="modal-footer" style="display:flex; flex-direction:row; justify-content:space-between; align-items:center;">
                 <div id="modal-detalle-precio-total" style="font-size:20px; font-weight:800; color:var(--color-principal);">₡0</div>
-                <button onclick="agregarPlatoConExtrasAlCarrito()" class="btn-admin-action" id="btn-hacer-pedido" style="flex:1; margin-left:16px; padding:12px;">Agregar al Carrito 🛒</button>
+                <button onclick="agregarPlatoConExtrasAlCarrito()" class="btn-admin-action" id="btn-hacer-pedido" style="flex:1; margin-left:16px; padding:12px;">Agregar al Carrito</button>
             </div>
         </div>
     </div>
@@ -783,7 +780,7 @@
     <div id="modal-carrito" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:18px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 id="modal-carrito-titulo" style="margin:0; font-size:17px; font-weight:700;">🛒 Tu Pedido</h3>
+                <h3 id="modal-carrito-titulo" style="margin:0; font-size:17px; font-weight:700;">Tu Pedido</h3>
                 <button onclick="cerrarModalCarrito()" style="background:none; border:none; font-size:18px; color:var(--text-muted); cursor:pointer;">✕</button>
             </div>
             <div class="modal-body" id="carrito-body-contenido"></div>
@@ -795,7 +792,7 @@
     <div id="modal-editar-plato" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:18px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-size:17px; font-weight:700;">✏️ Editar Ítem y Acompañamientos</h3>
+                <h3 style="margin:0; font-size:17px; font-weight:700;">Editar Ítem y Acompañamientos</h3>
                 <button onclick="cerrarModalEditarPlato()" style="background:none; border:none; font-size:18px; color:var(--text-muted); cursor:pointer;">✕</button>
             </div>
             <div class="modal-body">
@@ -831,7 +828,7 @@
                         <input type="text" id="edit-input-nombre-var" placeholder="Ej. Papas Gajo" style="flex:2;">
                         <input type="number" id="edit-input-precio-var" placeholder="₡ Extra" style="flex:1;" step="0.01">
                         <label style="cursor:pointer; background:#22252e; border:1px solid var(--border-color); padding:0 14px; height:46px; border-radius:10px; display:flex; align-items:center; justify-content:center;" title="Añadir foto a esta variante">
-                            📷 <input type="file" id="edit-input-img-var" accept="image/*" style="display:none;">
+                            <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Foto</span> <input type="file" id="edit-input-img-var" accept="image/*" style="display:none;">
                         </label>
                         <button type="button" onclick="agregarVarianteEdicion()" style="background:var(--color-principal); color:#121212; border:none; padding:0 18px; border-radius:10px; font-weight:bold; cursor:pointer; height:46px;">+</button>
                     </div>
@@ -853,7 +850,7 @@
     <div id="modal-editar-categoria" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:18px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-size:17px; font-weight:700;">📁 Editar Icono de Categoría</h3>
+                <h3 style="margin:0; font-size:17px; font-weight:700;">Editar Icono de Categoría</h3>
                 <button onclick="cerrarModalEditarCat()" style="background:none; border:none; font-size:18px; color:var(--text-muted); cursor:pointer;">✕</button>
             </div>
             <div class="modal-body">
@@ -874,7 +871,7 @@
     <div id="modal-sello-interactivo" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:18px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-size:17px; font-weight:700;" id="titulo-modal-sello">⭐ Reclamar Sello</h3>
+                <h3 style="margin:0; font-size:17px; font-weight:700;" id="titulo-modal-sello">Reclamar Sello</h3>
                 <button onclick="cerrarModalSelloInteractivo()" style="background:none; border:none; font-size:18px; color:var(--text-muted); cursor:pointer;">✕</button>
             </div>
             <div class="modal-body">
@@ -882,7 +879,7 @@
                 <div class="form-group">
                     <input type="text" id="input-codigo-sello-rapido" placeholder="Ej. 4829" maxlength="4" style="text-align:center; font-size:26px; letter-spacing:8px; font-weight:bold;">
                 </div>
-                <button onclick="validarYGanarSelloRapido()" class="btn-admin-action" style="background:var(--color-principal);">Validar Sello ⭐</button>
+                <button onclick="validarYGanarSelloRapido()" class="btn-admin-action" style="background:var(--color-principal);">Validar Sello</button>
             </div>
         </div>
     </div>
@@ -903,7 +900,7 @@
     <div id="modal-lealtad" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:18px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-size:17px; font-weight:700;">⭐ Club de Lealtad Alaska</h3>
+                <h3 style="margin:0; font-size:17px; font-weight:700;">Club de Lealtad Alaska</h3>
                 <button onclick="cerrarLealtadModal()" style="background:none; border:none; font-size:18px; color:var(--text-muted); cursor:pointer;">✕</button>
             </div>
             <div class="modal-body">
@@ -917,7 +914,7 @@
                         <label>Teléfono / WhatsApp *</label>
                         <input type="text" id="reg-telefono" placeholder="Ej. 88888888">
                     </div>
-                    <button onclick="registrarOIdentificarCliente()" class="btn-admin-action" style="background:var(--color-principal);">Entrar a mi Tarjeta ⭐</button>
+                    <button onclick="registrarOIdentificarCliente()" class="btn-admin-action" style="background:var(--color-principal);">Entrar a mi Tarjeta</button>
                 </div>
             </div>
         </div>
@@ -926,7 +923,7 @@
     <div id="modal-seguimiento" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:18px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-size:17px; font-weight:700;">🔍 Consultar Estado de Orden</h3>
+                <h3 style="margin:0; font-size:17px; font-weight:700;">Consultar Estado de Orden</h3>
                 <button onclick="cerrarSeguimientoModal()" style="background:none; border:none; font-size:18px; color:var(--text-muted); cursor:pointer;">✕</button>
             </div>
             <div class="modal-body">
@@ -995,11 +992,11 @@
                 let clave = prompt("Introduce la contraseña de administración:");
                 if (clave === "1234" || clave === "alaska2026") {
                     adminAutenticado = true;
-                    mostrarToast("🔓 ¡Acceso Ejecutivo Concedido!");
+                    mostrarToast("Acceso Ejecutivo Concedido");
                     cambiarVista('admin');
                     abrirSidebar();
                 } else if (clave !== null) {
-                    mostrarToast("❌ Contraseña incorrecta.");
+                    mostrarToast("Contraseña incorrecta.");
                 }
             } else {
                 cambiarVista('admin');
@@ -1011,7 +1008,7 @@
             adminAutenticado = false;
             cambiarVista('menu');
             cerrarSidebar();
-            mostrarToast("🔒 Sesión de administrador cerrada.");
+            mostrarToast("Sesión de administrador cerrada.");
         }
 
         window.cambiarVista = function(vista) {
@@ -1120,15 +1117,15 @@
                 if (!negocioAbiertoGlobal) {
                     btnClase = "order-btn closed";
                     btnTexto = "Cerrado";
-                    accionClick = "mostrarToast('⚠️ El establecimiento está cerrado temporalmente.')";
+                    accionClick = "mostrarToast('El establecimiento está cerrado temporalmente.')";
                 } else if (pedidosOnlinePausados) {
                     btnClase = "order-btn closed";
                     btnTexto = "Cocina Ocupada";
-                    accionClick = "mostrarToast('⚠️ Pedidos online pausados temporalmente por alta demanda.')";
+                    accionClick = "mostrarToast('Pedidos online pausados temporalmente por alta demanda.')";
                 } else if (!disponible) {
                     btnClase = "order-btn soldout";
                     btnTexto = "Agotado Temporalmente";
-                    accionClick = "mostrarToast('⚠️ Este plato se encuentra agotado por hoy.')";
+                    accionClick = "mostrarToast('Este plato se encuentra agotado por hoy.')";
                 } else {
                     btnClase = "order-btn";
                     btnTexto = "Pedir";
@@ -1174,7 +1171,7 @@
 
         window.abrirModalDetallePlato = function(id) {
             if (!negocioAbiertoGlobal || pedidosOnlinePausados) {
-                mostrarToast("⚠️ El sistema de pedidos online no está disponible en este momento.");
+                mostrarToast("El sistema de pedidos online no está disponible en este momento.");
                 return;
             }
             const plato = listaPlatos.find(p => p.id === id);
@@ -1200,7 +1197,7 @@
                 plato.variantes.forEach((v, index) => {
                     let agotado = v.agotado === true;
                     let imgUrlAttr = v.imagenUrl ? v.imagenUrl : '';
-                    let imgIconHtml = v.imagenUrl ? `<span style="font-size:10px;">📷</span> ` : '';
+                    let imgIconHtml = v.imagenUrl ? `<span style="font-size:10px; color:var(--text-muted); margin-right:4px;">[Foto]</span>` : '';
                     
                     if (!agotado) {
                         htmlExtras += `
@@ -1229,7 +1226,7 @@
         window.manejarCambioExtra = function(chk) {
             const checkboxes = document.querySelectorAll('.chk-extra-item:checked');
             if (checkboxes.length > 2) {
-                mostrarToast("⚠️ Solo puedes seleccionar un máximo de 2 acompañamientos.");
+                mostrarToast("Solo puedes seleccionar un máximo de 2 acompañamientos.");
                 chk.checked = false;
                 return;
             }
@@ -1295,7 +1292,7 @@
                 platoSeleccionadoParaPedir.ratingPromedio = nuevoPromedio;
                 platoSeleccionadoParaPedir.totalResenas = nuevoTotal;
 
-                mostrarToast("⭐ ¡Gracias por calificar este plato!");
+                mostrarToast("¡Gracias por calificar este plato!");
                 document.getElementById('input-comentario-resena').value = "";
                 cargarMenu();
             } catch(e) {
@@ -1323,7 +1320,7 @@
 
         window.agregarPlatoConExtrasAlCarrito = function() {
             if (!negocioAbiertoGlobal || pedidosOnlinePausados) {
-                mostrarToast("⚠️ El establecimiento no está recibiendo pedidos online.");
+                mostrarToast("El establecimiento no está recibiendo pedidos online.");
                 return;
             }
             if (!platoSeleccionadoParaPedir) return;
@@ -1349,7 +1346,7 @@
             });
 
             actualizarContadorCarrito();
-            mostrarToast(`✅ ¡${cantidadSeleccionadaModal}x ${platoSeleccionadoParaPedir.nombre} agregado al carrito!`);
+            mostrarToast(`${cantidadSeleccionadaModal}x ${platoSeleccionadoParaPedir.nombre} agregado al carrito`);
             cerrarModalDetallePlato();
         }
 
@@ -1375,7 +1372,7 @@
             const footerEl = document.getElementById('carrito-footer-contenido');
 
             if (checkoutPaso === 1) {
-                tituloEl.textContent = "🛒 Tu Pedido";
+                tituloEl.textContent = "Tu Pedido";
                 if (carritoItems.length === 0) {
                     bodyEl.innerHTML = "<p style='color:var(--text-muted); text-align:center;'>Tu carrito está vacío.</p>";
                     footerEl.innerHTML = `<button onclick="cerrarModalCarrito()" class="btn-admin-action" style="width:100%;">Cerrar</button>`;
@@ -1417,19 +1414,19 @@
                         <span style="font-size:13px; color:var(--text-muted);">Total a Pagar:</span>
                         <span style="font-size:18px; font-weight:800; color:var(--color-principal);">₡${sumaTotal.toLocaleString()}</span>
                     </div>
-                    <button type="button" onclick="avanzarCheckout(2)" class="btn-admin-action" style="width:100%; padding:13px;">Continuar pedido 🚀</button>
+                    <button type="button" onclick="avanzarCheckout(2)" class="btn-admin-action" style="width:100%; padding:13px;">Continuar pedido</button>
                 `;
             } else if (checkoutPaso === 2) {
-                tituloEl.textContent = "📍 Tipo de Entrega";
+                tituloEl.textContent = "Tipo de Entrega";
                 bodyEl.innerHTML = `
                     <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Selecciona cómo deseas recibir tu orden:</p>
                     <div style="display:flex; flex-direction:column; gap:12px;">
                         <div onclick="seleccionarEntrega('Consumo en Mesa')" style="background:${pedidoTipoEntrega==='Consumo en Mesa'?'rgba(212,175,55,0.15)':'#121419'}; border:1px solid ${pedidoTipoEntrega==='Consumo en Mesa'?'var(--color-principal)':'var(--border-color)'}; padding:16px; border-radius:14px; cursor:pointer;">
-                            <strong style="color:white; font-size:15px;">🍽️ Consumo en Mesa</strong>
+                            <strong style="color:white; font-size:15px;">Consumo en Mesa</strong>
                             <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-muted);">Atención directa en tu mesa dentro del local.</p>
                         </div>
                         <div onclick="seleccionarEntrega('Retiró en Local')" style="background:${pedidoTipoEntrega==='Retiró en Local'?'rgba(212,175,55,0.15)':'#121419'}; border:1px solid ${pedidoTipoEntrega==='Retiró en Local'?'var(--color-principal)':'var(--border-color)'}; padding:16px; border-radius:14px; cursor:pointer;">
-                            <strong style="color:white; font-size:15px;">🛍️ Retiró en Local</strong>
+                            <strong style="color:white; font-size:15px;">Retiro en Local</strong>
                             <p style="margin:4px 0 0 0; font-size:12px; color:var(--text-muted);">Pasa a recoger tu pedido listo en barra.</p>
                         </div>
                     </div>
@@ -1439,19 +1436,19 @@
                     <button type="button" onclick="ejecutarSiguienteEntrega()" class="btn-admin-action" style="width:100%; padding:13px;">Siguiente</button>
                 `;
             } else if (checkoutPaso === 3) {
-                tituloEl.textContent = "💳 Método de Pago";
+                tituloEl.textContent = "Método de Pago";
                 bodyEl.innerHTML = `
                     <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Elige cómo realizarás el pago:</p>
                     <div style="display:flex; flex-direction:column; gap:12px;">
                         <div onclick="seleccionarPago('Efectivo')" style="background:${pedidoMetodoPago==='Efectivo'?'rgba(212,175,55,0.15)':'#121419'}; border:1px solid ${pedidoMetodoPago==='Efectivo'?'var(--color-principal)':'var(--border-color)'}; padding:16px; border-radius:14px; cursor:pointer;">
-                            <strong style="color:white; font-size:15px;">💵 Efectivo</strong>
+                            <strong style="color:white; font-size:15px;">Efectivo</strong>
                         </div>
                         <div onclick="seleccionarPago('SINPE Móvil')" style="background:${pedidoMetodoPago==='SINPE Móvil'?'rgba(212,175,55,0.15)':'#121419'}; border:1px solid ${pedidoMetodoPago==='SINPE Móvil'?'var(--color-principal)':'var(--border-color)'}; padding:16px; border-radius:14px; cursor:pointer;">
-                            <strong style="color:white; font-size:15px;">📱 SINPE Móvil</strong>
+                            <strong style="color:white; font-size:15px;">SINPE Móvil</strong>
                             <span style="font-size:11px; color:var(--color-principal); display:block; margin-top:2px;">Tel: 8521-3829</span>
                         </div>
                         <div onclick="seleccionarPago('Datáfono')" style="background:${pedidoMetodoPago==='Datáfono'?'rgba(212,175,55,0.15)':'#121419'}; border:1px solid ${pedidoMetodoPago==='Datáfono'?'var(--color-principal)':'var(--border-color)'}; padding:16px; border-radius:14px; cursor:pointer;">
-                            <strong style="color:white; font-size:15px;">💳 Datáfono (Tarjeta)</strong>
+                            <strong style="color:white; font-size:15px;">Datáfono (Tarjeta)</strong>
                         </div>
                     </div>
                 `;
@@ -1460,7 +1457,7 @@
                     <button type="button" onclick="ejecutarSiguientePago()" class="btn-admin-action" style="width:100%; padding:13px;">Siguiente</button>
                 `;
             } else if (checkoutPaso === 4) {
-                tituloEl.textContent = "📝 Datos Finales";
+                tituloEl.textContent = "Datos Finales";
                 bodyEl.innerHTML = `
                     <div class="form-group">
                         <label>Tu Nombre o Número de Mesa *</label>
@@ -1477,7 +1474,7 @@
                 `;
                 footerEl.innerHTML = `
                     <button type="button" onclick="avanzarCheckout(3)" class="action-pill" style="width:100%; padding:11px; border:none; background:#22252e; color:white; justify-content:center;">Atrás</button>
-                    <button type="button" onclick="enviarPedidoFinalDefinitivo()" class="btn-admin-action" style="width:100%; padding:13px; background:var(--color-principal);">Confirmar Pedido 📲</button>
+                    <button type="button" onclick="enviarPedidoFinalDefinitivo()" class="btn-admin-action" style="width:100%; padding:13px; background:var(--color-principal);">Confirmar Pedido</button>
                 `;
             }
         }
@@ -1511,7 +1508,7 @@
 
         window.ejecutarSiguienteEntrega = function() {
             if (!pedidoTipoEntrega) {
-                mostrarToast('⚠️ Selecciona un tipo de entrega.');
+                mostrarToast('Selecciona un tipo de entrega.');
                 return;
             }
             avanzarCheckout(3);
@@ -1524,7 +1521,7 @@
 
         window.ejecutarSiguientePago = function() {
             if (!pedidoMetodoPago) {
-                mostrarToast('⚠️ Selecciona un método de pago.');
+                mostrarToast('Selecciona un método de pago.');
                 return;
             }
             avanzarCheckout(4);
@@ -1533,7 +1530,7 @@
         window.enviarPedidoFinalDefinitivo = async function() {
             const nombreFinal = document.getElementById('input-nombre-final').value.trim();
             if (!nombreFinal) {
-                mostrarToast("⚠️ Por favor ingresa tu nombre o número de mesa.");
+                mostrarToast("Por favor ingresa tu nombre o número de mesa.");
                 return;
             }
             const telefonoFinal = document.getElementById('input-telefono-final').value.trim();
@@ -1574,7 +1571,7 @@
                     })
                 });
 
-                mostrarToast("🎉 ¡Pedido confirmado con éxito!");
+                mostrarToast("Pedido confirmado con éxito");
                 carritoItems = [];
                 pedidoTipoEntrega = "";
                 pedidoMetodoPago = "";
@@ -1673,7 +1670,7 @@
             if (confirm("¿Estás seguro de eliminar este registro?")) {
                 try {
                     await deleteDoc(doc(db, "pedidos", idPedido));
-                    mostrarToast("🗑️ Registro eliminado.");
+                    mostrarToast("Registro eliminado.");
                     cargarAdminHistorial();
                     cargarAdminPedidos();
                 } catch(e) {
@@ -1745,7 +1742,7 @@
                                 <td><span style="${estadoEstilo}" onclick="cambiarDisponibilidadPlato('${p.id}', ${disponible})" title="Haz clic para cambiar estado">${estadoTexto}</span></td>
                                 <td>
                                     <div style="display:flex; gap:6px;">
-                                        <button type="button" onclick="abrirModalEditarPlato('${p.id}')" class="action-pill" style="padding:6px 12px; font-size:11px; background:#22252e; border-color:var(--border-color);">✏️ Editar</button>
+                                        <button type="button" onclick="abrirModalEditarPlato('${p.id}')" class="action-pill" style="padding:6px 12px; font-size:11px; background:#22252e; border-color:var(--border-color);">Editar</button>
                                         <button type="button" onclick="eliminarPlato('${p.id}')" class="action-pill" style="padding:6px 12px; font-size:11px; background:rgba(239,68,68,0.12); color:#f87171; border-color:rgba(239,68,68,0.3);">Eliminar</button>
                                     </div>
                                 </td>
@@ -1761,7 +1758,7 @@
         window.cambiarDisponibilidadPlato = async function(id, estadoActual) {
             try {
                 await updateDoc(doc(db, "menu", id), { disponible: !estadoActual });
-                mostrarToast("✅ Estado del plato actualizado.");
+                mostrarToast("Estado del plato actualizado.");
                 cargarAdminPlatos();
                 cargarMenu();
             } catch(e) { mostrarToast("Error al actualizar estado."); }
@@ -1771,7 +1768,7 @@
             if (confirm("¿Estás seguro de eliminar este ítem del menú?")) {
                 try {
                     await deleteDoc(doc(db, "menu", id));
-                    mostrarToast("🗑️ Plato eliminado.");
+                    mostrarToast("Plato eliminado.");
                     cargarAdminPlatos();
                     cargarMenu();
                 } catch(e) { mostrarToast("Error al eliminar."); }
@@ -1828,12 +1825,12 @@
                 return;
             }
             variantesEdicion.forEach((v, idx) => {
-                let fotoTxt = v.imagenUrl ? ' 📷[Foto]' : '';
+                let fotoTxt = v.imagenUrl ? ' [Foto]' : '';
                 let estadoAgotado = v.agotado ? ' [Agotado]' : '';
                 let colorEstado = v.agotado ? 'color: #f87171;' : 'color: #4ade80;';
                 html += `
                     <div style="display:flex; justify-content:space-between; align-items:center; background:#121419; padding:8px 12px; border-radius:8px; margin-bottom:4px; border:1px solid var(--border-color);">
-                        <span>• ${v.nombre} (+₡${v.precio})${fotoTxt} <strong style="${colorEstado}">${estadoAgotado}</strong></span>
+                        <span>• ${v.nombre} (+₡${v.precio})<span style="font-size:11px; color:var(--text-muted);">${fotoTxt}</span> <strong style="${colorEstado}">${estadoAgotado}</strong></span>
                         <div style="display:flex; gap:6px;">
                             <button type="button" onclick="toggleAgotadoVariante(${idx})" class="action-pill" style="padding:3px 8px; font-size:10px; background:#1a1d24;">Estado</button>
                             <button type="button" onclick="variantesEdicion.splice(${idx},1); renderizarVariantesEdicion();" style="color:#f87171; background:none; border:none; cursor:pointer; font-weight:bold;">✕</button>
@@ -1866,7 +1863,7 @@
                         variantes: variantesEdicion,
                         imagenUrl: urlImagenFinal
                     });
-                    mostrarToast("✅ ¡Plato actualizado con éxito!");
+                    mostrarToast("Plato actualizado con éxito");
                     cerrarModalEditarPlato();
                     cargarAdminPlatos();
                     cargarMenu();
@@ -1920,7 +1917,7 @@
             reader.onload = async function() {
                 try {
                     await setDoc(doc(db, "categorias", catNombre), { nombre: catNombre, visible: true, icono: reader.result }, { merge: true });
-                    mostrarToast("✅ Icono de categoría actualizado.");
+                    mostrarToast("Icono de categoría actualizado.");
                     cerrarModalEditarCat();
                     inicializarCategoriasNube();
                 } catch(e) { mostrarToast("Error al guardar icono."); }
@@ -1942,7 +1939,7 @@
                         <tr>
                             <td style="font-weight:bold;">${c.nombre}</td>
                             <td>${c.telefono}</td>
-                            <td style="color:var(--color-principal); font-weight:bold;">${c.sellos || 0} ⭐</td>
+                            <td style="color:var(--color-principal); font-weight:bold;">${c.sellos || 0} ★</td>
                             <td><button type="button" onclick="eliminarCliente('${d.id}')" class="action-pill" style="padding:6px 12px; font-size:11px; background:rgba(239,68,68,0.12); color:#f87171; border-color:rgba(239,68,68,0.3);">Eliminar</button></td>
                         </tr>
                     `;
@@ -1968,7 +1965,7 @@
             try {
                 await setDoc(doc(db, "configuracion", "selloActivo"), { codigo: codigoAleatorio });
                 document.getElementById('codigo-activo-display').textContent = codigoAleatorio;
-                mostrarToast("🔐 Nuevo código generado con éxito.");
+                mostrarToast("Nuevo código generado con éxito.");
             } catch(e) { mostrarToast("Error al generar código."); }
         }
 
@@ -1992,7 +1989,7 @@
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                mostrarToast("📥 Reporte descargado con éxito.");
+                mostrarToast("Reporte descargado con éxito.");
             } catch(e) { mostrarToast("Error al generar reporte."); }
         }
 
@@ -2016,7 +2013,7 @@
                             ratingPromedio: 5.0,
                             totalResenas: 0
                         });
-                        mostrarToast("✅ ¡Plato registrado con éxito!");
+                        mostrarToast("Plato registrado con éxito.");
                         productForm.reset();
                         variantesTemporales = [];
                         document.getElementById('lista-variantes-temp').textContent = "Sin extras añadidos.";
@@ -2047,7 +2044,7 @@
                 
                 let html = "";
                 variantesTemporales.forEach((v, idx) => {
-                    let fotoLabel = v.imagenUrl ? ' 📷[Foto]' : '';
+                    let fotoLabel = v.imagenUrl ? ' <span style="font-size:11px; color:var(--text-muted);">[Foto]</span>' : '';
                     html += `<div style="display:flex; justify-content:space-between; align-items:center; background:#121419; padding:6px 10px; border-radius:6px; margin-bottom:4px; border:1px solid var(--border-color);"><span>• ${v.nombre} (+₡${v.precio})${fotoLabel}</span> <button type="button" onclick="variantesTemporales.splice(${idx},1); agregarVarianteTemporal();" style="color:#f87171; background:none; border:none; cursor:pointer; font-weight:bold;">✕</button></div>`;
                 });
                 document.getElementById('lista-variantes-temp').innerHTML = html;
@@ -2111,16 +2108,16 @@
 
             let selloEsperado = window.clienteActualSellos + 1;
             if (numeroCasilla <= window.clienteActualSellos) {
-                mostrarToast("⭐ ¡Este sello ya lo tienes acumulado!");
+                mostrarToast("¡Este sello ya lo tienes acumulado!");
                 return;
             }
 
             if (numeroCasilla === selloEsperado) {
-                document.getElementById('titulo-modal-sello').textContent = `⭐ Reclamar Sello #${numeroCasilla}`;
+                document.getElementById('titulo-modal-sello').textContent = `Reclamar Sello #${numeroCasilla}`;
                 document.getElementById('input-codigo-sello-rapido').value = "";
                 document.getElementById('modal-sello-interactivo').style.display = 'flex';
             } else {
-                mostrarToast(`⚠️ Debes completar primero el sello #${selloEsperado}.`);
+                mostrarToast(`Debes completar primero el sello #${selloEsperado}.`);
             }
         }
 
@@ -2141,10 +2138,10 @@
 
                     window.clienteActualSellos++;
                     if (window.clienteActualSellos >= 5) {
-                        mostrarToast("🎉 ¡Felicidades! Completaste tus 5 sellos.");
+                        mostrarToast("¡Felicidades! Completaste tus 5 sellos.");
                         window.clienteActualSellos = 0;
                     } else {
-                        mostrarToast("⭐ ¡Sello añadido con éxito!");
+                        mostrarToast("Sello añadido con éxito");
                     }
 
                     await updateDoc(doc(db, "clientes", window.clienteActualId), { sellos: window.clienteActualSellos });
@@ -2152,7 +2149,7 @@
                     actualizarUILealtadPublica();
                     cerrarModalSelloInteractivo();
                 } else {
-                    mostrarToast("❌ Código incorrecto o ya fue utilizado.");
+                    mostrarToast("Código incorrecto o ya fue utilizado.");
                 }
             } catch(e) { mostrarToast("Error al validar código."); }
         }
@@ -2165,7 +2162,7 @@
                 let filled = i <= window.clienteActualSellos;
                 let isNext = i === (window.clienteActualSellos + 1);
                 let claseBox = filled ? 'stamp-box filled' : (isNext ? 'stamp-box next-to-fill' : 'stamp-box');
-                let contenido = filled ? '⭐' : i;
+                let contenido = filled ? '★' : i;
                 gridHTML += `<div class="${claseBox}" onclick="hacerClickCasillaSello(${i})">${contenido}</div>`;
             }
             const gridEl = document.getElementById('public-stamps-grid');
@@ -2175,7 +2172,7 @@
         window.abrirLealtadModal = function(e) { 
             if(e) e.preventDefault();
             if (!window.clienteActualId) document.getElementById('modal-lealtad').style.display = 'flex'; 
-            else mostrarToast(`¡Hola ${window.clienteActualNombre}! Tienes ${window.clienteActualSellos}/5 sellos.`);
+            else mostrarToast(`Hola ${window.clienteActualNombre}. Tienes ${window.clienteActualSellos}/5 sellos.`);
         }
         window.abrirLealtadModalSimple = function() { document.getElementById('modal-lealtad').style.display = 'flex'; }
         window.cerrarLealtadModal = function() { document.getElementById('modal-lealtad').style.display = 'none'; }
@@ -2208,7 +2205,7 @@
 
                 actualizarUILealtadPublica();
                 cerrarLealtadModal();
-                mostrarToast("¡Bienvenido al Club Alaska, " + nombre + "!");
+                mostrarToast("Bienvenido al Club Alaska, " + nombre);
             } catch(e) { mostrarToast("Error al registrar."); }
         }
 
@@ -2252,7 +2249,7 @@
             });
             try {
                 await setDoc(doc(db, "configuracion", "horariosAtencion"), horariosObj);
-                mostrarToast("✅ ¡Horarios guardados en la nube!");
+                mostrarToast("Horarios guardados en la nube");
                 verificarEstadoNegocioConHorarios(horariosObj);
             } catch(e) { mostrarToast("Error al guardar horarios."); }
         }
@@ -2311,14 +2308,14 @@
                 btn.style.background = "rgba(239,68,68,0.15)";
                 btn.style.color = "#f87171";
                 btn.style.borderColor = "rgba(239,68,68,0.3)";
-                btn.textContent = "🔴 Pedidos Pausados (Cocina Llena)";
-                mostrarToast("⚠️ Pedidos online pausados temporalmente.");
+                btn.textContent = "Pedidos Pausados (Cocina Llena)";
+                mostrarToast("Pedidos online pausados temporalmente.");
             } else {
                 btn.style.background = "rgba(16,185,129,0.15)";
                 btn.style.color = "#4ade80";
                 btn.style.borderColor = "rgba(16,185,129,0.3)";
-                btn.textContent = "🟢 Recibiendo Pedidos Online";
-                mostrarToast("✅ Pedidos online reactivados.");
+                btn.textContent = "Recibiendo Pedidos Online";
+                mostrarToast("Pedidos online reactivados.");
             }
             mostrarPlatos(listaPlatos);
         }
@@ -2326,8 +2323,8 @@
         window.actualizarTiempoEstimadoNube = async function(nuevoTiempo) {
             try {
                 await setDoc(doc(db, "configuracion", "tiempoEstimado"), { texto: nuevoTiempo }, { merge: true });
-                document.getElementById('banner-tiempo-estimado').innerHTML = `⏳ Tiempo estimado de preparación: <strong>${nuevoTiempo}</strong>`;
-                mostrarToast(`⏱️ Tiempo estimado actualizado a: ${nuevoTiempo}`);
+                document.getElementById('banner-tiempo-estimado').innerHTML = `Tiempo estimado de preparación: <strong>${nuevoTiempo}</strong>`;
+                mostrarToast(`Tiempo estimado actualizado a: ${nuevoTiempo}`);
             } catch(e) { mostrarToast("Error al actualizar tiempo."); }
         }
 
@@ -2374,7 +2371,7 @@
                 const docSnapT = await getDoc(docRefT);
                 if (docSnapT.exists() && docSnapT.data().texto) {
                     let tVal = docSnapT.data().texto;
-                    document.getElementById('banner-tiempo-estimado').innerHTML = `⏳ Tiempo estimado de preparación: <strong>${tVal}</strong>`;
+                    document.getElementById('banner-tiempo-estimado').innerHTML = `Tiempo estimado de preparación: <strong>${tVal}</strong>`;
                     if (document.getElementById('select-tiempo-admin')) document.getElementById('select-tiempo-admin').value = tVal;
                 }
 
@@ -2413,7 +2410,7 @@
                         document.getElementById('logo-display').src = logoUrl;
                         document.getElementById('settings-logo-preview').src = logoUrl;
                     }
-                    mostrarToast("✅ ¡Ajustes guardados correctamente!");
+                    mostrarToast("Ajustes guardados correctamente");
                 } catch(e) { mostrarToast("Error al guardar."); }
             };
 
