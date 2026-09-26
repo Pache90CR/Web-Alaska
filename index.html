@@ -674,7 +674,6 @@
 
     </div>
 
-    <!-- MODAL DETALLE DE PLATO, EXTRAS Y CALIFICACIÓN -->
     <div id="modal-detalle-plato" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -720,7 +719,6 @@
         </div>
     </div>
 
-    <!-- MODAL CARRITO DE COMPRAS PÚBLICO -->
     <div id="modal-carrito" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -732,7 +730,6 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR PLATO -->
     <div id="modal-editar-plato" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -790,7 +787,6 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR CATEGORÍA -->
     <div id="modal-editar-categoria" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -811,7 +807,6 @@
         </div>
     </div>
 
-    <!-- MODAL SELLO -->
     <div id="modal-sello-interactivo" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -828,7 +823,6 @@
         </div>
     </div>
 
-    <!-- BARRA FLOTANTE -->
     <div class="floating-bottom-bar" id="floating-bar">
         <div class="status-pill">
             <div class="status-dot" id="floating-status-dot"></div>
@@ -840,7 +834,6 @@
         </button>
     </div>
 
-    <!-- MODAL LEALTAD Y SEGUIMIENTO -->
     <div id="modal-lealtad" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -885,17 +878,22 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyD2JhmA4m7NMbRcC2RqaHVIz1NLgI2IzE",
-            authDomain: "bar-restaurante-alaska.firebaseapp.com",
-            projectId: "bar-restaurante-alaska",
-            storageBucket: "bar-restaurante-alaska.firebasestorage.app",
-            messagingSenderId: "734422460427",
-            appId: "1:734422460427:web:cee048a1edd6bf38b07f0e"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        let app, db;
+        try {
+            const firebaseConfig = {
+                apiKey: "AIzaSyD2JhmA4m7NMbRcC2RqaHVIz1NLgI2IzE",
+                authDomain: "bar-restaurante-alaska.firebaseapp.com",
+                projectId: "bar-restaurante-alaska",
+                storageBucket: "bar-restaurante-alaska.firebasestorage.app",
+                messagingSenderId: "734422460427",
+                appId: "1:734422460427:web:cee048a1edd6bf38b07f0e"
+            };
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+        } catch (e) {
+            console.error("Error inicializando Firebase:", e);
+            alert("Error al conectar con la base de datos: " + e.message);
+        }
 
         let listaPlatos = [];
         let carritoItems = [];
@@ -1025,7 +1023,10 @@
                 querySnapshot.forEach((docSnap) => { listaPlatos.push({ id: docSnap.id, ...docSnap.data() }); });
                 mostrarPlatos(listaPlatos);
                 inicializarCategoriasNube();
-            } catch (error) { console.log(error); }
+            } catch (error) { 
+                console.error("Error interno en cargarMenu:", error);
+                document.getElementById("menu-grid").innerHTML = `<p style='text-align:center; color:#ef4444; font-weight:bold;'>Error técnico al cargar el menú: ${error.message}</p>`;
+            }
         }
 
         function mostrarPlatos(platos) {
@@ -1557,7 +1558,8 @@
                 html += `</div>`;
                 container.innerHTML = html;
             } catch(e) {
-                container.innerHTML = `<p style="color:#ef4444; font-size:13px;">Error al cargar pedidos.</p>`;
+                console.error(e);
+                container.innerHTML = `<p style="color:#ef4444; font-size:13px;">Error: ${e.message}</p>`;
             }
         }
 
@@ -1601,7 +1603,8 @@
                 html += `</tbody></table>`;
                 container.innerHTML = html;
             } catch(e) {
-                container.innerHTML = `<p style="color:#ef4444; font-size:13px;">Error al cargar historial.</p>`;
+                console.error(e);
+                container.innerHTML = `<p style="color:#ef4444; font-size:13px;">Error: ${e.message}</p>`;
             }
         }
 
@@ -1653,7 +1656,8 @@
                     `;
                 });
             } catch(e) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;">Error al calcular ranking.</td></tr>`;
+                console.error(e);
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;">Error: ${e.message}</td></tr>`;
             }
         }
 
@@ -1688,7 +1692,8 @@
                     }
                 });
             } catch(e) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#ef4444;">Error al cargar platos.</td></tr>`;
+                console.error(e);
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#ef4444; font-weight:bold;">Error: ${e.message}</td></tr>`;
             }
         }
 
@@ -1882,7 +1887,10 @@
                     `;
                 });
                 if(!hayClientes) tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No hay clientes registrados.</td></tr>`;
-            } catch(e) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;">Error al cargar clientes.</td></tr>`; }
+            } catch(e) { 
+                console.error(e);
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;">Error: ${e.message}</td></tr>`; 
+            }
         }
 
         window.eliminarCliente = async function(id) {
@@ -2316,7 +2324,9 @@
                 let horariosData = docSnapH.exists() ? docSnapH.data() : {};
                 renderizarFormularioHorarios(horariosData);
                 verificarEstadoNegocioConHorarios(horariosData);
-            } catch (e) { console.log(e); }
+            } catch (e) { 
+                console.error("Error al cargar configuracion:", e); 
+            }
         }
 
         window.guardarAjustesYConfiguracionNube = async function() {
@@ -2355,9 +2365,11 @@
             } else { await guardarFin(null); }
         }
 
-        cargarConfiguracionVisualNube();
-        actualizarUILealtadPublica();
-        cargarMenu();
+        if(db) {
+            cargarConfiguracionVisualNube();
+            actualizarUILealtadPublica();
+            cargarMenu();
+        }
     </script>
 </body>
 </html>
