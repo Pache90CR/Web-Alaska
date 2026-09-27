@@ -1197,7 +1197,7 @@
                 plato.variantes.forEach((v, index) => {
                     let agotado = v.agotado === true;
                     let imgUrlAttr = v.imagenUrl ? v.imagenUrl : '';
-                    let imgIconHtml = v.imagenUrl ? `<span style="font-size:10px; color:var(--text-muted); margin-right:4px;">""</span>` : '';
+                    let imgIconHtml = v.imagenUrl ? `<span style="font-size:10px; color:var(--text-muted); margin-right:4px;"></span>` : '';
                     
                     if (!agotado) {
                         htmlExtras += `
