@@ -148,7 +148,6 @@
         .card-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .food-card h3 { margin: 0; font-size: 18px; color: var(--text-main); font-weight: 700; letter-spacing: -0.3px; }
         .price { font-size: 18px; font-weight: 800; color: var(--color-principal); }
-        .stars { color: var(--color-principal); font-size: 13px; margin-bottom: 14px; display: flex; align-items: center; gap: 4px; font-weight: 600; }
         
         .order-btn {
             width: 100%; background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0.05) 100%); color: var(--color-principal);
@@ -333,17 +332,48 @@
         .settings-card h3 { margin-top: 0; font-size: 17px; color: var(--text-main); font-weight: 700; margin-bottom: 6px; }
         .settings-card p { font-size: 12px; color: var(--text-muted); margin-top: 0; margin-bottom: 20px; }
 
-        .day-schedule-card {
+        /* ESTILOS NUEVOS PARA TARJETAS EJECUTIVAS DE HISTORIAL Y MÉTRICAS */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        @media (min-width: 768px) {
+            .metrics-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        .metric-card {
             background: #13151a;
             border: 1px solid var(--border-color);
-            border-radius: 14px;
+            border-radius: 16px;
             padding: 18px;
-            margin-bottom: 14px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
         }
-        .day-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .day-header-flex h4 { margin: 0; font-size: 15px; color: white; font-weight: 700; }
-        .checkbox-label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); cursor: pointer; }
+        .metric-card span.label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+        .metric-card span.value { font-size: 20px; color: var(--text-main); font-weight: 800; letter-spacing: -0.5px; }
+        .metric-card span.trend { font-size: 11px; font-weight: 700; color: #4ade80; display: inline-flex; align-items: center; gap: 4px; }
+
+        .sales-card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .sale-item-card {
+            background: #13151a;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: border-color 0.2s ease;
+        }
+        .sale-item-card:hover { border-color: rgba(212, 175, 55, 0.4); }
 
         .admin-table {
             width: 100%;
@@ -408,7 +438,7 @@
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('historial')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span>Historial de Pedidos</span>
+                <span>Historial de Ventas</span>
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('ranking')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -433,10 +463,6 @@
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('clientes')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2m8-10a4 4 0 100-8 4 4 0 000 8zm14 10v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg>
                 <span>Base de Clientes</span>
-            </a>
-            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('horarios')">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span>Horarios de Atención</span>
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('ajustes')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065ZM15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -528,15 +554,42 @@
                     </div>
                 </div>
 
+                <!-- NUEVO DISEÑO EJECUTIVO PARA HISTORIAL Y REPORTE DE VENTAS -->
                 <div id="admin-tab-historial" class="admin-section-tab">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:14px;">
                         <div>
                             <h2 style="margin:0; font-size:20px; color:var(--color-principal); font-weight:800; letter-spacing:-0.3px;">Historial y Reporte de Ventas</h2>
-                            <p style="font-size:13px; color:var(--text-muted); margin:4px 0 0 0;">Registro detallado de órdenes y exportación contable.</p>
+                            <p style="font-size:13px; color:var(--text-muted); margin:4px 0 0 0;">Resumen ejecutivo y registro detallado de transacciones.</p>
                         </div>
                         <button type="button" onclick="descargarReporteCSV()" class="action-pill" style="background:var(--color-principal); color:#121212; border:none; padding:11px 20px; font-weight:800; box-shadow: 0 4px 15px rgba(212,175,55,0.3);">Descargar Reporte CSV</button>
                     </div>
-                    <div id="admin-historial-container" style="max-height:550px; overflow-y:auto;">
+
+                    <!-- TARJETAS DE MÉTRICAS SUPERIORES (Estilo dashboard moderno) -->
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <span class="label">Ventas Totales</span>
+                            <span class="value" id="metric-total-ventas">₡0</span>
+                            <span class="trend">En tiempo real</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="label">Total Órdenes</span>
+                            <span class="value" id="metric-total-ordenes">0</span>
+                            <span class="trend">Registradas</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="label">Clientes Frecuentes</span>
+                            <span class="value" id="metric-total-clientes">0</span>
+                            <span class="trend">En Club de Lealtad</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="label">Ticket Promedio</span>
+                            <span class="value" id="metric-ticket-promedio">₡0</span>
+                            <span class="trend">Por orden</span>
+                        </div>
+                    </div>
+
+                    <!-- LISTADO DE VENTAS EN TARJETAS MODERNAS -->
+                    <div id="admin-historial-container" class="sales-card-list">
                         <p style="color:var(--text-muted); font-size:13px;">Cargando historial...</p>
                     </div>
                 </div>
@@ -659,13 +712,6 @@
                     </div>
                 </div>
 
-                <div id="admin-tab-horarios" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:20px; color:var(--text-main); font-weight:800; margin-bottom:4px;">Horarios de Atención</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:24px;">Configura la disponibilidad semanal de tu negocio en formato de 24 horas.</p>
-                    <div id="days-schedule-container" style="display:flex; flex-direction:column; gap:12px;"></div>
-                    <button type="button" class="btn-admin-action" onclick="guardarHorariosNube()" style="padding:16px; font-size:15px; margin-top:16px;">Guardar Horarios en la Nube</button>
-                </div>
-
                 <div id="admin-tab-ajustes" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--text-main); font-weight:800; margin-bottom:4px;">Ajustes Generales</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:24px;">Personaliza la identidad visual, colores y títulos del establecimiento.</p>
@@ -730,7 +776,7 @@
 
     </div>
 
-    <!-- MODAL DETALLE DE PLATO, EXTRAS Y CALIFICACIÓN -->
+    <!-- MODAL DETALLE DE PLATO Y EXTRAS -->
     <div id="modal-detalle-plato" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:18px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -745,19 +791,6 @@
                 <div class="form-group" style="margin-top:16px; margin-bottom:0;">
                     <label>Nota específica para este plato (Opcional):</label>
                     <input type="text" id="modal-nota-plato-individual" placeholder="Ej. Sin culantro, término medio..." style="font-size:13px;">
-                </div>
-
-                <div style="background:#121419; padding:16px; border-radius:14px; margin-top:16px; border:1px solid var(--border-color);">
-                    <label style="color:var(--color-principal); font-weight:700; margin-bottom:8px;">Califica este plato:</label>
-                    <div style="display:flex; gap:10px; font-size:24px; cursor:pointer; margin-bottom:12px;" id="selector-estrellas-modal">
-                        <span onclick="seleccionarEstrellasCalificacion(1)" id="star-1">★</span>
-                        <span onclick="seleccionarEstrellasCalificacion(2)" id="star-2">★</span>
-                        <span onclick="seleccionarEstrellasCalificacion(3)" id="star-3">★</span>
-                        <span onclick="seleccionarEstrellasCalificacion(4)" id="star-4">★</span>
-                        <span onclick="seleccionarEstrellasCalificacion(5)" id="star-5">★</span>
-                    </div>
-                    <input type="text" id="input-comentario-resena" placeholder="Escribe un comentario breve (opcional)..." style="font-size:12px; margin-bottom:10px;">
-                    <button type="button" onclick="enviarCalificacionPlato()" class="action-pill" style="width:100%; justify-content:center; background:rgba(212,175,55,0.15); border-color:var(--color-principal); color:var(--color-principal); font-weight:700;">Enviar Calificación</button>
                 </div>
 
                 <div style="display:flex; align-items:center; justify-content:space-between; background:#121419; padding:14px; border-radius:12px; margin-top:16px; border:1px solid var(--border-color);">
@@ -967,7 +1000,6 @@
         
         let platoSeleccionadoParaPedir = null;
         let cantidadSeleccionadaModal = 1;
-        let calificacionSeleccionadaModal = 5;
         let adminAutenticado = false;
         let negocioAbiertoGlobal = true;
         let pedidosOnlinePausados = false;
@@ -1068,8 +1100,6 @@
             } else if (seccion === 'clientes') {
                 document.getElementById('admin-tab-clientes').classList.add('active-admin-tab');
                 cargarAdminClientes();
-            } else if (seccion === 'horarios') {
-                document.getElementById('admin-tab-horarios').classList.add('active-admin-tab');
             } else if (seccion === 'ajustes') {
                 document.getElementById('admin-tab-ajustes').classList.add('active-admin-tab');
             }
@@ -1107,9 +1137,6 @@
                 let disponible = plato.disponible !== false;
                 let badgeAgotadoHTML = !disponible ? `<span class="badge-agotado">Agotado</span>` : '';
 
-                let promedioEstrellas = plato.ratingPromedio ? Number(plato.ratingPromedio).toFixed(1) : "5.0";
-                let totalResenas = plato.totalResenas || 0;
-
                 let btnClase = "";
                 let btnTexto = "";
                 let accionClick = "";
@@ -1145,9 +1172,6 @@
                                     <h3>${plato.nombre}</h3>
                                     <div class="price">₡${Number(plato.precio).toLocaleString()}</div>
                                 </div>
-                                <div class="stars">
-                                    <span>★</span> ${promedioEstrellas} <span style="font-size:11px; color:var(--text-muted);">(${totalResenas} reseñas)</span>
-                                </div>
                             </div>
                             <button class="${btnClase}" onclick="${accionClick}">${btnTexto}</button>
                         </div>
@@ -1178,11 +1202,8 @@
             if (!plato || plato.disponible === false) return;
             platoSeleccionadoParaPedir = plato;
             cantidadSeleccionadaModal = 1;
-            calificacionSeleccionadaModal = 5;
-            actualizarEstrellasVisuales(5);
             document.getElementById('modal-cantidad-valor').textContent = "1";
             document.getElementById('modal-nota-plato-individual').value = "";
-            document.getElementById('input-comentario-resena').value = "";
 
             document.getElementById('modal-detalle-titulo').textContent = plato.nombre;
             document.getElementById('modal-detalle-img').src = plato.imagenUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
@@ -1197,14 +1218,13 @@
                 plato.variantes.forEach((v, index) => {
                     let agotado = v.agotado === true;
                     let imgUrlAttr = v.imagenUrl ? v.imagenUrl : '';
-                    let imgIconHtml = v.imagenUrl ? `<span style="font-size:10px; color:var(--text-muted); margin-right:4px;"></span>` : '';
                     
                     if (!agotado) {
                         htmlExtras += `
                             <label style="display:flex; align-items:center; justify-content:space-between; background:#121419; padding:10px; border-radius:10px; margin-bottom:6px; cursor:pointer; border:1px solid var(--border-color);">
                                 <div style="display:flex; align-items:center; gap:10px;">
                                     <input type="checkbox" class="chk-extra-item" value="${index}" data-nombre="${v.nombre}" data-precio="${v.precio}" data-img="${imgUrlAttr}" onchange="manejarCambioExtra(this)" style="width:16px; height:16px;">
-                                    <span>${imgIconHtml}${v.nombre}</span>
+                                    <span>${v.nombre}</span>
                                 </div>
                                 <span style="color:var(--color-principal); font-weight:bold;">+₡${Number(v.precio).toLocaleString()}</span>
                             </label>
@@ -1248,56 +1268,6 @@
             }
 
             actualizarPrecioTotalModal();
-        }
-
-        window.seleccionarEstrellasCalificacion = function(num) {
-            calificacionSeleccionadaModal = num;
-            actualizarEstrellasVisuales(num);
-        }
-
-        function actualizarEstrellasVisuales(num) {
-            for (let i = 1; i <= 5; i++) {
-                const starEl = document.getElementById(`star-${i}`);
-                if (starEl) {
-                    starEl.style.color = i <= num ? 'var(--color-principal)' : '#555';
-                }
-            }
-        }
-
-        window.enviarCalificacionPlato = async function() {
-            if (!platoSeleccionadoParaPedir) return;
-            const comentario = document.getElementById('input-comentario-resena').value.trim();
-            const platoId = platoSeleccionadoParaPedir.id;
-
-            try {
-                let totalActual = Number(platoSeleccionadoParaPedir.totalResenas || 0);
-                let promedioActual = Number(platoSeleccionadoParaPedir.ratingPromedio || 5.0);
-
-                let nuevoTotal = totalActual + 1;
-                let nuevoPromedio = ((promedioActual * totalActual) + calificacionSeleccionadaModal) / nuevoTotal;
-
-                await updateDoc(doc(db, "menu", platoId), {
-                    ratingPromedio: nuevoPromedio,
-                    totalResenas: nuevoTotal
-                });
-
-                await addDoc(collection(db, "resenas"), {
-                    platoId: platoId,
-                    platoNombre: platoSeleccionadoParaPedir.nombre,
-                    estrellas: calificacionSeleccionadaModal,
-                    comentario: comentario || "Sin comentario",
-                    fecha: new Date().toISOString()
-                });
-
-                platoSeleccionadoParaPedir.ratingPromedio = nuevoPromedio;
-                platoSeleccionadoParaPedir.totalResenas = nuevoTotal;
-
-                mostrarToast("¡Gracias por calificar este plato!");
-                document.getElementById('input-comentario-resena').value = "";
-                cargarMenu();
-            } catch(e) {
-                mostrarToast("Error al enviar calificación.");
-            }
         }
 
         window.cambiarCantidadModal = function(cambio) {
@@ -1585,7 +1555,7 @@
         }
 
         // ==========================================
-        // FUNCIONES DE ADMINISTRACIÓN
+        // FUNCIONES DE ADMINISTRACIÓN Y HISTORIAL
         // ==========================================
         window.cargarAdminPedidos = async function() {
             const container = document.getElementById('admin-pedidos-container');
@@ -1633,33 +1603,47 @@
                 qs.forEach(d => pedidos.push({ id: d.id, ...d.data() }));
                 pedidos.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
 
+                // Calcular métricas superiores
+                let totalVentas = pedidos.reduce((acc, p) => acc + Number(p.total || 0), 0);
+                let totalOrdenes = pedidos.length;
+                let ticketPromedio = totalOrdenes > 0 ? Math.round(totalVentas / totalOrdenes) : 0;
+
+                // Obtener total de clientes registrados
+                let clientesSnap = await getDocs(collection(db, "clientes"));
+                let totalClientes = clientesSnap.size;
+
+                document.getElementById('metric-total-ventas').textContent = `₡${totalVentas.toLocaleString()}`;
+                document.getElementById('metric-total-ordenes').textContent = totalOrdenes;
+                document.getElementById('metric-total-clientes').textContent = totalClientes;
+                document.getElementById('metric-ticket-promedio').textContent = `₡${ticketPromedio.toLocaleString()}`;
+
                 if (pedidos.length === 0) {
                     container.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">No hay registros en el historial.</p>`;
                     return;
                 }
 
-                let html = `
-                    <table class="admin-table">
-                        <thead>
-                            <tr><th>Fecha / Hora</th><th>Tipo / Cliente</th><th>Detalle del Pedido</th><th>Método de Pago</th><th>Total (₡)</th><th>Acción</th></tr>
-                        </thead>
-                        <tbody>
-                `;
+                let html = ``;
                 pedidos.forEach(p => {
                     let fecha = p.fecha ? new Date(p.fecha).toLocaleString() : '';
-                    let esPaquete = p.nombre && p.nombre.includes("Paquete de Stock");
                     html += `
-                        <tr style="${esPaquete ? 'background: rgba(59, 130, 246, 0.05);' : ''}">
-                            <td style="font-size:12px; color:var(--text-muted);">${fecha}</td>
-                            <td><strong style="color:${esPaquete ? '#60a5fa' : 'white'};">${p.nombre || 'General'}</strong></td>
-                            <td>${p.detalle || 'Sin detalle'}</td>
-                            <td><span style="background:#1a1d24; padding:5px 10px; border-radius:8px; font-size:11px; font-weight:bold; color:var(--color-principal); border:1px solid var(--border-color);">${p.metodoPago || 'Efectivo'}</span></td>
-                            <td><strong style="color:var(--color-principal);">₡${Number(p.total || 0).toLocaleString()}</strong></td>
-                            <td><button type="button" onclick="eliminarRegistroHistorial('${p.id}')" class="action-pill" style="padding:6px 12px; font-size:11px; background:rgba(239,68,68,0.12); color:#f87171; border-color:rgba(239,68,68,0.3);">Eliminar ✕</button></td>
-                        </tr>
+                        <div class="sale-item-card">
+                            <div style="display:flex; flex-direction:column; gap:4px; flex:1;">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <strong style="color:var(--color-principal); font-size:15px;">${p.nombre || 'Cliente General'}</strong>
+                                    <span style="font-size:11px; color:var(--text-muted);">${fecha}</span>
+                                </div>
+                                <span style="font-size:13px; color:white;">${p.detalle || 'Sin detalle'}</span>
+                                <div style="display:flex; gap:10px; align-items:center; margin-top:2px;">
+                                    <span style="background:#1a1d24; padding:2px 8px; border-radius:6px; font-size:11px; color:var(--text-muted); border:1px solid var(--border-color);">${p.metodoPago || 'Efectivo'}</span>
+                                </div>
+                            </div>
+                            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+                                <span style="font-size:16px; font-weight:800; color:var(--color-principal);">₡${Number(p.total || 0).toLocaleString()}</span>
+                                <button type="button" onclick="eliminarRegistroHistorial('${p.id}')" class="action-pill" style="padding:4px 10px; font-size:11px; background:rgba(239,68,68,0.12); color:#f87171; border-color:rgba(239,68,68,0.3);">Eliminar</button>
+                            </div>
+                        </div>
                     `;
                 });
-                html += `</tbody></table>`;
                 container.innerHTML = html;
             } catch(e) {
                 container.innerHTML = `<p style="color:#ef4444; font-size:13px;">Error al cargar historial.</p>`;
@@ -1825,12 +1809,11 @@
                 return;
             }
             variantesEdicion.forEach((v, idx) => {
-                let fotoTxt = v.imagenUrl ? ' [Foto]' : '';
                 let estadoAgotado = v.agotado ? ' [Agotado]' : '';
                 let colorEstado = v.agotado ? 'color: #f87171;' : 'color: #4ade80;';
                 html += `
                     <div style="display:flex; justify-content:space-between; align-items:center; background:#121419; padding:8px 12px; border-radius:8px; margin-bottom:4px; border:1px solid var(--border-color);">
-                        <span>• ${v.nombre} (+₡${v.precio})<span style="font-size:11px; color:var(--text-muted);">${fotoTxt}</span> <strong style="${colorEstado}">${estadoAgotado}</strong></span>
+                        <span>• ${v.nombre} (+₡${v.precio}) <strong style="${colorEstado}">${estadoAgotado}</strong></span>
                         <div style="display:flex; gap:6px;">
                             <button type="button" onclick="toggleAgotadoVariante(${idx})" class="action-pill" style="padding:3px 8px; font-size:10px; background:#1a1d24;">Estado</button>
                             <button type="button" onclick="variantesEdicion.splice(${idx},1); renderizarVariantesEdicion();" style="color:#f87171; background:none; border:none; cursor:pointer; font-weight:bold;">✕</button>
@@ -2009,9 +1992,7 @@
                             nombre, categoria, precio, descripcion,
                             imagenUrl: imagenUrl || "",
                             variantes: variantesTemporales,
-                            disponible: true,
-                            ratingPromedio: 5.0,
-                            totalResenas: 0
+                            disponible: true
                         });
                         mostrarToast("Plato registrado con éxito.");
                         productForm.reset();
@@ -2044,8 +2025,7 @@
                 
                 let html = "";
                 variantesTemporales.forEach((v, idx) => {
-                    let fotoLabel = v.imagenUrl ? ' <span style="font-size:11px; color:var(--text-muted);">[Foto]</span>' : '';
-                    html += `<div style="display:flex; justify-content:space-between; align-items:center; background:#121419; padding:6px 10px; border-radius:6px; margin-bottom:4px; border:1px solid var(--border-color);"><span>• ${v.nombre} (+₡${v.precio})${fotoLabel}</span> <button type="button" onclick="variantesTemporales.splice(${idx},1); agregarVarianteTemporal();" style="color:#f87171; background:none; border:none; cursor:pointer; font-weight:bold;">✕</button></div>`;
+                    html += `<div style="display:flex; justify-content:space-between; align-items:center; background:#121419; padding:6px 10px; border-radius:6px; margin-bottom:4px; border:1px solid var(--border-color);"><span>• ${v.nombre} (+₡${v.precio})</span> <button type="button" onclick="variantesTemporales.splice(${idx},1); agregarVarianteTemporal();" style="color:#f87171; background:none; border:none; cursor:pointer; font-weight:bold;">✕</button></div>`;
                 });
                 document.getElementById('lista-variantes-temp').innerHTML = html;
             };
@@ -2209,98 +2189,6 @@
             } catch(e) { mostrarToast("Error al registrar."); }
         }
 
-        function renderizarFormularioHorarios(horariosData = {}) {
-            const container = document.getElementById('days-schedule-container');
-            if (!container) return;
-            container.innerHTML = "";
-            diasSemana.forEach(dia => {
-                let info = horariosData[dia] || { cerrado: false, apertura: "12:00", cierre: "22:00" };
-                container.innerHTML += `
-                    <div class="day-schedule-card">
-                        <div class="day-header-flex">
-                            <h4>${dia}</h4>
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="chk-cerrado-${dia}" ${info.cerrado ? 'checked':''} onchange="toggleDiaCerrado('${dia}')" style="width:16px; height:16px;"> Cerrado
-                            </label>
-                        </div>
-                        <div id="wrapper-horas-${dia}" style="display:${info.cerrado ? 'none':'flex'}; gap:12px; align-items:center;">
-                            <input type="time" id="time-apertura-${dia}" value="${info.apertura || '12:00'}" style="flex:1;">
-                            <span style="color:var(--text-muted);">a</span>
-                            <input type="time" id="time-cierre-${dia}" value="${info.cierre || '22:00'}" style="flex:1;">
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        window.toggleDiaCerrado = function(dia) {
-            const chk = document.getElementById(`chk-cerrado-${dia}`);
-            const wrapper = document.getElementById(`wrapper-horas-${dia}`);
-            if(chk && wrapper) wrapper.style.display = chk.checked ? 'none' : 'flex';
-        }
-
-        window.guardarHorariosNube = async function() {
-            let horariosObj = {};
-            diasSemana.forEach(dia => {
-                const cerrado = document.getElementById(`chk-cerrado-${dia}`).checked;
-                const apertura = document.getElementById(`time-apertura-${dia}`).value;
-                const cierre = document.getElementById(`time-cierre-${dia}`).value;
-                horariosObj[dia] = { cerrado, apertura, cierre };
-            });
-            try {
-                await setDoc(doc(db, "configuracion", "horariosAtencion"), horariosObj);
-                mostrarToast("Horarios guardados en la nube");
-                verificarEstadoNegocioConHorarios(horariosObj);
-            } catch(e) { mostrarToast("Error al guardar horarios."); }
-        }
-
-        function verificarEstadoNegocioConHorarios(horariosObj) {
-            const now = new Date();
-            const diaIndex = now.getDay();
-            const nombreDiaHoy = diasSemana[diaIndex];
-            const infoHoy = horariosObj[nombreDiaHoy];
-
-            if (!infoHoy || infoHoy.cerrado) {
-                negocioAbiertoGlobal = false;
-                aplicarEstadoVisualNegocio(false, "Cerrado hoy");
-                return;
-            }
-
-            const horaActualMinutos = now.getHours() * 60 + now.getMinutes();
-            const [aperturaH, aperturaM] = (infoHoy.apertura || "12:00").split(':').map(Number);
-            const [cierreH, cierreM] = (infoHoy.cierre || "22:00").split(':').map(Number);
-            const aperturaMinutos = aperturaH * 60 + aperturaM;
-            const cierreMinutos = cierreH * 60 + cierreM;
-
-            if (horaActualMinutos >= aperturaMinutos && horaActualMinutos <= cierreMinutos) {
-                negocioAbiertoGlobal = true;
-                aplicarEstadoVisualNegocio(true, "Abierto");
-            } else {
-                negocioAbiertoGlobal = false;
-                aplicarEstadoVisualNegocio(false, "Cerrado ahora");
-            }
-        }
-
-        function aplicarEstadoVisualNegocio(abierto, texto) {
-            const dotEl = document.getElementById('floating-status-dot');
-            const textEl = document.getElementById('floating-status-text');
-            const sideDotEl = document.getElementById('sidebar-status-dot');
-            const sideTextEl = document.getElementById('sidebar-status-text');
-
-            if (abierto) {
-                if (dotEl) { dotEl.className = "status-dot"; dotEl.style.background = "#22c55e"; dotEl.style.boxShadow = "0 0 8px #22c55e"; }
-                if (textEl) textEl.textContent = texto;
-                if (sideDotEl) { sideDotEl.className = "status-dot"; sideDotEl.style.background = "#22c55e"; sideDotEl.style.boxShadow = "0 0 8px #22c55e"; }
-                if (sideTextEl) sideTextEl.textContent = "NEGOCIO ABIERTO";
-            } else {
-                if (dotEl) { dotEl.className = "status-dot closed"; dotEl.style.background = "#ef4444"; dotEl.style.boxShadow = "0 0 8px #ef4444"; }
-                if (textEl) textEl.textContent = texto;
-                if (sideDotEl) { sideDotEl.className = "status-dot closed"; sideDotEl.style.background = "#ef4444"; sideDotEl.style.boxShadow = "0 0 8px #ef4444"; }
-                if (sideTextEl) sideTextEl.textContent = "NEGOCIO CERRADO";
-            }
-            if (listaPlatos.length > 0) mostrarPlatos(listaPlatos);
-        }
-
         window.togglePausarPedidosOnline = function() {
             pedidosOnlinePausados = !pedidosOnlinePausados;
             const btn = document.getElementById('btn-pausa-online');
@@ -2374,12 +2262,6 @@
                     document.getElementById('banner-tiempo-estimado').innerHTML = `Tiempo estimado de preparación: <strong>${tVal}</strong>`;
                     if (document.getElementById('select-tiempo-admin')) document.getElementById('select-tiempo-admin').value = tVal;
                 }
-
-                const docRefH = doc(db, "configuracion", "horariosAtencion");
-                const docSnapH = await getDoc(docRefH);
-                let horariosData = docSnapH.exists() ? docSnapH.data() : {};
-                renderizarFormularioHorarios(horariosData);
-                verificarEstadoNegocioConHorarios(horariosData);
             } catch (e) { 
                 console.error("Error al cargar configuracion:", e); 
             }
