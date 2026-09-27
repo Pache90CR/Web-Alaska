@@ -16,6 +16,8 @@
         %22icons%22: [{%22src%22: %22https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=192&q=80%22, %22sizes%22: %22192x192%22, %22type%22: %22image/jpeg%22}]
     }">
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         :root {
             --bg-dark: #0f1012;
@@ -229,6 +231,9 @@
         .cart-icon-btn:hover { transform: scale(1.08); }
         .cart-count-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; font-size: 11px; padding: 2px 7px; border-radius: 12px; font-weight: 800; border: 2px solid var(--card-bg); }
 
+        /* ==========================================
+           ESTILOS EJECUTIVOS PARA EL PANEL ADMIN
+           ========================================== */
         .admin-top-bar { 
             display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; 
             background: linear-gradient(145deg, #181a1f 0%, #13151a 100%); 
@@ -355,25 +360,6 @@
         .metric-card span.label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
         .metric-card span.value { font-size: 20px; color: var(--text-main); font-weight: 800; letter-spacing: -0.5px; }
         .metric-card span.trend { font-size: 11px; font-weight: 700; color: #4ade80; display: inline-flex; align-items: center; gap: 4px; }
-
-        .sales-card-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .sale-item-card {
-            background: #13151a;
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 16px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 14px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: border-color 0.2s ease;
-        }
-        .sale-item-card:hover { border-color: rgba(212, 175, 55, 0.4); }
 
         .admin-table {
             width: 100%;
@@ -554,43 +540,43 @@
                     </div>
                 </div>
 
-                <!-- NUEVO DISEÑO EJECUTIVO PARA HISTORIAL Y REPORTE DE VENTAS -->
                 <div id="admin-tab-historial" class="admin-section-tab">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:14px;">
                         <div>
                             <h2 style="margin:0; font-size:20px; color:var(--color-principal); font-weight:800; letter-spacing:-0.3px;">Historial y Reporte de Ventas</h2>
-                            <p style="font-size:13px; color:var(--text-muted); margin:4px 0 0 0;">Resumen ejecutivo y registro detallado de transacciones.</p>
+                            <p style="font-size:13px; color:var(--text-muted); margin:4px 0 0 0;">Resumen ejecutivo y gráfico semanal.</p>
                         </div>
-                        <button type="button" onclick="descargarReporteCSV()" class="action-pill" style="background:var(--color-principal); color:#121212; border:none; padding:11px 20px; font-weight:800; box-shadow: 0 4px 15px rgba(212,175,55,0.3);">Descargar Reporte CSV</button>
+                        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                            <input type="date" id="input-filtro-semana" onchange="cargarAdminHistorial()" style="background:#121419; color:var(--text-main); border:1px solid var(--border-color); padding:10px 14px; border-radius:10px; font-size:13px; font-weight:600; outline:none; cursor:pointer; width:auto;">
+                            <button type="button" onclick="descargarReporteCSV()" class="action-pill" style="background:var(--color-principal); color:#121212; border:none; padding:11px 20px; font-weight:800; box-shadow: 0 4px 15px rgba(212,175,55,0.3);">Descargar Reporte CSV</button>
+                        </div>
                     </div>
 
-                    <!-- TARJETAS DE MÉTRICAS SUPERIORES (Estilo dashboard moderno) -->
                     <div class="metrics-grid">
                         <div class="metric-card">
-                            <span class="label">Ventas Totales</span>
-                            <span class="value" id="metric-total-ventas">₡0</span>
-                            <span class="trend">En tiempo real</span>
+                            <span class="label">Ventas de la Semana</span>
+                            <span class="value" id="metric-semana-ventas">₡0</span>
+                            <span class="trend">Según filtro</span>
                         </div>
                         <div class="metric-card">
                             <span class="label">Total Órdenes</span>
-                            <span class="value" id="metric-total-ordenes">0</span>
-                            <span class="trend">Registradas</span>
-                        </div>
-                        <div class="metric-card">
-                            <span class="label">Clientes Frecuentes</span>
-                            <span class="value" id="metric-total-clientes">0</span>
-                            <span class="trend">En Club de Lealtad</span>
+                            <span class="value" id="metric-semana-ordenes">0</span>
+                            <span class="trend">En la semana</span>
                         </div>
                         <div class="metric-card">
                             <span class="label">Ticket Promedio</span>
-                            <span class="value" id="metric-ticket-promedio">₡0</span>
+                            <span class="value" id="metric-semana-ticket">₡0</span>
                             <span class="trend">Por orden</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="label">Platos Vendidos</span>
+                            <span class="value" id="metric-semana-platos">0</span>
+                            <span class="trend">Unidades</span>
                         </div>
                     </div>
 
-                    <!-- LISTADO DE VENTAS EN TARJETAS MODERNAS -->
-                    <div id="admin-historial-container" class="sales-card-list">
-                        <p style="color:var(--text-muted); font-size:13px;">Cargando historial...</p>
+                    <div style="background:#13151a; padding:20px; border-radius:16px; border:1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.2); height: 320px; position:relative;">
+                        <canvas id="graficoVentasSemana"></canvas>
                     </div>
                 </div>
 
@@ -776,7 +762,6 @@
 
     </div>
 
-    <!-- MODAL DETALLE DE PLATO Y EXTRAS -->
     <div id="modal-detalle-plato" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:18px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -809,7 +794,6 @@
         </div>
     </div>
 
-    <!-- MODAL CARRITO DE COMPRAS PÚBLICO -->
     <div id="modal-carrito" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:18px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -821,7 +805,6 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR PLATO -->
     <div id="modal-editar-plato" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:18px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -879,7 +862,6 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR CATEGORÍA -->
     <div id="modal-editar-categoria" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:18px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -900,7 +882,6 @@
         </div>
     </div>
 
-    <!-- MODAL SELLO -->
     <div id="modal-sello-interactivo" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:18px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -917,7 +898,6 @@
         </div>
     </div>
 
-    <!-- BARRA FLOTANTE -->
     <div class="floating-bottom-bar" id="floating-bar">
         <div class="status-pill">
             <div class="status-dot" id="floating-status-dot"></div>
@@ -929,7 +909,6 @@
         </button>
     </div>
 
-    <!-- MODAL LEALTAD Y SEGUIMIENTO -->
     <div id="modal-lealtad" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:18px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -994,15 +973,16 @@
         let carritoItems = [];
         let categoriasNube = {};
         const categoriasDefault = ["Bocas", "Comidas Rápidas", "Arroces", "Batidos", "Casados", "Ofertas"];
-        const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-        let variantesTemporales = [];
-        let variantesEdicion = [];
         
         let platoSeleccionadoParaPedir = null;
         let cantidadSeleccionadaModal = 1;
         let adminAutenticado = false;
         let negocioAbiertoGlobal = true;
         let pedidosOnlinePausados = false;
+        
+        let variantesTemporales = [];
+        let variantesEdicion = [];
+        let graficoSemana = null;
 
         let checkoutPaso = 1; 
         let pedidoTipoEntrega = "";
@@ -1059,7 +1039,7 @@
                 }
                 document.getElementById('view-admin').classList.add('active-view');
                 if(floatingBar) floatingBar.classList.add('hidden');
-                seleccionarSeccionAdmin('pedidos');
+                seleccionarSeccionAdmin('historial');
                 window.scrollTo(0,0);
             }
         }
@@ -1555,7 +1535,7 @@
         }
 
         // ==========================================
-        // FUNCIONES DE ADMINISTRACIÓN Y HISTORIAL
+        // FUNCIONES DE ADMINISTRACIÓN
         // ==========================================
         window.cargarAdminPedidos = async function() {
             const container = document.getElementById('admin-pedidos-container');
@@ -1582,7 +1562,6 @@
                                 <span style="font-size:13px; color:white; display:block; margin:4px 0;">${p.detalle}</span>
                                 <span style="font-size:12px; color:#4ade80; font-weight:600;">Pago: ${p.metodoPago || 'Efectivo'} - Total: ₡${Number(p.total || 0).toLocaleString()}</span>
                             </div>
-                            <button type="button" onclick="eliminarRegistroHistorial('${p.id}')" class="action-pill" style="background:rgba(239,68,68,0.12); color:#f87171; border-color:rgba(239,68,68,0.3); font-size:12px; padding:8px 14px;">Eliminar ✕</button>
                         </div>
                     `;
                 });
@@ -1592,74 +1571,113 @@
             }
         }
 
+        // --- NUEVO: CARGAR HISTORIAL CON GRÁFICO SEMANAL ---
         window.cargarAdminHistorial = async function() {
-            const container = document.getElementById('admin-historial-container');
-            if (!container) return;
-            container.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">Cargando historial...</p>`;
-            try {
-                const q = query(collection(db, "pedidos"), limit(100));
-                const qs = await getDocs(q);
-                let pedidos = [];
-                qs.forEach(d => pedidos.push({ id: d.id, ...d.data() }));
-                pedidos.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
+            const dateInput = document.getElementById('input-filtro-semana');
+            if(!dateInput) return;
+            
+            let selectedDate = new Date();
+            if (dateInput.value) {
+                let parts = dateInput.value.split('-');
+                selectedDate = new Date(parts[0], parts[1]-1, parts[2]);
+            } else {
+                let tzoffset = (new Date()).getTimezoneOffset() * 60000;
+                let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
+                dateInput.value = localISOTime;
+            }
 
-                // Calcular métricas superiores
-                let totalVentas = pedidos.reduce((acc, p) => acc + Number(p.total || 0), 0);
-                let totalOrdenes = pedidos.length;
+            // Calcular Lunes y Domingo de esa semana
+            let day = selectedDate.getDay();
+            let diff = selectedDate.getDate() - day + (day === 0 ? -6 : 1);
+            let startOfWeek = new Date(selectedDate.setDate(diff));
+            startOfWeek.setHours(0,0,0,0);
+            
+            let endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 6);
+            endOfWeek.setHours(23,59,59,999);
+
+            try {
+                const q = query(collection(db, "pedidos"));
+                const qs = await getDocs(q);
+                
+                let ventasSemana = [0, 0, 0, 0, 0, 0, 0]; // L, M, X, J, V, S, D
+                let totalVentas = 0;
+                let totalOrdenes = 0;
+                let totalPlatos = 0;
+
+                qs.forEach(d => {
+                    let p = d.data();
+                    if(p.fecha) {
+                        let f = new Date(p.fecha);
+                        if (f >= startOfWeek && f <= endOfWeek) {
+                            totalOrdenes++;
+                            let total = Number(p.total || 0);
+                            totalVentas += total;
+                            
+                            let dayOfWeek = f.getDay(); // 0 es Domingo, 1 es Lunes
+                            let index = dayOfWeek === 0 ? 6 : dayOfWeek - 1; 
+                            ventasSemana[index] += total;
+
+                            // Calcular platos aproximados por el string de detalle
+                            if (p.detalle) {
+                                let partes = p.detalle.split(" | ");
+                                partes.forEach(parte => {
+                                    let match = parte.match(/^(\d+)x/);
+                                    if (match) totalPlatos += Number(match[1]);
+                                });
+                            }
+                        }
+                    }
+                });
+
                 let ticketPromedio = totalOrdenes > 0 ? Math.round(totalVentas / totalOrdenes) : 0;
 
-                // Obtener total de clientes registrados
-                let clientesSnap = await getDocs(collection(db, "clientes"));
-                let totalClientes = clientesSnap.size;
+                document.getElementById('metric-semana-ventas').textContent = `₡${totalVentas.toLocaleString()}`;
+                document.getElementById('metric-semana-ordenes').textContent = totalOrdenes;
+                document.getElementById('metric-semana-ticket').textContent = `₡${ticketPromedio.toLocaleString()}`;
+                document.getElementById('metric-semana-platos').textContent = totalPlatos;
 
-                document.getElementById('metric-total-ventas').textContent = `₡${totalVentas.toLocaleString()}`;
-                document.getElementById('metric-total-ordenes').textContent = totalOrdenes;
-                document.getElementById('metric-total-clientes').textContent = totalClientes;
-                document.getElementById('metric-ticket-promedio').textContent = `₡${ticketPromedio.toLocaleString()}`;
-
-                if (pedidos.length === 0) {
-                    container.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">No hay registros en el historial.</p>`;
-                    return;
+                // Dibujar Gráfico
+                const ctx = document.getElementById('graficoVentasSemana').getContext('2d');
+                if (graficoSemana) {
+                    graficoSemana.destroy();
                 }
 
-                let html = ``;
-                pedidos.forEach(p => {
-                    let fecha = p.fecha ? new Date(p.fecha).toLocaleString() : '';
-                    html += `
-                        <div class="sale-item-card">
-                            <div style="display:flex; flex-direction:column; gap:4px; flex:1;">
-                                <div style="display:flex; justify-content:space-between; align-items:center;">
-                                    <strong style="color:var(--color-principal); font-size:15px;">${p.nombre || 'Cliente General'}</strong>
-                                    <span style="font-size:11px; color:var(--text-muted);">${fecha}</span>
-                                </div>
-                                <span style="font-size:13px; color:white;">${p.detalle || 'Sin detalle'}</span>
-                                <div style="display:flex; gap:10px; align-items:center; margin-top:2px;">
-                                    <span style="background:#1a1d24; padding:2px 8px; border-radius:6px; font-size:11px; color:var(--text-muted); border:1px solid var(--border-color);">${p.metodoPago || 'Efectivo'}</span>
-                                </div>
-                            </div>
-                            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
-                                <span style="font-size:16px; font-weight:800; color:var(--color-principal);">₡${Number(p.total || 0).toLocaleString()}</span>
-                                <button type="button" onclick="eliminarRegistroHistorial('${p.id}')" class="action-pill" style="padding:4px 10px; font-size:11px; background:rgba(239,68,68,0.12); color:#f87171; border-color:rgba(239,68,68,0.3);">Eliminar</button>
-                            </div>
-                        </div>
-                    `;
+                graficoSemana = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
+                        datasets: [{
+                            label: 'Ventas (₡)',
+                            data: ventasSemana,
+                            backgroundColor: '#06b6d4',
+                            borderRadius: 6,
+                            barPercentage: 0.6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { 
+                                beginAtZero: true, 
+                                grid: { color: '#2a2e39', borderDash: [5, 5] },
+                                ticks: { color: '#94a3b8', callback: function(value) { return '₡' + value.toLocaleString(); } }
+                            },
+                            x: { 
+                                grid: { display: false },
+                                ticks: { color: '#94a3b8', font: { weight: 'bold' } }
+                            }
+                        }
+                    }
                 });
-                container.innerHTML = html;
-            } catch(e) {
-                container.innerHTML = `<p style="color:#ef4444; font-size:13px;">Error al cargar historial.</p>`;
-            }
-        }
 
-        window.eliminarRegistroHistorial = async function(idPedido) {
-            if (confirm("¿Estás seguro de eliminar este registro?")) {
-                try {
-                    await deleteDoc(doc(db, "pedidos", idPedido));
-                    mostrarToast("Registro eliminado.");
-                    cargarAdminHistorial();
-                    cargarAdminPedidos();
-                } catch(e) {
-                    mostrarToast("Error al eliminar.");
-                }
+            } catch(e) {
+                console.error(e);
+                mostrarToast("Error al cargar gráfico semanal.");
             }
         }
 
