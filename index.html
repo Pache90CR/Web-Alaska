@@ -16,6 +16,7 @@
         %22icons%22: [{%22src%22: %22https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=192&q=80%22, %22sizes%22: %22192x192%22, %22type%22: %22image/jpeg%22}]
     }">
 
+    <!-- Chart.js para gráficas financieras -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
@@ -65,6 +66,13 @@
             border: 1px solid rgba(212, 175, 55, 0.3); color: var(--color-principal);
             padding: 10px 20px; border-radius: 24px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .closed-store-banner {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171;
+            padding: 12px 20px; border-radius: 24px; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
         }
 
         .search-box-container { margin-bottom: 24px; }
@@ -157,7 +165,7 @@
             font-weight: 700; font-size: 14px; text-align: center; transition: all 0.2s ease;
         }
         .order-btn:hover { background: rgba(212, 175, 55, 0.25); box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2); }
-        .order-btn.closed, .order-btn.soldout { background: rgba(239, 68, 68, 0.12); color: #f87171; border-color: rgba(239, 68, 68, 0.3); cursor: not-allowed; }
+        .order-btn.closed, .order-btn.soldout { background: rgba(239, 68, 68, 0.12); color: #f87171; border-color: rgba(239, 68, 68, 0.3); cursor: pointer; }
 
         .loyalty-banner {
             background: linear-gradient(145deg, rgba(24, 26, 31, 0.9) 0%, rgba(15, 16, 18, 0.95) 100%);
@@ -231,9 +239,6 @@
         .cart-icon-btn:hover { transform: scale(1.08); }
         .cart-count-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; font-size: 11px; padding: 2px 7px; border-radius: 12px; font-weight: 800; border: 2px solid var(--card-bg); }
 
-        /* ==========================================
-           ESTILOS EJECUTIVOS PARA EL PANEL ADMIN
-           ========================================== */
         .admin-top-bar { 
             display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; 
             background: linear-gradient(145deg, #181a1f 0%, #13151a 100%); 
@@ -337,7 +342,6 @@
         .settings-card h3 { margin-top: 0; font-size: 17px; color: var(--text-main); font-weight: 700; margin-bottom: 6px; }
         .settings-card p { font-size: 12px; color: var(--text-muted); margin-top: 0; margin-bottom: 20px; }
 
-        /* ESTILOS NUEVOS PARA TARJETAS EJECUTIVAS DE HISTORIAL Y MÉTRICAS */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(1, 1fr);
@@ -396,6 +400,13 @@
         .modal-content { background: #16181e; width: 100%; max-width: 500px; border-radius: 22px; overflow: hidden; border: 1px solid var(--border-color); display: flex; flex-direction: column; max-height: 85vh; color: var(--text-main); box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
         .modal-body { padding: 24px; overflow-y: auto; flex: 1; }
         .modal-footer { padding: 18px 24px; background: #111318; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 12px; }
+
+        .btn-wsp {
+            background: #25D366; color: white; border: none; padding: 6px 12px; border-radius: 8px;
+            font-weight: 700; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+            text-decoration: none; transition: background 0.2s;
+        }
+        .btn-wsp:hover { background: #1eb856; }
     </style>
 </head>
 <body>
@@ -426,10 +437,6 @@
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 <span>Historial de Ventas</span>
             </a>
-            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('ranking')">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                <span>Ranking de Platos</span>
-            </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('platos')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2H3zm7 0v20M3 18h18v2H3v-2z"/></svg>
                 <span>Gestión de Platos</span>
@@ -447,19 +454,19 @@
                 <span>Generador de Sellos</span>
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('clientes')">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2m8-10a4 4 0 100-8 4 4 0 000 8zm14 10v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg>
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2m8-10a4 4 0 100-8 4 4 0 000 8zm14 10v-2a4 4 0 010 7.75"/></svg>
                 <span>Base de Clientes</span>
             </a>
             <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('ajustes')">
                 <svg class="icon-svg" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065ZM15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                <span>Ajustes</span>
+                <span>Ajustes u Horarios</span>
             </a>
         </div>
 
         <div class="sidebar-footer">
             <div class="sidebar-status-pill" id="sidebar-status-pill-box">
                 <div class="status-dot" id="sidebar-status-dot"></div>
-                <span id="sidebar-status-text">VERIFICANDO...</span>
+                <span id="sidebar-status-text">ABIERTO</span>
             </div>
             <button onclick="cambiarVista('menu'); cerrarSidebar();" class="action-pill" style="width:100%; justify-content:center; border:none; background:#1b1e26; color:var(--text-main);">Ver Menú Público</button>
             <button onclick="cerrarSesionAdmin()" class="action-pill" style="width:100%; justify-content:center; border:none; background:rgba(239, 68, 68, 0.12); color:#f87171;">Cerrar Sesión</button>
@@ -475,7 +482,7 @@
                 <h1 id="public-title-display">Bar Restaurante Alaska</h1>
                 <p id="public-subtitle-display">Descubre nuestras deliciosas opciones y gana premios</p>
                 
-                <div class="tiempo-estimado-banner" id="banner-tiempo-estimado">
+                <div id="banner-estado-local" class="tiempo-estimado-banner">
                     Tiempo estimado de preparación: <strong>20-30 min</strong>
                 </div>
 
@@ -497,7 +504,7 @@
                     Club Bar Alaska
                 </h3>
                 <div id="loyalty-counter-text" style="font-weight:800; font-size:15px; background:#111; padding:8px 18px; border-radius:12px; border:1px solid var(--border-color); color:white;">0 / 5 Sellos</div>
-                <p style="margin:0; font-size:12px; color:var(--text-muted); line-height: 1.4;">Haz clic en el siguiente cuadro para introducir tu código y ganar tu sello</p>
+                <p style="margin:0; font-size:12px; color:var(--text-muted); line-height: 1.4;">Haz clic en el cuadro marcado para ingresar tu código y ganar sellos</p>
                 <div class="stamps-grid" id="public-stamps-grid"></div>
             </div>
 
@@ -532,6 +539,7 @@
 
             <div class="admin-wrapper">
                 
+                <!-- PEDIDOS EN VIVO -->
                 <div id="admin-tab-pedidos" class="admin-section-tab active-admin-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; letter-spacing:-0.3px;">Pedidos Recientes en Vivo</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Monitorea órdenes activas en tiempo real, actualiza su estado o elimínalas.</p>
@@ -540,28 +548,36 @@
                     </div>
                 </div>
 
+                <!-- HISTORIAL Y REPORTE ENTRE FECHAS -->
                 <div id="admin-tab-historial" class="admin-section-tab">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:14px;">
                         <div>
                             <h2 style="margin:0; font-size:20px; color:var(--color-principal); font-weight:800; letter-spacing:-0.3px;">Historial y Reporte de Ventas</h2>
-                            <p style="font-size:13px; color:var(--text-muted); margin:4px 0 0 0;">Resumen ejecutivo y gráfico semanal.</p>
+                            <p style="font-size:13px; color:var(--text-muted); margin:4px 0 0 0;">Filtra ingresos e historial entre rangos de fechas personalizados.</p>
                         </div>
                         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                            <input type="date" id="input-filtro-semana" onchange="cargarAdminHistorial()" style="background:#121419; color:var(--text-main); border:1px solid var(--border-color); padding:10px 14px; border-radius:10px; font-size:13px; font-weight:600; outline:none; cursor:pointer; width:auto;">
-                            <button type="button" onclick="descargarReporteCSV()" class="action-pill" style="background:var(--color-principal); color:#121212; border:none; padding:11px 20px; font-weight:800; box-shadow: 0 4px 15px rgba(212,175,55,0.3);">Descargar Reporte CSV</button>
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                <span style="font-size:12px; color:var(--text-muted);">Desde:</span>
+                                <input type="date" id="input-filtro-inicio" onchange="cargarAdminHistorial()" style="background:#121419; color:var(--text-main); border:1px solid var(--border-color); padding:8px 12px; border-radius:10px; font-size:12px; font-weight:600; outline:none; cursor:pointer; width:auto;">
+                            </div>
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                <span style="font-size:12px; color:var(--text-muted);">Hasta:</span>
+                                <input type="date" id="input-filtro-fin" onchange="cargarAdminHistorial()" style="background:#121419; color:var(--text-main); border:1px solid var(--border-color); padding:8px 12px; border-radius:10px; font-size:12px; font-weight:600; outline:none; cursor:pointer; width:auto;">
+                            </div>
+                            <button type="button" onclick="descargarReporteCSV()" class="action-pill" style="background:var(--color-principal); color:#121212; border:none; padding:10px 18px; font-weight:800; box-shadow: 0 4px 15px rgba(212,175,55,0.3);">Descargar CSV</button>
                         </div>
                     </div>
 
                     <div class="metrics-grid">
                         <div class="metric-card">
-                            <span class="label">Ventas de la Semana</span>
+                            <span class="label">Ventas Totales</span>
                             <span class="value" id="metric-semana-ventas">₡0</span>
-                            <span class="trend">Según filtro</span>
+                            <span class="trend">En el periodo</span>
                         </div>
                         <div class="metric-card">
                             <span class="label">Total Órdenes</span>
                             <span class="value" id="metric-semana-ordenes">0</span>
-                            <span class="trend">En la semana</span>
+                            <span class="trend">Registradas</span>
                         </div>
                         <div class="metric-card">
                             <span class="label">Ticket Promedio</span>
@@ -580,21 +596,7 @@
                     </div>
                 </div>
 
-                <div id="admin-tab-ranking" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:6px;">Ranking de Platos Más Pedidos</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Descubre cuáles son los productos estrella del menú según el volumen de ventas.</p>
-                    <div style="overflow-x:auto;">
-                        <table class="admin-table">
-                            <thead>
-                                <tr><th>Posición</th><th>Plato / Ítem</th><th>Total Vendidos</th><th>Ingresos Generados</th></tr>
-                            </thead>
-                            <tbody id="admin-tabla-ranking-body">
-                                <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Calculando ranking...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
+                <!-- GESTIÓN DE PLATOS OPTIMIZADA -->
                 <div id="admin-tab-platos" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:20px;">Gestión de Platos</h2>
                     <div style="overflow-x:auto;">
@@ -683,25 +685,47 @@
                     </div>
                 </div>
 
+                <!-- BASE DE CLIENTES CON WHATSAPP DIRECTO -->
                 <div id="admin-tab-clientes" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:6px;">Base de Clientes</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Listado de clientes registrados en el Club de Lealtad.</p>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Listado de clientes y contacto directo por WhatsApp.</p>
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
-                                <tr><th>Cliente</th><th>Teléfono</th><th>Sellos</th><th>Acción</th></tr>
+                                <tr><th>Cliente</th><th>Teléfono</th><th>Sellos</th><th>WhatsApp</th><th>Acción</th></tr>
                             </thead>
                             <tbody id="admin-tabla-clientes-body">
-                                <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando clientes...</td></tr>
+                                <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Cargando clientes...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
+                <!-- AJUSTES Y CONFIGURACIÓN DE HORARIOS -->
                 <div id="admin-tab-ajustes" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:20px; color:var(--text-main); font-weight:800; margin-bottom:4px;">Ajustes Generales</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:24px;">Personaliza la identidad visual, colores y títulos del establecimiento.</p>
+                    <h2 style="margin-top:0; font-size:20px; color:var(--text-main); font-weight:800; margin-bottom:4px;">Ajustes Generales y Horarios</h2>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:24px;">Configura horarios de atención automática, colores y marca.</p>
                     
+                    <div class="settings-card">
+                        <h3>Horarios de Atención Automáticos</h3>
+                        <p>El menú restringirá los pedidos fuera del horario definido de forma automática.</p>
+
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
+                            <div class="form-group">
+                                <label>Hora Apertura:</label>
+                                <input type="time" id="input-hora-apertura" value="11:00">
+                            </div>
+                            <div class="form-group">
+                                <label>Hora Cierre:</label>
+                                <input type="time" id="input-hora-cierre" value="23:00">
+                            </div>
+                            <div class="form-group" style="grid-column: span 1 / -1;">
+                                <label>Días Cerrado (Separados por coma):</label>
+                                <input type="text" id="input-dias-cerrado" placeholder="Ej. Lunes (o déjalo vacío si abres diario)">
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="settings-card">
                         <h3>Configuración de la Cuenta</h3>
                         <p>Nombre para uso administrativo y textos visibles públicos.</p>
@@ -762,6 +786,7 @@
 
     </div>
 
+    <!-- MODALES -->
     <div id="modal-detalle-plato" class="modal-overlay">
         <div class="modal-content">
             <div style="padding:18px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
@@ -951,7 +976,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         let app, db;
         try {
@@ -980,6 +1005,10 @@
         let negocioAbiertoGlobal = true;
         let pedidosOnlinePausados = false;
         
+        let horarioApertura = "11:00";
+        let horarioCierre = "23:00";
+        let diasCerradoStr = "";
+
         let variantesTemporales = [];
         let variantesEdicion = [];
         let graficoSemana = null;
@@ -997,6 +1026,54 @@
             document.getElementById('toast-msg').textContent = mensaje;
             toast.classList.add('show');
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        function verificarHorarioLocal() {
+            const ahora = new Date();
+            const diaActual = ahora.toLocaleDateString('es-ES', { weekday: 'long' }).toLowerCase();
+            
+            const diasCerrados = diasCerradoStr.toLowerCase().split(',').map(d => d.trim());
+            if (diasCerradoStr && diasCerrados.includes(diaActual)) {
+                negocioAbiertoGlobal = false;
+            } else {
+                const [hA, mA] = horarioApertura.split(':').map(Number);
+                const [hC, mC] = horarioCierre.split(':').map(Number);
+                const minutosAhora = ahora.getHours() * 60 + ahora.getMinutes();
+                const minutosApertura = hA * 60 + mA;
+                const minutosCierre = hC * 60 + mC;
+
+                if (minutosCierre > minutosApertura) {
+                    negocioAbiertoGlobal = minutosAhora >= minutosApertura && minutosAhora < minutosCierre;
+                } else {
+                    negocioAbiertoGlobal = minutosAhora >= minutosApertura || minutosAhora < minutosCierre;
+                }
+            }
+
+            const statusDot = document.getElementById('floating-status-dot');
+            const statusText = document.getElementById('floating-status-text');
+            const sidebarDot = document.getElementById('sidebar-status-dot');
+            const sidebarText = document.getElementById('sidebar-status-text');
+            const bannerEstado = document.getElementById('banner-estado-local');
+
+            if (negocioAbiertoGlobal) {
+                if (statusDot) statusDot.className = 'status-dot';
+                if (statusText) statusText.textContent = 'Abierto';
+                if (sidebarDot) sidebarDot.className = 'status-dot';
+                if (sidebarText) sidebarText.textContent = 'ABIERTO';
+                if (bannerEstado) {
+                    bannerEstado.className = 'tiempo-estimado-banner';
+                    bannerEstado.innerHTML = `Tiempo estimado de preparación: <strong>${document.getElementById('select-tiempo-admin')?.value || '20-30 min'}</strong>`;
+                }
+            } else {
+                if (statusDot) statusDot.className = 'status-dot closed';
+                if (statusText) statusText.textContent = 'Cerrado';
+                if (sidebarDot) sidebarDot.className = 'status-dot closed';
+                if (sidebarText) sidebarText.textContent = 'CERRADO';
+                if (bannerEstado) {
+                    bannerEstado.className = 'closed-store-banner';
+                    bannerEstado.innerHTML = `Establecimiento Cerrado • Puedes consultar los productos`;
+                }
+            }
         }
 
         window.intentarAccesoAdmin = function() {
@@ -1039,7 +1116,7 @@
                 }
                 document.getElementById('view-admin').classList.add('active-view');
                 if(floatingBar) floatingBar.classList.add('hidden');
-                seleccionarSeccionAdmin('historial');
+                seleccionarSeccionAdmin('pedidos');
                 window.scrollTo(0,0);
             }
         }
@@ -1064,9 +1141,6 @@
             } else if (seccion === 'historial') {
                 document.getElementById('admin-tab-historial').classList.add('active-admin-tab');
                 cargarAdminHistorial();
-            } else if (seccion === 'ranking') {
-                document.getElementById('admin-tab-ranking').classList.add('active-admin-tab');
-                cargarAdminRanking();
             } else if (seccion === 'platos') {
                 document.getElementById('admin-tab-platos').classList.add('active-admin-tab');
                 cargarAdminPlatos();
@@ -1110,6 +1184,9 @@
                 menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay platos disponibles.</p>";
                 return;
             }
+
+            verificarHorarioLocal();
+
             visibles.forEach((plato) => {
                 let tieneFotoValida = plato.imagenUrl && typeof plato.imagenUrl === 'string' && plato.imagenUrl.trim() !== "";
                 const imagen = tieneFotoValida ? plato.imagenUrl : 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80';
@@ -1123,8 +1200,8 @@
 
                 if (!negocioAbiertoGlobal) {
                     btnClase = "order-btn closed";
-                    btnTexto = "Cerrado";
-                    accionClick = "mostrarToast('El establecimiento está cerrado temporalmente.')";
+                    btnTexto = "Ver Plato (Local Cerrado)";
+                    accionClick = `abrirModalDetallePlato('${plato.id}')`;
                 } else if (pedidosOnlinePausados) {
                     btnClase = "order-btn closed";
                     btnTexto = "Cocina Ocupada";
@@ -1174,12 +1251,8 @@
         }
 
         window.abrirModalDetallePlato = function(id) {
-            if (!negocioAbiertoGlobal || pedidosOnlinePausados) {
-                mostrarToast("El sistema de pedidos online no está disponible en este momento.");
-                return;
-            }
             const plato = listaPlatos.find(p => p.id === id);
-            if (!plato || plato.disponible === false) return;
+            if (!plato) return;
             platoSeleccionadoParaPedir = plato;
             cantidadSeleccionadaModal = 1;
             document.getElementById('modal-cantidad-valor').textContent = "1";
@@ -1214,6 +1287,13 @@
                 containerExtras.innerHTML = htmlExtras;
             } else {
                 containerExtras.innerHTML = `<span style="font-size:12px; color:var(--text-muted);">Este plato no cuenta con acompañamientos adicionales.</span>`;
+            }
+
+            const btnPedir = document.getElementById('btn-hacer-pedido');
+            if (!negocioAbiertoGlobal) {
+                btnPedir.style.display = 'none';
+            } else {
+                btnPedir.style.display = 'block';
             }
 
             document.getElementById('modal-detalle-plato').style.display = 'flex';
@@ -1562,6 +1642,7 @@
                                 <span style="font-size:13px; color:white; display:block; margin:4px 0;">${p.detalle}</span>
                                 <span style="font-size:12px; color:#4ade80; font-weight:600;">Pago: ${p.metodoPago || 'Efectivo'} - Total: ₡${Number(p.total || 0).toLocaleString()}</span>
                             </div>
+                            <button type="button" onclick="eliminarPedidoEnVivo('${p.id}')" style="background:rgba(239, 68, 68, 0.15); border:1px solid rgba(239, 68, 68, 0.3); color:#f87171; padding:8px 14px; border-radius:10px; cursor:pointer; font-size:12px; font-weight:bold;">Eliminar</button>
                         </div>
                     `;
                 });
@@ -1571,54 +1652,58 @@
             }
         }
 
-        // --- NUEVO: CARGAR HISTORIAL CON GRÁFICO SEMANAL ---
-        window.cargarAdminHistorial = async function() {
-            const dateInput = document.getElementById('input-filtro-semana');
-            if(!dateInput) return;
-            
-            let selectedDate = new Date();
-            if (dateInput.value) {
-                let parts = dateInput.value.split('-');
-                selectedDate = new Date(parts[0], parts[1]-1, parts[2]);
-            } else {
-                let tzoffset = (new Date()).getTimezoneOffset() * 60000;
-                let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
-                dateInput.value = localISOTime;
+        window.eliminarPedidoEnVivo = async function(id) {
+            if (confirm("¿Deseas borrar esta orden de Pedidos en Vivo?")) {
+                try {
+                    await deleteDoc(doc(db, "pedidos", id));
+                    mostrarToast("Pedido eliminado");
+                    cargarAdminPedidos();
+                } catch(e) {
+                    mostrarToast("Error al eliminar pedido.");
+                }
             }
+        }
 
-            // Calcular Lunes y Domingo de esa semana
-            let day = selectedDate.getDay();
-            let diff = selectedDate.getDate() - day + (day === 0 ? -6 : 1);
-            let startOfWeek = new Date(selectedDate.setDate(diff));
-            startOfWeek.setHours(0,0,0,0);
+        // HISTORIAL FILTRADO ENTRE FECHAS (DESDE / HASTA)
+        window.cargarAdminHistorial = async function() {
+            const inputInicio = document.getElementById('input-filtro-inicio');
+            const inputFin = document.getElementById('input-filtro-fin');
+            if(!inputInicio || !inputFin) return;
             
-            let endOfWeek = new Date(startOfWeek);
-            endOfWeek.setDate(startOfWeek.getDate() + 6);
-            endOfWeek.setHours(23,59,59,999);
+            let hoy = new Date();
+            let tzoffset = hoy.getTimezoneOffset() * 60000;
+            let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
+
+            if (!inputInicio.value) inputInicio.value = localISOTime;
+            if (!inputFin.value) inputFin.value = localISOTime;
+
+            let partesI = inputInicio.value.split('-');
+            let fechaInicio = new Date(partesI[0], partesI[1]-1, partesI[2], 0, 0, 0);
+
+            let partesF = inputFin.value.split('-');
+            let fechaFin = new Date(partesF[0], partesF[1]-1, partesF[2], 23, 59, 59);
 
             try {
                 const q = query(collection(db, "pedidos"));
                 const qs = await getDocs(q);
                 
-                let ventasSemana = [0, 0, 0, 0, 0, 0, 0]; // L, M, X, J, V, S, D
                 let totalVentas = 0;
                 let totalOrdenes = 0;
                 let totalPlatos = 0;
+                let ventasPorDia = {};
 
                 qs.forEach(d => {
                     let p = d.data();
                     if(p.fecha) {
                         let f = new Date(p.fecha);
-                        if (f >= startOfWeek && f <= endOfWeek) {
+                        if (f >= fechaInicio && f <= fechaFin) {
                             totalOrdenes++;
                             let total = Number(p.total || 0);
                             totalVentas += total;
-                            
-                            let dayOfWeek = f.getDay(); // 0 es Domingo, 1 es Lunes
-                            let index = dayOfWeek === 0 ? 6 : dayOfWeek - 1; 
-                            ventasSemana[index] += total;
 
-                            // Calcular platos aproximados por el string de detalle
+                            let claveDia = f.toLocaleDateString('es-CR', { month: 'short', day: 'numeric' });
+                            ventasPorDia[claveDia] = (ventasPorDia[claveDia] || 0) + total;
+
                             if (p.detalle) {
                                 let partes = p.detalle.split(" | ");
                                 partes.forEach(parte => {
@@ -1637,19 +1722,26 @@
                 document.getElementById('metric-semana-ticket').textContent = `₡${ticketPromedio.toLocaleString()}`;
                 document.getElementById('metric-semana-platos').textContent = totalPlatos;
 
-                // Dibujar Gráfico
                 const ctx = document.getElementById('graficoVentasSemana').getContext('2d');
                 if (graficoSemana) {
                     graficoSemana.destroy();
                 }
 
+                let etiquetas = Object.keys(ventasPorDia);
+                let datos = Object.values(ventasPorDia);
+
+                if (etiquetas.length === 0) {
+                    etiquetas = ['Sin Ventas'];
+                    datos = [0];
+                }
+
                 graficoSemana = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
+                        labels: etiquetas,
                         datasets: [{
                             label: 'Ventas (₡)',
-                            data: ventasSemana,
+                            data: datos,
                             backgroundColor: '#06b6d4',
                             borderRadius: 6,
                             barPercentage: 0.6
@@ -1658,9 +1750,7 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false }
-                        },
+                        plugins: { legend: { display: false } },
                         scales: {
                             y: { 
                                 beginAtZero: true, 
@@ -1677,92 +1767,53 @@
 
             } catch(e) {
                 console.error(e);
-                mostrarToast("Error al cargar gráfico semanal.");
+                mostrarToast("Error al cargar historial entre fechas.");
             }
         }
 
-        window.cargarAdminRanking = async function() {
-            const tbody = document.getElementById('admin-tabla-ranking-body');
-            if (!tbody) return;
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Calculando ranking...</td></tr>`;
-            try {
-                let conteoPlatos = {};
-                const qs = await getDocs(collection(db, "pedidos"));
-                qs.forEach(d => {
-                    let p = d.data();
-                    let nombrePlato = p.detalle || 'Desconocido';
-                    if (!conteoPlatos[nombrePlato]) conteoPlatos[nombrePlato] = { cantidad: 0, ingresos: 0 };
-                    conteoPlatos[nombrePlato].cantidad += 1;
-                    conteoPlatos[nombrePlato].ingresos += Number(p.total || 0);
-                });
-
-                let arrayRanking = Object.keys(conteoPlatos).map(k => ({ nombre: k, ...conteoPlatos[k] }));
-                arrayRanking.sort((a, b) => b.cantidad - a.cantidad);
-
-                if (arrayRanking.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Sin datos de ventas para el ranking.</td></tr>`;
-                    return;
-                }
-
-                tbody.innerHTML = "";
-                arrayRanking.forEach((r, idx) => {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><strong style="color:var(--color-principal);">#${idx + 1}</strong></td>
-                            <td style="font-weight:bold;">${r.nombre}</td>
-                            <td>${r.cantidad} unids</td>
-                            <td style="color:var(--color-principal); font-weight:bold;">₡${r.ingresos.toLocaleString()}</td>
-                        </tr>
-                    `;
-                });
-            } catch(e) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef4444;">Error al calcular ranking.</td></tr>`;
-            }
-        }
-
-        window.cargarAdminPlatos = async function() {
+        // CARGA RÁPIDA DE PLATOS USANDO MEMORIA
+        window.cargarAdminPlatos = function() {
             const tbody = document.getElementById('admin-tabla-platos-body');
             if (!tbody) return;
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Cargando platos...</td></tr>`;
-            try {
-                const qs = await getDocs(collection(db, "menu"));
-                tbody.innerHTML = "";
-                qs.forEach(d => {
-                    let p = { id: d.id, ...d.data() };
-                    if (p.categoria !== 'Stock_Interno') {
-                        let img = p.imagenUrl ? `<img src="${p.imagenUrl}" style="width:40px; height:40px; object-fit:cover; border-radius:8px; border:1px solid var(--border-color);">` : 'Sin foto';
-                        let disponible = p.disponible !== false;
-                        let estadoEstilo = disponible ? 'color:#4ade80; cursor:pointer; font-weight:bold;' : 'color:#f87171; cursor:pointer; font-weight:bold;';
-                        let estadoTexto = disponible ? 'Disponible' : 'Agotado';
-
-                        tbody.innerHTML += `
-                            <tr>
-                                <td>${img}</td>
-                                <td style="font-weight:bold;">${p.nombre}</td>
-                                <td><span style="background:#1a1d24; padding:4px 10px; border-radius:8px; font-size:11px; border:1px solid var(--border-color);">${p.categoria}</span></td>
-                                <td>₡${Number(p.precio).toLocaleString()}</td>
-                                <td><span style="${estadoEstilo}" onclick="cambiarDisponibilidadPlato('${p.id}', ${disponible})" title="Haz clic para cambiar estado">${estadoTexto}</span></td>
-                                <td>
-                                    <div style="display:flex; gap:6px;">
-                                        <button type="button" onclick="abrirModalEditarPlato('${p.id}')" class="action-pill" style="padding:6px 12px; font-size:11px; background:#22252e; border-color:var(--border-color);">Editar</button>
-                                        <button type="button" onclick="eliminarPlato('${p.id}')" class="action-pill" style="padding:6px 12px; font-size:11px; background:rgba(239,68,68,0.12); color:#f87171; border-color:rgba(239,68,68,0.3);">Eliminar</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
-                    }
-                });
-            } catch(e) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#ef4444;">Error al cargar platos.</td></tr>`;
+            
+            if (listaPlatos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No hay platos registrados.</td></tr>`;
+                return;
             }
+
+            tbody.innerHTML = "";
+            listaPlatos.forEach(p => {
+                if (p.categoria !== 'Stock_Interno') {
+                    let img = p.imagenUrl ? `<img src="${p.imagenUrl}" style="width:40px; height:40px; object-fit:cover; border-radius:8px; border:1px solid var(--border-color);">` : 'Sin foto';
+                    let disponible = p.disponible !== false;
+                    let estadoEstilo = disponible ? 'color:#4ade80; cursor:pointer; font-weight:bold;' : 'color:#f87171; cursor:pointer; font-weight:bold;';
+                    let estadoTexto = disponible ? 'Disponible' : 'Agotado';
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${img}</td>
+                            <td style="font-weight:bold;">${p.nombre}</td>
+                            <td><span style="background:#1a1d24; padding:4px 10px; border-radius:8px; font-size:11px; border:1px solid var(--border-color);">${p.categoria}</span></td>
+                            <td>₡${Number(p.precio).toLocaleString()}</td>
+                            <td><span style="${estadoEstilo}" onclick="cambiarDisponibilidadPlato('${p.id}', ${disponible})" title="Haz clic para cambiar estado">${estadoTexto}</span></td>
+                            <td>
+                                <div style="display:flex; gap:6px;">
+                                    <button type="button" onclick="abrirModalEditarPlato('${p.id}')" class="action-pill" style="padding:6px 12px; font-size:11px; background:#22252e; border-color:var(--border-color);">Editar</button>
+                                    <button type="button" onclick="eliminarPlato('${p.id}')" class="action-pill" style="padding:6px 12px; font-size:11px; background:rgba(239,68,68,0.12); color:#f87171; border-color:rgba(239,68,68,0.3);">Eliminar</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }
+            });
         }
 
         window.cambiarDisponibilidadPlato = async function(id, estadoActual) {
             try {
                 await updateDoc(doc(db, "menu", id), { disponible: !estadoActual });
                 mostrarToast("Estado del plato actualizado.");
+                await cargarMenu();
                 cargarAdminPlatos();
-                cargarMenu();
             } catch(e) { mostrarToast("Error al actualizar estado."); }
         }
 
@@ -1771,8 +1822,8 @@
                 try {
                     await deleteDoc(doc(db, "menu", id));
                     mostrarToast("Plato eliminado.");
+                    await cargarMenu();
                     cargarAdminPlatos();
-                    cargarMenu();
                 } catch(e) { mostrarToast("Error al eliminar."); }
             }
         }
@@ -1866,8 +1917,8 @@
                     });
                     mostrarToast("Plato actualizado con éxito");
                     cerrarModalEditarPlato();
+                    await cargarMenu();
                     cargarAdminPlatos();
-                    cargarMenu();
                 } catch(e) { mostrarToast("Error al guardar cambios."); }
             };
 
@@ -1925,10 +1976,11 @@
             };
         }
 
+        // BASE DE CLIENTES CON ENLACE DIRECTO A WHATSAPP
         window.cargarAdminClientes = async function() {
             const tbody = document.getElementById('admin-tabla-clientes-body');
             if (!tbody) return;
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando clientes...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Cargando clientes...</td></tr>`;
             try {
                 const qs = await getDocs(collection(db, "clientes"));
                 tbody.innerHTML = "";
@@ -1936,18 +1988,24 @@
                 qs.forEach(d => {
                     hayClientes = true;
                     let c = d.data();
+                    let numLimpio = (c.telefono || '').replace(/\D/g, '');
+                    if(numLimpio.length === 8) numLimpio = '506' + numLimpio; 
+
+                    let wspBtn = numLimpio ? `<a href="https://wa.me/${numLimpio}" target="_blank" class="btn-wsp"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 21l1.65-3.8A9 9 0 1121 12a9 9 0 01-9 9 9.01 9.01 0 01-4.35-1.13L3 21z"/></svg> Mensaje</a>` : 'Sin Teléfono';
+
                     tbody.innerHTML += `
                         <tr>
                             <td style="font-weight:bold;">${c.nombre}</td>
                             <td>${c.telefono}</td>
                             <td style="color:var(--color-principal); font-weight:bold;">${c.sellos || 0} ★</td>
+                            <td>${wspBtn}</td>
                             <td><button type="button" onclick="eliminarCliente('${d.id}')" class="action-pill" style="padding:6px 12px; font-size:11px; background:rgba(239,68,68,0.12); color:#f87171; border-color:rgba(239,68,68,0.3);">Eliminar</button></td>
                         </tr>
                     `;
                 });
-                if(!hayClientes) tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No hay clientes registrados.</td></tr>`;
+                if(!hayClientes) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No hay clientes registrados.</td></tr>`;
             } catch(e) { 
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#f87171;">Error al cargar clientes.</td></tr>`; 
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#f87171;">Error al cargar clientes.</td></tr>`; 
             }
         }
 
@@ -2016,7 +2074,7 @@
                         productForm.reset();
                         variantesTemporales = [];
                         document.getElementById('lista-variantes-temp').textContent = "Sin extras añadidos.";
-                        cargarMenu();
+                        await cargarMenu();
                     } catch(e) { mostrarToast("Error al guardar plato."); }
                 };
 
@@ -2229,7 +2287,7 @@
         window.actualizarTiempoEstimadoNube = async function(nuevoTiempo) {
             try {
                 await setDoc(doc(db, "configuracion", "tiempoEstimado"), { texto: nuevoTiempo }, { merge: true });
-                document.getElementById('banner-tiempo-estimado').innerHTML = `Tiempo estimado de preparación: <strong>${nuevoTiempo}</strong>`;
+                verificarHorarioLocal();
                 mostrarToast(`Tiempo estimado actualizado a: ${nuevoTiempo}`);
             } catch(e) { mostrarToast("Error al actualizar tiempo."); }
         }
@@ -2251,6 +2309,19 @@
                     }
                     if (data.descAdicional && document.getElementById('input-desc-adicional')) document.getElementById('input-desc-adicional').value = data.descAdicional;
                     
+                    if (data.horaApertura) {
+                        horarioApertura = data.horaApertura;
+                        if (document.getElementById('input-hora-apertura')) document.getElementById('input-hora-apertura').value = data.horaApertura;
+                    }
+                    if (data.horaCierre) {
+                        horarioCierre = data.horaCierre;
+                        if (document.getElementById('input-hora-cierre')) document.getElementById('input-hora-cierre').value = data.horaCierre;
+                    }
+                    if (data.diasCerrado !== undefined) {
+                        diasCerradoStr = data.diasCerrado;
+                        if (document.getElementById('input-dias-cerrado')) document.getElementById('input-dias-cerrado').value = data.diasCerrado;
+                    }
+
                     if (data.colorPrincipal) {
                         document.documentElement.style.setProperty('--color-principal', data.colorPrincipal);
                         if(document.getElementById('input-color-principal')) document.getElementById('input-color-principal').value = data.colorPrincipal;
@@ -2277,7 +2348,6 @@
                 const docSnapT = await getDoc(docRefT);
                 if (docSnapT.exists() && docSnapT.data().texto) {
                     let tVal = docSnapT.data().texto;
-                    document.getElementById('banner-tiempo-estimado').innerHTML = `Tiempo estimado de preparación: <strong>${tVal}</strong>`;
                     if (document.getElementById('select-tiempo-admin')) document.getElementById('select-tiempo-admin').value = tVal;
                 }
             } catch (e) { 
@@ -2290,6 +2360,11 @@
             const tituloPublico = document.getElementById('input-titulo-publico').value.trim();
             const subtituloPublico = document.getElementById('input-subtitulo-publico').value.trim();
             const descAdicional = document.getElementById('input-desc-adicional').value.trim();
+            
+            const horaAperturaVal = document.getElementById('input-hora-apertura').value;
+            const horaCierreVal = document.getElementById('input-hora-cierre').value;
+            const diasCerradoVal = document.getElementById('input-dias-cerrado').value.trim();
+
             const colorPrincipal = document.getElementById('input-color-principal').value;
             const colorSecundario = document.getElementById('input-color-secundario').value;
             const colorOferta = document.getElementById('input-color-oferta').value;
@@ -2298,10 +2373,18 @@
 
             const guardarFin = async (logoUrl) => {
                 try {
-                    let dataObj = { nombreInterno, tituloPublico, subtituloPublico, descAdicional, colorPrincipal, colorSecundario, colorOferta, colorFondo };
+                    let dataObj = { 
+                        nombreInterno, tituloPublico, subtituloPublico, descAdicional, 
+                        horaApertura: horaAperturaVal, horaCierre: horaCierreVal, diasCerrado: diasCerradoVal,
+                        colorPrincipal, colorSecundario, colorOferta, colorFondo 
+                    };
                     if(logoUrl) dataObj.logoUrl = logoUrl;
                     await setDoc(doc(db, "configuracion", "estilosGenerales"), dataObj, { merge: true });
                     
+                    horarioApertura = horaAperturaVal;
+                    horarioCierre = horaCierreVal;
+                    diasCerradoStr = diasCerradoVal;
+
                     document.documentElement.style.setProperty('--color-principal', colorPrincipal);
                     document.documentElement.style.setProperty('--color-secundario', colorSecundario);
                     document.documentElement.style.setProperty('--color-oferta', colorOferta);
@@ -2310,6 +2393,9 @@
                         document.getElementById('logo-display').src = logoUrl;
                         document.getElementById('settings-logo-preview').src = logoUrl;
                     }
+                    
+                    verificarHorarioLocal();
+                    mostrarPlatos(listaPlatos);
                     mostrarToast("Ajustes guardados correctamente");
                 } catch(e) { mostrarToast("Error al guardar."); }
             };
