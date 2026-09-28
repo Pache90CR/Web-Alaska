@@ -1880,8 +1880,10 @@
                 return;
             }
 
-            tbody.innerHTML = "";
             const platosVisibles = listaPlatos.filter(p => p.categoria !== 'Stock_Interno');
+            
+            // OPTIMIZACIÓN: Se construye toda la tabla en la memoria primero, y luego se pega a la pantalla de una vez
+            let htmlTabla = ""; 
 
             platosVisibles.forEach((p, index) => {
                 let img = p.imagenUrl ? `<img src="${p.imagenUrl}" style="width:40px; height:40px; object-fit:cover; border-radius:8px; border:1px solid var(--border-color);">` : 'Sin foto';
@@ -1889,7 +1891,7 @@
                 let estadoEstilo = disponible ? 'color:#4ade80; cursor:pointer; font-weight:bold;' : 'color:#f87171; cursor:pointer; font-weight:bold;';
                 let estadoTexto = disponible ? 'Disponible' : 'Agotado';
 
-                tbody.innerHTML += `
+                htmlTabla += `
                     <tr>
                         <td>${img}</td>
                         <td style="font-weight:bold;">${p.nombre}</td>
@@ -1907,6 +1909,9 @@
                     </tr>
                 `;
             });
+            
+            // SE ACTUALIZA LA PANTALLA 1 SOLA VEZ
+            tbody.innerHTML = htmlTabla; 
         }
 
         window.moverPlato = function(indexActual, direccion) {
@@ -2108,11 +2113,12 @@
         window.cargarAdminCategorias = async function() {
             const tbody = document.getElementById('admin-tabla-categorias-body');
             if (!tbody) return;
-            tbody.innerHTML = "";
+            
+            let htmlCat = "";
             categoriasDefault.forEach(cat => {
                 let cData = categoriasNube[cat] || {};
                 let iconImg = cData.icono ? `<img src="${cData.icono}" style="width:30px; height:30px; object-fit:contain; border-radius:6px;">` : 'Sin icono';
-                tbody.innerHTML += `
+                htmlCat += `
                     <tr>
                         <td>${iconImg}</td>
                         <td style="font-weight:bold;">${cat}</td>
@@ -2120,6 +2126,7 @@
                     </tr>
                 `;
             });
+            tbody.innerHTML = htmlCat;
         }
 
         window.abrirModalEditarCat = function(catNombre) {
@@ -2156,8 +2163,9 @@
             tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Cargando clientes...</td></tr>`;
             try {
                 const qs = await getDocs(collection(db, "clientes"));
-                tbody.innerHTML = "";
+                let htmlCli = "";
                 let hayClientes = false;
+                
                 qs.forEach(d => {
                     hayClientes = true;
                     let c = d.data();
@@ -2166,7 +2174,7 @@
 
                     let wspBtn = numLimpio ? `<a href="https://wa.me/${numLimpio}" target="_blank" class="btn-wsp"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 21l1.65-3.8A9 9 0 1121 12a9 9 0 01-9 9 9.01 9.01 0 01-4.35-1.13L3 21z"/></svg> Mensaje</a>` : 'Sin Teléfono';
 
-                    tbody.innerHTML += `
+                    htmlCli += `
                         <tr>
                             <td style="font-weight:bold;">${c.nombre}</td>
                             <td>${c.telefono}</td>
@@ -2176,7 +2184,12 @@
                         </tr>
                     `;
                 });
-                if(!hayClientes) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No hay clientes registrados.</td></tr>`;
+                
+                if(!hayClientes) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No hay clientes registrados.</td></tr>`;
+                } else {
+                    tbody.innerHTML = htmlCli;
+                }
             } catch(e) { 
                 tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#f87171;">Error al cargar clientes.</td></tr>`; 
             }
