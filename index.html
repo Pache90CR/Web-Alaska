@@ -596,9 +596,25 @@
                     </div>
                 </div>
 
-                <!-- GESTIÓN DE PLATOS OPTIMIZADA -->
+                <!-- GESTIÓN DE PLATOS CON DISPONIBILIDAD MASIVA POR CATEGORÍA -->
                 <div id="admin-tab-platos" class="admin-section-tab">
-                    <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:20px;">Gestión de Platos</h2>
+                    <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:8px;">Gestión de Platos</h2>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Modifica individualmente o apaga/enciende categorías completas (Batidos, Bocas, etc.)</p>
+
+                    <div style="background:#13151a; padding:16px; border-radius:14px; border:1px solid var(--border-color); margin-bottom:20px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                        <span style="font-size:13px; font-weight:700; color:var(--color-principal);">Control Masivo de Categoría:</span>
+                        <select id="select-cat-masivo" style="width:auto; padding:8px 12px; font-size:13px;">
+                            <option value="Bocas">Bocas</option>
+                            <option value="Comidas Rápidas">Comidas Rápidas</option>
+                            <option value="Arroces">Arroces</option>
+                            <option value="Batidos">Batidos</option>
+                            <option value="Casados">Casados</option>
+                            <option value="Ofertas">Ofertas</option>
+                        </select>
+                        <button type="button" onclick="cambiarEstadoCategoriaMasivo(false)" class="action-pill" style="background:rgba(239,68,68,0.15); color:#f87171; border-color:rgba(239,68,68,0.3); font-size:12px;">Marcar Categoría AGOTADA</button>
+                        <button type="button" onclick="cambiarEstadoCategoriaMasivo(true)" class="action-pill" style="background:rgba(16,185,129,0.15); color:#4ade80; border-color:rgba(16,185,129,0.3); font-size:12px;">Marcar Categoría DISPONIBLE</button>
+                    </div>
+
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
@@ -1615,7 +1631,7 @@
         }
 
         // ==========================================
-        // FUNCIONES DE ADMINISTRACIÓN
+        // FUNCIONES DE ADMINISTRACIÓN Y PEDIDOS EN VIVO
         // ==========================================
         window.cargarAdminPedidos = async function() {
             const container = document.getElementById('admin-pedidos-container');
@@ -1635,6 +1651,12 @@
                 let html = ``;
                 pedidos.forEach(p => {
                     let fecha = p.fecha ? new Date(p.fecha).toLocaleTimeString() : '';
+                    let estadoActual = p.estado || 'Preparación';
+                    
+                    let colorEstado = '#facc15'; 
+                    if (estadoActual === 'Listo') colorEstado = '#38bdf8'; 
+                    if (estadoActual === 'Entregado') colorEstado = '#4ade80'; 
+
                     html += `
                         <div style="background:#121419; padding:16px; border-radius:14px; border:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
                             <div>
@@ -1642,13 +1664,31 @@
                                 <span style="font-size:13px; color:white; display:block; margin:4px 0;">${p.detalle}</span>
                                 <span style="font-size:12px; color:#4ade80; font-weight:600;">Pago: ${p.metodoPago || 'Efectivo'} - Total: ₡${Number(p.total || 0).toLocaleString()}</span>
                             </div>
-                            <button type="button" onclick="eliminarPedidoEnVivo('${p.id}')" style="background:rgba(239, 68, 68, 0.15); border:1px solid rgba(239, 68, 68, 0.3); color:#f87171; padding:8px 14px; border-radius:10px; cursor:pointer; font-size:12px; font-weight:bold;">Eliminar</button>
+                            <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+                                <button type="button" onclick="cambiarEstadoPedidoVivo('${p.id}', '${estadoActual}')" style="background:rgba(255,255,255,0.05); border:1px solid ${colorEstado}; color:${colorEstado}; padding:6px 12px; border-radius:8px; font-weight:bold; font-size:11px; cursor:pointer;" title="Haz clic para cambiar estado de la orden">Estado: ${estadoActual}</button>
+                                <button type="button" onclick="eliminarPedidoEnVivo('${p.id}')" style="background:rgba(239, 68, 68, 0.15); border:1px solid rgba(239, 68, 68, 0.3); color:#f87171; padding:6px 12px; border-radius:8px; cursor:pointer; font-size:11px; font-weight:bold;">Eliminar</button>
+                            </div>
                         </div>
                     `;
                 });
                 container.innerHTML = html;
             } catch(e) {
                 container.innerHTML = `<p style="color:#ef4444; font-size:13px;">Error al cargar pedidos.</p>`;
+            }
+        }
+
+        window.cambiarEstadoPedidoVivo = async function(id, estadoActual) {
+            let siguienteEstado = 'Preparación';
+            if (estadoActual === 'Preparación') siguienteEstado = 'Listo';
+            else if (estadoActual === 'Listo') siguienteEstado = 'Entregado';
+            else if (estadoActual === 'Entregado') siguienteEstado = 'Preparación';
+
+            try {
+                await updateDoc(doc(db, "pedidos", id), { estado: siguienteEstado });
+                mostrarToast(`Estado cambiado a: ${siguienteEstado}`);
+                cargarAdminPedidos();
+            } catch(e) {
+                mostrarToast("Error al actualizar estado.");
             }
         }
 
@@ -1808,6 +1848,27 @@
             });
         }
 
+        window.cambiarEstadoCategoriaMasivo = async function(nuevoEstado) {
+            let catSeleccionada = document.getElementById('select-cat-masivo').value;
+            let platosCategoria = listaPlatos.filter(p => p.categoria === catSeleccionada);
+
+            if (platosCategoria.length === 0) {
+                mostrarToast(`No hay platos en la categoría ${catSeleccionada}`);
+                return;
+            }
+
+            try {
+                for (let plato of platosCategoria) {
+                    await updateDoc(doc(db, "menu", plato.id), { disponible: nuevoEstado });
+                }
+                mostrarToast(`Categoría ${catSeleccionada} actualizada a: ${nuevoEstado ? 'DISPONIBLE' : 'AGOTADA'}`);
+                await cargarMenu();
+                cargarAdminPlatos();
+            } catch(e) {
+                mostrarToast("Error al actualizar la categoría masivamente.");
+            }
+        }
+
         window.cambiarDisponibilidadPlato = async function(id, estadoActual) {
             try {
                 await updateDoc(doc(db, "menu", id), { disponible: !estadoActual });
@@ -1885,12 +1946,17 @@
                         <span>• ${v.nombre} (+₡${v.precio}) <strong style="${colorEstado}">${estadoAgotado}</strong></span>
                         <div style="display:flex; gap:6px;">
                             <button type="button" onclick="toggleAgotadoVariante(${idx})" class="action-pill" style="padding:3px 8px; font-size:10px; background:#1a1d24;">Estado</button>
-                            <button type="button" onclick="variantesEdicion.splice(${idx},1); renderizarVariantesEdicion();" style="color:#f87171; background:none; border:none; cursor:pointer; font-weight:bold;">✕</button>
+                            <button type="button" onclick="eliminarVarianteEdicion(${idx})" style="color:#f87171; background:rgba(239, 68, 68, 0.1); border:1px solid rgba(239, 68, 68, 0.3); padding:4px 8px; border-radius:6px; cursor:pointer; font-weight:bold; font-size:12px;">✕</button>
                         </div>
                     </div>
                 `;
             });
             document.getElementById('edit-lista-variantes').innerHTML = html;
+        }
+
+        window.eliminarVarianteEdicion = function(idx) {
+            variantesEdicion.splice(idx, 1);
+            renderizarVariantesEdicion();
         }
 
         window.toggleAgotadoVariante = function(idx) {
