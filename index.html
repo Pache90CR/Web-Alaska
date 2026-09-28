@@ -1908,8 +1908,7 @@
                 `;
             });
         }
-
-        window.moverPlato = async function(indexActual, direccion) {
+window.moverPlato = function(indexActual, direccion) {
             const platosVisibles = listaPlatos.filter(p => p.categoria !== 'Stock_Interno');
             let nuevoIndex = indexActual + direccion;
 
@@ -1922,19 +1921,25 @@
                 if (p.orden === undefined) p.orden = idx + 1;
             });
 
+            // 1. Intercambiar posiciones en la memoria local
             let ordenTemp = platoActual.orden;
             platoActual.orden = platoDestino.orden;
             platoDestino.orden = ordenTemp;
 
-            try {
-                await updateDoc(doc(db, "menu", platoActual.id), { orden: platoActual.orden });
-                await updateDoc(doc(db, "menu", platoDestino.id), { orden: platoDestino.orden });
+            // 2. ACTUALIZACIÓN VISUAL INMEDIATA
+            listaPlatos.sort((a, b) => Number(a.orden || 999) - Number(b.orden || 999));
+            cargarAdminPlatos(); // Refresca la tabla sin esperas
+            
+            // Actualizar caché para que el menú público también esté listo
+            try { localStorage.setItem('alaska_cache_menu', JSON.stringify(listaPlatos)); } catch(e){}
 
-                await cargarMenu();
-                cargarAdminPlatos();
+            // 3. GUARDADO EN LA NUBE EN SEGUNDO PLANO (Sin el 'await' que congelaba la pantalla)
+            try {
+                updateDoc(doc(db, "menu", platoActual.id), { orden: platoActual.orden });
+                updateDoc(doc(db, "menu", platoDestino.id), { orden: platoDestino.orden });
             } catch (e) {
-                console.error("Error al reordenar plato:", e);
-                mostrarToast("Error al guardar la nueva posición.");
+                console.error("Error al reordenar en la nube:", e);
+                mostrarToast("Aviso: Revisa tu conexión, posible error al guardar posición.");
             }
         }
 
