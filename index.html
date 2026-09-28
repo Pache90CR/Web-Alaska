@@ -16,7 +16,6 @@
         %22icons%22: [{%22src%22: %22https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=192&q=80%22, %22sizes%22: %22192x192%22, %22type%22: %22image/jpeg%22}]
     }">
 
-    <!-- Chart.js para gráficas financieras -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
@@ -539,7 +538,6 @@
 
             <div class="admin-wrapper">
                 
-                <!-- PEDIDOS EN VIVO -->
                 <div id="admin-tab-pedidos" class="admin-section-tab active-admin-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; letter-spacing:-0.3px;">Pedidos Recientes en Vivo</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Monitorea órdenes activas en tiempo real, actualiza su estado o elimínalas.</p>
@@ -548,7 +546,6 @@
                     </div>
                 </div>
 
-                <!-- HISTORIAL Y REPORTE ENTRE FECHAS -->
                 <div id="admin-tab-historial" class="admin-section-tab">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:14px;">
                         <div>
@@ -596,7 +593,6 @@
                     </div>
                 </div>
 
-                <!-- GESTIÓN DE PLATOS CON DISPONIBILIDAD MASIVA POR CATEGORÍA -->
                 <div id="admin-tab-platos" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:8px;">Gestión de Platos</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Modifica individualmente o apaga/enciende categorías completas (Batidos, Bocas, etc.)</p>
@@ -701,7 +697,6 @@
                     </div>
                 </div>
 
-                <!-- BASE DE CLIENTES CON WHATSAPP DIRECTO -->
                 <div id="admin-tab-clientes" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:6px;">Base de Clientes</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Listado de clientes y contacto directo por WhatsApp.</p>
@@ -717,7 +712,6 @@
                     </div>
                 </div>
 
-                <!-- AJUSTES Y CONFIGURACIÓN DE HORARIOS -->
                 <div id="admin-tab-ajustes" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--text-main); font-weight:800; margin-bottom:4px;">Ajustes Generales y Horarios</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:24px;">Configura horarios de atención automática, colores y marca.</p>
@@ -1179,12 +1173,25 @@
         }
 
         async function cargarMenu() {
+            let cacheMenu = localStorage.getItem('alaska_cache_menu');
+            if (cacheMenu) {
+                try {
+                    listaPlatos = JSON.parse(cacheMenu);
+                    mostrarPlatos(listaPlatos);
+                } catch(e){}
+            }
+
             try {
                 const querySnapshot = await getDocs(collection(db, "menu"));
                 listaPlatos = [];
-                querySnapshot.forEach((docSnap) => { listaPlatos.push({ id: docSnap.id, ...docSnap.data() }); });
+                querySnapshot.forEach((docSnap) => { 
+                    let data = docSnap.data();
+                    let extras = data.variantes || data.extras || data.acompanamientos || [];
+                    listaPlatos.push({ id: docSnap.id, ...data, variantes: extras }); 
+                });
+                
+                localStorage.setItem('alaska_cache_menu', JSON.stringify(listaPlatos));
                 mostrarPlatos(listaPlatos);
-                inicializarCategoriasNube();
             } catch (error) { 
                 console.error("Error al cargar menú:", error);
             }
@@ -1235,7 +1242,7 @@
                 menuGrid.innerHTML += `
                     <div class="food-card" style="opacity: ${disponible ? '1' : '0.65'};">
                         <div class="card-image-container">
-                            <img src="${imagen}" alt="${plato.nombre}">
+                            <img src="${imagen}" alt="${plato.nombre}" loading="lazy">
                             <span class="badge">${plato.categoria || 'Especialidad'}</span>
                             ${badgeAgotadoHTML}
                         </div>
@@ -1282,9 +1289,11 @@
             const containerExtras = document.getElementById('modal-detalle-extras-container');
             containerExtras.innerHTML = "";
 
-            if (plato.variantes && plato.variantes.length > 0) {
+            let extrasPlato = plato.variantes || plato.extras || plato.acompanamientos || [];
+
+            if (extrasPlato && extrasPlato.length > 0) {
                 let htmlExtras = `<label style="font-weight:700; color:var(--color-principal); margin-bottom:8px;">Acompañamientos / Extras (Elige hasta 2):</label>`;
-                plato.variantes.forEach((v, index) => {
+                extrasPlato.forEach((v, index) => {
                     let agotado = v.agotado === true;
                     let imgUrlAttr = v.imagenUrl ? v.imagenUrl : '';
                     
@@ -1630,9 +1639,6 @@
             }
         }
 
-        // ==========================================
-        // FUNCIONES DE ADMINISTRACIÓN Y PEDIDOS EN VIVO
-        // ==========================================
         window.cargarAdminPedidos = async function() {
             const container = document.getElementById('admin-pedidos-container');
             if (!container) return;
@@ -1704,7 +1710,6 @@
             }
         }
 
-        // HISTORIAL FILTRADO ENTRE FECHAS (DESDE / HASTA)
         window.cargarAdminHistorial = async function() {
             const inputInicio = document.getElementById('input-filtro-inicio');
             const inputFin = document.getElementById('input-filtro-fin');
@@ -1811,7 +1816,6 @@
             }
         }
 
-        // CARGA RÁPIDA DE PLATOS USANDO MEMORIA
         window.cargarAdminPlatos = function() {
             const tbody = document.getElementById('admin-tabla-platos-body');
             if (!tbody) return;
@@ -1900,7 +1904,8 @@
             document.getElementById('edit-plato-desc').value = plato.descripcion || '';
             document.getElementById('edit-plato-file').value = '';
 
-            variantesEdicion = plato.variantes ? JSON.parse(JSON.stringify(plato.variantes)) : [];
+            let extrasArr = plato.variantes || plato.extras || plato.acompanamientos || [];
+            variantesEdicion = JSON.parse(JSON.stringify(extrasArr));
             renderizarVariantesEdicion();
 
             document.getElementById('modal-editar-plato').style.display = 'flex';
@@ -1933,17 +1938,21 @@
         }
 
         window.renderizarVariantesEdicion = function() {
-            let html = "";
-            if (variantesEdicion.length === 0) {
-                document.getElementById('edit-lista-variantes').innerHTML = "Sin extras añadidos.";
+            let container = document.getElementById('edit-lista-variantes');
+            if (!container) return;
+
+            if (!variantesEdicion || variantesEdicion.length === 0) {
+                container.innerHTML = "Sin extras añadidos.";
                 return;
             }
+
+            let html = "";
             variantesEdicion.forEach((v, idx) => {
                 let estadoAgotado = v.agotado ? ' [Agotado]' : '';
                 let colorEstado = v.agotado ? 'color: #f87171;' : 'color: #4ade80;';
                 html += `
                     <div style="display:flex; justify-content:space-between; align-items:center; background:#121419; padding:8px 12px; border-radius:8px; margin-bottom:4px; border:1px solid var(--border-color);">
-                        <span>• ${v.nombre} (+₡${v.precio}) <strong style="${colorEstado}">${estadoAgotado}</strong></span>
+                        <span>• ${v.nombre} (+₡${Number(v.precio || 0).toLocaleString()}) <strong style="${colorEstado}">${estadoAgotado}</strong></span>
                         <div style="display:flex; gap:6px;">
                             <button type="button" onclick="toggleAgotadoVariante(${idx})" class="action-pill" style="padding:3px 8px; font-size:10px; background:#1a1d24;">Estado</button>
                             <button type="button" onclick="eliminarVarianteEdicion(${idx})" style="color:#f87171; background:rgba(239, 68, 68, 0.1); border:1px solid rgba(239, 68, 68, 0.3); padding:4px 8px; border-radius:6px; cursor:pointer; font-weight:bold; font-size:12px;">✕</button>
@@ -1951,7 +1960,7 @@
                     </div>
                 `;
             });
-            document.getElementById('edit-lista-variantes').innerHTML = html;
+            container.innerHTML = html;
         }
 
         window.eliminarVarianteEdicion = function(idx) {
@@ -1977,15 +1986,22 @@
             const ejecutarGuardadoFinal = async (urlImagenFinal) => {
                 try {
                     await updateDoc(doc(db, "menu", id), {
-                        nombre, categoria, precio, descripcion,
+                        nombre: nombre,
+                        categoria: categoria,
+                        precio: precio,
+                        descripcion: descripcion,
                         variantes: variantesEdicion,
+                        extras: variantesEdicion,
                         imagenUrl: urlImagenFinal
                     });
                     mostrarToast("Plato actualizado con éxito");
                     cerrarModalEditarPlato();
                     await cargarMenu();
                     cargarAdminPlatos();
-                } catch(e) { mostrarToast("Error al guardar cambios."); }
+                } catch(e) { 
+                    console.error("Error al guardar plato editado:", e);
+                    mostrarToast("Error al guardar cambios."); 
+                }
             };
 
             if (fileInput.files && fileInput.files[0]) {
@@ -2042,7 +2058,6 @@
             };
         }
 
-        // BASE DE CLIENTES CON ENLACE DIRECTO A WHATSAPP
         window.cargarAdminClientes = async function() {
             const tbody = document.getElementById('admin-tabla-clientes-body');
             if (!tbody) return;
@@ -2134,6 +2149,7 @@
                             nombre, categoria, precio, descripcion,
                             imagenUrl: imagenUrl || "",
                             variantes: variantesTemporales,
+                            extras: variantesTemporales,
                             disponible: true
                         });
                         mostrarToast("Plato registrado con éxito.");
@@ -2359,55 +2375,20 @@
         }
 
         async function cargarConfiguracionVisualNube() {
+            let cacheConfig = localStorage.getItem('alaska_cache_config');
+            if (cacheConfig) {
+                try {
+                    aplicarConfiguracionVisual(JSON.parse(cacheConfig));
+                } catch(e){}
+            }
+
             try {
                 const docRef = doc(db, "configuracion", "estilosGenerales");
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    if (data.nombreInterno && document.getElementById('input-nombre-interno')) document.getElementById('input-nombre-interno').value = data.nombreInterno;
-                    if (data.tituloPublico && document.getElementById('input-titulo-publico')) {
-                        document.getElementById('input-titulo-publico').value = data.tituloPublico;
-                        document.getElementById('public-title-display').textContent = data.tituloPublico;
-                    }
-                    if (data.subtituloPublico && document.getElementById('input-subtitulo-publico')) {
-                        document.getElementById('input-subtitulo-publico').value = data.subtituloPublico;
-                        document.getElementById('public-subtitle-display').textContent = data.subtituloPublico;
-                    }
-                    if (data.descAdicional && document.getElementById('input-desc-adicional')) document.getElementById('input-desc-adicional').value = data.descAdicional;
-                    
-                    if (data.horaApertura) {
-                        horarioApertura = data.horaApertura;
-                        if (document.getElementById('input-hora-apertura')) document.getElementById('input-hora-apertura').value = data.horaApertura;
-                    }
-                    if (data.horaCierre) {
-                        horarioCierre = data.horaCierre;
-                        if (document.getElementById('input-hora-cierre')) document.getElementById('input-hora-cierre').value = data.horaCierre;
-                    }
-                    if (data.diasCerrado !== undefined) {
-                        diasCerradoStr = data.diasCerrado;
-                        if (document.getElementById('input-dias-cerrado')) document.getElementById('input-dias-cerrado').value = data.diasCerrado;
-                    }
-
-                    if (data.colorPrincipal) {
-                        document.documentElement.style.setProperty('--color-principal', data.colorPrincipal);
-                        if(document.getElementById('input-color-principal')) document.getElementById('input-color-principal').value = data.colorPrincipal;
-                    }
-                    if (data.colorSecundario) {
-                        document.documentElement.style.setProperty('--color-secundario', data.colorSecundario);
-                        if(document.getElementById('input-color-secundario')) document.getElementById('input-color-secundario').value = data.colorSecundario;
-                    }
-                    if (data.colorOferta) {
-                        document.documentElement.style.setProperty('--color-oferta', data.colorOferta);
-                        if(document.getElementById('input-color-oferta')) document.getElementById('input-color-oferta').value = data.colorOferta;
-                    }
-                    if (data.colorFondo) {
-                        document.documentElement.style.setProperty('--bg-dark', data.colorFondo);
-                        if(document.getElementById('input-color-fondo')) document.getElementById('input-color-fondo').value = data.colorFondo;
-                    }
-                    if (data.logoUrl) {
-                        if(document.getElementById('logo-display')) document.getElementById('logo-display').src = data.logoUrl;
-                        if(document.getElementById('settings-logo-preview')) document.getElementById('settings-logo-preview').src = data.logoUrl;
-                    }
+                    localStorage.setItem('alaska_cache_config', JSON.stringify(data));
+                    aplicarConfiguracionVisual(data);
                 }
 
                 const docRefT = doc(db, "configuracion", "tiempoEstimado");
@@ -2418,6 +2399,53 @@
                 }
             } catch (e) { 
                 console.error("Error al cargar configuracion:", e); 
+            }
+        }
+
+        function aplicarConfiguracionVisual(data) {
+            if (data.nombreInterno && document.getElementById('input-nombre-interno')) document.getElementById('input-nombre-interno').value = data.nombreInterno;
+            if (data.tituloPublico && document.getElementById('input-titulo-publico')) {
+                document.getElementById('input-titulo-publico').value = data.tituloPublico;
+                document.getElementById('public-title-display').textContent = data.tituloPublico;
+            }
+            if (data.subtituloPublico && document.getElementById('input-subtitulo-publico')) {
+                document.getElementById('input-subtitulo-publico').value = data.subtituloPublico;
+                document.getElementById('public-subtitle-display').textContent = data.subtituloPublico;
+            }
+            if (data.descAdicional && document.getElementById('input-desc-adicional')) document.getElementById('input-desc-adicional').value = data.descAdicional;
+            
+            if (data.horaApertura) {
+                horarioApertura = data.horaApertura;
+                if (document.getElementById('input-hora-apertura')) document.getElementById('input-hora-apertura').value = data.horaApertura;
+            }
+            if (data.horaCierre) {
+                horarioCierre = data.horaCierre;
+                if (document.getElementById('input-hora-cierre')) document.getElementById('input-hora-cierre').value = data.horaCierre;
+            }
+            if (data.diasCerrado !== undefined) {
+                diasCerradoStr = data.diasCerrado;
+                if (document.getElementById('input-dias-cerrado')) document.getElementById('input-dias-cerrado').value = data.diasCerrado;
+            }
+
+            if (data.colorPrincipal) {
+                document.documentElement.style.setProperty('--color-principal', data.colorPrincipal);
+                if(document.getElementById('input-color-principal')) document.getElementById('input-color-principal').value = data.colorPrincipal;
+            }
+            if (data.colorSecundario) {
+                document.documentElement.style.setProperty('--color-secundario', data.colorSecundario);
+                if(document.getElementById('input-color-secundario')) document.getElementById('input-color-secundario').value = data.colorSecundario;
+            }
+            if (data.colorOferta) {
+                document.documentElement.style.setProperty('--color-oferta', data.colorOferta);
+                if(document.getElementById('input-color-oferta')) document.getElementById('input-color-oferta').value = data.colorOferta;
+            }
+            if (data.colorFondo) {
+                document.documentElement.style.setProperty('--bg-dark', data.colorFondo);
+                if(document.getElementById('input-color-fondo')) document.getElementById('input-color-fondo').value = data.colorFondo;
+            }
+            if (data.logoUrl) {
+                if(document.getElementById('logo-display')) document.getElementById('logo-display').src = data.logoUrl;
+                if(document.getElementById('settings-logo-preview')) document.getElementById('settings-logo-preview').src = data.logoUrl;
             }
         }
 
@@ -2447,6 +2475,8 @@
                     if(logoUrl) dataObj.logoUrl = logoUrl;
                     await setDoc(doc(db, "configuracion", "estilosGenerales"), dataObj, { merge: true });
                     
+                    localStorage.setItem('alaska_cache_config', JSON.stringify(dataObj));
+                    
                     horarioApertura = horaAperturaVal;
                     horarioCierre = horaCierreVal;
                     diasCerradoStr = diasCerradoVal;
@@ -2474,9 +2504,11 @@
         }
 
         if(db) {
-            cargarConfiguracionVisualNube();
             actualizarUILealtadPublica();
-            cargarMenu();
+            Promise.all([
+                cargarConfiguracionVisualNube(),
+                cargarMenu()
+            ]);
         }
     </script>
 </body>
