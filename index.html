@@ -1908,7 +1908,8 @@
                 `;
             });
         }
-window.moverPlato = function(indexActual, direccion) {
+
+        window.moverPlato = function(indexActual, direccion) {
             const platosVisibles = listaPlatos.filter(p => p.categoria !== 'Stock_Interno');
             let nuevoIndex = indexActual + direccion;
 
