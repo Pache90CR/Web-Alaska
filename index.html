@@ -2547,15 +2547,22 @@
                 reader.onload = async function() { await guardarFin(reader.result); };
             } else { await guardarFin(null); }
         }
-
-        if (db) {
+if (db) {
             actualizarUILealtadPublica();
             (async () => {
-                await cargarConfiguracionVisualNube();
-                await inicializarCategoriasNube();
-                await cargarMenu();
+                try {
+                    await cargarConfiguracionVisualNube();
+                    await inicializarCategoriasNube();
+                    await cargarMenu();
+                } catch (err) {
+                    console.error("Error en la secuencia inicial:", err);
+                    await cargarMenu();
+                }
             })();
+        } else {
+            console.error("No se pudo conectar con la base de datos.");
         }
+        
     </script>
 </body>
 </html>
