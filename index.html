@@ -595,7 +595,7 @@
 
                 <div id="admin-tab-platos" class="admin-section-tab">
                     <h2 style="margin-top:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:8px;">Gestión de Platos</h2>
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Modifica individualmente o apaga/enciende categorías completas (Batidos, Bocas, etc.)</p>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Utiliza las flechas ↑ ↓ para reordenar la posición exacta de los platos en el menú.</p>
 
                     <div style="background:#13151a; padding:16px; border-radius:14px; border:1px solid var(--border-color); margin-bottom:20px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
                         <span style="font-size:13px; font-weight:700; color:var(--color-principal);">Control Masivo de Categoría:</span>
@@ -614,7 +614,7 @@
                     <div style="overflow-x:auto;">
                         <table class="admin-table">
                             <thead>
-                                <tr><th>Img</th><th>Nombre</th><th>Categoría</th><th>Precio (₡)</th><th>Estado</th><th>Acciones</th></tr>
+                                <tr><th>Img</th><th>Nombre</th><th>Categoría</th><th>Precio (₡)</th><th>Estado</th><th>Acciones (Orden)</th></tr>
                             </thead>
                             <tbody id="admin-tabla-platos-body">
                                 <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Cargando platos...</td></tr>
@@ -1201,6 +1201,10 @@
             const menuGrid = document.getElementById("menu-grid");
             if (!menuGrid) return;
             menuGrid.innerHTML = "";
+
+            // Ordenamiento explicito por posicion guardada
+            platos.sort((a, b) => Number(a.orden || 999) - Number(b.orden || 999));
+
             const visibles = platos.filter(p => p.categoria !== 'Stock_Interno');
             
             if (visibles.length === 0) {
@@ -1820,36 +1824,72 @@
             const tbody = document.getElementById('admin-tabla-platos-body');
             if (!tbody) return;
             
+            // Ordenar por orden guardado en la BD
+            listaPlatos.sort((a, b) => Number(a.orden || 999) - Number(b.orden || 999));
+
             if (listaPlatos.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No hay platos registrados.</td></tr>`;
                 return;
             }
 
             tbody.innerHTML = "";
-            listaPlatos.forEach(p => {
-                if (p.categoria !== 'Stock_Interno') {
-                    let img = p.imagenUrl ? `<img src="${p.imagenUrl}" style="width:40px; height:40px; object-fit:cover; border-radius:8px; border:1px solid var(--border-color);">` : 'Sin foto';
-                    let disponible = p.disponible !== false;
-                    let estadoEstilo = disponible ? 'color:#4ade80; cursor:pointer; font-weight:bold;' : 'color:#f87171; cursor:pointer; font-weight:bold;';
-                    let estadoTexto = disponible ? 'Disponible' : 'Agotado';
+            const platosVisibles = listaPlatos.filter(p => p.categoria !== 'Stock_Interno');
 
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${img}</td>
-                            <td style="font-weight:bold;">${p.nombre}</td>
-                            <td><span style="background:#1a1d24; padding:4px 10px; border-radius:8px; font-size:11px; border:1px solid var(--border-color);">${p.categoria}</span></td>
-                            <td>₡${Number(p.precio).toLocaleString()}</td>
-                            <td><span style="${estadoEstilo}" onclick="cambiarDisponibilidadPlato('${p.id}', ${disponible})" title="Haz clic para cambiar estado">${estadoTexto}</span></td>
-                            <td>
-                                <div style="display:flex; gap:6px;">
-                                    <button type="button" onclick="abrirModalEditarPlato('${p.id}')" class="action-pill" style="padding:6px 12px; font-size:11px; background:#22252e; border-color:var(--border-color);">Editar</button>
-                                    <button type="button" onclick="eliminarPlato('${p.id}')" class="action-pill" style="padding:6px 12px; font-size:11px; background:rgba(239,68,68,0.12); color:#f87171; border-color:rgba(239,68,68,0.3);">Eliminar</button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                }
+            platosVisibles.forEach((p, index) => {
+                let img = p.imagenUrl ? `<img src="${p.imagenUrl}" style="width:40px; height:40px; object-fit:cover; border-radius:8px; border:1px solid var(--border-color);">` : 'Sin foto';
+                let disponible = p.disponible !== false;
+                let estadoEstilo = disponible ? 'color:#4ade80; cursor:pointer; font-weight:bold;' : 'color:#f87171; cursor:pointer; font-weight:bold;';
+                let estadoTexto = disponible ? 'Disponible' : 'Agotado';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${img}</td>
+                        <td style="font-weight:bold;">${p.nombre}</td>
+                        <td><span style="background:#1a1d24; padding:4px 10px; border-radius:8px; font-size:11px; border:1px solid var(--border-color);">${p.categoria}</span></td>
+                        <td>₡${Number(p.precio).toLocaleString()}</td>
+                        <td><span style="${estadoEstilo}" onclick="cambiarDisponibilidadPlato('${p.id}', ${disponible})" title="Haz clic para cambiar estado">${estadoTexto}</span></td>
+                        <td>
+                            <div style="display:flex; gap:6px; align-items:center;">
+                                <button type="button" onclick="moverPlato(${index}, -1)" class="action-pill" style="padding:4px 10px; font-size:13px; background:#1a1d24; font-weight:bold;" title="Subir plato">↑</button>
+                                <button type="button" onclick="moverPlato(${index}, 1)" class="action-pill" style="padding:4px 10px; font-size:13px; background:#1a1d24; font-weight:bold;" title="Bajar plato">↓</button>
+                                <button type="button" onclick="abrirModalEditarPlato('${p.id}')" class="action-pill" style="padding:6px 12px; font-size:11px; background:#22252e; border-color:var(--border-color);">Editar</button>
+                                <button type="button" onclick="eliminarPlato('${p.id}')" class="action-pill" style="padding:6px 12px; font-size:11px; background:rgba(239,68,68,0.12); color:#f87171; border-color:rgba(239,68,68,0.3);">Eliminar</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
             });
+        }
+
+        window.moverPlato = async function(indexActual, direccion) {
+            const platosVisibles = listaPlatos.filter(p => p.categoria !== 'Stock_Interno');
+            let nuevoIndex = indexActual + direccion;
+
+            if (nuevoIndex < 0 || nuevoIndex >= platosVisibles.length) return;
+
+            let platoActual = platosVisibles[indexActual];
+            let platoDestino = platosVisibles[nuevoIndex];
+
+            // Asignar ordenes basicos si son indefinidos
+            platosVisibles.forEach((p, idx) => {
+                if (p.orden === undefined) p.orden = idx + 1;
+            });
+
+            // Intercambio
+            let ordenTemp = platoActual.orden;
+            platoActual.orden = platoDestino.orden;
+            platoDestino.orden = ordenTemp;
+
+            try {
+                await updateDoc(doc(db, "menu", platoActual.id), { orden: platoActual.orden });
+                await updateDoc(doc(db, "menu", platoDestino.id), { orden: platoDestino.orden });
+
+                await cargarMenu();
+                cargarAdminPlatos();
+            } catch (e) {
+                console.error("Error al reordenar plato:", e);
+                mostrarToast("Error al guardar la nueva posición.");
+            }
         }
 
         window.cambiarEstadoCategoriaMasivo = async function(nuevoEstado) {
@@ -2145,12 +2185,14 @@
 
                 const guardarPlatoFinal = async (imagenUrl) => {
                     try {
+                        let nuevoOrden = listaPlatos.length + 1;
                         await addDoc(collection(db, "menu"), {
                             nombre, categoria, precio, descripcion,
                             imagenUrl: imagenUrl || "",
                             variantes: variantesTemporales,
                             extras: variantesTemporales,
-                            disponible: true
+                            disponible: true,
+                            orden: nuevoOrden
                         });
                         mostrarToast("Plato registrado con éxito.");
                         productForm.reset();
