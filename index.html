@@ -1168,7 +1168,7 @@
                 document.getElementById('admin-tab-ajustes').classList.add('active-admin-tab');
             }
 
-            event && event.currentTarget && event.currentTarget.classList.add('active');
+            if (event && event.currentTarget) event.currentTarget.classList.add('active');
             cerrarSidebar();
         }
 
@@ -1194,6 +1194,10 @@
                 mostrarPlatos(listaPlatos);
             } catch (error) { 
                 console.error("Error al cargar menú:", error);
+                const menuGrid = document.getElementById("menu-grid");
+                if (menuGrid && listaPlatos.length === 0) {
+                    menuGrid.innerHTML = "<p style='text-align:center; color:#f87171;'>Error de conexión al cargar el menú.</p>";
+                }
             }
         }
 
@@ -1202,7 +1206,6 @@
             if (!menuGrid) return;
             menuGrid.innerHTML = "";
 
-            // Ordenamiento explicito por posicion guardada
             platos.sort((a, b) => Number(a.orden || 999) - Number(b.orden || 999));
 
             const visibles = platos.filter(p => p.categoria !== 'Stock_Interno');
@@ -1824,7 +1827,6 @@
             const tbody = document.getElementById('admin-tabla-platos-body');
             if (!tbody) return;
             
-            // Ordenar por orden guardado en la BD
             listaPlatos.sort((a, b) => Number(a.orden || 999) - Number(b.orden || 999));
 
             if (listaPlatos.length === 0) {
@@ -1870,12 +1872,10 @@
             let platoActual = platosVisibles[indexActual];
             let platoDestino = platosVisibles[nuevoIndex];
 
-            // Asignar ordenes basicos si son indefinidos
             platosVisibles.forEach((p, idx) => {
                 if (p.orden === undefined) p.orden = idx + 1;
             });
 
-            // Intercambio
             let ordenTemp = platoActual.orden;
             platoActual.orden = platoDestino.orden;
             platoDestino.orden = ordenTemp;
@@ -2093,7 +2093,7 @@
                     await setDoc(doc(db, "categorias", catNombre), { nombre: catNombre, visible: true, icono: reader.result }, { merge: true });
                     mostrarToast("Icono de categoría actualizado.");
                     cerrarModalEditarCat();
-                    inicializarCategoriasNube();
+                    await inicializarCategoriasNube();
                 } catch(e) { mostrarToast("Error al guardar icono."); }
             };
         }
@@ -2249,8 +2249,11 @@
                         categoriasNube[cat] = { idDoc: cat, nombre: cat, visible: true, icono: "" };
                     }
                 }
+            } catch (e) { 
+                console.error("Error al obtener categorías:", e); 
+            } finally {
                 renderizarCategoriasPublicas();
-            } catch (e) { renderizarCategoriasPublicas(); }
+            }
         }
 
         function renderizarCategoriasPublicas() {
@@ -2545,12 +2548,13 @@
             } else { await guardarFin(null); }
         }
 
-        if(db) {
+        if (db) {
             actualizarUILealtadPublica();
-            Promise.all([
-                cargarConfiguracionVisualNube(),
-                cargarMenu()
-            ]);
+            (async () => {
+                await cargarConfiguracionVisualNube();
+                await inicializarCategoriasNube();
+                await cargarMenu();
+            })();
         }
     </script>
 </body>
