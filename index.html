@@ -1205,7 +1205,12 @@
                 });
                 
                 if (listaPlatos.length > 0) {
-                    localStorage.setItem('alaska_cache_menu', JSON.stringify(listaPlatos));
+                    // BLINDAJE: Si las fotos llenan los 5MB, falla en silencio pero SIEMPRE muestra el menú
+                    try {
+                        localStorage.setItem('alaska_cache_menu', JSON.stringify(listaPlatos));
+                    } catch(errCache) {
+                        console.warn("Memoria caché llena debido al peso de las fotos, omitiendo guardado local.");
+                    }
                     mostrarPlatos(listaPlatos);
                 } else if (!cacheMenu) {
                     if (menuGrid) {
@@ -1215,8 +1220,11 @@
             } catch (error) { 
                 console.error("Error al cargar menú desde Firebase:", error);
 
-                // Si Firebase falla pero había platos en caché, mantenerlos
-                if (listaPlatos.length > 0) return;
+                // Si falló Firebase pero logramos recuperar de caché, pintar y salir
+                if (listaPlatos.length > 0) {
+                    mostrarPlatos(listaPlatos);
+                    return;
+                }
 
                 if (menuGrid) {
                     menuGrid.innerHTML = `
@@ -2596,6 +2604,12 @@
             if (db) {
                 try { await cargarConfiguracionVisualNube(); } catch(e) { console.warn("Aviso configuración visual:", e); }
                 try { await inicializarCategoriasNube(); } catch(e) { console.warn("Aviso categorías:", e); }
+            }
+
+            // REFRESCO FORZADO: Asegura que la pestaña "Todos" esté activa y mostrándose
+            if (listaPlatos && listaPlatos.length > 0) {
+                let btnTodos = document.querySelector('.cat-btn');
+                if (btnTodos) filtrarMenuPorCategoria('Todos', btnTodos);
             }
         }
 
