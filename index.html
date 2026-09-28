@@ -1033,6 +1033,7 @@
 
         function mostrarToast(mensaje) {
             const toast = document.getElementById('toast-notification');
+            if(!toast) return;
             document.getElementById('toast-msg').textContent = mensaje;
             toast.classList.add('show');
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
@@ -1173,30 +1174,34 @@
         }
 
         async function cargarMenu() {
+            const menuGrid = document.getElementById("menu-grid");
+
+            // 1. Cargar desde memoria caché local si está disponible
             let cacheMenu = localStorage.getItem('alaska_cache_menu');
             if (cacheMenu) {
                 try {
                     listaPlatos = JSON.parse(cacheMenu);
-                    mostrarPlatos(listaPlatos);
-                } catch(e){}
+                    if (listaPlatos.length > 0) mostrarPlatos(listaPlatos);
+                } catch(e) { console.error("Error leyendo caché:", e); }
             }
 
+            // 2. Cargar platos actualizados desde Firebase
             try {
                 const querySnapshot = await getDocs(collection(db, "menu"));
                 listaPlatos = [];
                 querySnapshot.forEach((docSnap) => { 
                     let data = docSnap.data();
                     let extras = data.variantes || data.extras || data.acompanamientos || [];
-                    listaPlatos.push({ id: docSnap.id, ...data, variantes: extras }); 
+                    let numOrden = (data.orden !== undefined && data.orden !== null) ? Number(data.orden) : 999;
+                    listaPlatos.push({ id: docSnap.id, ...data, orden: numOrden, variantes: extras }); 
                 });
                 
                 localStorage.setItem('alaska_cache_menu', JSON.stringify(listaPlatos));
                 mostrarPlatos(listaPlatos);
             } catch (error) { 
-                console.error("Error al cargar menú:", error);
-                const menuGrid = document.getElementById("menu-grid");
+                console.error("Error al cargar menú desde Firebase:", error);
                 if (menuGrid && listaPlatos.length === 0) {
-                    menuGrid.innerHTML = "<p style='text-align:center; color:#f87171;'>Error de conexión al cargar el menú.</p>";
+                    menuGrid.innerHTML = `<p style="text-align:center; color:#f87171;">No se pudieron cargar los platos. Refresca la pantalla.</p>`;
                 }
             }
         }
@@ -1204,18 +1209,30 @@
         function mostrarPlatos(platos) {
             const menuGrid = document.getElementById("menu-grid");
             if (!menuGrid) return;
-            menuGrid.innerHTML = "";
 
-            platos.sort((a, b) => Number(a.orden || 999) - Number(b.orden || 999));
-
-            const visibles = platos.filter(p => p.categoria !== 'Stock_Interno');
-            
-            if (visibles.length === 0) {
-                menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay platos disponibles.</p>";
+            if (!platos || platos.length === 0) {
+                menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay platos disponibles en este momento.</p>";
                 return;
             }
 
-            verificarHorarioLocal();
+            // Ordenamiento por número de posición
+            let copiaPlatos = [...platos];
+            copiaPlatos.sort((a, b) => {
+                let ordenA = Number(a.orden ?? 999);
+                let ordenB = Number(b.orden ?? 999);
+                return ordenA - ordenB;
+            });
+
+            const visibles = copiaPlatos.filter(p => p.categoria !== 'Stock_Interno');
+            
+            if (visibles.length === 0) {
+                menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay platos en esta categoría.</p>";
+                return;
+            }
+
+            try { verificarHorarioLocal(); } catch(e) { console.warn("Error en verificación horario:", e); }
+
+            let htmlConstruido = "";
 
             visibles.forEach((plato) => {
                 let tieneFotoValida = plato.imagenUrl && typeof plato.imagenUrl === 'string' && plato.imagenUrl.trim() !== "";
@@ -1224,40 +1241,35 @@
                 let disponible = plato.disponible !== false;
                 let badgeAgotadoHTML = !disponible ? `<span class="badge-agotado">Agotado</span>` : '';
 
-                let btnClase = "";
-                let btnTexto = "";
-                let accionClick = "";
+                let btnClase = "order-btn";
+                let btnTexto = "Pedir";
+                let accionClick = `abrirModalDetallePlato('${plato.id}')`;
 
                 if (!negocioAbiertoGlobal) {
                     btnClase = "order-btn closed";
                     btnTexto = "Ver Plato (Local Cerrado)";
-                    accionClick = `abrirModalDetallePlato('${plato.id}')`;
                 } else if (pedidosOnlinePausados) {
                     btnClase = "order-btn closed";
                     btnTexto = "Cocina Ocupada";
-                    accionClick = "mostrarToast('Pedidos online pausados temporalmente por alta demanda.')";
+                    accionClick = "mostrarToast('Pedidos online pausados temporalmente.')";
                 } else if (!disponible) {
                     btnClase = "order-btn soldout";
                     btnTexto = "Agotado Temporalmente";
                     accionClick = "mostrarToast('Este plato se encuentra agotado por hoy.')";
-                } else {
-                    btnClase = "order-btn";
-                    btnTexto = "Pedir";
-                    accionClick = `abrirModalDetallePlato('${plato.id}')`;
                 }
 
-                menuGrid.innerHTML += `
+                htmlConstruido += `
                     <div class="food-card" style="opacity: ${disponible ? '1' : '0.65'};">
                         <div class="card-image-container">
-                            <img src="${imagen}" alt="${plato.nombre}" loading="lazy">
+                            <img src="${imagen}" alt="${plato.nombre || 'Plato'}" loading="lazy">
                             <span class="badge">${plato.categoria || 'Especialidad'}</span>
                             ${badgeAgotadoHTML}
                         </div>
                         <div class="card-content">
                             <div>
                                 <div class="card-header-flex">
-                                    <h3>${plato.nombre}</h3>
-                                    <div class="price">₡${Number(plato.precio).toLocaleString()}</div>
+                                    <h3>${plato.nombre || 'Sin nombre'}</h3>
+                                    <div class="price">₡${Number(plato.precio || 0).toLocaleString()}</div>
                                 </div>
                             </div>
                             <button class="${btnClase}" onclick="${accionClick}">${btnTexto}</button>
@@ -1265,6 +1277,8 @@
                     </div>
                 `;
             });
+
+            menuGrid.innerHTML = htmlConstruido;
         }
 
         window.filtrarMenuPorTexto = function(textoBusqueda) {
@@ -1275,7 +1289,7 @@
             }
             const filtrados = listaPlatos.filter(p => 
                 p.categoria !== 'Stock_Interno' && 
-                (p.nombre.toLowerCase().includes(texto) || (p.descripcion && p.descripcion.toLowerCase().includes(texto)))
+                ((p.nombre && p.nombre.toLowerCase().includes(texto)) || (p.descripcion && p.descripcion.toLowerCase().includes(texto)))
             );
             mostrarPlatos(filtrados);
         }
@@ -2547,22 +2561,21 @@
                 reader.onload = async function() { await guardarFin(reader.result); };
             } else { await guardarFin(null); }
         }
-            if (db) {
+
+        // Ejecución segura de inicio
+        if (db) {
             actualizarUILealtadPublica();
             (async () => {
                 try {
                     await cargarConfiguracionVisualNube();
                     await inicializarCategoriasNube();
-                    await cargarMenu();
-                } catch (err) {
-                    console.error("Error en la secuencia inicial:", err);
+                } catch (e) {
+                    console.warn("Advertencia durante inicio visual:", e);
+                } finally {
                     await cargarMenu();
                 }
             })();
-        } else {
-            console.error("No se pudo conectar con la base de datos.");
         }
-        
     </script>
 </body>
 </html>
