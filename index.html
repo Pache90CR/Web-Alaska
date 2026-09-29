@@ -1882,7 +1882,6 @@
 
             const platosVisibles = listaPlatos.filter(p => p.categoria !== 'Stock_Interno');
             
-            // OPTIMIZACIÓN: Se construye toda la tabla en la memoria primero, y luego se pega a la pantalla de una vez
             let htmlTabla = ""; 
 
             platosVisibles.forEach((p, index) => {
@@ -1910,42 +1909,50 @@
                 `;
             });
             
-            // SE ACTUALIZA LA PANTALLA 1 SOLA VEZ
             tbody.innerHTML = htmlTabla; 
         }
 
         window.moverPlato = function(indexActual, direccion) {
-            const platosVisibles = listaPlatos.filter(p => p.categoria !== 'Stock_Interno');
+            // 1. Obtener los platos que se muestran en la tabla
+            let platosVisibles = listaPlatos.filter(p => p.categoria !== 'Stock_Interno');
+            
+            // 2. Validar que el movimiento no se salga de los límites
             let nuevoIndex = indexActual + direccion;
-
             if (nuevoIndex < 0 || nuevoIndex >= platosVisibles.length) return;
+
+            // 3. EL TRUCO AQUÍ: Asignar un número de orden estricto del 1 en adelante 
+            // a como se ven en pantalla para romper empates viejos (ej. los que tienen 999)
+            platosVisibles.forEach((p, idx) => {
+                p.ordenCorrecto = idx + 1; 
+            });
 
             let platoActual = platosVisibles[indexActual];
             let platoDestino = platosVisibles[nuevoIndex];
 
-            platosVisibles.forEach((p, idx) => {
-                if (p.orden === undefined) p.orden = idx + 1;
+            // 4. Intercambiar sus posiciones exactas
+            let ordenTemporal = platoActual.ordenCorrecto;
+            platoActual.ordenCorrecto = platoDestino.ordenCorrecto;
+            platoDestino.ordenCorrecto = ordenTemporal;
+
+            // 5. Aplicar el orden corregido a la lista oficial
+            platosVisibles.forEach(p => {
+                p.orden = p.ordenCorrecto;
+                delete p.ordenCorrecto; // Limpiar la variable temporal
             });
 
-            // 1. Intercambiar posiciones en la memoria local
-            let ordenTemp = platoActual.orden;
-            platoActual.orden = platoDestino.orden;
-            platoDestino.orden = ordenTemp;
-
-            // 2. ACTUALIZACIÓN VISUAL INMEDIATA
+            // 6. Actualización Visual Inmediata
             listaPlatos.sort((a, b) => Number(a.orden || 999) - Number(b.orden || 999));
-            cargarAdminPlatos(); // Refresca la tabla sin esperas
+            cargarAdminPlatos(); // Refresca la tabla al instante
             
-            // Actualizar caché para que el menú público también esté listo
+            // Actualizar memoria caché
             try { localStorage.setItem('alaska_cache_menu', JSON.stringify(listaPlatos)); } catch(e){}
 
-            // 3. GUARDADO EN LA NUBE EN SEGUNDO PLANO (Sin el 'await' que congelaba la pantalla)
+            // 7. Guardar en la nube (Firebase) en segundo plano
             try {
                 updateDoc(doc(db, "menu", platoActual.id), { orden: platoActual.orden });
                 updateDoc(doc(db, "menu", platoDestino.id), { orden: platoDestino.orden });
             } catch (e) {
                 console.error("Error al reordenar en la nube:", e);
-                mostrarToast("Aviso: Revisa tu conexión, posible error al guardar posición.");
             }
         }
 
