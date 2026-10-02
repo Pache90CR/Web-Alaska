@@ -1890,6 +1890,10 @@
                 let estadoEstilo = disponible ? 'color:#4ade80; cursor:pointer; font-weight:bold;' : 'color:#f87171; cursor:pointer; font-weight:bold;';
                 let estadoTexto = disponible ? 'Disponible' : 'Agotado';
 
+                let botonOferta = p.categoria === 'Ofertas' 
+                    ? `<button type="button" onclick="quitarOferta('${p.id}')" class="action-pill" style="padding:6px 10px; font-size:11px; background:rgba(212, 175, 55, 0.15); color:var(--color-principal); border-color:var(--color-principal);">Quitar Oferta</button>`
+                    : `<button type="button" onclick="ponerEnOferta('${p.id}')" class="action-pill" style="padding:6px 10px; font-size:11px; background:rgba(239, 68, 68, 0.15); color:#f87171; border-color:rgba(239, 68, 68, 0.3);">Dar Oferta</button>`;
+
                 htmlTabla += `
                     <tr>
                         <td>${img}</td>
@@ -1898,11 +1902,12 @@
                         <td>₡${Number(p.precio).toLocaleString()}</td>
                         <td><span style="${estadoEstilo}" onclick="cambiarDisponibilidadPlato('${p.id}', ${disponible})" title="Haz clic para cambiar estado">${estadoTexto}</span></td>
                         <td>
-                            <div style="display:flex; gap:6px; align-items:center;">
+                            <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
                                 <button type="button" onclick="moverPlato(${index}, -1)" class="action-pill" style="padding:4px 10px; font-size:13px; background:#1a1d24; font-weight:bold;" title="Subir plato">↑</button>
                                 <button type="button" onclick="moverPlato(${index}, 1)" class="action-pill" style="padding:4px 10px; font-size:13px; background:#1a1d24; font-weight:bold;" title="Bajar plato">↓</button>
-                                <button type="button" onclick="abrirModalEditarPlato('${p.id}')" class="action-pill" style="padding:6px 12px; font-size:11px; background:#22252e; border-color:var(--border-color);">Editar</button>
-                                <button type="button" onclick="eliminarPlato('${p.id}')" class="action-pill" style="padding:6px 12px; font-size:11px; background:rgba(239,68,68,0.12); color:#f87171; border-color:rgba(239,68,68,0.3);">Eliminar</button>
+                                <button type="button" onclick="abrirModalEditarPlato('${p.id}')" class="action-pill" style="padding:6px 10px; font-size:11px; background:#22252e; border-color:var(--border-color);">Editar</button>
+                                ${botonOferta}
+                                <button type="button" onclick="eliminarPlato('${p.id}')" class="action-pill" style="padding:6px 10px; font-size:11px; background:rgba(239,68,68,0.12); color:#f87171; border-color:rgba(239,68,68,0.3);">✕</button>
                             </div>
                         </td>
                     </tr>
@@ -1912,16 +1917,62 @@
             tbody.innerHTML = htmlTabla; 
         }
 
+        window.ponerEnOferta = async function(id) {
+            const plato = listaPlatos.find(p => p.id === id);
+            if (!plato) return;
+            
+            let nuevoPrecioStr = prompt(`Ingresa el PRECIO PROMOCIONAL para "${plato.nombre}"\n(Precio normal: ₡${plato.precio}):`);
+            if (!nuevoPrecioStr) return;
+            
+            let nuevoPrecio = Number(nuevoPrecioStr);
+            if (isNaN(nuevoPrecio) || nuevoPrecio <= 0) {
+                mostrarToast("El precio ingresado no es válido.");
+                return;
+            }
+
+            try {
+                await updateDoc(doc(db, "menu", id), {
+                    categoria: 'Ofertas',
+                    precio: nuevoPrecio,
+                    categoriaOriginal: plato.categoria,
+                    precioOriginal: plato.precio
+                });
+                mostrarToast("¡Plato movido a Ofertas!");
+                await cargarMenu();
+                cargarAdminPlatos();
+            } catch(e) {
+                mostrarToast("Error al aplicar la oferta.");
+            }
+        }
+
+        window.quitarOferta = async function(id) {
+            const plato = listaPlatos.find(p => p.id === id);
+            if (!plato) return;
+
+            let catRestaurar = plato.categoriaOriginal || 'Bocas'; 
+            let precRestaurar = plato.precioOriginal || plato.precio;
+
+            try {
+                await updateDoc(doc(db, "menu", id), {
+                    categoria: catRestaurar,
+                    precio: precRestaurar,
+                    categoriaOriginal: null,
+                    precioOriginal: null
+                });
+                mostrarToast("Restaurado a " + catRestaurar);
+                await cargarMenu();
+                cargarAdminPlatos();
+            } catch(e) {
+                mostrarToast("Error al quitar la oferta.");
+            }
+        }
+
         window.moverPlato = function(indexActual, direccion) {
-            // 1. Obtener los platos que se muestran en la tabla
             let platosVisibles = listaPlatos.filter(p => p.categoria !== 'Stock_Interno');
             
-            // 2. Validar que el movimiento no se salga de los límites
             let nuevoIndex = indexActual + direccion;
             if (nuevoIndex < 0 || nuevoIndex >= platosVisibles.length) return;
 
-            // 3. EL TRUCO AQUÍ: Asignar un número de orden estricto del 1 en adelante 
-            // a como se ven en pantalla para romper empates viejos (ej. los que tienen 999)
             platosVisibles.forEach((p, idx) => {
                 p.ordenCorrecto = idx + 1; 
             });
@@ -1929,25 +1980,20 @@
             let platoActual = platosVisibles[indexActual];
             let platoDestino = platosVisibles[nuevoIndex];
 
-            // 4. Intercambiar sus posiciones exactas
             let ordenTemporal = platoActual.ordenCorrecto;
             platoActual.ordenCorrecto = platoDestino.ordenCorrecto;
             platoDestino.ordenCorrecto = ordenTemporal;
 
-            // 5. Aplicar el orden corregido a la lista oficial
             platosVisibles.forEach(p => {
                 p.orden = p.ordenCorrecto;
-                delete p.ordenCorrecto; // Limpiar la variable temporal
+                delete p.ordenCorrecto;
             });
 
-            // 6. Actualización Visual Inmediata
             listaPlatos.sort((a, b) => Number(a.orden || 999) - Number(b.orden || 999));
-            cargarAdminPlatos(); // Refresca la tabla al instante
+            cargarAdminPlatos(); 
             
-            // Actualizar memoria caché
             try { localStorage.setItem('alaska_cache_menu', JSON.stringify(listaPlatos)); } catch(e){}
 
-            // 7. Guardar en la nube (Firebase) en segundo plano
             try {
                 updateDoc(doc(db, "menu", platoActual.id), { orden: platoActual.orden });
                 updateDoc(doc(db, "menu", platoDestino.id), { orden: platoDestino.orden });
