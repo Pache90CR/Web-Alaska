@@ -154,13 +154,13 @@
             padding: 5px 12px; font-size: 11px; font-weight: 800; border-radius: 20px; z-index: 2;
         }
         .card-content { padding: 20px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; }
-        .card-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .food-card h3 { margin: 0; font-size: 18px; color: var(--text-main); font-weight: 700; letter-spacing: -0.3px; }
+        .card-header-flex { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .food-card h3 { margin: 0; font-size: 18px; color: var(--text-main); font-weight: 700; letter-spacing: -0.3px; flex: 1; padding-right: 10px; }
         .price { font-size: 18px; font-weight: 800; color: var(--color-principal); }
         
         .order-btn {
             width: 100%; background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0.05) 100%); color: var(--color-principal);
-            border: 1px solid rgba(212, 175, 55, 0.4); padding: 13px; border-radius: 12px; cursor: pointer;
+            border: 1px solid rgba(212, 175, 55, 0.4); padding: 13px; border-radius: 12px; cursor: pointer; margin-top: 12px;
             font-weight: 700; font-size: 14px; text-align: center; transition: all 0.2s ease;
         }
         .order-btn:hover { background: rgba(212, 175, 55, 0.25); box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2); }
@@ -1176,7 +1176,6 @@
         async function cargarMenu() {
             const menuGrid = document.getElementById("menu-grid");
 
-            // 1. Intentar renderizar de inmediato desde la memoria caché local
             let cacheMenu = localStorage.getItem('alaska_cache_menu');
             if (cacheMenu) {
                 try {
@@ -1185,12 +1184,9 @@
                         listaPlatos = datosCache;
                         mostrarPlatos(listaPlatos);
                     }
-                } catch(e) { 
-                    console.error("Error al leer caché local:", e); 
-                }
+                } catch(e) { console.error("Error al leer caché local:", e); }
             }
 
-            // 2. Consultar a la base de datos en la nube (Firebase)
             try {
                 if (!db) throw new Error("No hay conexión con la base de datos.");
 
@@ -1205,27 +1201,13 @@
                 });
                 
                 if (listaPlatos.length > 0) {
-                    // BLINDAJE: Si las fotos llenan los 5MB, falla en silencio pero SIEMPRE muestra el menú
-                    try {
-                        localStorage.setItem('alaska_cache_menu', JSON.stringify(listaPlatos));
-                    } catch(errCache) {
-                        console.warn("Memoria caché llena debido al peso de las fotos, omitiendo guardado local.");
-                    }
+                    try { localStorage.setItem('alaska_cache_menu', JSON.stringify(listaPlatos)); } catch(errCache) {}
                     mostrarPlatos(listaPlatos);
                 } else if (!cacheMenu) {
-                    if (menuGrid) {
-                        menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay platos registrados en el menú actualmente.</p>";
-                    }
+                    if (menuGrid) menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay platos registrados en el menú actualmente.</p>";
                 }
             } catch (error) { 
-                console.error("Error al cargar menú desde Firebase:", error);
-
-                // Si falló Firebase pero logramos recuperar de caché, pintar y salir
-                if (listaPlatos.length > 0) {
-                    mostrarPlatos(listaPlatos);
-                    return;
-                }
-
+                if (listaPlatos.length > 0) { mostrarPlatos(listaPlatos); return; }
                 if (menuGrid) {
                     menuGrid.innerHTML = `
                         <div style="text-align:center; padding:24px; background:#181a1f; border-radius:16px; border:1px solid #2a2e39;">
@@ -1247,7 +1229,6 @@
                 return;
             }
 
-            // Ordenamiento por número de posición
             let copiaPlatos = [...platos];
             copiaPlatos.sort((a, b) => {
                 let ordenA = Number(a.orden ?? 999);
@@ -1262,7 +1243,7 @@
                 return;
             }
 
-            try { verificarHorarioLocal(); } catch(e) { console.warn("Error en verificación horario:", e); }
+            try { verificarHorarioLocal(); } catch(e) {}
 
             let htmlConstruido = "";
 
@@ -1290,21 +1271,38 @@
                     accionClick = "mostrarToast('Este plato se encuentra agotado por hoy.')";
                 }
 
+                // Aquí se aplica el efecto de anclaje (precio tachado y etiqueta especial)
+                let badgeHtml = plato.categoria === 'Ofertas' 
+                    ? `<span class="badge" style="background: var(--color-oferta); color: white; border: none; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); text-transform: uppercase; font-size:12px; letter-spacing: 0.5px;">🔥 Oferta</span>` 
+                    : `<span class="badge">${plato.categoria || 'Especialidad'}</span>`;
+
+                let htmlPrecio = "";
+                if (plato.categoria === 'Ofertas' && plato.precioOriginal) {
+                    htmlPrecio = `
+                        <div style="text-align: right; line-height: 1.1;">
+                            <span style="text-decoration: line-through; color: #ef4444; opacity: 0.8; font-size: 13px; font-weight: 800;">₡${Number(plato.precioOriginal).toLocaleString()}</span>
+                            <div class="price" style="color: var(--color-oferta); font-size: 20px;">₡${Number(plato.precio || 0).toLocaleString()}</div>
+                        </div>
+                    `;
+                } else {
+                    htmlPrecio = `<div class="price">₡${Number(plato.precio || 0).toLocaleString()}</div>`;
+                }
+
                 htmlConstruido += `
                     <div class="food-card" style="opacity: ${disponible ? '1' : '0.65'};">
                         <div class="card-image-container">
                             <img src="${imagen}" alt="${plato.nombre || 'Plato'}" loading="lazy">
-                            <span class="badge">${plato.categoria || 'Especialidad'}</span>
+                            ${badgeHtml}
                             ${badgeAgotadoHTML}
                         </div>
                         <div class="card-content">
                             <div>
-                                <div class="card-header-flex">
-                                    <h3>${plato.nombre || 'Sin nombre'}</h3>
-                                    <div class="price">₡${Number(plato.precio || 0).toLocaleString()}</div>
+                                <div class="card-header-flex" style="align-items:flex-start;">
+                                    <h3 style="flex:1; padding-right:10px;">${plato.nombre || 'Sin nombre'}</h3>
+                                    ${htmlPrecio}
                                 </div>
                             </div>
-                            <button class="${btnClase}" onclick="${accionClick}">${btnTexto}</button>
+                            <button class="${btnClase}" style="margin-top:12px;" onclick="${accionClick}">${btnTexto}</button>
                         </div>
                     </div>
                 `;
