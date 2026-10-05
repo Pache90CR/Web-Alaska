@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title id="page-title">Bar Restaurante Alaska - Menú Digital</title>
+    <title id="page-title">Bar Restaurante Alaska - Menú Digital y Lealtad</title>
     
     <meta name="theme-color" content="#d4af37">
     <link rel="manifest" href="data:application/manifest+json;charset=utf-8,{
@@ -140,8 +140,30 @@
         }
         .food-card:hover { transform: translateY(-3px); border-color: rgba(212, 175, 55, 0.4); }
         
-        .card-image-container { position: relative; height: 350px; width: 100%; background: #141519; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        /* Contenedor de imagen responsivo */
+        .card-image-container { 
+            position: relative; 
+            width: 100%; 
+            height: 260px; /* Alto base para celulares */
+            background: #141519; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+        }
+
+        /* Ajuste automático para Tablets */
+        @media (min-width: 768px) { 
+            .card-image-container { height: 200px; } 
+        }
+
+        /* Ajuste automático para Computadoras */
+        @media (min-width: 1024px) { 
+            .card-image-container { height: 220px; } 
+        }
+
         .card-image-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+        
         .food-card:hover .card-image-container img { transform: scale(1.06); }
         
         .badge {
