@@ -6,15 +6,7 @@
     <title id="page-title">Bar Restaurante Alaska - Menú Digital y Lealtad</title>
     
     <meta name="theme-color" content="#d4af37">
-    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,{
-        %22name%22: %22Bar Restaurante Alaska%22,
-        %22short_name%22: %22Alaska%22,
-        %22start_url%22: %22.%22,
-        %22display%22: %22standalone%22,
-        %22background_color%22: %22%23121212%22,
-        %22theme_color%22: %22%23d4af37%22,
-        %22icons%22: [{%22src%22: %22https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=192&q=80%22, %22sizes%22: %22192x192%22, %22type%22: %22image/jpeg%22}]
-    }">
+    <link rel="manifest" href="manifest.json">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -144,7 +136,7 @@
         .card-image-container { 
             position: relative; 
             width: 100%; 
-            height: 350px; /* Alto base para celulares */
+            height: 260px; /* Alto base para celulares */
             background: #141519; 
             display: flex; 
             align-items: center; 
@@ -153,8 +145,8 @@
         }
 
         /* Ajuste automático para Tablets */
-        @media (min-width: 1800px) { 
-            .card-image-container { height: 1800px; } 
+        @media (min-width: 768px) { 
+            .card-image-container { height: 200px; } 
         }
 
         /* Ajuste automático para Computadoras */
@@ -1293,7 +1285,6 @@
                     accionClick = "mostrarToast('Este plato se encuentra agotado por hoy.')";
                 }
 
-                // Aquí se aplica el efecto de anclaje (precio tachado y etiqueta especial)
                 let badgeHtml = plato.categoria === 'Ofertas' 
                     ? `<span class="badge" style="background: var(--color-oferta); color: white; border: none; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); text-transform: uppercase; font-size:12px; letter-spacing: 0.5px;">🔥 Oferta</span>` 
                     : `<span class="badge">${plato.categoria || 'Especialidad'}</span>`;
@@ -2710,6 +2701,17 @@
             document.addEventListener('DOMContentLoaded', iniciarAplicacion);
         } else {
             iniciarAplicacion();
+        }
+    </script>
+
+    <!-- Registro del Service Worker para instalación de PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('App lista para instalarse'))
+                    .catch(err => console.error('Error:', err));
+            });
         }
     </script>
 </body>
