@@ -113,11 +113,17 @@
             grid-template-columns: 1fr;
             gap: 22px;
         }
-        @media (min-width: 768px) {
+        /* Tablets en vertical o celulares muy grandes (Evita 1 sola columna gigante) */
+        @media (min-width: 550px) {
             .menu-grid { grid-template-columns: repeat(2, 1fr); }
         }
-        @media (min-width: 1024px) {
+        /* Tablets en horizontal y Laptops */
+        @media (min-width: 900px) {
             .menu-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        /* Monitores grandes de escritorio */
+        @media (min-width: 1200px) {
+            .menu-grid { grid-template-columns: repeat(4, 1fr); }
         }
 
         .food-card {
@@ -132,11 +138,11 @@
         }
         .food-card:hover { transform: translateY(-3px); border-color: rgba(212, 175, 55, 0.4); }
         
-        /* Contenedor de imagen responsivo optimizado */
+        /* Contenedor de imagen con proporción dinámica */
         .card-image-container { 
             position: relative; 
             width: 100%; 
-            height: 190px; /* Altura estándar perfecta para que luzcan bien sin estirarse */
+            aspect-ratio: 16 / 10; /* La altura crece automáticamente en proporción al ancho */
             background: #141519; 
             display: flex; 
             align-items: center; 
@@ -148,11 +154,8 @@
             width: 100%; 
             height: 100%; 
             object-fit: cover; 
-            object-position: center;
             transition: transform 0.4s ease; 
         }
-
-        .card-image-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
         
         .food-card:hover .card-image-container img { transform: scale(1.06); }
         
