@@ -504,10 +504,6 @@
                         <svg class="icon-svg" style="color:var(--color-principal);" viewBox="0 0 24 24"><path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
                         Mi Tarjeta de Lealtad
                     </a>
-                    <a href="#" class="action-pill" onclick="abrirSeguimientoModal(event)">
-                        <svg class="icon-svg" style="color:var(--color-principal);" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        Ver Estado de mi Pedido
-                    </a>
                 </div>
             </div>
 
@@ -982,23 +978,6 @@
         </div>
     </div>
 
-    <div id="modal-seguimiento" class="modal-overlay">
-        <div class="modal-content">
-            <div style="padding:18px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-size:17px; font-weight:700;">Consultar Estado de Orden</h3>
-                <button onclick="cerrarSeguimientoModal()" style="background:none; border:none; font-size:18px; color:var(--text-muted); cursor:pointer;">✕</button>
-            </div>
-            <div class="modal-body">
-                <p style="font-size:13px; color:var(--text-muted); margin-top:0;">Ingresa tu Nombre o Teléfono:</p>
-                <div class="form-group">
-                    <input type="text" id="input-buscar-cliente" placeholder="Ej. Juan">
-                </div>
-                <button onclick="buscarEstadoPedido()" class="btn-admin-action" style="background:var(--color-principal); margin-bottom:16px;">Consultar Estado</button>
-                <div id="resultado-seguimiento-container" style="font-size:13px; color:var(--text-main);"></div>
-            </div>
-        </div>
-    </div>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -1102,16 +1081,26 @@
             }
         }
 
-        window.intentarAccesoAdmin = function() {
+        window.intentarAccesoAdmin = async function() {
             if (!adminAutenticado) {
                 let clave = prompt("Introduce la contraseña de administración:");
-                if (clave === "1234" || clave === "alaska2026") {
-                    adminAutenticado = true;
-                    mostrarToast("Acceso Ejecutivo Concedido");
-                    cambiarVista('admin');
-                    abrirSidebar();
-                } else if (clave !== null) {
-                    mostrarToast("Contraseña incorrecta.");
+                if (!clave) return; 
+
+                try {
+                    const docRef = doc(db, "claves_admin", clave);
+                    const docSnap = await getDoc(docRef);
+
+                    if (docSnap.exists()) {
+                        adminAutenticado = true;
+                        mostrarToast("Acceso Ejecutivo Concedido");
+                        cambiarVista('admin');
+                        abrirSidebar();
+                    } else {
+                        mostrarToast("Contraseña incorrecta.");
+                    }
+                } catch (e) {
+                    console.error(e);
+                    mostrarToast("Error al verificar la contraseña. Revisa tu conexión.");
                 }
             } else {
                 cambiarVista('admin');
@@ -1666,24 +1655,26 @@
                     let detalleCompleto = `${item.cantidad}x ${item.nombre} (${item.detalle})`;
                     if (item.nota) detalleCompleto += ` [Nota: ${item.nota}]`;
                     resumenDetallesArray.push(detalleCompleto);
-
-                    await addDoc(collection(db, "pedidos"), {
-                        nombre: `${nombreFinal} (${pedidoTipoEntrega})`,
-                        detalle: detalleCompleto,
-                        total: subtotalItem,
-                        estado: 'Preparación',
-                        metodoPago: pedidoMetodoPago || 'Efectivo',
-                        telefono: telefonoFinal,
-                        fecha: new Date().toISOString()
-                    });
                 }
+
+                let detalleFinalTexto = resumenDetallesArray.join(' | ');
+
+                await addDoc(collection(db, "pedidos"), {
+                    nombre: `${nombreFinal} (${pedidoTipoEntrega})`,
+                    detalle: detalleFinalTexto,
+                    total: sumaTotalGeneral,
+                    estado: 'Preparación',
+                    metodoPago: pedidoMetodoPago || 'Efectivo',
+                    telefono: telefonoFinal,
+                    fecha: new Date().toISOString()
+                });
 
                 await fetch('https://hook.us2.make.com/dlrk5a5o4f75a76cjc3ci6bb5b4f7s3m', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         nombre: `${nombreFinal} (${pedidoTipoEntrega})`,
-                        detalle: resumenDetallesArray.join(' | '),
+                        detalle: detalleFinalTexto,
                         total: sumaTotalGeneral,
                         metodoPago: pedidoMetodoPago || 'Efectivo',
                         telefono: telefonoFinal,
@@ -1933,7 +1924,10 @@
             const plato = listaPlatos.find(p => p.id === id);
             if (!plato) return;
             
-            let nuevoPrecioStr = prompt(`Ingresa el PRECIO PROMOCIONAL para "${plato.nombre}"\n(Precio normal: ₡${plato.precio}):`);
+            let esOfertaExistente = plato.categoria === 'Ofertas';
+            let precioReal = esOfertaExistente ? (plato.precioOriginal || plato.precio) : plato.precio;
+            
+            let nuevoPrecioStr = prompt(`Ingresa el PRECIO PROMOCIONAL para "${plato.nombre}"\n(Precio normal: ₡${precioReal}):`);
             if (!nuevoPrecioStr) return;
             
             let nuevoPrecio = Number(nuevoPrecioStr);
@@ -1943,13 +1937,18 @@
             }
 
             try {
-                await updateDoc(doc(db, "menu", id), {
+                let updateData = {
                     categoria: 'Ofertas',
-                    precio: nuevoPrecio,
-                    categoriaOriginal: plato.categoria,
-                    precioOriginal: plato.precio
-                });
-                mostrarToast("¡Plato movido a Ofertas!");
+                    precio: nuevoPrecio
+                };
+                
+                if (!esOfertaExistente) {
+                    updateData.categoriaOriginal = plato.categoria;
+                    updateData.precioOriginal = plato.precio;
+                }
+
+                await updateDoc(doc(db, "menu", id), updateData);
+                mostrarToast(esOfertaExistente ? "¡Precio de oferta actualizado!" : "¡Plato movido a Ofertas!");
                 await cargarMenu();
                 cargarAdminPlatos();
             } catch(e) {
@@ -2358,7 +2357,7 @@
                         mostrarToast("Plato registrado con éxito.");
                         productForm.reset();
                         variantesTemporales = [];
-                        document.getElementById('lista-variantes-temp').textContent = "Sin extras añadidos.";
+                        renderizarVariantesTemporales();
                         await cargarMenu();
                     } catch(e) { mostrarToast("Error al guardar plato."); }
                 };
@@ -2369,6 +2368,19 @@
                     reader.onload = async function() { await guardarPlatoFinal(reader.result); };
                 } else { await guardarPlatoFinal(""); }
             });
+        }
+
+        window.renderizarVariantesTemporales = function() {
+            let html = "";
+            variantesTemporales.forEach((v, idx) => {
+                html += `<div style="display:flex; justify-content:space-between; align-items:center; background:#121419; padding:6px 10px; border-radius:6px; margin-bottom:4px; border:1px solid var(--border-color);"><span>• ${v.nombre} (+₡${v.precio})</span> <button type="button" onclick="eliminarVarianteTemporal(${idx})" style="color:#f87171; background:none; border:none; cursor:pointer; font-weight:bold;">✕</button></div>`;
+            });
+            document.getElementById('lista-variantes-temp').innerHTML = html || "Sin extras añadidos.";
+        }
+
+        window.eliminarVarianteTemporal = function(idx) {
+            variantesTemporales.splice(idx, 1);
+            renderizarVariantesTemporales();
         }
 
         window.agregarVarianteTemporal = function() {
@@ -2383,12 +2395,7 @@
                 document.getElementById('input-nombre-var').value = "";
                 document.getElementById('input-precio-var').value = "";
                 fileInput.value = "";
-                
-                let html = "";
-                variantesTemporales.forEach((v, idx) => {
-                    html += `<div style="display:flex; justify-content:space-between; align-items:center; background:#121419; padding:6px 10px; border-radius:6px; margin-bottom:4px; border:1px solid var(--border-color);"><span>• ${v.nombre} (+₡${v.precio})</span> <button type="button" onclick="variantesTemporales.splice(${idx},1); agregarVarianteTemporal();" style="color:#f87171; background:none; border:none; cursor:pointer; font-weight:bold;">✕</button></div>`;
-                });
-                document.getElementById('lista-variantes-temp').innerHTML = html;
+                renderizarVariantesTemporales();
             };
 
             if (fileInput.files && fileInput.files[0]) {
@@ -2459,7 +2466,6 @@
             if (!container) return;
             let html = `<button class="cat-btn active" onclick="filtrarMenuPorCategoria('Todos', this)">Todos</button>`;
             
-            // Ordenar dinámicamente para que Surtidas y Ofertas queden siempre abajo
             let categoriasOrdenadas = [...listaCategoriasDinamicas];
             categoriasOrdenadas = categoriasOrdenadas.filter(cat => cat !== 'Ofertas' && cat !== 'Surtidas' && cat !== 'Surtida');
             
