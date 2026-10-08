@@ -2446,25 +2446,44 @@
                 const docRefConfig = doc(db, "configuracion", "selloActivo");
                 const docSnap = await getDoc(docRefConfig);
 
-                if (docSnap.exists() && docSnap.data().codigo === codigoIngresado) {
-                    await setDoc(docRefConfig, { codigo: null });
+                // Aseguramos que ambos códigos se lean como texto exacto para evitar errores de formato
+                if (docSnap.exists() && String(docSnap.data().codigo) === String(codigoIngresado)) {
+                    
+                    // 1. Quemamos el código marcándolo como usado (evitamos usar null que a veces causa fallos)
+                    await setDoc(docRefConfig, { codigo: "USADO" }, { merge: true });
 
+                    // 2. Sumamos el sello a la cuenta
                     window.clienteActualSellos++;
+                    
+                    // 3. Guardamos en Firebase. Usamos setDoc con merge:true por si el perfil del cliente fue borrado por error
+                    if (window.clienteActualId) {
+                        await setDoc(doc(db, "clientes", window.clienteActualId), { 
+                            sellos: window.clienteActualSellos,
+                            nombre: window.clienteActualNombre 
+                        }, { merge: true });
+                    }
+                    
+                    // 4. Actualizamos la memoria del celular y cerramos la ventana
+                    localStorage.setItem('alaska_cliente_sellos', window.clienteActualSellos);
+                    actualizarUILealtadPublica();
+                    cerrarModalSelloInteractivo();
+                    document.getElementById('input-codigo-sello-rapido').value = ""; 
+
+                    // 5. Mostramos el mensaje final SOLO cuando ya todo se guardó correctamente
                     if (window.clienteActualSellos >= 5) {
                         mostrarToast("¡Felicidades! Completaste tus 5 sellos.");
-                        window.clienteActualSellos = 0;
+                        window.clienteActualSellos = 0; // Se reinicia localmente para la próxima tarjeta
                     } else {
                         mostrarToast("Sello añadido con éxito");
                     }
 
-                    await updateDoc(doc(db, "clientes", window.clienteActualId), { sellos: window.clienteActualSellos });
-                    localStorage.setItem('alaska_cliente_sellos', window.clienteActualSellos);
-                    actualizarUILealtadPublica();
-                    cerrarModalSelloInteractivo();
                 } else {
                     mostrarToast("Código incorrecto o ya fue utilizado.");
                 }
-            } catch(e) { mostrarToast("Error al validar código."); }
+            } catch(e) { 
+                console.error("Detalle del error en Firebase:", e);
+                mostrarToast("Error al validar código. Verifica la conexión."); 
+            }
         }
 
         function actualizarUILealtadPublica() {
