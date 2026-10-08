@@ -103,9 +103,11 @@
             gap: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
+        
         .cat-btn.active, .cat-btn:hover { background: rgba(212, 175, 55, 0.12); border-color: var(--color-principal); color: var(--color-principal); transform: translateY(-2px); }
-        .cat-btn.full-width { grid-column: span 2; background: rgba(239, 68, 68, 0.1); color: #f87171; border-color: rgba(239, 68, 68, 0.3); }
-        .cat-btn.full-width:hover { background: rgba(239, 68, 68, 0.2); border-color: var(--color-oferta); color: #fca5a5; }
+        .cat-btn.full-width { grid-column: span 2; }
+        .cat-btn.ofertas-style { background: rgba(239, 68, 68, 0.1); color: #f87171; border-color: rgba(239, 68, 68, 0.3); }
+        .cat-btn.ofertas-style.active, .cat-btn.ofertas-style:hover { background: rgba(239, 68, 68, 0.2); border-color: var(--color-oferta); color: #fca5a5; }
         .cat-icon-img { width: 22px; height: 22px; object-fit: contain; border-radius: 4px; }
 
         .menu-grid {
@@ -639,7 +641,7 @@
                     <h2 style="margin:0; font-size:20px; color:var(--color-principal); font-weight:800; margin-bottom:10px;">Gestión de Categorías e Iconos</h2>
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Crea nuevas categorías para tu menú o personaliza sus iconos.</p>
 
-                    <!-- NUEVO: Formulario para crear categoría -->
+                    <!-- Formulario para crear categoría -->
                     <div style="background:#13151a; padding:20px; border-radius:16px; border:1px solid var(--border-color); margin-bottom:24px; display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
                         <div class="form-group" style="flex:1; margin-bottom:0; min-width:220px;">
                             <label>Nombre de Nueva Categoría:</label>
@@ -2456,11 +2458,24 @@
             const container = document.getElementById('category-container');
             if (!container) return;
             let html = `<button class="cat-btn active" onclick="filtrarMenuPorCategoria('Todos', this)">Todos</button>`;
-            listaCategoriasDinamicas.forEach(cat => {
+            
+            // Ordenar dinámicamente para que Surtidas y Ofertas queden siempre abajo
+            let categoriasOrdenadas = [...listaCategoriasDinamicas];
+            categoriasOrdenadas = categoriasOrdenadas.filter(cat => cat !== 'Ofertas' && cat !== 'Surtidas' && cat !== 'Surtida');
+            
+            if (listaCategoriasDinamicas.includes('Surtida')) categoriasOrdenadas.push('Surtida');
+            if (listaCategoriasDinamicas.includes('Surtidas')) categoriasOrdenadas.push('Surtidas');
+            if (listaCategoriasDinamicas.includes('Ofertas')) categoriasOrdenadas.push('Ofertas');
+
+            categoriasOrdenadas.forEach(cat => {
                 let catData = categoriasNube[cat] || {};
                 let iconoHtml = catData.icono ? `<img src="${catData.icono}" class="cat-icon-img">` : '';
-                let claseExtra = (cat === 'Ofertas') ? 'full-width' : '';
-                html += `<button class="cat-btn ${claseExtra}" onclick="filtrarMenuPorCategoria('${cat}', this)">${iconoHtml} ${cat}</button>`;
+                
+                let clases = "";
+                if (cat === 'Ofertas') clases = 'full-width ofertas-style';
+                else if (cat === 'Surtidas' || cat === 'Surtida') clases = 'full-width';
+
+                html += `<button class="cat-btn ${clases}" onclick="filtrarMenuPorCategoria('${cat}', this)">${iconoHtml} ${cat}</button>`;
             });
             container.innerHTML = html;
         }
