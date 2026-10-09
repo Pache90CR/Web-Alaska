@@ -980,7 +980,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         let app, db;
         try {
@@ -994,6 +994,15 @@
             };
             app = initializeApp(firebaseConfig);
             db = getFirestore(app);
+            
+            // Activar persistencia local para carga ultra rápida (modo offline / caché profundo)
+            enableIndexedDbPersistence(db).catch((err) => {
+                if (err.code == 'failed-precondition') {
+                    console.warn("Múltiples pestañas abiertas. Caché desactivada en esta.");
+                } else if (err.code == 'unimplemented') {
+                    console.warn("El navegador no soporta persistencia.");
+                }
+            });
         } catch (e) {
             console.error("Error inicializando Firebase:", e);
         }
