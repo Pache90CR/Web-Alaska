@@ -979,9 +979,9 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         
-        // VOLVEMOS A LA CONEXIÓN OFICIAL DE FIREBASE, PERO CON INITIALIZEFIRESTORE
+        // Volvemos a getFirestore nativo y rápido
         import { 
-            initializeFirestore, 
+            getFirestore, 
             collection, 
             getDocs, 
             addDoc, 
@@ -1005,11 +1005,7 @@
                 appId: "1:734422460427:web:cee048a1edd6bf38b07f0e"
             };
             app = initializeApp(firebaseConfig);
-            
-            // LA SOLUCIÓN DEFINITIVA A KÖLBI/CLARO: Forzar el Long Polling nativo de Firebase
-            db = initializeFirestore(app, {
-                experimentalForceLongPolling: true
-            });
+            db = getFirestore(app);
             
         } catch (e) {
             console.error("Error inicializando Firebase:", e);
@@ -1195,26 +1191,32 @@
         }
 
         // =========================================================================
-        // CARGA ORIGINAL RESTAURADA Y SIN BLOQUEOS
+        // NUEVA ARQUITECTURA: SIN CONGELAMIENTOS
         // =========================================================================
-        async function cargarMenu() {
-            const menuGrid = document.getElementById("menu-grid");
 
-            // 1. Mostrar caché primero para que sea instantáneo a la vista
+        function cargarMenuCache() {
+            const menuGrid = document.getElementById("menu-grid");
             let cacheMenu = localStorage.getItem('alaska_cache_menu');
+            
             if (cacheMenu) {
                 try {
                     let datosCache = JSON.parse(cacheMenu);
                     if (Array.isArray(datosCache) && datosCache.length > 0) {
                         listaPlatos = datosCache;
                         mostrarPlatos(listaPlatos);
+                        return;
                     }
-                } catch(e) { console.error("Error al leer caché local:", e); }
-            } else if (menuGrid) {
-                menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>Cargando menú...</p>";
+                } catch(e) { console.error("Error leyendo caché:", e); }
             }
+            
+            if (menuGrid) {
+                menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>Cargando menú en vivo...</p>";
+            }
+        }
 
-            // 2. Traer TODO el menú completo de Firebase
+        async function cargarMenuFirebase() {
+            const menuGrid = document.getElementById("menu-grid");
+            
             try {
                 const querySnapshot = await getDocs(collection(db, "menu"));
                 let platosDescargados = [];
@@ -1230,18 +1232,8 @@
                 } else if (listaPlatos.length === 0 && menuGrid) {
                     menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay platos registrados en el menú actualmente.</p>";
                 }
-                
             } catch (error) {
-                console.error("Fallo de lectura de Firebase:", error);
-                if (listaPlatos.length === 0 && menuGrid) {
-                    menuGrid.innerHTML = `
-                        <div style="text-align:center; padding:24px; background:#181a1f; border-radius:16px; border:1px solid #2a2e39;">
-                            <p style="color:#f87171; font-weight:800; margin-bottom:8px; font-size:15px;">Conexión inestable</p>
-                            <p style="color:var(--text-muted); font-size:12px; margin-bottom:16px;">Revisa tu conexión a internet para cargar el menú.</p>
-                            <button onclick="window.location.reload(true)" class="action-pill" style="margin:0 auto; background:var(--color-principal); color:#121212; border:none; padding:10px 20px;">Reintentar</button>
-                        </div>
-                    `;
-                }
+                console.error("Fallo de lectura de Firebase (Segundo Plano):", error);
             }
         }
 
@@ -1970,8 +1962,7 @@
 
                 await updateDoc(doc(db, "menu", id), updateData);
                 mostrarToast(esOfertaExistente ? "¡Precio de oferta actualizado!" : "¡Plato movido a Ofertas!");
-                await cargarMenu();
-                cargarAdminPlatos();
+                cargarMenuFirebase();
             } catch(e) {
                 mostrarToast("Error al aplicar la oferta.");
             }
@@ -1992,8 +1983,7 @@
                     precioOriginal: null
                 });
                 mostrarToast("Restaurado a " + catRestaurar);
-                await cargarMenu();
-                cargarAdminPlatos();
+                cargarMenuFirebase();
             } catch(e) {
                 mostrarToast("Error al quitar la oferta.");
             }
@@ -2048,8 +2038,7 @@
                     await updateDoc(doc(db, "menu", plato.id), { disponible: nuevoEstado });
                 }
                 mostrarToast(`Categoría ${catSeleccionada} actualizada a: ${nuevoEstado ? 'DISPONIBLE' : 'AGOTADA'}`);
-                await cargarMenu();
-                cargarAdminPlatos();
+                cargarMenuFirebase();
             } catch(e) {
                 mostrarToast("Error al actualizar la categoría masivamente.");
             }
@@ -2059,8 +2048,7 @@
             try {
                 await updateDoc(doc(db, "menu", id), { disponible: !estadoActual });
                 mostrarToast("Estado del plato actualizado.");
-                await cargarMenu();
-                cargarAdminPlatos();
+                cargarMenuFirebase();
             } catch(e) { mostrarToast("Error al actualizar estado."); }
         }
 
@@ -2069,8 +2057,7 @@
                 try {
                     await deleteDoc(doc(db, "menu", id));
                     mostrarToast("Plato eliminado.");
-                    await cargarMenu();
-                    cargarAdminPlatos();
+                    cargarMenuFirebase();
                 } catch(e) { mostrarToast("Error al eliminar."); }
             }
         }
@@ -2180,8 +2167,7 @@
                     });
                     mostrarToast("Plato actualizado con éxito");
                     cerrarModalEditarPlato();
-                    await cargarMenu();
-                    cargarAdminPlatos();
+                    cargarMenuFirebase();
                 } catch(e) { 
                     console.error("Error al guardar plato editado:", e);
                     mostrarToast("Error al guardar cambios."); 
@@ -2268,7 +2254,7 @@
                     await setDoc(doc(db, "categorias", catNombre), { nombre: catNombre, visible: true, icono: reader.result }, { merge: true });
                     mostrarToast("Icono de categoría actualizado.");
                     cerrarModalEditarCat();
-                    await inicializarCategoriasNube();
+                    inicializarCategoriasNube();
                 } catch(e) { mostrarToast("Error al guardar icono."); }
             };
         }
@@ -2379,7 +2365,7 @@
                         productForm.reset();
                         variantesTemporales = [];
                         renderizarVariantesTemporales();
-                        await cargarMenu();
+                        cargarMenuFirebase();
                     } catch(e) { mostrarToast("Error al guardar plato."); }
                 };
 
@@ -2450,7 +2436,7 @@
 
                 listaCategoriasDinamicas = catCargadas;
             } catch (e) { 
-                console.error("Error al obtener categorías:", e); 
+                console.error("Error al obtener categorías en segundo plano:", e); 
             } finally {
                 renderizarCategoriasPublicas();
                 poblarSelectsDeCategorias();
@@ -2693,7 +2679,7 @@
                     if (document.getElementById('select-tiempo-admin')) document.getElementById('select-tiempo-admin').value = tVal;
                 }
             } catch (e) { 
-                console.error("Error al cargar configuracion:", e); 
+                console.error("Error al cargar configuracion en segundo plano:", e); 
             }
         }
 
@@ -2798,19 +2784,21 @@
             } else { await guardarFin(null); }
         }
 
-        async function iniciarAplicacion() {
+        // --- ARRANQUE PRINCIPAL NO BLOQUEANTE ---
+        function iniciarAplicacion() {
+            // 1. Mostrar de inmediato la UI y categorías por defecto
             actualizarUILealtadPublica();
-            
-            await cargarMenu();
+            renderizarCategoriasPublicas();
+            poblarSelectsDeCategorias();
 
+            // 2. Extraer todo lo que esté en caché (tus 3 platos que quedaron pegados)
+            cargarMenuCache();
+
+            // 3. Ejecutar peticiones a Firebase EN SEGUNDO PLANO (sin detener la página)
             if (db) {
-                try { await cargarConfiguracionVisualNube(); } catch(e) { console.warn("Aviso configuración visual:", e); }
-                try { await inicializarCategoriasNube(); } catch(e) { console.warn("Aviso categorías:", e); }
-            }
-
-            if (listaPlatos && listaPlatos.length > 0) {
-                let btnTodos = document.querySelector('.cat-btn');
-                if (btnTodos) filtrarMenuPorCategoria('Todos', btnTodos);
+                cargarMenuFirebase().catch(e => console.error(e));
+                cargarConfiguracionVisualNube().catch(e => console.error(e));
+                inicializarCategoriasNube().catch(e => console.error(e));
             }
         }
 
