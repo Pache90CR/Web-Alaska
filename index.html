@@ -978,7 +978,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        // IMPORTANTE: Mantenemos la librería original sin la persistencia defectuosa para no bloquear celulares
+        // Mantenemos la librería original sin la persistencia defectuosa para no bloquear celulares
         import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         let app, db;
@@ -1177,7 +1177,7 @@
         }
 
         // =========================================================================
-        // EL BYPASS: CARGA REST API PARA SALTARSE EL BLOQUEO DE OPERADORAS MÓVILES
+        // EL BYPASS CON LÍMITE EXTENDIDO (1000 PLATOS) PARA SALTARSE A KÖLBI/CLARO
         // =========================================================================
         async function cargarMenu() {
             const menuGrid = document.getElementById("menu-grid");
@@ -1196,10 +1196,9 @@
                 menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>Cargando menú...</p>";
             }
 
-            // 2. CONEXIÓN WEB DIRECTA (Bypass del motor en tiempo real de Firebase)
-            // Esta petición carga en milisegundos y no es bloqueada por las operadoras móviles en Costa Rica.
+            // 2. CONEXIÓN WEB DIRECTA CON LÍMITE DE 1000 PLATOS (?pageSize=1000)
             try {
-                const url = "https://firestore.googleapis.com/v1/projects/bar-restaurante-alaska/databases/(default)/documents/menu";
+                const url = "https://firestore.googleapis.com/v1/projects/bar-restaurante-alaska/databases/(default)/documents/menu?pageSize=1000";
                 const respuesta = await fetch(url);
                 
                 if (!respuesta.ok) throw new Error("Error de red HTTP");
@@ -1221,10 +1220,23 @@
                         if (f.imagenUrl) plato.imagenUrl = f.imagenUrl.stringValue || "";
                         if (f.imagen) plato.imagen = f.imagen.stringValue || "";
                         
-                        // Extracción de números (Firebase REST los guarda como integerValue o doubleValue)
-                        if (f.precio) plato.precio = f.precio.integerValue ? Number(f.precio.integerValue) : (f.precio.doubleValue ? Number(f.precio.doubleValue) : 0);
-                        if (f.precioOriginal) plato.precioOriginal = f.precioOriginal.integerValue ? Number(f.precioOriginal.integerValue) : (f.precioOriginal.doubleValue ? Number(f.precioOriginal.doubleValue) : 0);
-                        if (f.orden) plato.orden = f.orden.integerValue ? Number(f.orden.integerValue) : 999;
+                        // Extracción de números con protección contra formato String accidental
+                        if (f.precio) {
+                            plato.precio = f.precio.integerValue ? Number(f.precio.integerValue) : 
+                                          (f.precio.doubleValue ? Number(f.precio.doubleValue) : 
+                                          (f.precio.stringValue ? Number(f.precio.stringValue) : 0));
+                        }
+                        if (f.precioOriginal) {
+                            plato.precioOriginal = f.precioOriginal.integerValue ? Number(f.precioOriginal.integerValue) : 
+                                                  (f.precioOriginal.doubleValue ? Number(f.precioOriginal.doubleValue) : 
+                                                  (f.precioOriginal.stringValue ? Number(f.precioOriginal.stringValue) : 0));
+                        }
+                        if (f.orden) {
+                            plato.orden = f.orden.integerValue ? Number(f.orden.integerValue) : 
+                                         (f.orden.stringValue ? Number(f.orden.stringValue) : 999);
+                        } else {
+                            plato.orden = 999;
+                        }
                         
                         // Extracción de estados
                         if (f.disponible !== undefined) plato.disponible = f.disponible.booleanValue;
