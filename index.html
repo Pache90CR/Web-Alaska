@@ -6,8 +6,6 @@
     <title id="page-title">Bar Restaurante Alaska - Menú Digital y Lealtad</title>
     
     <meta name="theme-color" content="#d4af37">
-    <!-- Sin manifest temporalmente para evitar PWA defectuosas -->
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
@@ -22,14 +20,12 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: #2a2e39;
-            --border-focus: #d4af37;
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-dark); margin: 0; padding: 0; color: var(--text-main); transition: background 0.3s ease; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-dark); margin: 0; padding: 0; color: var(--text-main); }
         
         .app-container { max-width: 1280px; margin: 0 auto; padding: 24px; padding-bottom: 140px; }
-
         .icon-svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; display: inline-block; vertical-align: middle; }
         .icon-svg-lg { width: 22px; height: 22px; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
 
@@ -37,107 +33,97 @@
             position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-120px);
             background: #1b1e26; color: white; padding: 14px 28px; border-radius: 30px;
             border: 1px solid var(--color-principal); box-shadow: 0 12px 30px rgba(0,0,0,0.7);
-            font-size: 13px; font-weight: 600; z-index: 9999; transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex; align-items: center; gap: 10px; text-align: center;
+            font-size: 13px; font-weight: 600; z-index: 9999; transition: transform 0.35s;
+            display: flex; align-items: center; gap: 10px;
         }
         #toast-notification.show { transform: translateX(-50%) translateY(0); }
 
         .store-header { text-align: center; margin-bottom: 24px; padding-top: 10px; }
-        .store-logo { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-principal); margin-bottom: 12px; background: #222; cursor: pointer; transition: transform 0.25s, box-shadow 0.25s; box-shadow: 0 4px 20px rgba(212, 175, 55, 0.2); }
-        .store-logo:hover { transform: scale(1.05); box-shadow: 0 6px 25px rgba(212, 175, 55, 0.4); }
-        .store-header h1 { margin: 0; font-size: 24px; color: var(--text-main); font-weight: 800; letter-spacing: -0.5px; }
+        .store-logo { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-principal); margin-bottom: 12px; }
+        .store-header h1 { margin: 0; font-size: 24px; font-weight: 800; }
         .store-header p { margin: 6px 0 16px 0; font-size: 13px; color: var(--text-muted); }
 
-        .header-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
-        .action-pill { background: var(--color-secundario); color: var(--color-principal); padding: 9px 18px; border-radius: 24px; font-size: 13px; font-weight: 600; text-decoration: none; border: 1px solid var(--border-color); cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s ease; }
-        .action-pill:hover { background: #323642; border-color: var(--color-principal); transform: translateY(-1px); }
+        .header-actions { display: flex; justify-content: center; gap: 12px; margin-bottom: 24px; }
+        .action-pill { background: var(--color-secundario); color: var(--color-principal); padding: 9px 18px; border-radius: 24px; font-size: 13px; font-weight: 600; border: 1px solid var(--border-color); cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        
+        .tiempo-estimado-banner { background: rgba(212, 175, 55, 0.12); border: 1px solid rgba(212, 175, 55, 0.3); color: var(--color-principal); padding: 10px 20px; border-radius: 24px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px; }
 
-        .tiempo-estimado-banner { background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(212, 175, 55, 0.03) 100%); border: 1px solid rgba(212, 175, 55, 0.3); color: var(--color-principal); padding: 10px 20px; border-radius: 24px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .closed-store-banner { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; padding: 12px 20px; border-radius: 24px; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2); }
-
-        .search-box-container { margin-bottom: 24px; }
-        .search-input-main { width: 100%; padding: 14px 20px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 30px; color: white; font-size: 14px; outline: none; transition: all 0.2s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
-        .search-input-main:focus { border-color: var(--color-principal); box-shadow: 0 0 0 3px var(--color-principal-glow); }
-
+        .search-input-main { width: 100%; padding: 14px 20px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 30px; color: white; font-size: 14px; outline: none; margin-bottom: 24px; }
+        
         .view-section { display: none; }
         .view-section.active-view { display: block; }
 
         .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 28px; }
-        @media (min-width: 768px) { .category-grid { grid-template-columns: repeat(4, 1fr); } }
-        .cat-btn { background: var(--card-bg); border: 1px solid var(--border-color); padding: 16px 12px; border-radius: 14px; cursor: pointer; font-weight: 600; color: var(--text-main); text-align: center; font-size: 14px; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .cat-btn.active, .cat-btn:hover { background: rgba(212, 175, 55, 0.12); border-color: var(--color-principal); color: var(--color-principal); transform: translateY(-2px); }
-        .cat-btn.full-width { grid-column: span 2; }
+        .cat-btn { background: var(--card-bg); border: 1px solid var(--border-color); padding: 16px 12px; border-radius: 14px; cursor: pointer; font-weight: 600; color: var(--text-main); text-align: center; font-size: 14px; }
+        .cat-btn.active { background: rgba(212, 175, 55, 0.12); border-color: var(--color-principal); color: var(--color-principal); }
         .cat-btn.ofertas-style { background: rgba(239, 68, 68, 0.1); color: #f87171; border-color: rgba(239, 68, 68, 0.3); }
-        .cat-btn.ofertas-style.active, .cat-btn.ofertas-style:hover { background: rgba(239, 68, 68, 0.2); border-color: var(--color-oferta); color: #fca5a5; }
 
         .menu-grid { display: grid; grid-template-columns: 1fr; gap: 22px; }
         @media (min-width: 550px) { .menu-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (min-width: 900px) { .menu-grid { grid-template-columns: repeat(3, 1fr); } }
-
-        .food-card { background: var(--card-bg); border-radius: 18px; overflow: hidden; border: 1px solid var(--border-color); display: flex; flex-direction: column; box-shadow: 0 8px 24px rgba(0,0,0,0.35); transition: transform 0.25s ease, border-color 0.25s ease; }
-        .food-card:hover { transform: translateY(-3px); border-color: rgba(212, 175, 55, 0.4); }
-        .card-image-container { position: relative; width: 100%; aspect-ratio: 4 / 3; background: #141519; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .card-image-container img { width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform 0.4s ease; }
-        .food-card:hover .card-image-container img { transform: scale(1.06); }
         
-        .badge { position: absolute; top: 12px; left: 12px; background: rgba(15, 16, 18, 0.85); backdrop-filter: blur(4px); color: var(--color-principal); padding: 5px 12px; font-size: 11px; font-weight: 700; border-radius: 20px; border: 1px solid var(--border-color); z-index: 2; }
-        .badge-agotado { position: absolute; top: 12px; right: 12px; background: rgba(239, 68, 68, 0.9); backdrop-filter: blur(4px); color: white; padding: 5px 12px; font-size: 11px; font-weight: 800; border-radius: 20px; z-index: 2; }
-        .card-content { padding: 20px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; }
-        .card-header-flex { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-        .food-card h3 { margin: 0; font-size: 18px; color: var(--text-main); font-weight: 700; flex: 1; padding-right: 10px; }
+        .food-card { background: var(--card-bg); border-radius: 18px; overflow: hidden; border: 1px solid var(--border-color); display: flex; flex-direction: column; }
+        .card-image-container { position: relative; width: 100%; aspect-ratio: 4 / 3; background: #141519; }
+        .card-image-container img { width: 100%; height: 100%; object-fit: cover; }
+        .badge { position: absolute; top: 12px; left: 12px; background: rgba(15, 16, 18, 0.85); color: var(--color-principal); padding: 5px 12px; font-size: 11px; font-weight: 700; border-radius: 20px; }
+        .card-content { padding: 20px; display: flex; flex-direction: column; flex: 1; }
+        .card-header-flex { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .food-card h3 { margin: 0; font-size: 18px; font-weight: 700; }
         .price { font-size: 18px; font-weight: 800; color: var(--color-principal); }
-        .order-btn { width: 100%; background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0.05) 100%); color: var(--color-principal); border: 1px solid rgba(212, 175, 55, 0.4); padding: 13px; border-radius: 12px; cursor: pointer; margin-top: 12px; font-weight: 700; font-size: 14px; text-align: center; transition: all 0.2s ease; }
-        .order-btn:hover { background: rgba(212, 175, 55, 0.25); box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2); }
-        .order-btn.soldout { background: rgba(239, 68, 68, 0.12); color: #f87171; border-color: rgba(239, 68, 68, 0.3); cursor: default; }
+        .order-btn { width: 100%; background: rgba(212, 175, 55, 0.15); color: var(--color-principal); border: 1px solid rgba(212, 175, 55, 0.4); padding: 13px; border-radius: 12px; cursor: pointer; margin-top: 12px; font-weight: 700; }
 
-        .loyalty-banner { background: linear-gradient(145deg, rgba(24, 26, 31, 0.9) 0%, rgba(15, 16, 18, 0.95) 100%); border: 1px solid var(--border-color); border-radius: 20px; padding: 24px; margin-bottom: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; position: relative; overflow: hidden; }
-        .stamps-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 8px; width: 100%; }
-        .stamp-box { background: #121419; border: 2px dashed var(--border-color); border-radius: 14px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: all 0.25s ease; }
-        .stamp-box.filled { background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(212, 175, 55, 0.1) 100%); border: 2px solid var(--color-principal); color: var(--color-principal); cursor: default; }
+        .loyalty-banner { background: linear-gradient(145deg, #181a1f 0%, #0f1012 100%); border: 1px solid var(--border-color); border-radius: 20px; padding: 24px; margin-bottom: 28px; text-align: center; }
+        .stamps-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 14px; }
+        .stamp-box { background: #121419; border: 2px dashed var(--border-color); border-radius: 14px; height: 60px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--text-muted); cursor: pointer; }
+        .stamp-box.filled { background: rgba(212, 175, 55, 0.25); border: 2px solid var(--color-principal); color: var(--color-principal); }
 
-        .floating-bottom-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 420px; background: rgba(24, 26, 31, 0.92); backdrop-filter: blur(12px); border: 1px solid var(--border-color); border-radius: 35px; padding: 10px 22px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 12px 35px rgba(0,0,0,0.6); z-index: 999; }
-        .floating-bottom-bar.hidden { opacity: 0; pointer-events: none; }
+        .floating-bottom-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 420px; background: rgba(24, 26, 31, 0.95); border: 1px solid var(--border-color); border-radius: 35px; padding: 10px 22px; display: flex; justify-content: space-between; align-items: center; z-index: 999; }
         .status-pill { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #4ade80; }
-        .status-dot { width: 9px; height: 9px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 8px #22c55e; }
-        .status-dot.closed { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+        .status-dot { width: 9px; height: 9px; background: #22c55e; border-radius: 50%; }
         .cart-icon-btn { background: var(--color-principal); color: #121212; border: none; width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
-        .cart-count-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; font-size: 11px; padding: 2px 7px; border-radius: 12px; font-weight: 800; border: 2px solid var(--card-bg); }
+        .cart-count-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; font-size: 11px; padding: 2px 7px; border-radius: 12px; font-weight: 800; }
 
-        /* Admin y Modales Clases Base */
-        .admin-top-bar { display: flex; justify-content: space-between; background: #181a1f; padding: 16px; border-radius: 16px; margin-bottom: 24px; border: 1px solid var(--border-color); }
-        .admin-wrapper { background: #14161b; padding: 30px; border-radius: 22px; border: 1px solid var(--border-color); }
-        .admin-section-tab { display: none; }
-        .admin-section-tab.active-admin-tab { display: block; }
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 3000; }
-        .sidebar-drawer { position: fixed; top: 0; left: -320px; width: 320px; height: 100%; background: #14161b; transition: left 0.3s; z-index: 3001; }
+        .sidebar-drawer { position: fixed; top: 0; left: -320px; width: 320px; height: 100%; background: #14161b; transition: left 0.3s; z-index: 3001; display:flex; flex-direction:column; }
         .sidebar-drawer.open { left: 0; }
-        
+        .sidebar-item { padding: 15px 20px; color: var(--text-muted); text-decoration: none; display: block; font-weight: 600; border-bottom: 1px solid var(--border-color); }
+        .sidebar-item:hover { background: rgba(255,255,255,0.05); color: white; }
+
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
         .modal-content { background: #16181e; width: 100%; max-width: 500px; border-radius: 22px; border: 1px solid var(--border-color); display: flex; flex-direction: column; max-height: 85vh; }
         .modal-body { padding: 24px; overflow-y: auto; flex: 1; }
         .modal-footer { padding: 18px 24px; background: #111318; border-top: 1px solid var(--border-color); display: flex; gap: 12px; }
 
-        input, select, textarea { width: 100%; padding: 13px 16px; border: 1px solid var(--border-color); border-radius: 12px; background: #121419; color: white; margin-bottom: 15px; }
+        .admin-top-bar { display: flex; justify-content: space-between; background: #181a1f; padding: 16px; border-radius: 16px; margin-bottom: 24px; border: 1px solid var(--border-color); }
+        .admin-wrapper { background: #14161b; padding: 30px; border-radius: 22px; border: 1px solid var(--border-color); }
+        .admin-section-tab { display: none; }
+        .admin-section-tab.active-admin-tab { display: block; }
         .btn-admin-action { background: var(--color-principal); color: #121212; padding: 14px 20px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; }
+        input, select, textarea { width: 100%; padding: 13px 16px; border: 1px solid var(--border-color); border-radius: 12px; background: #121419; color: white; margin-bottom: 15px; }
+
+        .cart-item { display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid var(--border-color); padding-bottom:15px; }
+        .btn-wsp { background: #25D366; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%; }
     </style>
 </head>
 <body>
 
-    <div id="toast-notification">
-        <span id="toast-msg">Mensaje</span>
-    </div>
+    <div id="toast-notification"><span id="toast-msg">Mensaje</span></div>
 
-    <!-- Panel Lateral Administración -->
+    <!-- PANEL LATERAL ADMIN -->
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="cerrarSidebar()"></div>
     <div id="sidebar-drawer" class="sidebar-drawer">
         <div style="padding: 20px; border-bottom: 1px solid var(--border-color); display:flex; justify-content:space-between;">
             <h3 style="margin:0; color:var(--color-principal);">Panel Admin</h3>
             <button onclick="cerrarSidebar()" style="background:transparent; border:none; color:white; font-size:16px;">✕</button>
         </div>
-        <div style="padding: 20px; display:flex; flex-direction:column; gap:15px;">
-            <a href="#" style="color:white; text-decoration:none;" onclick="seleccionarSeccionAdmin('pedidos')">Pedidos en Vivo</a>
-            <a href="#" style="color:white; text-decoration:none;" onclick="seleccionarSeccionAdmin('platos')">Gestión de Platos</a>
-            <button onclick="cambiarVista('menu'); cerrarSidebar();" style="margin-top:20px; padding:10px; background:#262932; border:none; color:white; border-radius:8px;">Ver Menú Público</button>
+        <div style="flex:1; overflow-y:auto;">
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('pedidos')">Pedidos en Vivo</a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('platos')">Gestión de Platos</a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('nuevo-plato')">Registrar Ítem</a>
+            <a href="#" class="sidebar-item" onclick="seleccionarSeccionAdmin('lealtad')">Generar Sello</a>
+        </div>
+        <div style="padding:20px; border-top:1px solid var(--border-color);">
+            <button onclick="cambiarVista('menu'); cerrarSidebar();" class="action-pill" style="width:100%; justify-content:center; margin-bottom:10px;">Ver Menú Público</button>
+            <button onclick="cerrarSesionAdmin()" class="action-pill" style="width:100%; justify-content:center; background:rgba(239,68,68,0.1); color:#f87171;">Cerrar Sesión</button>
         </div>
     </div>
 
@@ -149,75 +135,147 @@
                 <img id="logo-display" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80" alt="Logo" class="store-logo" ondblclick="intentarAccesoAdmin()">
                 <h1 id="public-title-display">Bar Restaurante Alaska</h1>
                 <p id="public-subtitle-display">Descubre nuestras deliciosas opciones y gana premios</p>
-                <div id="banner-estado-local" class="tiempo-estimado-banner">Tiempo de preparación: <strong>20-30 min</strong></div>
+                <div class="tiempo-estimado-banner">Tiempo de preparación: <strong>20-30 min</strong></div>
+                <div class="header-actions">
+                    <button class="action-pill" onclick="abrirLealtadModal()">★ Mi Tarjeta de Lealtad</button>
+                </div>
             </div>
 
             <div class="loyalty-banner">
                 <h3 style="margin:0; color:var(--color-principal);">Club Bar Alaska</h3>
-                <div style="font-weight:bold; background:#111; padding:5px 15px; border-radius:10px;">2 / 5 Sellos</div>
+                <div style="font-weight:bold; background:#111; padding:5px 15px; border-radius:10px; display:inline-block; margin-top:10px;">0 / 5 Sellos</div>
+                <p style="font-size:12px; color:var(--text-muted); margin-top:10px;">Haz clic en el cuadro marcado para ingresar tu código</p>
                 <div class="stamps-grid" id="public-stamps-grid">
-                    <div class="stamp-box filled">★</div>
-                    <div class="stamp-box filled">★</div>
+                    <div class="stamp-box" onclick="abrirModalSelloInteractivo()">1</div>
+                    <div class="stamp-box">2</div>
                     <div class="stamp-box">3</div>
                     <div class="stamp-box">4</div>
                     <div class="stamp-box">5</div>
                 </div>
             </div>
 
-            <div class="search-box-container">
-                <input type="text" id="input-buscador-menu" class="search-input-main" placeholder="Buscar plato, boca o bebida...">
-            </div>
+            <input type="text" id="input-buscador-menu" class="search-input-main" placeholder="Buscar plato, boca o bebida..." onkeyup="filtrarMenuPorTexto(this.value)">
 
             <div class="category-grid" id="category-container">
-                <div class="cat-btn active" onclick="filtrarMenu('Todos')">Todos</div>
-                <div class="cat-btn" onclick="filtrarMenu('Bocas')">Bocas</div>
-                <div class="cat-btn" onclick="filtrarMenu('Comidas Rápidas')">Comidas Rápidas</div>
-                <div class="cat-btn ofertas-style" onclick="filtrarMenu('Ofertas')">Ofertas</div>
+                <div class="cat-btn active" onclick="filtrarMenu('Todos', this)">Todos</div>
+                <div class="cat-btn" onclick="filtrarMenu('Bocas', this)">Bocas</div>
+                <div class="cat-btn" onclick="filtrarMenu('Comidas Rápidas', this)">Comidas Rápidas</div>
+                <div class="cat-btn ofertas-style" onclick="filtrarMenu('Ofertas', this)">Ofertas</div>
             </div>
 
-            <!-- AQUÍ CARGAN LOS PLATOS -->
             <div id="menu-grid" class="menu-grid">
-                <!-- Se inyectan por JS -->
+                <p style="text-align:center; color:var(--text-muted); grid-column:1/-1;">Cargando menú...</p>
             </div>
         </div>
 
         <!-- VISTA ADMIN -->
         <div id="view-admin" class="view-section">
             <div class="admin-top-bar">
-                <button class="action-pill" onclick="abrirSidebar()">Menú Opciones</button>
-                <span style="color:var(--text-muted);">Panel Ejecutivo</span>
+                <button class="action-pill" onclick="abrirSidebar()">☰ Menú Opciones</button>
+                <span style="color:var(--text-muted); font-size:14px;">Panel Ejecutivo</span>
             </div>
             <div class="admin-wrapper">
                 <div id="admin-tab-pedidos" class="admin-section-tab active-admin-tab">
                     <h2 style="color:var(--color-principal); margin-top:0;">Pedidos en Vivo</h2>
-                    <p>Monitoreo de órdenes...</p>
+                    <p style="color:var(--text-muted);">Monitoreo de órdenes entrantes...</p>
+                    <div id="admin-pedidos-container"></div>
                 </div>
+                
                 <div id="admin-tab-platos" class="admin-section-tab">
                     <h2 style="color:var(--color-principal); margin-top:0;">Gestión de Platos</h2>
-                    <p>Espacio para editar platos...</p>
+                    <div id="admin-tabla-platos-body" style="display:flex; flex-direction:column; gap:10px;"></div>
+                </div>
+
+                <div id="admin-tab-nuevo-plato" class="admin-section-tab">
+                    <h2 style="color:var(--color-principal); margin-top:0;">Registrar Nuevo Ítem</h2>
+                    <form id="productForm" onsubmit="guardarNuevoPlato(event)">
+                        <label>Nombre del Ítem</label>
+                        <input type="text" id="nombre" required>
+                        
+                        <label>Categoría</label>
+                        <select id="categoria">
+                            <option value="Bocas">Bocas</option>
+                            <option value="Comidas Rápidas">Comidas Rápidas</option>
+                            <option value="Ofertas">Ofertas</option>
+                        </select>
+                        
+                        <label>Precio (₡)</label>
+                        <input type="number" id="precio" required>
+                        
+                        <label>Descripción</label>
+                        <input type="text" id="descripcion">
+                        
+                        <button type="submit" class="btn-admin-action">Guardar Ítem</button>
+                    </form>
+                </div>
+
+                <div id="admin-tab-lealtad" class="admin-section-tab">
+                    <h2 style="color:var(--color-principal); margin-top:0;">Generador de Sello</h2>
+                    <div style="text-align:center; padding:30px; background:#111; border-radius:15px; margin-top:20px;">
+                        <span id="codigo-activo-display" style="font-size:36px; color:var(--color-principal); font-weight:bold; letter-spacing:5px;">----</span>
+                        <br><br>
+                        <button onclick="generarNuevoCodigoSello()" class="btn-admin-action">Generar Código</button>
+                    </div>
                 </div>
             </div>
         </div>
-
     </div>
 
-    <!-- Barra Flotante Carrito -->
+    <!-- BARRA FLOTANTE -->
     <div class="floating-bottom-bar" id="floating-bar">
         <div class="status-pill">
-            <div class="status-dot" id="floating-status-dot"></div>
-            <span id="floating-status-text">Abierto</span>
+            <div class="status-dot"></div>
+            <span>Abierto</span>
         </div>
-        <button class="cart-icon-btn" onclick="alert('Abriendo carrito...')">
-            <svg class="icon-svg-lg" style="color:#121212;" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        <button class="cart-icon-btn" onclick="abrirModalCarrito()">
+            <svg class="icon-svg-lg" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             <span class="cart-count-badge" id="cart-count">0</span>
         </button>
     </div>
 
-    <!-- LÓGICA PRINCIPAL (FIREBASE LONG POLLING + CACHÉ) -->
+    <!-- MODALES -->
+    <div id="modal-detalle-plato" class="modal-overlay">
+        <div class="modal-content">
+            <div style="padding:18px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
+                <h3 id="modal-detalle-titulo" style="margin:0;">Detalle</h3>
+                <button onclick="cerrarModalDetallePlato()" style="background:none; border:none; color:white; font-size:18px;">✕</button>
+            </div>
+            <div class="modal-body">
+                <p id="modal-detalle-desc" style="color:var(--text-muted);"></p>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+                    <span>Cantidad:</span>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <button onclick="cambiarCantidadModal(-1)" style="padding:5px 15px; border-radius:5px; border:none; font-weight:bold;">-</button>
+                        <span id="modal-cantidad-valor" style="font-size:18px; font-weight:bold;">1</span>
+                        <button onclick="cambiarCantidadModal(1)" style="padding:5px 15px; border-radius:5px; border:none; font-weight:bold; background:var(--color-principal);">+</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="agregarPlatoConExtrasAlCarrito()" class="btn-admin-action">Agregar al Carrito <span id="modal-detalle-precio-total"></span></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-carrito" class="modal-overlay">
+        <div class="modal-content">
+            <div style="padding:18px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
+                <h3 style="margin:0;">Tu Pedido</h3>
+                <button onclick="cerrarModalCarrito()" style="background:none; border:none; color:white; font-size:18px;">✕</button>
+            </div>
+            <div class="modal-body" id="carrito-body-contenido"></div>
+            <div class="modal-footer" id="carrito-footer-contenido" style="flex-direction:column;">
+                <h3 style="margin:0; text-align:right;" id="carrito-total-txt">Total: ₡0</h3>
+                <button onclick="enviarPedidoWhatsApp()" class="btn-wsp">Enviar por WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS CORE Y FIREBASE CON SOLUCIÓN LONG POLLING -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        // IMPORTANTE: initializeFirestore inyecta la solución para redes inestables
-        import { initializeFirestore, collection, getDocs, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        // IMPORTANTE: usamos initializeFirestore para forzar el Long Polling (saltar bloqueo de 30s)
+        import { initializeFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         let app, db;
         try {
@@ -231,8 +289,7 @@
             };
             app = initializeApp(firebaseConfig);
             
-            // LA MAGIA: Esto obliga a Firebase a no usar túneles (WebSockets) que bloquea Kolbi/Claro,
-            // usando una conexión web tradicional directa. Cero esperas de 30 segundos.
+            // LA SOLUCIÓN DEFINITIVA: Fuerz a Firebase a conectar al instante sin WebSockets.
             db = initializeFirestore(app, {
                 experimentalForceLongPolling: true
             });
@@ -241,20 +298,24 @@
         }
 
         let listaPlatos = [];
+        let carrito = [];
         let adminAutenticado = false;
+        let platoTemporalModal = null;
+        let cantidadModal = 1;
 
+        // UTILIDADES
         window.mostrarToast = function(mensaje) {
             const toast = document.getElementById('toast-notification');
             document.getElementById('toast-msg').textContent = mensaje;
             toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
         // CARGA INSTANTÁNEA SILENCIOSA
         async function cargarMenu() {
             const menuGrid = document.getElementById("menu-grid");
 
-            // 1. Mostrar de inmediato lo que hay en el teléfono del cliente (Caché = Carga en 0 segundos)
+            // 1. Mostrar menú del caché al instante (Carga en 0 segundos)
             let cacheMenu = localStorage.getItem('alaska_cache_menu');
             if (cacheMenu) {
                 try {
@@ -263,98 +324,176 @@
                         listaPlatos = datosCache;
                         mostrarPlatos(listaPlatos);
                     }
-                } catch(e) { console.error(e); }
-            } else {
-                menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>Cargando delicias...</p>";
+                } catch(e) {}
             }
 
-            // 2. Traer datos frescos de Firebase en segundo plano sin WebSockets
+            // 2. Traer datos frescos de la nube (Sin bloqueos de 30s gracias al Long Polling)
             try {
                 if (!db) return;
                 const querySnapshot = await getDocs(collection(db, "menu"));
                 let platosDescargados = [];
-                
-                querySnapshot.forEach((docSnap) => { 
-                    let data = docSnap.data();
-                    platosDescargados.push({ id: docSnap.id, ...data }); 
+                querySnapshot.forEach(docSnap => {
+                    platosDescargados.push({ id: docSnap.id, ...docSnap.data() });
                 });
                 
                 if (platosDescargados.length > 0) {
                     listaPlatos = platosDescargados;
                     localStorage.setItem('alaska_cache_menu', JSON.stringify(listaPlatos));
-                    mostrarPlatos(listaPlatos); // Repinta silenciosamente si hubo cambios (precios nuevos, etc)
+                    mostrarPlatos(listaPlatos); // Repinta con los precios/platos actualizados
+                } else if(listaPlatos.length === 0) {
+                    menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted); grid-column:1/-1;'>No hay platos registrados.</p>";
                 }
+                renderizarAdminPlatos(); // Actualiza panel admin si está abierto
             } catch (error) { 
-                console.warn("Conexión lenta, manteniendo versión guardada.", error);
+                console.warn("Fallo de red en segundo plano:", error);
             }
         }
 
-        // FUNCIÓN PARA PINTAR LOS PLATOS EN PANTALLA
         window.mostrarPlatos = function(platos) {
             const menuGrid = document.getElementById("menu-grid");
             menuGrid.innerHTML = "";
-
             if(platos.length === 0) {
-                menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted); grid-column: 1/-1;'>No hay platos en esta categoría.</p>";
+                menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted); grid-column:1/-1;'>No se encontraron resultados.</p>";
                 return;
             }
-
             platos.forEach(plato => {
                 const card = document.createElement('div');
                 card.className = 'food-card';
-                
-                let imgHtml = plato.imagen ? `<img src="${plato.imagen}" alt="${plato.nombre}">` : `<img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=400&q=80">`;
-                let badge = plato.agotado ? `<div class="badge-agotado">Agotado Temporalmente</div>` : `<div class="badge">${plato.categoria || 'Menú'}</div>`;
-                let precioTxt = plato.precio ? `₡${Number(plato.precio).toLocaleString('es-CR')}` : '';
-
+                let imgHtml = plato.imagen ? `<img src="${plato.imagen}">` : `<img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=400&q=80">`;
                 card.innerHTML = `
                     <div class="card-image-container">
-                        ${badge}
+                        <div class="badge">${plato.categoria || 'Menú'}</div>
                         ${imgHtml}
                     </div>
                     <div class="card-content">
                         <div class="card-header-flex">
-                            <h3>${plato.nombre || 'Plato sin nombre'}</h3>
-                            <span class="price">${precioTxt}</span>
+                            <h3>${plato.nombre || ''}</h3>
+                            <span class="price">₡${Number(plato.precio).toLocaleString('es-CR')}</span>
                         </div>
-                        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">${plato.descripcion || ''}</p>
-                        <button class="order-btn ${plato.agotado ? 'soldout' : ''}" onclick="window.mostrarToast('Plato seleccionado')">
-                            ${plato.agotado ? 'Agotado' : 'Pedir'}
-                        </button>
+                        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px; flex:1;">${plato.descripcion || ''}</p>
+                        <button class="order-btn" onclick="abrirDetallePlato('${plato.id}')">Pedir</button>
                     </div>
                 `;
                 menuGrid.appendChild(card);
             });
         }
 
-        // FUNCIONES DE NAVEGACIÓN Y ADMIN BÁSICAS
-        window.filtrarMenu = function(categoria) {
-            // Actualizar botones visualmente
+        // BÚSQUEDAS Y FILTROS
+        window.filtrarMenu = function(categoria, btn) {
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            if(btn) btn.classList.add('active');
+            
+            if(categoria === 'Todos') mostrarPlatos(listaPlatos);
+            else mostrarPlatos(listaPlatos.filter(p => p.categoria === categoria));
+        }
 
-            if(categoria === 'Todos') {
-                mostrarPlatos(listaPlatos);
-            } else {
-                let filtrados = listaPlatos.filter(p => p.categoria === categoria);
-                mostrarPlatos(filtrados);
+        window.filtrarMenuPorTexto = function(texto) {
+            let txt = texto.toLowerCase();
+            let filtrados = listaPlatos.filter(p => (p.nombre||'').toLowerCase().includes(txt) || (p.descripcion||'').toLowerCase().includes(txt));
+            mostrarPlatos(filtrados);
+        }
+
+        // LÓGICA DE CARRITO Y PEDIDOS
+        window.abrirDetallePlato = function(id) {
+            platoTemporalModal = listaPlatos.find(p => p.id === id);
+            if(!platoTemporalModal) return;
+            cantidadModal = 1;
+            document.getElementById('modal-detalle-titulo').textContent = platoTemporalModal.nombre;
+            document.getElementById('modal-detalle-desc').textContent = platoTemporalModal.descripcion || '';
+            document.getElementById('modal-cantidad-valor').textContent = cantidadModal;
+            document.getElementById('modal-detalle-precio-total').textContent = `(₡${(platoTemporalModal.precio * cantidadModal).toLocaleString('es-CR')})`;
+            document.getElementById('modal-detalle-plato').style.display = 'flex';
+        }
+
+        window.cerrarModalDetallePlato = function() { document.getElementById('modal-detalle-plato').style.display = 'none'; }
+        
+        window.cambiarCantidadModal = function(delta) {
+            if(cantidadModal + delta >= 1) {
+                cantidadModal += delta;
+                document.getElementById('modal-cantidad-valor').textContent = cantidadModal;
+                document.getElementById('modal-detalle-precio-total').textContent = `(₡${(platoTemporalModal.precio * cantidadModal).toLocaleString('es-CR')})`;
             }
         }
 
-        window.intentarAccesoAdmin = async function() {
+        window.agregarPlatoConExtrasAlCarrito = function() {
+            let item = { ...platoTemporalModal, idCarrito: Date.now(), cantidad: cantidadModal };
+            carrito.push(item);
+            actualizarIconoCarrito();
+            cerrarModalDetallePlato();
+            mostrarToast("Añadido al carrito");
+        }
+
+        function actualizarIconoCarrito() {
+            let totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+            document.getElementById('cart-count').textContent = totalItems;
+        }
+
+        window.abrirModalCarrito = function() {
+            let body = document.getElementById('carrito-body-contenido');
+            body.innerHTML = '';
+            let total = 0;
+            if(carrito.length === 0) {
+                body.innerHTML = '<p style="color:var(--text-muted); text-align:center;">El carrito está vacío.</p>';
+            } else {
+                carrito.forEach((item, index) => {
+                    let subtotal = item.precio * item.cantidad;
+                    total += subtotal;
+                    body.innerHTML += `
+                        <div class="cart-item">
+                            <div>
+                                <h4 style="margin:0;">${item.cantidad}x ${item.nombre}</h4>
+                                <span style="color:var(--color-principal); font-weight:bold;">₡${subtotal.toLocaleString('es-CR')}</span>
+                            </div>
+                            <button onclick="eliminarDelCarrito(${index})" style="background:none; border:none; color:#ef4444; font-weight:bold; cursor:pointer;">Eliminar</button>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('carrito-total-txt').textContent = `Total: ₡${total.toLocaleString('es-CR')}`;
+            document.getElementById('modal-carrito').style.display = 'flex';
+        }
+
+        window.cerrarModalCarrito = function() { document.getElementById('modal-carrito').style.display = 'none'; }
+        
+        window.eliminarDelCarrito = function(index) {
+            carrito.splice(index, 1);
+            actualizarIconoCarrito();
+            abrirModalCarrito();
+        }
+
+        window.enviarPedidoWhatsApp = function() {
+            if(carrito.length === 0) return mostrarToast("Carrito vacío");
+            let mensaje = "Hola Bar Alaska, quiero pedir:\n\n";
+            let total = 0;
+            carrito.forEach(item => {
+                mensaje += `- ${item.cantidad}x ${item.nombre} (₡${(item.precio * item.cantidad).toLocaleString('es-CR')})\n`;
+                total += item.precio * item.cantidad;
+            });
+            mensaje += `\n*TOTAL: ₡${total.toLocaleString('es-CR')}*`;
+            let url = `https://wa.me/50688888888?text=${encodeURIComponent(mensaje)}`; // Cambia el numero
+            window.open(url, '_blank');
+        }
+
+        // NAVEGACIÓN Y ADMIN BÁSICO
+        window.intentarAccesoAdmin = function() {
             if (!adminAutenticado) {
-                let clave = prompt("Introduce contraseña:");
-                if(clave === "1234") { // Cambia esto por tu validación real o déjalo probar la de firebase
+                let clave = prompt("Contraseña de Admin:");
+                if(clave === "1234") { // Configura tu clave
                     adminAutenticado = true;
                     cambiarVista('admin');
                     abrirSidebar();
-                } else {
-                    mostrarToast("Clave incorrecta");
-                }
+                } else if(clave) mostrarToast("Clave incorrecta");
             } else {
                 cambiarVista('admin');
                 abrirSidebar();
             }
+        }
+
+        window.cerrarSesionAdmin = function() {
+            adminAutenticado = false;
+            cambiarVista('menu');
+            cerrarSidebar();
+            mostrarToast("Sesión cerrada");
         }
 
         window.cambiarVista = function(vista) {
@@ -364,13 +503,12 @@
 
             if (vista === 'menu') {
                 document.getElementById('view-menu').classList.add('active-view');
-                if(floatingBar) floatingBar.classList.remove('hidden');
-                window.scrollTo(0,0);
+                if(floatingBar) floatingBar.style.display = 'flex';
             } else if (vista === 'admin') {
                 document.getElementById('view-admin').classList.add('active-view');
-                if(floatingBar) floatingBar.classList.add('hidden');
-                window.scrollTo(0,0);
+                if(floatingBar) floatingBar.style.display = 'none';
             }
+            window.scrollTo(0,0);
         }
 
         window.abrirSidebar = function() { document.getElementById('sidebar-drawer').classList.add('open'); document.getElementById('sidebar-overlay').style.display = 'block'; }
@@ -382,20 +520,56 @@
             cerrarSidebar();
         }
 
-        // INICIALIZADOR
+        window.guardarNuevoPlato = async function(e) {
+            e.preventDefault();
+            if(!db) return mostrarToast("Error de conexión");
+            let btn = e.target.querySelector('button');
+            btn.textContent = "Guardando...";
+            try {
+                let obj = {
+                    nombre: document.getElementById('nombre').value,
+                    categoria: document.getElementById('categoria').value,
+                    precio: Number(document.getElementById('precio').value),
+                    descripcion: document.getElementById('descripcion').value
+                };
+                await addDoc(collection(db, "menu"), obj);
+                mostrarToast("Plato Guardado");
+                e.target.reset();
+                cargarMenu(); // Recarga visual
+            } catch(error) {
+                mostrarToast("Error al guardar");
+            }
+            btn.textContent = "Guardar Ítem";
+        }
+
+        function renderizarAdminPlatos() {
+            let body = document.getElementById('admin-tabla-platos-body');
+            if(!body) return;
+            body.innerHTML = '';
+            listaPlatos.forEach(p => {
+                body.innerHTML += `
+                    <div style="background:#121419; padding:15px; border-radius:10px; border:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <strong style="color:var(--text-main);">${p.nombre}</strong><br>
+                            <span style="font-size:12px; color:var(--text-muted);">${p.categoria} - ₡${p.precio}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // FUNCIONES STUBS PARA NO ROMPER EL HTML
+        window.abrirLealtadModal = function() { mostrarToast("Club de Lealtad próximamente habilitado."); }
+        window.abrirModalSelloInteractivo = function() { mostrarToast("Club de Lealtad próximamente habilitado."); }
+        window.generarNuevoCodigoSello = function() { 
+            let codigo = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('codigo-activo-display').textContent = codigo;
+        }
+
+        // INICIALIZACIÓN PRINCIPAL
         document.addEventListener('DOMContentLoaded', () => {
             cargarMenu();
         });
-
-    </script>
-
-    <!-- ELIMINADOR DE SERVICE WORKER ANTIGUO (Para limpiar celulares pegados) -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                for(let registration of registrations) { registration.unregister(); }
-            });
-        }
     </script>
 </body>
 </html>
