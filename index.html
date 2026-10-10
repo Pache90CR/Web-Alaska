@@ -978,8 +978,21 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        // Mantenemos la librería original sin la persistencia defectuosa para no bloquear celulares
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        
+        // VOLVEMOS A LA CONEXIÓN OFICIAL DE FIREBASE, PERO CON INITIALIZEFIRESTORE
+        import { 
+            initializeFirestore, 
+            collection, 
+            getDocs, 
+            addDoc, 
+            updateDoc, 
+            deleteDoc, 
+            doc, 
+            setDoc, 
+            getDoc, 
+            query, 
+            where 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         let app, db;
         try {
@@ -992,7 +1005,12 @@
                 appId: "1:734422460427:web:cee048a1edd6bf38b07f0e"
             };
             app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
+            
+            // LA SOLUCIÓN DEFINITIVA A KÖLBI/CLARO: Forzar el Long Polling nativo de Firebase
+            db = initializeFirestore(app, {
+                experimentalForceLongPolling: true
+            });
+            
         } catch (e) {
             console.error("Error inicializando Firebase:", e);
         }
@@ -1177,12 +1195,12 @@
         }
 
         // =========================================================================
-        // EL BYPASS CON LÍMITE EXTENDIDO (1000 PLATOS) PARA SALTARSE A KÖLBI/CLARO
+        // CARGA ORIGINAL RESTAURADA Y SIN BLOQUEOS
         // =========================================================================
         async function cargarMenu() {
             const menuGrid = document.getElementById("menu-grid");
 
-            // 1. Mostrar INMEDIATAMENTE lo que hay en la memoria del celular
+            // 1. Mostrar caché primero para que sea instantáneo a la vista
             let cacheMenu = localStorage.getItem('alaska_cache_menu');
             if (cacheMenu) {
                 try {
@@ -1196,75 +1214,15 @@
                 menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>Cargando menú...</p>";
             }
 
-            // 2. CONEXIÓN WEB DIRECTA CON LÍMITE DE 1000 PLATOS (?pageSize=1000)
+            // 2. Traer TODO el menú completo de Firebase
             try {
-                const url = "https://firestore.googleapis.com/v1/projects/bar-restaurante-alaska/databases/(default)/documents/menu?pageSize=1000";
-                const respuesta = await fetch(url);
-                
-                if (!respuesta.ok) throw new Error("Error de red HTTP");
-                const data = await respuesta.json();
-                
+                const querySnapshot = await getDocs(collection(db, "menu"));
                 let platosDescargados = [];
                 
-                if (data.documents) {
-                    data.documents.forEach(doc => {
-                        let f = doc.fields;
-                        if (!f) return;
-                        
-                        let plato = { id: doc.name.split('/').pop() };
-                        
-                        // Extracción de textos
-                        if (f.nombre) plato.nombre = f.nombre.stringValue || "";
-                        if (f.categoria) plato.categoria = f.categoria.stringValue || "";
-                        if (f.descripcion) plato.descripcion = f.descripcion.stringValue || "";
-                        if (f.imagenUrl) plato.imagenUrl = f.imagenUrl.stringValue || "";
-                        if (f.imagen) plato.imagen = f.imagen.stringValue || "";
-                        
-                        // Extracción de números con protección contra formato String accidental
-                        if (f.precio) {
-                            plato.precio = f.precio.integerValue ? Number(f.precio.integerValue) : 
-                                          (f.precio.doubleValue ? Number(f.precio.doubleValue) : 
-                                          (f.precio.stringValue ? Number(f.precio.stringValue) : 0));
-                        }
-                        if (f.precioOriginal) {
-                            plato.precioOriginal = f.precioOriginal.integerValue ? Number(f.precioOriginal.integerValue) : 
-                                                  (f.precioOriginal.doubleValue ? Number(f.precioOriginal.doubleValue) : 
-                                                  (f.precioOriginal.stringValue ? Number(f.precioOriginal.stringValue) : 0));
-                        }
-                        if (f.orden) {
-                            plato.orden = f.orden.integerValue ? Number(f.orden.integerValue) : 
-                                         (f.orden.stringValue ? Number(f.orden.stringValue) : 999);
-                        } else {
-                            plato.orden = 999;
-                        }
-                        
-                        // Extracción de estados
-                        if (f.disponible !== undefined) plato.disponible = f.disponible.booleanValue;
-                        if (f.agotado !== undefined) plato.agotado = f.agotado.booleanValue;
-                        if (f.categoriaOriginal) plato.categoriaOriginal = f.categoriaOriginal.stringValue || "";
-                        
-                        // Extracción de acompañamientos/extras
-                        let extrasObj = f.variantes || f.extras || f.acompanamientos;
-                        if (extrasObj && extrasObj.arrayValue && extrasObj.arrayValue.values) {
-                            plato.variantes = extrasObj.arrayValue.values.map(v => {
-                                let vf = v.mapValue.fields;
-                                if (!vf) return null;
-                                return {
-                                    nombre: vf.nombre ? vf.nombre.stringValue : "",
-                                    precio: vf.precio ? (vf.precio.integerValue ? Number(vf.precio.integerValue) : (vf.precio.doubleValue ? Number(vf.precio.doubleValue) : 0)) : 0,
-                                    agotado: vf.agotado ? vf.agotado.booleanValue : false,
-                                    imagenUrl: vf.imagenUrl ? vf.imagenUrl.stringValue : ""
-                                };
-                            }).filter(v => v !== null);
-                        } else {
-                            plato.variantes = [];
-                        }
+                querySnapshot.forEach((doc) => {
+                    platosDescargados.push({ id: doc.id, ...doc.data() });
+                });
 
-                        platosDescargados.push(plato);
-                    });
-                }
-
-                // 3. Actualizar la interfaz si encontramos datos
                 if (platosDescargados.length > 0) {
                     listaPlatos = platosDescargados;
                     localStorage.setItem('alaska_cache_menu', JSON.stringify(listaPlatos));
@@ -1274,7 +1232,7 @@
                 }
                 
             } catch (error) {
-                console.error("Fallo de lectura directa:", error);
+                console.error("Fallo de lectura de Firebase:", error);
                 if (listaPlatos.length === 0 && menuGrid) {
                     menuGrid.innerHTML = `
                         <div style="text-align:center; padding:24px; background:#181a1f; border-radius:16px; border:1px solid #2a2e39;">
