@@ -1006,7 +1006,6 @@
             db = getFirestore(app);
         } catch (e) {
             console.error("Error inicializando Firebase:", e);
-            alert("Error inicializando Firebase: " + e.message);
         }
 
         let listaPlatos = [];
@@ -1110,7 +1109,6 @@
                         mostrarToast("Contraseña incorrecta.");
                     }
                 } catch (e) {
-                    console.error(e);
                     mostrarToast("Error al verificar la contraseña.");
                 }
             } else {
@@ -1188,47 +1186,20 @@
             cerrarSidebar();
         }
 
-        function cargarMenuCache() {
-            const menuGrid = document.getElementById("menu-grid");
-            let cacheMenu = localStorage.getItem('alaska_cache_menu');
-            
-            if (cacheMenu) {
-                try {
-                    let datosCache = JSON.parse(cacheMenu);
-                    if (Array.isArray(datosCache) && datosCache.length > 0) {
-                        listaPlatos = datosCache;
-                        mostrarPlatos(listaPlatos);
-                        return;
-                    }
-                } catch(e) { console.error("Error leyendo caché:", e); }
-            }
-            
-            if (menuGrid) {
-                menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>Cargando menú en vivo...</p>";
-            }
-        }
-
         async function cargarMenuFirebase() {
             const menuGrid = document.getElementById("menu-grid");
-            
             try {
                 const querySnapshot = await getDocs(collection(db, "menu"));
                 let platosDescargados = [];
-                
                 querySnapshot.forEach((doc) => {
                     platosDescargados.push({ id: doc.id, ...doc.data() });
                 });
 
-                if (platosDescargados.length > 0) {
-                    listaPlatos = platosDescargados;
-                    localStorage.setItem('alaska_cache_menu', JSON.stringify(listaPlatos));
-                    mostrarPlatos(listaPlatos);
-                } else if (listaPlatos.length === 0 && menuGrid) {
-                    menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay platos registrados en el menú actualmente.</p>";
-                }
+                listaPlatos = platosDescargados;
+                mostrarPlatos(listaPlatos);
             } catch (error) {
-                console.error("Fallo de lectura de Firebase:", error);
-                alert("Error al cargar menú de Firebase: " + error.message);
+                console.error("Error al cargar menú:", error);
+                if(menuGrid) menuGrid.innerHTML = "<p style='text-align:center; color:#ef4444;'>Error al conectar con la base de datos.</p>";
             }
         }
 
@@ -1237,7 +1208,7 @@
             if (!menuGrid) return;
 
             if (!platos || platos.length === 0) {
-                menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay platos disponibles en este momento.</p>";
+                menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay platos registrados en el menú actualmente.</p>";
                 return;
             }
 
@@ -1698,7 +1669,6 @@
                 cerrarModalCarrito();
 
             } catch(e) {
-                console.error(e);
                 mostrarToast("Error al guardar el pedido.");
             }
         }
@@ -2007,8 +1977,6 @@
 
             listaPlatos.sort((a, b) => Number(a.orden || 999) - Number(b.orden || 999));
             cargarAdminPlatos(); 
-            
-            try { localStorage.setItem('alaska_cache_menu', JSON.stringify(listaPlatos)); } catch(e){}
 
             try {
                 updateDoc(doc(db, "menu", platoActual.id), { orden: platoActual.orden });
@@ -2648,20 +2616,11 @@
         }
 
         async function cargarConfiguracionVisualNube() {
-            let cacheConfig = localStorage.getItem('alaska_cache_config');
-            if (cacheConfig) {
-                try {
-                    aplicarConfiguracionVisual(JSON.parse(cacheConfig));
-                } catch(e){}
-            }
-
             try {
                 const docRef = doc(db, "configuracion", "estilosGenerales");
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    localStorage.setItem('alaska_cache_config', JSON.stringify(data));
-                    aplicarConfiguracionVisual(data);
+                    aplicarConfiguracionVisual(docSnap.data());
                 }
 
                 const docRefT = doc(db, "configuracion", "tiempoEstimado");
@@ -2748,8 +2707,6 @@
                     if(logoUrl) dataObj.logoUrl = logoUrl;
                     await setDoc(doc(db, "configuracion", "estilosGenerales"), dataObj, { merge: true });
                     
-                    localStorage.setItem('alaska_cache_config', JSON.stringify(dataObj));
-                    
                     horarioApertura = horaAperturaVal;
                     horarioCierre = horaCierreVal;
                     diasCerradoStr = diasCerradoVal;
@@ -2780,8 +2737,6 @@
             actualizarUILealtadPublica();
             renderizarCategoriasPublicas();
             poblarSelectsDeCategorias();
-
-            cargarMenuCache();
 
             if (db) {
                 cargarMenuFirebase().catch(e => console.error(e));
