@@ -28,6 +28,17 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-dark); margin: 0; padding: 0; color: var(--text-main); transition: background 0.3s ease; }
         
+        /* Ocultar la barra flotante de Netlify (si se usa) */
+        #netlify-badge, 
+        [data-netlify-deploy-id], 
+        iframe[src*="netlify"],
+        div[class*="netlify"] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
         .app-container { max-width: 1280px; margin: 0 auto; padding: 24px; padding-bottom: 140px; }
 
         .icon-svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; display: inline-block; vertical-align: middle; }
@@ -1189,6 +1200,7 @@
         async function cargarMenu() {
             const menuGrid = document.getElementById("menu-grid");
 
+            // 1. Mostrar INMEDIATAMENTE lo que hay en la memoria del celular
             let cacheMenu = localStorage.getItem('alaska_cache_menu');
             if (cacheMenu) {
                 try {
@@ -1200,33 +1212,40 @@
                 } catch(e) { console.error("Error al leer caché local:", e); }
             }
 
+            // 2. Buscar en Firebase en segundo plano de forma silenciosa
             try {
                 if (!db) throw new Error("No hay conexión con la base de datos.");
 
                 const querySnapshot = await getDocs(collection(db, "menu"));
-                listaPlatos = [];
+                let platosDescargados = [];
                 
                 querySnapshot.forEach((docSnap) => { 
                     let data = docSnap.data();
                     let extras = data.variantes || data.extras || data.acompanamientos || [];
                     let numOrden = (data.orden !== undefined && data.orden !== null) ? Number(data.orden) : 999;
-                    listaPlatos.push({ id: docSnap.id, ...data, orden: numOrden, variantes: extras }); 
+                    platosDescargados.push({ id: docSnap.id, ...data, orden: numOrden, variantes: extras }); 
                 });
                 
-                if (listaPlatos.length > 0) {
+                // 3. SOLO actualizamos la pantalla si Firebase realmente trajo platos
+                if (platosDescargados.length > 0) {
+                    listaPlatos = platosDescargados;
                     try { localStorage.setItem('alaska_cache_menu', JSON.stringify(listaPlatos)); } catch(errCache) {}
                     mostrarPlatos(listaPlatos);
-                } else if (!cacheMenu) {
+                } else if (listaPlatos.length === 0) {
+                    // Si de verdad no hay nada en la base de datos ni en caché
                     if (menuGrid) menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay platos registrados en el menú actualmente.</p>";
                 }
             } catch (error) { 
-                if (listaPlatos.length > 0) { mostrarPlatos(listaPlatos); return; }
-                if (menuGrid) {
+                // 4. Si el internet falla, NO hacemos nada. Dejamos que el cliente siga viendo el menú del caché.
+                console.warn("Fallo de conexión con Firebase. Manteniendo menú en caché.");
+                
+                // Solo mostramos error si es la primera vez que entra y no tiene caché
+                if (listaPlatos.length === 0 && menuGrid) {
                     menuGrid.innerHTML = `
                         <div style="text-align:center; padding:24px; background:#181a1f; border-radius:16px; border:1px solid #2a2e39;">
-                            <p style="color:#f87171; font-weight:800; margin-bottom:8px; font-size:15px;">No se pudo conectar con el menú en la nube</p>
-                            <p style="color:var(--text-muted); font-size:12px; margin-bottom:16px;">Detalle: ${error.message || 'Error de red o permisos en Firebase'}</p>
-                            <button onclick="window.location.reload(true)" class="action-pill" style="margin:0 auto; background:var(--color-principal); color:#121212; border:none; font-weight:800; padding:10px 20px;">Reintentar Cargar</button>
+                            <p style="color:#f87171; font-weight:800; margin-bottom:8px; font-size:15px;">Conexión inestable</p>
+                            <p style="color:var(--text-muted); font-size:12px; margin-bottom:16px;">Revisa tu internet para cargar el menú.</p>
+                            <button onclick="window.location.reload(true)" class="action-pill" style="margin:0 auto; background:var(--color-principal); color:#121212; border:none;">Reintentar</button>
                         </div>
                     `;
                 }
