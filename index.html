@@ -978,8 +978,6 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        
-        // Volvemos a getFirestore nativo y rápido
         import { 
             getFirestore, 
             collection, 
@@ -1006,9 +1004,9 @@
             };
             app = initializeApp(firebaseConfig);
             db = getFirestore(app);
-            
         } catch (e) {
             console.error("Error inicializando Firebase:", e);
+            alert("Error inicializando Firebase: " + e.message);
         }
 
         let listaPlatos = [];
@@ -1113,7 +1111,7 @@
                     }
                 } catch (e) {
                     console.error(e);
-                    mostrarToast("Error al verificar la contraseña. Revisa tu conexión.");
+                    mostrarToast("Error al verificar la contraseña.");
                 }
             } else {
                 cambiarVista('admin');
@@ -1190,10 +1188,6 @@
             cerrarSidebar();
         }
 
-        // =========================================================================
-        // NUEVA ARQUITECTURA: SIN CONGELAMIENTOS
-        // =========================================================================
-
         function cargarMenuCache() {
             const menuGrid = document.getElementById("menu-grid");
             let cacheMenu = localStorage.getItem('alaska_cache_menu');
@@ -1233,7 +1227,8 @@
                     menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay platos registrados en el menú actualmente.</p>";
                 }
             } catch (error) {
-                console.error("Fallo de lectura de Firebase (Segundo Plano):", error);
+                console.error("Fallo de lectura de Firebase:", error);
+                alert("Error al cargar menú de Firebase: " + error.message);
             }
         }
 
@@ -1740,7 +1735,7 @@
                                 <span style="font-size:12px; color:#4ade80; font-weight:600;">Pago: ${p.metodoPago || 'Efectivo'} - Total: ₡${Number(p.total || 0).toLocaleString()}</span>
                             </div>
                             <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
-                                <button type="button" onclick="cambiarEstadoPedidoVivo('${p.id}', '${estadoActual}')" style="background:rgba(255,255,255,0.05); border:1px solid ${colorEstado}; color:${colorEstado}; padding:6px 12px; border-radius:8px; font-weight:bold; font-size:11px; cursor:pointer;" title="Haz clic para cambiar estado de la orden">Estado: ${estadoActual}</button>
+                                <button type="button" onclick="cambiarEstadoPedidoVivo('${p.id}', '${estadoActual}')" style="background:rgba(255,255,255,0.05); border:1px solid ${colorEstado}; color:${colorEstado}; padding:6px 12px; border-radius:8px; font-weight:bold; font-size:11px; cursor:pointer;">Estado: ${estadoActual}</button>
                                 <button type="button" onclick="eliminarPedidoEnVivo('${p.id}')" style="background:rgba(239, 68, 68, 0.15); border:1px solid rgba(239, 68, 68, 0.3); color:#f87171; padding:6px 12px; border-radius:8px; cursor:pointer; font-size:11px; font-weight:bold;">Eliminar</button>
                             </div>
                         </div>
@@ -1881,7 +1876,6 @@
 
             } catch(e) {
                 console.error(e);
-                mostrarToast("Error al cargar historial entre fechas.");
             }
         }
 
@@ -2169,7 +2163,6 @@
                     cerrarModalEditarPlato();
                     cargarMenuFirebase();
                 } catch(e) { 
-                    console.error("Error al guardar plato editado:", e);
                     mostrarToast("Error al guardar cambios."); 
                 }
             };
@@ -2436,7 +2429,7 @@
 
                 listaCategoriasDinamicas = catCargadas;
             } catch (e) { 
-                console.error("Error al obtener categorías en segundo plano:", e); 
+                console.error("Error al obtener categorías:", e); 
             } finally {
                 renderizarCategoriasPublicas();
                 poblarSelectsDeCategorias();
@@ -2568,8 +2561,7 @@
                     mostrarToast("Código incorrecto o ya fue utilizado.");
                 }
             } catch(e) { 
-                console.error("Detalle del error en Firebase:", e);
-                mostrarToast("Error al validar código. Verifica la conexión."); 
+                mostrarToast("Error al validar código."); 
             }
         }
 
@@ -2679,7 +2671,7 @@
                     if (document.getElementById('select-tiempo-admin')) document.getElementById('select-tiempo-admin').value = tVal;
                 }
             } catch (e) { 
-                console.error("Error al cargar configuracion en segundo plano:", e); 
+                console.error("Error al cargar configuracion:", e); 
             }
         }
 
@@ -2784,17 +2776,13 @@
             } else { await guardarFin(null); }
         }
 
-        // --- ARRANQUE PRINCIPAL NO BLOQUEANTE ---
         function iniciarAplicacion() {
-            // 1. Mostrar de inmediato la UI y categorías por defecto
             actualizarUILealtadPublica();
             renderizarCategoriasPublicas();
             poblarSelectsDeCategorias();
 
-            // 2. Extraer todo lo que esté en caché (tus 3 platos que quedaron pegados)
             cargarMenuCache();
 
-            // 3. Ejecutar peticiones a Firebase EN SEGUNDO PLANO (sin detener la página)
             if (db) {
                 cargarMenuFirebase().catch(e => console.error(e));
                 cargarConfiguracionVisualNube().catch(e => console.error(e));
