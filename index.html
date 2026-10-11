@@ -992,6 +992,9 @@
             where 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        let nombreColeccionMenu = "menu";
+        let nombreColeccionCategorias = "categorias";
+
         let app, db;
         try {
             const firebaseConfig = {
@@ -1188,12 +1191,25 @@
 
         async function cargarMenuFirebase() {
             const menuGrid = document.getElementById("menu-grid");
+            const posiblesNombres = ["menu", "Menu", "productos", "Productos", "platos", "Platos"];
+            let platosDescargados = [];
+
             try {
-                const querySnapshot = await getDocs(collection(db, "menu"));
-                let platosDescargados = [];
-                querySnapshot.forEach((doc) => {
-                    platosDescargados.push({ id: doc.id, ...doc.data() });
-                });
+                for (let nombre of posiblesNombres) {
+                    const querySnapshot = await getDocs(collection(db, nombre));
+                    if (!querySnapshot.empty) {
+                        nombreColeccionMenu = nombre;
+                        querySnapshot.forEach((doc) => {
+                            platosDescargados.push({ id: doc.id, ...doc.data() });
+                        });
+                        break; 
+                    }
+                }
+
+                if (platosDescargados.length === 0) {
+                    if (menuGrid) menuGrid.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No hay platos registrados en el menú actualmente.</p>";
+                    return;
+                }
 
                 listaPlatos = platosDescargados;
                 mostrarPlatos(listaPlatos);
@@ -1924,7 +1940,7 @@
                     updateData.precioOriginal = plato.precio;
                 }
 
-                await updateDoc(doc(db, "menu", id), updateData);
+                await updateDoc(doc(db, nombreColeccionMenu, id), updateData);
                 mostrarToast(esOfertaExistente ? "¡Precio de oferta actualizado!" : "¡Plato movido a Ofertas!");
                 cargarMenuFirebase();
             } catch(e) {
@@ -1940,7 +1956,7 @@
             let precRestaurar = plato.precioOriginal || plato.precio;
 
             try {
-                await updateDoc(doc(db, "menu", id), {
+                await updateDoc(doc(db, nombreColeccionMenu, id), {
                     categoria: catRestaurar,
                     precio: precRestaurar,
                     categoriaOriginal: null,
@@ -1979,8 +1995,8 @@
             cargarAdminPlatos(); 
 
             try {
-                updateDoc(doc(db, "menu", platoActual.id), { orden: platoActual.orden });
-                updateDoc(doc(db, "menu", platoDestino.id), { orden: platoDestino.orden });
+                updateDoc(doc(db, nombreColeccionMenu, platoActual.id), { orden: platoActual.orden });
+                updateDoc(doc(db, nombreColeccionMenu, platoDestino.id), { orden: platoDestino.orden });
             } catch (e) {
                 console.error("Error al reordenar en la nube:", e);
             }
@@ -1997,7 +2013,7 @@
 
             try {
                 for (let plato of platosCategoria) {
-                    await updateDoc(doc(db, "menu", plato.id), { disponible: nuevoEstado });
+                    await updateDoc(doc(db, nombreColeccionMenu, plato.id), { disponible: nuevoEstado });
                 }
                 mostrarToast(`Categoría ${catSeleccionada} actualizada a: ${nuevoEstado ? 'DISPONIBLE' : 'AGOTADA'}`);
                 cargarMenuFirebase();
@@ -2008,7 +2024,7 @@
 
         window.cambiarDisponibilidadPlato = async function(id, estadoActual) {
             try {
-                await updateDoc(doc(db, "menu", id), { disponible: !estadoActual });
+                await updateDoc(doc(db, nombreColeccionMenu, id), { disponible: !estadoActual });
                 mostrarToast("Estado del plato actualizado.");
                 cargarMenuFirebase();
             } catch(e) { mostrarToast("Error al actualizar estado."); }
@@ -2017,7 +2033,7 @@
         window.eliminarPlato = async function(id) {
             if (confirm("¿Estás seguro de eliminar este ítem del menú?")) {
                 try {
-                    await deleteDoc(doc(db, "menu", id));
+                    await deleteDoc(doc(db, nombreColeccionMenu, id));
                     mostrarToast("Plato eliminado.");
                     cargarMenuFirebase();
                 } catch(e) { mostrarToast("Error al eliminar."); }
@@ -2118,7 +2134,7 @@
 
             const ejecutarGuardadoFinal = async (urlImagenFinal) => {
                 try {
-                    await updateDoc(doc(db, "menu", id), {
+                    await updateDoc(doc(db, nombreColeccionMenu, id), {
                         nombre: nombre,
                         categoria: categoria,
                         precio: precio,
@@ -2177,7 +2193,7 @@
             }
 
             try {
-                await setDoc(doc(db, "categorias", nuevaCat), { nombre: nuevaCat, visible: true, icono: "" });
+                await setDoc(doc(db, nombreColeccionCategorias, nuevaCat), { nombre: nuevaCat, visible: true, icono: "" });
                 listaCategoriasDinamicas.push(nuevaCat);
                 categoriasNube[nuevaCat] = { nombre: nuevaCat, visible: true, icono: "" };
                 
@@ -2212,7 +2228,7 @@
             reader.readAsDataURL(fileInput.files[0]);
             reader.onload = async function() {
                 try {
-                    await setDoc(doc(db, "categorias", catNombre), { nombre: catNombre, visible: true, icono: reader.result }, { merge: true });
+                    await setDoc(doc(db, nombreColeccionCategorias, catNombre), { nombre: catNombre, visible: true, icono: reader.result }, { merge: true });
                     mostrarToast("Icono de categoría actualizado.");
                     cerrarModalEditarCat();
                     inicializarCategoriasNube();
@@ -2314,7 +2330,7 @@
                 const guardarPlatoFinal = async (imagenUrl) => {
                     try {
                         let nuevoOrden = listaPlatos.length + 1;
-                        await addDoc(collection(db, "menu"), {
+                        await addDoc(collection(db, nombreColeccionMenu), {
                             nombre, categoria, precio, descripcion,
                             imagenUrl: imagenUrl || "",
                             variantes: variantesTemporales,
@@ -2375,7 +2391,12 @@
 
         async function inicializarCategoriasNube() {
             try {
-                const qs = await getDocs(collection(db, "categorias"));
+                let qs = await getDocs(collection(db, "categorias"));
+                if (qs.empty) {
+                    qs = await getDocs(collection(db, "Categorias"));
+                    if (!qs.empty) nombreColeccionCategorias = "Categorias";
+                }
+                
                 categoriasNube = {};
                 let catCargadas = [];
 
@@ -2391,7 +2412,7 @@
                     }
                     if (!categoriasNube[cat]) {
                         categoriasNube[cat] = { nombre: cat, visible: true, icono: "" };
-                        setDoc(doc(db, "categorias", cat), { nombre: cat, visible: true, icono: "" });
+                        setDoc(doc(db, nombreColeccionCategorias, cat), { nombre: cat, visible: true, icono: "" });
                     }
                 });
 
