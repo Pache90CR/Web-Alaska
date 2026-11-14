@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="es-CR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grúas Mau | Asistencia y Transporte Pesado en Guanacaste</title>
+<meta name="description" content="Servicio de grúa 24/7 en Liberia y gran parte de Guanacaste: traslado de maquinaria pesada, movimiento de contenedores, rescate de cabezales y transporte de carga. Solicita asistencia en línea y te contactamos de inmediato.">
+<meta name="theme-color" content="#0c0d0f">
+<meta name="color-scheme" content="dark">
+<link rel="canonical" href="https://gruasmau.vercel.app/">
+
+<!-- Vista previa al compartir el enlace (WhatsApp, Facebook) -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_CR">
+<meta property="og:site_name" content="Grúas Mau">
+<meta property="og:title" content="Grúas Mau | Asistencia y Transporte Pesado en Guanacaste">
+<meta property="og:description" content="Servicio de grúa 24/7. Maquinaria pesada, contenedores y rescate de cabezales en Liberia y Guanacaste.">
+<meta property="og:url" content="https://gruasmau.vercel.app/">
+<meta property="og:image" content="https://gruasmau.vercel.app/Logo_mau.jpg">
+<meta name="twitter:card" content="summary">
+
+<link rel="icon" href="Logo_mau.jpg">
+<link rel="apple-touch-icon" href="Logo_mau.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap">
+<link rel="preload" as="image" href="carrusel/1.jpg" fetchpriority="high">
+
+<script>document.documentElement.classList.add('js');</script>
+
+<!-- Datos estructurados para Google (negocio local) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Grúas Mau",
+  "description": "Servicio de grúa 24/7: maquinaria pesada, contenedores, rescate de cabezales y transporte de carga en Guanacaste.",
+  "url": "https://gruasmau.vercel.app/",
+  "image": "https://gruasmau.vercel.app/Logo_mau.jpg",
+  "logo": "https://gruasmau.vercel.app/Logo_mau.jpg",
+  "telephone": ["+506-8875-5921", "+506-6231-2471", "+506-8439-2706"],
+  "address": { "@type": "PostalAddress", "addressLocality": "Liberia", "addressRegion": "Guanacaste", "addressCountry": "CR" },
+  "areaServed": { "@type": "AdministrativeArea", "name": "Guanacaste, Costa Rica" },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "opens": "00:00",
+    "closes": "23:59"
+  },
+  "sameAs": ["https://www.facebook.com/share/1BuCJDXo13/"]
+}
+</script>
+
+<style>
+/* ==========================================================================
+   GRÚAS MAU · Estilos
+   Marca: negro + ámbar. Para cambiar colores, edita las variables de :root.
+   ========================================================================== */
+:root{
+  --bg:#0c0d0f;
+  --bg-2:#111317;
+  --surface:#16181c;
+  --line:rgba(255,255,255,.09);
+  --line-strong:rgba(255,255,255,.17);
+  --text:#f3f2ee;
+  --muted:#a3a8af;
+  --amber:#fbb03b;
+  --amber-600:#e59a2a;
+  --ink:#17120a;
+  --wa:#25d366;
+  --wa-600:#1fbb59;
+  --danger:#d32f2f;
+  --danger-600:#b71c1c;
+  --radius:16px;
+  --shadow:0 24px 60px -24px rgba(0,0,0,.75);
+  --header-h:70px;
+  --font-head:"Barlow Condensed","Oswald","Arial Narrow","Roboto Condensed",system-ui,sans-serif;
+  --font-body:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+
+/* ===== BASE ===== */
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:400 1rem/1.65 var(--font-body);-webkit-font-smoothing:antialiased;padding-bottom:calc(78px + env(safe-area-inset-bottom,0px))}
+img{display:block;max-width:100%;height:auto}
+h1,h2,h3,p,ul,ol,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+[hidden]{display:none!important}
+section[id]{scroll-margin-top:calc(var(--header-h) + 4px)}
+.container{width:min(1180px,100% - 2*clamp(1rem,4vw,2rem));margin-inline:auto}
+.nowrap{white-space:nowrap}
+.skip-link{position:absolute;left:1rem;top:-120px;z-index:3000;padding:.7rem 1.1rem;border-radius:10px;background:var(--amber);color:var(--ink);font-weight:700;text-decoration:none}
+.skip-link:focus{top:1rem}
+
+.icon{display:inline-block;width:1.25em;height:1.25em;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.2em}
+
+/* ===== TIPOGRAFÍA ===== */
+.eyebrow{display:inline-flex;align-items:center;gap:.7rem;font:700 .82rem/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--amber)}
+.eyebrow::before{content:"";width:1.8rem;height:2px;border-radius:2px;background:currentColor}
+.eyebrow--pill{padding:.62rem 1rem;border:1px solid rgba(251,176,59,.4);border-radius:999px;background:rgba(251,176,59,.09)}
+.eyebrow--pill::before{display:none}
+.title{margin-top:.8rem;font:800 clamp(2.3rem,5.6vw,3.7rem)/1.06 var(--font-head);letter-spacing:.01em;text-transform:uppercase;text-wrap:balance}
+.lead{margin-top:1rem;max-width:36rem;font-size:1.08rem;color:var(--muted)}
+
+/* ===== BOTONES ===== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;min-height:54px;min-width:0;padding:.5rem 1.6rem;border:2px solid transparent;border-radius:12px;font:700 1.12rem/1.15 var(--font-head);letter-spacing:.07em;text-transform:uppercase;text-align:center;text-decoration:none;cursor:pointer;transition:transform .15s ease,background-color .2s ease,border-color .2s ease,color .2s ease,box-shadow .2s ease}
+.btn .icon{width:1.3em;height:1.3em}
+.btn:active{transform:scale(.98)}
+.btn--primary{background:var(--amber);color:var(--ink);box-shadow:0 12px 30px -12px rgba(251,176,59,.7)}
+.btn--primary:hover{background:var(--amber-600);transform:translateY(-2px)}
+.btn--ghost{background:rgba(255,255,255,.05);border-color:var(--line-strong);color:var(--text)}
+.btn--ghost:hover{border-color:var(--amber);color:var(--amber)}
+.btn--wa{background:var(--wa);color:#05230f;box-shadow:0 12px 30px -14px rgba(37,211,102,.7)}
+.btn--wa:hover{background:var(--wa-600);transform:translateY(-2px)}
+.btn--danger{background:var(--danger);color:#fff}
+.btn--danger:hover{background:var(--danger-600)}
+.btn--dark{background:var(--ink);color:var(--amber)}
+.btn--dark:hover{background:#000;transform:translateY(-2px)}
+.btn--text{min-height:44px;background:transparent;color:var(--muted);font-size:1rem;letter-spacing:.05em}
+.btn--text:hover{color:var(--text)}
+.btn--block{width:100%}
+.btn[disabled]{opacity:.65;cursor:not-allowed}
+.btn.is-loading{opacity:.85;cursor:progress;pointer-events:none}
+.btn.is-loading::after{content:"";width:1.1em;height:1.1em;flex:none;border:2.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:giro .7s linear infinite}
+@keyframes giro{to{transform:rotate(360deg)}}
+
+/* ===== ENCABEZADO ===== */
+.site-header{position:sticky;top:0;z-index:1000;background:rgba(12,13,15,.86);-webkit-backdrop-filter:saturate(140%) blur(12px);backdrop-filter:saturate(140%) blur(12px);border-bottom:2px solid var(--amber)}
+.header__inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:var(--header-h)}
+.brand{display:flex;align-items:center;gap:.8rem;min-width:0;text-decoration:none}
+.brand__logo{width:48px;height:48px;flex:none;border-radius:50%;object-fit:cover;border:2px solid var(--amber);box-shadow:0 0 0 4px rgba(251,176,59,.12)}
+.brand__text{display:flex;flex-direction:column;min-width:0;line-height:1.1}
+.brand__text strong{font:800 1.5rem/1.1 var(--font-head);letter-spacing:.07em;text-transform:uppercase;color:var(--amber);white-space:nowrap}
+.brand__text small{margin-top:.2rem;font-size:.78rem;letter-spacing:.04em;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav{display:none;gap:.2rem;margin-left:auto}
+.nav a{padding:.6rem .95rem;border-radius:8px;color:#d7d9dc;font-weight:600;font-size:.95rem;text-decoration:none;transition:color .2s}
+.nav a:hover{color:var(--amber)}
+.header-call{display:inline-flex;align-items:center;gap:.7rem;flex:none;padding:.32rem;border-radius:999px;background:var(--amber);color:var(--ink);text-decoration:none;box-shadow:0 8px 24px -10px rgba(251,176,59,.7);transition:background-color .2s ease,transform .15s ease}
+.header-call:hover{background:var(--amber-600)}
+.header-call:active{transform:scale(.98)}
+.header-call__icon{display:grid;place-items:center;width:2.4rem;height:2.4rem;border-radius:50%;background:var(--ink);color:var(--amber)}
+.header-call__text{display:none;flex-direction:column;line-height:1}
+.header-call__text small{display:none;margin-bottom:.22rem;font:700 .62rem/1 var(--font-body);letter-spacing:.12em;text-transform:uppercase;opacity:.75}
+.header-call__text b{font:800 1.35rem/1 var(--font-head);letter-spacing:.04em}
+
+/* ===== LUCES DE GRÚA: barra ámbar sobre la línea del encabezado (decorativa, siempre activa) ===== */
+.luces{position:absolute;left:0;right:0;top:calc(100% - 10px);height:42px;overflow:hidden;pointer-events:none}
+.luces i{position:absolute;inset:0;display:block;opacity:0;animation-duration:6s;animation-timing-function:linear;animation-iteration-count:infinite}
+.luces i::before,.luces i::after{content:"";position:absolute;left:0;right:0}
+.luces i::before{top:0;height:42px;background-image:var(--gi);background-size:var(--gs);background-position:var(--gp,0 0);background-repeat:var(--gr,repeat-x)}
+.luces i::after{top:8px;height:6px;background-image:var(--li);background-size:var(--ls);background-position:var(--lp,0 0);background-repeat:var(--lr,repeat-x)}
+.luces .l0{opacity:.72;--gi:radial-gradient(ellipse 7px 12px at 6px 11px,rgba(255,170,40,.27) 0,rgba(255,150,0,0) 100%);--gs:12px 42px;--li:radial-gradient(ellipse 5.2px 2.8px at 6px 50%,rgba(255,214,110,.95) 0,rgba(255,176,40,.85) 45%,rgba(255,150,0,.35) 80%,rgba(255,140,0,0) 100%);--ls:12px 6px}
+.luces .ll{--gi:radial-gradient(ellipse 27% 28px at 25% 11px,rgba(255,180,40,0.5) 0,rgba(255,152,20,0.20) 46%,rgba(255,140,0,0) 100%);--gs:100% 42px;--gr:no-repeat;--li:radial-gradient(ellipse 5.6px 3.0px at 6px 50%,#fffdf1 0,#ffe985 24%,#ffc424 54%,rgba(255,150,0,.62) 80%,rgba(255,140,0,0) 100%);--ls:12px 6px;clip-path:inset(0 50% 0 0);animation-name:luz-ll}
+.luces .lr{--gi:radial-gradient(ellipse 27% 28px at 75% 11px,rgba(255,180,40,0.5) 0,rgba(255,152,20,0.20) 46%,rgba(255,140,0,0) 100%);--gs:100% 42px;--gr:no-repeat;--li:radial-gradient(ellipse 5.6px 3.0px at 6px 50%,#fffdf1 0,#ffe985 24%,#ffc424 54%,rgba(255,150,0,.62) 80%,rgba(255,140,0,0) 100%);--ls:12px 6px;clip-path:inset(0 0 0 50%);animation-name:luz-lr}
+.luces .lc{--gi:radial-gradient(ellipse 18px 22px at 18px 11px,rgba(255,180,40,0.5) 0,rgba(255,152,20,0.20) 46%,rgba(255,140,0,0) 100%);--gs:36px 42px;--li:radial-gradient(ellipse 5.6px 3.0px at 18px 50%,#fffdf1 0,#ffe985 24%,#ffc424 54%,rgba(255,150,0,.62) 80%,rgba(255,140,0,0) 100%);--ls:36px 6px;animation-name:luz-lc}
+.luces .ld{--gi:radial-gradient(ellipse 18px 22px at 18px 11px,rgba(255,180,40,0.5) 0,rgba(255,152,20,0.20) 46%,rgba(255,140,0,0) 100%);--gs:36px 42px;--li:radial-gradient(ellipse 5.6px 3.0px at 18px 50%,#fffdf1 0,#ffe985 24%,#ffc424 54%,rgba(255,150,0,.62) 80%,rgba(255,140,0,0) 100%);--ls:36px 6px;--gp:12px 0;--lp:12px 0;animation-name:luz-ld}
+.luces .le{--gi:radial-gradient(ellipse 18px 22px at 18px 11px,rgba(255,180,40,0.5) 0,rgba(255,152,20,0.20) 46%,rgba(255,140,0,0) 100%);--gs:36px 42px;--li:radial-gradient(ellipse 5.6px 3.0px at 18px 50%,#fffdf1 0,#ffe985 24%,#ffc424 54%,rgba(255,150,0,.62) 80%,rgba(255,140,0,0) 100%);--ls:36px 6px;--gp:24px 0;--lp:24px 0;animation-name:luz-le}
+.luces .la{--gi:radial-gradient(ellipse 32px 26px at 30px 11px,rgba(255,180,40,0.55) 0,rgba(255,152,20,0.22) 46%,rgba(255,140,0,0) 100%);--gs:72px 42px;--li:radial-gradient(ellipse 5.6px 3.0px at 18px 50%,#fffdf1 0,#ffe985 24%,#ffc424 54%,rgba(255,150,0,.62) 80%,rgba(255,140,0,0) 100%),radial-gradient(ellipse 5.6px 3.0px at 30px 50%,#fffdf1 0,#ffe985 24%,#ffc424 54%,rgba(255,150,0,.62) 80%,rgba(255,140,0,0) 100%),radial-gradient(ellipse 5.6px 3.0px at 42px 50%,#fffdf1 0,#ffe985 24%,#ffc424 54%,rgba(255,150,0,.62) 80%,rgba(255,140,0,0) 100%);--ls:72px 6px;animation-name:luz-la}
+.luces .lb{--gi:radial-gradient(ellipse 32px 26px at 30px 11px,rgba(255,180,40,0.55) 0,rgba(255,152,20,0.22) 46%,rgba(255,140,0,0) 100%);--gs:72px 42px;--li:radial-gradient(ellipse 5.6px 3.0px at 18px 50%,#fffdf1 0,#ffe985 24%,#ffc424 54%,rgba(255,150,0,.62) 80%,rgba(255,140,0,0) 100%),radial-gradient(ellipse 5.6px 3.0px at 30px 50%,#fffdf1 0,#ffe985 24%,#ffc424 54%,rgba(255,150,0,.62) 80%,rgba(255,140,0,0) 100%),radial-gradient(ellipse 5.6px 3.0px at 42px 50%,#fffdf1 0,#ffe985 24%,#ffc424 54%,rgba(255,150,0,.62) 80%,rgba(255,140,0,0) 100%);--ls:72px 6px;--gp:36px 0;--lp:36px 0;animation-name:luz-lb}
+.luces .rl,.luces .rr{--gs:72px 42px;--gr:no-repeat;--ls:36px 6px;--lr:no-repeat;animation-name:luz-rojo;animation-duration:1.2s;animation-timing-function:ease-in-out}
+.luces .rl{--gi:radial-gradient(ellipse 34px 26px at 18px 11px,rgba(255,72,26,0.5) 0,rgba(255,60,20,0.20) 46%,rgba(255,50,10,0) 100%);--li:radial-gradient(ellipse 11px 3.2px at 14px 50%,#ffe3d6 0,#ff7a4a 34%,#ff3d12 64%,rgba(255,50,10,0) 100%)}
+.luces .rr{--gi:radial-gradient(ellipse 34px 26px at 54px 11px,rgba(255,72,26,0.5) 0,rgba(255,60,20,0.20) 46%,rgba(255,50,10,0) 100%);--li:radial-gradient(ellipse 11px 3.2px at 22px 50%,#ffe3d6 0,#ff7a4a 34%,#ff3d12 64%,rgba(255,50,10,0) 100%);--gp:100% 0;--lp:100% 0;animation-delay:-.6s}
+@keyframes luz-ll{0%{opacity:0}0.417%{opacity:1}3.333%{opacity:1}4.5%{opacity:0}6.667%{opacity:0}7.083%{opacity:1}10%{opacity:1}11.167%{opacity:0}13.333%{opacity:0}13.75%{opacity:1}16.667%{opacity:1}17.833%{opacity:0}60%{opacity:0}60.417%{opacity:1}63.333%{opacity:1}64.5%{opacity:0}66.667%{opacity:0}67.083%{opacity:1}70%{opacity:1}71.167%{opacity:0}100%{opacity:0}}
+@keyframes luz-lr{0%{opacity:0}3.333%{opacity:0}3.75%{opacity:1}6.667%{opacity:1}7.833%{opacity:0}10%{opacity:0}10.417%{opacity:1}13.333%{opacity:1}14.5%{opacity:0}16.667%{opacity:0}17.083%{opacity:1}20%{opacity:1}21.167%{opacity:0}60%{opacity:0}60.417%{opacity:1}63.333%{opacity:1}64.5%{opacity:0}66.667%{opacity:0}67.083%{opacity:1}70%{opacity:1}71.167%{opacity:0}100%{opacity:0}}
+@keyframes luz-lc{0%{opacity:0}20%{opacity:0}20.417%{opacity:1}23.333%{opacity:1}24.5%{opacity:0}30%{opacity:0}30.417%{opacity:1}33.333%{opacity:1}34.5%{opacity:0}83.333%{opacity:0}83.75%{opacity:1}86.667%{opacity:1}87.833%{opacity:0}93.333%{opacity:0}93.75%{opacity:1}96.667%{opacity:1}97.833%{opacity:0}100%{opacity:0}}
+@keyframes luz-ld{0%{opacity:0}23.333%{opacity:0}23.75%{opacity:1}26.667%{opacity:1}27.833%{opacity:0}33.333%{opacity:0}33.75%{opacity:1}36.667%{opacity:1}37.833%{opacity:0}86.667%{opacity:0}87.083%{opacity:1}90%{opacity:1}91.167%{opacity:0}93.333%{opacity:0}93.75%{opacity:1}96.667%{opacity:1}97.833%{opacity:0}100%{opacity:0}}
+@keyframes luz-le{0%{opacity:0}26.667%{opacity:0}27.083%{opacity:1}30%{opacity:1}31.167%{opacity:0}36.667%{opacity:0}37.083%{opacity:1}40%{opacity:1}41.167%{opacity:0}80%{opacity:0}80.417%{opacity:1}83.333%{opacity:1}84.5%{opacity:0}90%{opacity:0}90.417%{opacity:1}93.333%{opacity:1}94.5%{opacity:0}100%{opacity:0}}
+@keyframes luz-la{0%{opacity:0}40%{opacity:0}40.417%{opacity:1}43.333%{opacity:1}44.5%{opacity:0}46.667%{opacity:0}47.083%{opacity:1}50%{opacity:1}51.167%{opacity:0}53.333%{opacity:0}53.75%{opacity:1}56.667%{opacity:1}57.833%{opacity:0}80%{opacity:0}80.417%{opacity:1}83.333%{opacity:1}84.5%{opacity:0}86.667%{opacity:0}87.083%{opacity:1}90%{opacity:1}91.167%{opacity:0}100%{opacity:0}}
+@keyframes luz-lb{0%{opacity:0}43.333%{opacity:0}43.75%{opacity:1}46.667%{opacity:1}47.833%{opacity:0}50%{opacity:0}50.417%{opacity:1}53.333%{opacity:1}54.5%{opacity:0}56.667%{opacity:0}57.083%{opacity:1}60%{opacity:1}61.167%{opacity:0}83.333%{opacity:0}83.75%{opacity:1}86.667%{opacity:1}87.833%{opacity:0}90%{opacity:0}90.417%{opacity:1}93.333%{opacity:1}94.5%{opacity:0}100%{opacity:0}}
+@keyframes luz-rojo{0%,100%{opacity:.18}50%{opacity:1}}
+
+/* ===== HERO ===== */
+.hero{position:relative;isolation:isolate;display:flex;align-items:center;min-height:clamp(520px,80vh,820px);min-height:clamp(520px,80svh,820px);padding:clamp(3rem,8vw,6rem) 0 clamp(6rem,11vw,9rem);overflow:hidden}
+.carousel{position:absolute;inset:0;z-index:-2;background:radial-gradient(900px 520px at 85% 8%,rgba(251,176,59,.17),transparent 60%),linear-gradient(180deg,#15181c,#0c0d0f)}
+.slide{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;opacity:0;transform:scale(1.04);transition:opacity 1.4s ease,transform 9s ease-out}
+.slide.active{opacity:1;transform:scale(1.12)}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(12,13,15,.94) 0%,rgba(12,13,15,.74) 50%,rgba(12,13,15,.36) 100%),linear-gradient(0deg,var(--bg) 0%,rgba(12,13,15,0) 42%)}
+.hero__inner{max-width:760px}
+.hero .eyebrow{max-width:100%}
+.eyebrow__extra{display:none}
+.pulse{width:.55rem;height:.55rem;flex:none;border-radius:50%;background:var(--wa);animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(37,211,102,.55)}70%{box-shadow:0 0 0 .65rem rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
+.hero h1{margin:1.3rem 0 1.1rem;font:800 clamp(2.9rem,9vw,5.8rem)/1.04 var(--font-head);letter-spacing:.01em;text-transform:uppercase;text-wrap:balance;text-shadow:0 4px 34px rgba(0,0,0,.55)}
+.hero h1 span{display:block;color:var(--amber)}
+.hero .lead{margin-top:0;max-width:34rem;font-size:clamp(1.05rem,2.4vw,1.3rem);color:#d6d8db}
+.hero__cta{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:2rem}
+.carousel-dots{position:absolute;right:clamp(1rem,4vw,2rem);bottom:4.8rem;z-index:3;display:flex;gap:.55rem}
+.dot{position:relative;width:.7rem;height:.7rem;padding:0;border:0;border-radius:999px;background:rgba(255,255,255,.42);cursor:pointer;transition:width .3s ease,background-color .3s ease}
+.dot::after{content:"";position:absolute;inset:-12px -5px}
+.dot.active{width:1.9rem;background:var(--amber)}
+
+/* ===== FRANJA DE CONFIANZA ===== */
+.trust{position:relative;z-index:2;margin-top:-3.4rem}
+.trust__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:var(--line);box-shadow:var(--shadow)}
+.trust__item{display:flex;flex-direction:column;align-items:flex-start;gap:.6rem;min-width:0;padding:1.05rem 1rem;background:var(--surface)}
+.trust__item>.icon{width:1.75rem;height:1.75rem;color:var(--amber)}
+.trust__item strong{display:block;font:700 1.12rem/1.1 var(--font-head);letter-spacing:.05em;text-transform:uppercase}
+.trust__item span{display:block;margin-top:.25rem;font-size:.82rem;line-height:1.35;color:var(--muted)}
+
+/* ===== SECCIONES ===== */
+.section{padding:clamp(4.2rem,9vw,7rem) 0}
+.section__head{max-width:640px;margin-bottom:clamp(2rem,5vw,3.4rem)}
+.section__head--center{margin-inline:auto;text-align:center}
+.section__head--center .lead{margin-inline:auto}
+
+/* ===== SERVICIOS ===== */
+.services{background:radial-gradient(rgba(255,255,255,.04) 1px,transparent 1px) 0 0/22px 22px,var(--bg)}
+.services__grid{display:grid;grid-template-columns:1fr;gap:1rem}
+.service{position:relative;display:flex;flex-direction:column;overflow:hidden;padding:1.9rem 1.5rem 1.5rem;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,var(--surface),var(--bg-2));transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+.service::before{content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:var(--amber);transform:scaleX(.16);transform-origin:left;transition:transform .35s ease}
+.service:hover{transform:translateY(-6px);border-color:rgba(251,176,59,.5);box-shadow:var(--shadow)}
+.service:hover::before{transform:scaleX(1)}
+.service__num{position:absolute;right:1.1rem;top:.7rem;font:800 3.2rem/1 var(--font-head);color:rgba(255,255,255,.06)}
+.service__icon{display:grid;place-items:center;width:3.5rem;height:3.5rem;margin-bottom:1.3rem;border-radius:12px;background:rgba(251,176,59,.12);color:var(--amber)}
+.service__icon .icon{width:1.75rem;height:1.75rem}
+.service h3{margin-bottom:.6rem;font:700 1.6rem/1.05 var(--font-head);letter-spacing:.03em;text-transform:uppercase}
+.service p{flex:1;font-size:.98rem;color:var(--muted)}
+.service__link{display:inline-flex;align-items:center;gap:.5rem;margin-top:1.4rem;color:var(--amber);font-weight:700;font-size:.85rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none}
+.service__link .icon{transition:transform .2s ease}
+.service__link:hover .icon{transform:translateX(4px)}
+
+/* ===== COBERTURA ===== */
+.hazard{height:12px;background:repeating-linear-gradient(-45deg,#17120a 0 14px,var(--amber) 14px 28px)}
+.coverage{background:var(--amber);color:var(--ink)}
+.coverage__inner{display:grid;gap:1.4rem;align-items:center;padding:clamp(2.2rem,5vw,3.2rem) 0}
+.coverage__icon{display:grid;place-items:center;width:4rem;height:4rem;border-radius:50%;background:var(--ink);color:var(--amber)}
+.coverage__icon .icon{width:2rem;height:2rem}
+.coverage h2{font:800 clamp(1.9rem,4vw,2.7rem)/1 var(--font-head);letter-spacing:.01em;text-transform:uppercase}
+.coverage p{margin-top:.6rem;max-width:44rem;font-size:1.08rem;font-weight:600;color:rgba(23,18,10,.88)}
+
+/* ===== FORMULARIO ===== */
+.assist{background:radial-gradient(rgba(255,255,255,.04) 1px,transparent 1px) 0 0/22px 22px,linear-gradient(180deg,var(--bg),var(--bg-2))}
+.assist__grid{display:grid;gap:2.4rem}
+.assist__more{display:grid;gap:2.2rem}
+.steps{display:grid;gap:1.3rem;counter-reset:paso}
+.steps li{display:grid;grid-template-columns:2.7rem 1fr;gap:1rem;align-items:start;counter-increment:paso}
+.steps li::before{content:counter(paso);display:grid;place-items:center;width:2.7rem;height:2.7rem;border:2px solid var(--amber);border-radius:50%;color:var(--amber);font:800 1.3rem/1 var(--font-head)}
+.steps strong{display:block;font:700 1.25rem/1.1 var(--font-head);letter-spacing:.04em;text-transform:uppercase}
+.steps span{display:block;margin-top:.25rem;font-size:.95rem;line-height:1.5;color:var(--muted)}
+.emergency{display:flex;align-items:center;gap:1rem;padding:1.2rem 1.3rem;border:1px solid rgba(211,47,47,.55);border-radius:var(--radius);background:rgba(211,47,47,.1)}
+.emergency>.icon{width:2rem;height:2rem;color:#ff8a8a}
+.emergency strong{display:block;font:700 1.2rem/1.1 var(--font-head);letter-spacing:.04em;text-transform:uppercase}
+.emergency a{font-weight:700;color:var(--amber);text-underline-offset:3px}
+
+.form-card{position:relative;overflow:hidden;padding:clamp(1.5rem,4vw,2.5rem);border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,var(--surface),var(--bg-2));box-shadow:var(--shadow)}
+.form-card::before{content:"";position:absolute;left:0;top:0;width:100%;height:4px;background:var(--amber)}
+.form-card__title{font:800 1.75rem/1 var(--font-head);letter-spacing:.03em;text-transform:uppercase}
+.form-card__sub{margin:.35rem 0 1.7rem;font-size:.95rem;color:var(--muted)}
+.field{margin-bottom:1.35rem;scroll-margin-top:calc(var(--header-h) + 16px)}
+.field label{display:flex;align-items:center;gap:.55rem;margin-bottom:.55rem;font-weight:600;font-size:.97rem}
+.field label .icon{color:var(--amber)}
+.req{color:var(--amber)}
+.opt{margin-left:auto;font-size:.8rem;font-weight:500;color:var(--muted)}
+.field input,.field select{width:100%;min-height:54px;padding:0 1rem;border:1.5px solid var(--line-strong);border-radius:12px;background-color:var(--bg-2);color:var(--text);font-size:1rem;transition:border-color .2s ease,box-shadow .2s ease}
+.field input::placeholder{color:#7b8188}
+.field input:focus,.field select:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 4px rgba(251,176,59,.18)}
+.field select{appearance:none;-webkit-appearance:none;padding-right:2.8rem;cursor:pointer;background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fbb03b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 1rem center;background-size:1.1rem}
+.field.has-error input,.field.has-error select{border-color:#ff6b6b}
+.field__error{margin-top:.5rem;font-size:.9rem;font-weight:600;color:#ff8f8f}
+.field__hint{margin-top:.55rem;font-size:.83rem;color:var(--muted)}
+.btn-gps{display:inline-flex;align-items:center;gap:.6rem;min-height:46px;margin-top:.8rem;padding:0 1.15rem;border:1.5px solid var(--line-strong);border-radius:999px;background:rgba(255,255,255,.04);font-weight:600;font-size:.93rem;cursor:pointer;transition:border-color .2s ease,color .2s ease,background-color .2s ease}
+.btn-gps:hover,.btn-gps.active{border-color:var(--amber);background:rgba(251,176,59,.1);color:var(--amber)}
+.btn-gps[disabled]{opacity:.7;cursor:progress}
+.gps-status{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin-top:.7rem;font-size:.9rem;color:#7fe0a0}
+.gps-status button{padding:0;border:0;background:none;color:var(--muted);font-size:.9rem;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.gps-status button:hover{color:var(--text)}
+.form-card .btn--block{min-height:60px;margin-top:.6rem;font-size:1.25rem}
+.hp{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+.form-note{display:flex;align-items:flex-start;justify-content:center;gap:.5rem;margin-top:1rem;font-size:.86rem;line-height:1.45;text-align:center;color:var(--muted)}
+.form-note .icon{margin-top:.1rem}
+
+/* ===== GALERÍA ===== */
+.gallery{background:var(--bg-2);border-top:1px solid var(--line)}
+.featured{position:relative;overflow:hidden;min-height:220px;max-width:960px;margin-inline:auto;border:1px solid var(--line-strong);border-radius:20px;background:var(--surface);box-shadow:var(--shadow)}
+.featured img{width:100%;height:auto}
+/* La etiqueta va DEBAJO de la imagen, no encima: los afiches traen teléfonos y textos que no se deben tapar. */
+.featured figcaption{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.95rem 1rem;border-top:1px solid var(--line);background:var(--surface);font:700 .95rem/1 var(--font-head);letter-spacing:.1em;text-transform:uppercase}
+.featured figcaption .icon{color:var(--amber)}
+
+/* ===== CONTACTO ===== */
+.contact{border-top:1px solid var(--line);background:linear-gradient(135deg,var(--surface),var(--bg))}
+.contact__inner{display:grid;gap:2rem;align-items:center;padding:clamp(3rem,7vw,4.6rem) 0}
+.contact__phones{display:grid;gap:.8rem;width:100%;max-width:520px}
+.phone-link{display:flex;align-items:center;gap:.9rem;padding:1rem 1.3rem;border:1px solid var(--line-strong);border-radius:14px;background:var(--bg-2);font:800 1.85rem/1 var(--font-head);letter-spacing:.05em;text-decoration:none;transition:border-color .2s ease,color .2s ease,transform .2s ease}
+.phone-link .icon{width:1.4rem;height:1.4rem;color:var(--amber)}
+.phone-link em{margin-left:auto;font:700 .78rem/1 var(--font-body);font-style:normal;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);transition:color .2s ease}
+.phone-link:hover{border-color:var(--amber);color:var(--amber);transform:translateY(-3px)}
+.phone-link:hover em{color:var(--amber)}
+
+/* ===== PIE DE PÁGINA ===== */
+.site-footer{padding:3.2rem 0 1.6rem;border-top:2px solid var(--amber);background:#07080a}
+.footer__grid{display:grid;gap:2.2rem}
+.footer__brand{display:flex;align-items:center;gap:1rem}
+.footer__logo{width:72px;height:72px;flex:none;border-radius:50%;object-fit:cover;border:2px solid var(--amber)}
+.footer__name{display:block;font:800 1.7rem/1 var(--font-head);letter-spacing:.07em;text-transform:uppercase;color:var(--amber)}
+.footer__brand p{margin-top:.3rem;font-size:.92rem;color:var(--muted)}
+.site-footer h3{margin-bottom:1rem;font:700 .8rem/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.site-footer ul{display:grid;gap:.65rem}
+.site-footer li a{display:inline-flex;align-items:center;gap:.6rem;color:#d6d8db;text-decoration:none;transition:color .2s}
+.site-footer li a:hover{color:var(--amber)}
+.footer__bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem 1.5rem;margin-top:2.6rem;padding-top:1.3rem;border-top:1px solid var(--line);font-size:.88rem;color:#8a9097}
+
+/* ===== BARRA INFERIOR (solo móvil) ===== */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:900;display:grid;grid-template-columns:1fr 1fr;gap:.6rem;padding:.65rem .8rem calc(.65rem + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:rgba(12,13,15,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);transition:transform .25s ease}
+.dock.is-hidden{transform:translateY(110%)}
+.dock .btn{min-height:52px;padding:0 .5rem;gap:.45rem;font-size:1rem;letter-spacing:.05em;white-space:nowrap}
+
+/* ===== VENTANA EMERGENTE ===== */
+.modal{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal__backdrop{position:absolute;inset:0;background:rgba(0,0,0,.74);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+.modal__box{position:relative;width:100%;max-width:440px;max-height:calc(100vh - 2rem);overflow-y:auto;padding:2rem 1.5rem 1.4rem;border:1px solid var(--line-strong);border-top:4px solid var(--amber);border-radius:18px;background:var(--surface);box-shadow:0 30px 80px rgba(0,0,0,.8);text-align:center;animation:pop .3s ease-out}
+.modal__box:focus{outline:none}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+.modal__icon{display:grid;place-items:center;width:4rem;height:4rem;margin:0 auto 1.1rem;border-radius:50%;background:rgba(251,176,59,.14);color:var(--amber)}
+.modal__icon .icon{width:2rem;height:2rem}
+.modal__icon--success{background:rgba(37,211,102,.14);color:var(--wa)}
+.modal__icon--error{background:rgba(255,107,107,.14);color:#ff7b7b}
+.modal__title{font:800 1.9rem/1.05 var(--font-head);letter-spacing:.03em;text-transform:uppercase}
+.modal__text{margin-top:.7rem;color:#d1d4d8}
+.modal__extra{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.93rem;color:var(--muted)}
+.modal__actions{display:grid;gap:.6rem;margin-top:1.3rem}
+body.modal-open{overflow:hidden}
+
+/* ===== ANIMACIÓN AL HACER SCROLL ===== */
+.js .reveal{opacity:0}
+.js .reveal.in{opacity:1;animation:rise .7s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:calc(var(--i,0)*80ms)}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+/* ===== TABLETA Y ESCRITORIO ===== */
+@media (min-width:560px){
+  .header-call{padding:.32rem 1.05rem .32rem .4rem}
+  .header-call__text{display:flex}
+  .header-call__text small{display:block}
+  .eyebrow__extra{display:inline}
+}
+@media (min-width:640px){
+  .services__grid{grid-template-columns:repeat(2,1fr)}
+  .footer__bottom{flex-wrap:nowrap}
+}
+@media (min-width:760px){
+  .footer__grid{grid-template-columns:1.5fr 1fr 1fr}
+  .coverage__inner{grid-template-columns:auto 1fr auto;gap:2rem}
+}
+@media (min-width:900px){
+  body{padding-bottom:0}
+  .nav{display:flex}
+  .dock{display:none}
+  .trust__grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .trust__item{flex-direction:row;align-items:flex-start;gap:.85rem;padding:1.15rem 1.2rem}
+  .trust__item>.icon{margin-top:.1rem}
+  .trust__item strong{font-size:1.18rem}
+  .trust__item span{font-size:.86rem}
+  .contact__inner{grid-template-columns:1fr 1fr;gap:3rem}
+  .contact__phones{justify-self:end}
+}
+@media (min-width:960px){
+  .assist__grid{grid-template-columns:5fr 6fr;grid-template-rows:auto 1fr;column-gap:4.5rem;row-gap:2.2rem;align-items:start}
+  .assist__head{grid-column:1;grid-row:1}
+  .assist__more{grid-column:1;grid-row:2}
+  .form-card{grid-column:2;grid-row:1 / span 2}
+}
+@media (min-width:1100px){
+  .services__grid{grid-template-columns:repeat(4,1fr)}
+}
+@media (max-width:899px){
+  .hero::before{background:linear-gradient(180deg,rgba(12,13,15,.7) 0%,rgba(12,13,15,.78) 55%,var(--bg) 100%)}
+}
+@media (max-width:420px){
+  .brand__text strong{font-size:1.3rem}
+  .brand__logo{width:44px;height:44px}
+  .hero__cta .btn{width:100%}
+  .phone-link{font-size:1.65rem}
+}
+
+/* ===== MOVIMIENTO REDUCIDO ===== */
+@media (forced-colors:active),print{.luces{display:none}}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}
+  .slide.active{transform:none}
+  .luces i{animation:none!important}
+  .luces .la{opacity:.85}
+  .luces .rl,.luces .rr{opacity:.55}
+  .js .reveal,.js .reveal.in{opacity:1;animation:none}
+}
+</style>
+</head>
+
+<body>
+<a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+<!-- Iconos (se reutilizan en toda la página) -->
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="i-truck" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></symbol>
+    <symbol id="i-container" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="1.5"/><path d="M6 6v12M10 6v12M14 6v12M18 6v12"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+    <symbol id="i-lifebuoy" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M4.93 4.93l4.24 4.24M14.83 14.83l4.24 4.24M14.83 9.17l4.24-4.24M4.93 19.07l4.24-4.24"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+    <symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+    <symbol id="i-crosshair" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+    <symbol id="i-nav" viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></symbol>
+    <symbol id="i-tool" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+    <symbol id="i-facebook" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></symbol>
+    <symbol id="i-whatsapp" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></symbol>
+  </defs>
+</svg>
+
+<!-- ===================== ENCABEZADO ===================== -->
+<header class="site-header">
+  <div class="container header__inner">
+    <a class="brand" href="#inicio" aria-label="Grúas Mau, ir al inicio">
+      <img class="brand__logo" src="Logo_mau.jpg" alt="" width="48" height="48">
+      <span class="brand__text"><strong>Grúas Mau</strong><small>Liberia, Guanacaste</small></span>
+    </a>
+    <nav class="nav" aria-label="Principal">
+      <a href="#servicios">Servicios</a>
+      <a href="#cobertura">Cobertura</a>
+      <a href="#cotizador">Solicitar</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+    <a class="header-call" href="tel:+50688755921" aria-label="Llamar al 8875-5921, emergencias 24 horas">
+      <span class="header-call__icon"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg></span>
+      <span class="header-call__text"><small>Emergencias 24/7</small><b>8875-5921</b></span>
+    </a>
+  </div>
+  <div class="luces" aria-hidden="true"><i class="l0"></i><i class="ll"></i><i class="lr"></i><i class="lc"></i><i class="ld"></i><i class="le"></i><i class="la"></i><i class="lb"></i><i class="rl"></i><i class="rr"></i></div>
+</header>
+
+<main id="contenido">
+
+<!-- ===================== HERO ===================== -->
+<section class="hero" id="inicio" aria-labelledby="hero-title">
+  <div class="carousel" id="carrusel-contenedor" aria-hidden="true"></div>
+  <div class="container">
+    <div class="hero__inner">
+      <p class="eyebrow eyebrow--pill"><span class="pulse" aria-hidden="true"></span><span>Grúas y transporte pesado<span class="eyebrow__extra"> · Liberia, Guanacaste</span></span></p>
+      <h1 id="hero-title">¡Tu carga, <span>nuestra misión!</span></h1>
+      <p class="lead">Servicio de grúa 24/7. Fuerza, experiencia y confianza para mover lo que importa.</p>
+      <div class="hero__cta">
+        <a class="btn btn--primary" href="#cotizador"><svg class="icon" aria-hidden="true"><use href="#i-truck"/></svg>Solicitar asistencia</a>
+        <a class="btn btn--ghost" href="tel:+50688755921"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>Llamar ahora</a>
+      </div>
+    </div>
+  </div>
+  <div class="carousel-dots" id="carrusel-dots" role="group" aria-label="Fotos de nuestros trabajos" hidden></div>
+</section>
+
+<!-- ===================== FRANJA DE CONFIANZA ===================== -->
+<section class="trust" aria-label="Ventajas del servicio">
+  <div class="container">
+    <ul class="trust__grid">
+      <li class="trust__item reveal">
+        <svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>
+        <div><strong>Atención 24/7</strong><span>Emergencias a cualquier hora</span></div>
+      </li>
+      <li class="trust__item reveal">
+        <svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg>
+        <div><strong>Base en Liberia</strong><span>Cobertura en gran parte de Guanacaste</span></div>
+      </li>
+      <li class="trust__item reveal">
+        <svg class="icon" aria-hidden="true"><use href="#i-truck"/></svg>
+        <div><strong>Carga pesada</strong><span>Contenedores, maquinaria y cabezales</span></div>
+      </li>
+      <li class="trust__item reveal">
+        <svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>
+        <div><strong>Fuerza y confianza</strong><span>Experiencia en maniobras complejas</span></div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== SERVICIOS ===================== -->
+<section class="section services" id="servicios" aria-labelledby="servicios-title">
+  <div class="container">
+    <header class="section__head">
+      <p class="eyebrow reveal">Servicios</p>
+      <h2 class="title reveal" id="servicios-title">Nuestra especialidad</h2>
+      <p class="lead reveal">Transporte y rescate pesado con la seguridad que tu carga necesita.</p>
+    </header>
+
+    <div class="services__grid">
+      <article class="service reveal">
+        <span class="service__num" aria-hidden="true">01</span>
+        <div class="service__icon"><svg class="icon" aria-hidden="true"><use href="#i-gear"/></svg></div>
+        <h3>Maquinaria pesada</h3>
+        <p>Movimiento seguro de equipos de construcción, tractores, retroexcavadoras y maquinaria agrícola.</p>
+        <a class="service__link" href="#cotizador" data-servicio="Traslado de maquinaria pesada" aria-label="Solicitar traslado de maquinaria pesada">Solicitar <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </article>
+      <article class="service reveal">
+        <span class="service__num" aria-hidden="true">02</span>
+        <div class="service__icon"><svg class="icon" aria-hidden="true"><use href="#i-container"/></svg></div>
+        <h3>Contenedores</h3>
+        <p>Carga, descarga y reubicación de contenedores en predios o puntos de entrega con total precisión.</p>
+        <a class="service__link" href="#cotizador" data-servicio="Movimiento de contenedor" aria-label="Solicitar movimiento de contenedores">Solicitar <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </article>
+      <article class="service reveal">
+        <span class="service__num" aria-hidden="true">03</span>
+        <div class="service__icon"><svg class="icon" aria-hidden="true"><use href="#i-lifebuoy"/></svg></div>
+        <h3>Rescate pesado</h3>
+        <p>Maniobras de rescate complejas para furgones o cabezales accidentados o con fallas mecánicas en ruta.</p>
+        <a class="service__link" href="#cotizador" data-servicio="Rescate de cabezal/camión" aria-label="Solicitar rescate pesado">Solicitar <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </article>
+      <article class="service reveal">
+        <span class="service__num" aria-hidden="true">04</span>
+        <div class="service__icon"><svg class="icon" aria-hidden="true"><use href="#i-truck"/></svg></div>
+        <h3>Carga general</h3>
+        <p>Traslado de carga general con el equipo adecuado y el cuidado que tu mercadería necesita.</p>
+        <a class="service__link" href="#cotizador" data-servicio="Transporte de carga general" aria-label="Solicitar transporte de carga general">Solicitar <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== COBERTURA ===================== -->
+<section class="coverage" id="cobertura" aria-labelledby="cobertura-title">
+  <div class="hazard" aria-hidden="true"></div>
+  <div class="container coverage__inner">
+    <div class="coverage__icon" aria-hidden="true"><svg class="icon"><use href="#i-pin"/></svg></div>
+    <div>
+      <h2 id="cobertura-title">Abarcamos gran parte de Guanacaste</h2>
+      <p>Desde nuestra base en Liberia, nos desplazamos estratégicamente por la provincia para llegar rápido donde tu carga o vehículo lo necesite.</p>
+    </div>
+    <a class="btn btn--dark" href="#cotizador">Solicitar asistencia <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+  </div>
+  <div class="hazard" aria-hidden="true"></div>
+</section>
+
+<!-- ===================== FORMULARIO ===================== -->
+<section class="section assist" id="cotizador" aria-labelledby="cotizador-title">
+  <div class="container assist__grid">
+
+    <div class="assist__head">
+      <p class="eyebrow reveal">Asistencia inmediata</p>
+      <h2 class="title reveal" id="cotizador-title">Cuéntanos qué necesitas</h2>
+      <p class="lead reveal">Completa el formulario y tu pedido llega al instante a nuestro equipo. Si es una emergencia en carretera, llámanos directamente.</p>
+    </div>
+
+    <form class="form-card reveal" id="form-asistencia" novalidate>
+      <h3 class="form-card__title">Datos del pedido</h3>
+      <p class="form-card__sub">Toma menos de un minuto.</p>
+
+      <div class="field">
+        <label for="servicio"><svg class="icon" aria-hidden="true"><use href="#i-tool"/></svg><span>¿Qué necesita? <span class="req" aria-hidden="true">*</span></span></label>
+        <select id="servicio" name="servicio" aria-required="true" aria-describedby="err-servicio">
+          <option value="" disabled selected>Selecciona un servicio…</option>
+          <option value="Movimiento de contenedor">Movimiento de contenedores</option>
+          <option value="Traslado de maquinaria pesada">Traslado de maquinaria pesada</option>
+          <option value="Rescate de cabezal/camión">Rescate de cabezal o camión pesado</option>
+          <option value="Transporte de carga general">Transporte de carga general</option>
+          <option value="No estoy seguro / Otro">No estoy seguro / Otra consulta</option>
+        </select>
+        <p class="field__error" id="err-servicio" role="alert" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="ubicacion"><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg><span>¿Dónde se encuentra el vehículo o carga? <span class="req" aria-hidden="true">*</span></span></label>
+        <input type="text" id="ubicacion" name="ubicacion" placeholder="Ej.: Ruta 1, cruce de Liberia" autocomplete="off" aria-required="true" aria-describedby="err-ubicacion">
+        <p class="field__error" id="err-ubicacion" role="alert" hidden></p>
+        <button type="button" class="btn-gps" id="btn-gps">
+          <svg class="icon" aria-hidden="true"><use href="#i-crosshair"/></svg><span id="btn-gps-label">Compartir mi ubicación GPS exacta</span>
+        </button>
+        <p class="gps-status" id="gps-status" hidden>
+          <svg class="icon" aria-hidden="true"><use href="#i-check-circle"/></svg><span id="gps-status-text"></span>
+          <button type="button" id="gps-clear">Quitar</button>
+        </p>
+        <p class="field__hint">Tu ubicación solo se envía junto con este pedido.</p>
+      </div>
+
+      <div class="field">
+        <label for="destino"><svg class="icon" aria-hidden="true"><use href="#i-nav"/></svg><span>¿A dónde lo llevamos?</span><span class="opt">Opcional</span></label>
+        <input type="text" id="destino" name="destino" placeholder="Ej.: Taller, predio o dirección" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <label for="vehiculo"><svg class="icon" aria-hidden="true"><use href="#i-truck"/></svg><span>Descripción del vehículo o carga</span><span class="opt">Opcional</span></label>
+        <input type="text" id="vehiculo" name="vehiculo" placeholder="Ej.: Contenedor 40 pies / Cabezal" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <label for="nombre"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg><span>Tu nombre <span class="req" aria-hidden="true">*</span></span></label>
+        <input type="text" id="nombre" name="nombre" placeholder="Ej.: Juan Pérez" autocomplete="name" aria-required="true" aria-describedby="err-nombre">
+        <p class="field__error" id="err-nombre" role="alert" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="telefono"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span>Tu teléfono o WhatsApp <span class="req" aria-hidden="true">*</span></span></label>
+        <input type="tel" id="telefono" name="telefono" inputmode="tel" placeholder="Ej.: 8888-8888" autocomplete="tel" aria-required="true" aria-describedby="err-telefono">
+        <p class="field__error" id="err-telefono" role="alert" hidden></p>
+        <p class="field__hint">Te contactamos a este número para coordinar.</p>
+      </div>
+
+      <!-- Trampa para robots: va oculto, una persona nunca lo llena. -->
+      <div class="hp" aria-hidden="true"><label>No llenar este campo<input type="text" name="mensaje_extra" tabindex="-1" autocomplete="off"></label></div>
+
+      <button type="submit" class="btn btn--primary btn--block" id="btn-enviar">
+        Enviar solicitud <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+      </button>
+      <p class="form-note"><svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg><span>Se abre WhatsApp con tu pedido ya escrito: solo toca Enviar. Usamos tus datos solo para atenderte.</span></p>
+    </form>
+
+    <div class="assist__more">
+      <ol class="steps">
+        <li class="reveal"><div><strong>Cuéntanos qué necesitas</strong><span>Servicio, ubicación y tus datos de contacto.</span></div></li>
+        <li class="reveal"><div><strong>Recibimos tu pedido al instante</strong><span>Nuestro equipo de despacho recibe la alerta y tu mensaje por WhatsApp.</span></div></li>
+        <li class="reveal"><div><strong>Coordinamos la llegada</strong><span>Te llamamos o escribimos y la grúa va en camino.</span></div></li>
+      </ol>
+
+      <div class="emergency reveal">
+        <svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg>
+        <div><strong>¿Emergencia en carretera?</strong><a href="tel:+50688755921">Llama ya al 8875-5921</a></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== GALERÍA ===================== -->
+<section class="section gallery" id="galeria" aria-labelledby="galeria-title">
+  <div class="container">
+    <header class="section__head section__head--center">
+      <p class="eyebrow reveal">Galería</p>
+      <h2 class="title reveal" id="galeria-title">Capacidad demostrada</h2>
+    </header>
+    <figure class="featured reveal">
+      <img src="carrusel/destacada.jpg" alt="Trabajo destacado de Grúas Mau" loading="lazy" decoding="async">
+      <figcaption><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Trabajo destacado</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ===================== CONTACTO ===================== -->
+<section class="contact" id="contacto" aria-labelledby="contacto-title">
+  <div class="container contact__inner">
+    <div>
+      <p class="eyebrow reveal">Contacto directo</p>
+      <h2 class="title reveal" id="contacto-title">¿Necesitas una grúa ahora?</h2>
+      <p class="lead reveal">Llámanos a cualquier hora. Estamos en Liberia y cubrimos gran parte de Guanacaste.</p>
+    </div>
+    <div class="contact__phones">
+      <a class="phone-link reveal" href="tel:+50688755921" aria-label="Llamar al 8875-5921"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span>8875-5921</span><em>Llamar</em></a>
+      <a class="phone-link reveal" href="tel:+50662312471" aria-label="Llamar al 6231-2471"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span>6231-2471</span><em>Llamar</em></a>
+      <a class="phone-link reveal" href="tel:+50684392706" aria-label="Llamar al 8439-2706"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span>8439-2706</span><em>Llamar</em></a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===================== PIE DE PÁGINA ===================== -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <img class="footer__logo" src="Logo_mau.jpg" alt="Logo de Grúas Mau" width="72" height="72" loading="lazy" decoding="async">
+        <div>
+          <strong class="footer__name">Grúas Mau</strong>
+          <p>Fuerza y confianza.<br>Sede principal: Liberia, Guanacaste.</p>
+        </div>
+      </div>
+      <nav aria-label="Enlaces del sitio">
+        <h3>Navegación</h3>
+        <ul>
+          <li><a href="#servicios">Servicios</a></li>
+          <li><a href="#cobertura">Cobertura</a></li>
+          <li><a href="#cotizador">Solicitar asistencia</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+      <div>
+        <h3>Redes sociales</h3>
+        <ul>
+          <li><a href="https://www.facebook.com/share/1BuCJDXo13/" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-facebook"/></svg>Facebook</a></li>
+          <!-- Para activar Instagram: borra las marcas de comentario de la línea de abajo y pon tu enlace.
+          <li><a href="https://www.instagram.com/TU_USUARIO" target="_blank" rel="noopener">Instagram</a></li>
+          -->
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>&copy; <span id="anio">2026</span> Grúas Mau. Fuerza y Confianza.</p>
+      <p>Liberia, Guanacaste · Costa Rica</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ===================== BARRA INFERIOR (móvil) ===================== -->
+<nav class="dock" id="dock" aria-label="Acciones rápidas">
+  <a class="btn btn--danger" href="tel:+50688755921"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>Llamar 24/7</a>
+  <a class="btn btn--primary" href="#cotizador" aria-label="Solicitar asistencia: ir al formulario"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>Solicitar</a>
+</nav>
+
+<!-- ===================== VENTANA EMERGENTE ===================== -->
+<div class="modal" id="modal" hidden>
+  <div class="modal__backdrop" data-cerrar></div>
+  <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-text" tabindex="-1">
+    <div class="modal__icon" id="modal-icon" aria-hidden="true"></div>
+    <h2 class="modal__title" id="modal-title"></h2>
+    <p class="modal__text" id="modal-text"></p>
+    <p class="modal__extra" id="modal-extra" hidden></p>
+    <div class="modal__actions" id="modal-actions"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* =======================================================================
+     CONFIGURACIÓN
+     Al enviar el formulario pasan dos cosas a la vez:
+       1) Se abre WhatsApp con el mensaje ya escrito hacia el PRINCIPAL (el
+          primero de la lista): el cliente solo toca «Enviar».
+       2) El servidor (api/solicitud.js) manda una alerta instantánea por ntfy
+          al segundo celular, aunque el cliente no termine su WhatsApp.
+     Si la alerta falla, el cliente ve botones para mandar el pedido por
+     WhatsApp a los dos números.
+     Formato: código de país 506 + 8 dígitos, sin espacios ni guiones.
+     ======================================================================= */
+  var API_SOLICITUD = '/api/solicitud';
+  var ESPERA_SERVIDOR_MS = 15000; // tiempo máximo esperando al servidor
+  var WHATSAPP = [
+    { numero: '50688755921', texto: '8875-5921' }, // principal: recibe el WhatsApp directo
+    { numero: '50671439256', texto: '7143-9256' }  // secundario: recibe la alerta por ntfy
+  ];
+  var MAX_FOTOS = 40; // límite del carrusel (carrusel/1.jpg, 2.jpg, 3.jpg ...)
+
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+  var icono = function (id) { return '<svg class="icon" aria-hidden="true"><use href="#' + id + '"/></svg>'; };
+
+  /* ---------- Animación de entrada al hacer scroll ---------- */
+  (function () {
+    var items = $$('.reveal');
+    items.forEach(function (el) {
+      var hermanos = $$('.reveal', el.parentElement).filter(function (h) { return h.parentElement === el.parentElement; });
+      el.style.setProperty('--i', Math.min(hermanos.indexOf(el), 5));
+    });
+    if (!('IntersectionObserver' in window)) { items.forEach(function (el) { el.classList.add('in'); }); return; }
+    var io = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    items.forEach(function (el) { io.observe(el); });
+  })();
+
+  var anio = $('#anio');
+  if (anio) anio.textContent = new Date().getFullYear();
+
+  /* ---------- Carrusel automático (carrusel/1.jpg, 2.jpg, ...) ---------- */
+  (function () {
+    var cont = $('#carrusel-contenedor');
+    var puntos = $('#carrusel-dots');
+    if (!cont) return;
+    var fotos = [], dots = [], actual = 0, timer = null;
+    var reducir = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function mostrar(i) {
+      if (!fotos.length) return;
+      fotos[actual].classList.remove('active');
+      if (dots[actual]) { dots[actual].classList.remove('active'); dots[actual].removeAttribute('aria-current'); }
+      actual = (i + fotos.length) % fotos.length;
+      fotos[actual].classList.add('active');
+      if (dots[actual]) { dots[actual].classList.add('active'); dots[actual].setAttribute('aria-current', 'true'); }
+    }
+    function detener() { clearInterval(timer); timer = null; }
+    function iniciar() {
+      detener();
+      if (fotos.length > 1 && !reducir && !document.hidden) timer = setInterval(function () { mostrar(actual + 1); }, 5500);
+    }
+    function nuevoPunto(i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'dot' + (i === 0 ? ' active' : '');
+      b.setAttribute('aria-label', 'Ver foto ' + (i + 1));
+      if (i === 0) b.setAttribute('aria-current', 'true');
+      b.addEventListener('click', function () { mostrar(i); iniciar(); });
+      puntos.appendChild(b);
+      dots.push(b);
+    }
+    function cargar(n) {
+      if (n > MAX_FOTOS) return;
+      var img = new Image();
+      img.className = 'slide';
+      img.alt = '';
+      img.decoding = 'async';
+      if (n === 1) img.fetchPriority = 'high';
+      img.onload = function () {
+        cont.appendChild(img);
+        fotos.push(img);
+        nuevoPunto(fotos.length - 1);
+        puntos.hidden = fotos.length < 2;
+        if (n === 1) {
+          requestAnimationFrame(function () { requestAnimationFrame(function () { img.classList.add('active'); }); });
+        }
+        if (fotos.length === 2) iniciar();
+        cargar(n + 1);
+      };
+      img.onerror = function () { /* se acabaron las fotos */ };
+      img.src = 'carrusel/' + n + '.jpg';
+    }
+    document.addEventListener('visibilitychange', function () { if (document.hidden) detener(); else iniciar(); });
+    cargar(1);
+  })();
+
+  /* ---------- Ventana emergente (avisos y confirmación) ---------- */
+  var modal = $('#modal');
+  var caja = $('.modal__box', modal);
+  var focoPrevio = null;
+
+  function enfocables() {
+    return $$('a[href], button:not([disabled])', caja).filter(function (el) { return el.offsetParent !== null; });
+  }
+  /* Escribe texto sin HTML y evita que un número de teléfono (8875-5921) se parta en dos líneas. */
+  function ponerTexto(el, texto) {
+    el.textContent = '';
+    String(texto || '').split(/(\d{4}-\d{4})/).forEach(function (parte) {
+      if (!parte) return;
+      if (/^\d{4}-\d{4}$/.test(parte)) {
+        var s = document.createElement('span');
+        s.className = 'nowrap';
+        s.textContent = parte;
+        el.appendChild(s);
+      } else {
+        el.appendChild(document.createTextNode(parte));
+      }
+    });
+  }
+  function crearAccion(a) {
+    var el = document.createElement(a.href ? 'a' : 'button');
+    el.className = 'btn ' + (a.clase || 'btn--ghost') + ' btn--block';
+    if (a.href) {
+      el.href = a.href;
+      if (/^https?:/i.test(a.href)) { el.target = '_blank'; el.rel = 'noopener noreferrer'; }
+    } else { el.type = 'button'; }
+    el.innerHTML = (a.icono ? icono(a.icono) : '') + '<span></span>';
+    ponerTexto(el.lastChild, a.texto);
+    if (!a.href) el.addEventListener('click', function () { if (a.alClick) a.alClick(); cerrarAlerta(); });
+    return el;
+  }
+  function abrirModal(o) {
+    var tipos = {
+      success: { icono: 'i-check-circle', clase: 'modal__icon--success' },
+      error: { icono: 'i-x-circle', clase: 'modal__icon--error' },
+      warning: { icono: 'i-alert', clase: '' }
+    };
+    var t = tipos[o.tipo] || tipos.warning;
+    focoPrevio = document.activeElement;
+    var ic = $('#modal-icon');
+    ic.className = 'modal__icon ' + t.clase;
+    ic.innerHTML = icono(t.icono);
+    ponerTexto($('#modal-title'), o.titulo);
+    ponerTexto($('#modal-text'), o.texto);
+    var extra = $('#modal-extra');
+    ponerTexto(extra, o.extra || '');
+    extra.hidden = !o.extra;
+    var acc = $('#modal-actions');
+    acc.innerHTML = '';
+    (o.acciones || [{ texto: 'Entendido', clase: 'btn--primary' }]).forEach(function (a) { acc.appendChild(crearAccion(a)); });
+    modal.hidden = false;
+    document.body.classList.add('modal-open');
+    var f = enfocables();
+    (f[0] || caja).focus();
+  }
+  function cerrarAlerta() {
+    if (modal.hidden) return;
+    modal.hidden = true;
+    document.body.classList.remove('modal-open');
+    if (focoPrevio && focoPrevio.focus) focoPrevio.focus();
+  }
+  function mostrarAlerta(mensaje, tipo) {
+    var titulos = { success: '¡Excelente!', error: 'Error', warning: 'Aviso' };
+    tipo = titulos[tipo] ? tipo : 'warning';
+    abrirModal({ tipo: tipo, titulo: titulos[tipo], texto: mensaje });
+  }
+  window.mostrarAlerta = mostrarAlerta;
+  window.cerrarAlerta = cerrarAlerta;
+
+  modal.addEventListener('click', function (e) { if (e.target.hasAttribute('data-cerrar')) cerrarAlerta(); });
+  document.addEventListener('keydown', function (e) {
+    if (modal.hidden) return;
+    if (e.key === 'Escape') { cerrarAlerta(); return; }
+    if (e.key !== 'Tab') return;
+    var f = enfocables();
+    if (!f.length) { e.preventDefault(); return; }
+    var primero = f[0], ultimo = f[f.length - 1];
+    if (e.shiftKey && (document.activeElement === primero || document.activeElement === caja)) { e.preventDefault(); ultimo.focus(); }
+    else if (!e.shiftKey && document.activeElement === ultimo) { e.preventDefault(); primero.focus(); }
+  });
+
+  /* ---------- Ubicación GPS ---------- */
+  var gpsLink = '';
+  var btnGps = $('#btn-gps');
+  var textoGps = $('#btn-gps-label');
+  var TEXTO_GPS = textoGps.textContent;
+
+  function quitarGps() {
+    gpsLink = '';
+    btnGps.classList.remove('active');
+    textoGps.textContent = TEXTO_GPS;
+    $('#gps-status').hidden = true;
+  }
+  function obtenerUbicacion() {
+    if (!('geolocation' in navigator)) {
+      mostrarAlerta('Tu navegador no permite compartir la ubicación. Por favor escribe la dirección manualmente.', 'error');
+      return;
+    }
+    btnGps.disabled = true;
+    textoGps.textContent = 'Localizando…';
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      var c = pos.coords;
+      gpsLink = 'https://maps.google.com/?q=' + c.latitude.toFixed(6) + ',' + c.longitude.toFixed(6);
+      btnGps.disabled = false;
+      btnGps.classList.add('active');
+      textoGps.textContent = 'Ubicación GPS guardada';
+      $('#gps-status-text').textContent = c.accuracy ? 'Ubicación lista (precisión aprox. ' + Math.round(c.accuracy) + ' m)' : 'Ubicación lista';
+      $('#gps-status').hidden = false;
+      limpiarError('ubicacion');
+    }, function (err) {
+      btnGps.disabled = false;
+      textoGps.textContent = TEXTO_GPS;
+      var msgs = {
+        1: 'No tenemos permiso para usar tu ubicación. Actívalo en los ajustes del navegador o escribe la dirección.',
+        2: 'No pudimos detectar tu ubicación. Asegúrate de tener el GPS del celular encendido.',
+        3: 'Se agotó el tiempo buscando tu ubicación. Intenta de nuevo o escribe la dirección.'
+      };
+      mostrarAlerta(msgs[err && err.code] || msgs[2], 'warning');
+    }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
+  }
+  window.obtenerUbicacion = obtenerUbicacion;
+  btnGps.addEventListener('click', obtenerUbicacion);
+  $('#gps-clear').addEventListener('click', quitarGps);
+
+  /* ---------- Servicios: al tocar uno, se elige en el formulario ---------- */
+  $$('[data-servicio]').forEach(function (a) {
+    a.addEventListener('click', function () {
+      var sel = $('#servicio');
+      sel.value = a.getAttribute('data-servicio');
+      limpiarError('servicio');
+    });
+  });
+
+  /* ---------- Validación ---------- */
+  function limpiarError(id) {
+    var campo = $('#' + id);
+    if (!campo) return;
+    var caja = campo.closest('.field');
+    var msg = $('#err-' + id);
+    if (caja) caja.classList.remove('has-error');
+    campo.removeAttribute('aria-invalid');
+    if (msg) { msg.hidden = true; msg.textContent = ''; }
+  }
+  function marcarError(id, texto) {
+    var campo = $('#' + id);
+    campo.closest('.field').classList.add('has-error');
+    campo.setAttribute('aria-invalid', 'true');
+    var msg = $('#err-' + id);
+    msg.textContent = texto;
+    msg.hidden = false;
+  }
+  ['servicio', 'ubicacion', 'nombre', 'telefono'].forEach(function (id) {
+    var campo = $('#' + id);
+    campo.addEventListener('input', function () { limpiarError(id); });
+    campo.addEventListener('change', function () { limpiarError(id); });
+  });
+
+  /* ---------- Envío del pedido ---------- */
+  var form = $('#form-asistencia');
+  var btnEnviar = $('#btn-enviar');
+  var HTML_ENVIAR = btnEnviar.innerHTML;
+  var enviando = false;
+
+  function soloDigitos(t) { return String(t || '').replace(/\D/g, '').replace(/^00/, ''); }
+  function telefonoValido(t) { var n = soloDigitos(t).length; return n >= 8 && n <= 15; }
+  /* 88888888 → 8888-8888 · 50688888888 → +506 8888-8888 */
+  function formatearTelefono(t) {
+    var d = soloDigitos(t);
+    if (d.length === 8) return d.slice(0, 4) + '-' + d.slice(4);
+    if (d.length === 11 && d.indexOf('506') === 0) return '+506 ' + d.slice(3, 7) + '-' + d.slice(7);
+    return String(t || '').trim();
+  }
+
+  function leerDatos() {
+    return {
+      servicio: $('#servicio').value,
+      ubicacion: $('#ubicacion').value.trim(),
+      gps: gpsLink,
+      destino: $('#destino').value.trim(),
+      vehiculo: $('#vehiculo').value.trim(),
+      nombre: $('#nombre').value.trim(),
+      telefono: $('#telefono').value.trim()
+    };
+  }
+  function validar(d) {
+    var primero = null;
+    function fallo(id, texto) { marcarError(id, texto); if (!primero) primero = id; }
+    ['servicio', 'ubicacion', 'nombre', 'telefono'].forEach(function (id) { limpiarError(id); });
+    if (!d.servicio) fallo('servicio', 'Selecciona el servicio que necesitas.');
+    if (!d.ubicacion && !d.gps) fallo('ubicacion', 'Indícanos dónde estás o comparte tu ubicación GPS.');
+    if (d.nombre.length < 2) fallo('nombre', 'Escribe tu nombre.');
+    if (!telefonoValido(d.telefono)) fallo('telefono', 'Escribe un teléfono válido para poder llamarte. Ej.: 8888-8888');
+    if (primero) $('#' + primero).focus();
+    return !primero;
+  }
+
+  /* Mensaje de respaldo: solo se usa si el envío automático falla y el cliente lo manda por WhatsApp. */
+  function armarMensaje(d) {
+    var l = [
+      '*SOLICITUD DE ASISTENCIA - GRÚAS MAU*',
+      '',
+      '*Cliente:* ' + d.nombre,
+      '*Teléfono:* ' + formatearTelefono(d.telefono),
+      '',
+      '*Servicio:* ' + d.servicio,
+      '*Ubicación:* ' + (d.ubicacion || 'Ver ubicación GPS')
+    ];
+    if (d.gps) l.push('*GPS:* ' + d.gps);
+    l.push('*Destino:* ' + (d.destino || 'No indicado'));
+    l.push('*Vehículo / carga:* ' + (d.vehiculo || 'No indicado'));
+    l.push('', '_Enviado desde ' + location.host + '_');
+    return l.join('\n');
+  }
+  function urlWhatsApp(numero, mensaje) {
+    return 'https://wa.me/' + numero + '?text=' + encodeURIComponent(mensaje);
+  }
+  /* Guarda el pedido en la nube si app.js (Firebase) lo permite. Nunca bloquea el envío. */
+  function guardarEnNube(datos) {
+    try {
+      if (typeof window.guardarSolicitudFirebase !== 'function') return;
+      Promise.resolve(window.guardarSolicitudFirebase(datos)).catch(function (err) {
+        console.warn('No se pudo guardar el pedido en Firebase:', err);
+      });
+    } catch (err) {
+      console.warn('No se pudo guardar el pedido en Firebase:', err);
+    }
+  }
+
+  /* "Enviando…" en el botón (sin deshabilitarlo, para no perder el foco del teclado). */
+  function estadoEnvio(cargando) {
+    btnEnviar.classList.toggle('is-loading', cargando);
+    btnEnviar.setAttribute('aria-busy', cargando ? 'true' : 'false');
+    btnEnviar.innerHTML = cargando ? '<span>Enviando…</span>' : HTML_ENVIAR;
+  }
+
+  /* Pide al servidor (api/solicitud.js) que mande la alerta por ntfy. La petición sale al
+     instante y sigue aunque el navegador cambie a WhatsApp (keepalive). */
+  function enviarAlServidor(d) {
+    return new Promise(function (resolve, reject) {
+      var control = typeof AbortController === 'function' ? new AbortController() : null;
+      var reloj = setTimeout(function () { if (control) control.abort(); }, ESPERA_SERVIDOR_MS);
+      var trampa = form.elements['mensaje_extra'];
+      fetch(API_SOLICITUD, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          servicio: d.servicio, ubicacion: d.ubicacion, gps: d.gps, destino: d.destino, vehiculo: d.vehiculo,
+          nombre: d.nombre, telefono: d.telefono, extra: trampa ? trampa.value : ''
+        }),
+        keepalive: true,
+        signal: control ? control.signal : undefined
+      }).then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (j) {
+          if (r.ok && j && j.ok) return j;
+          throw new Error('El servidor respondió ' + r.status);
+        });
+      }).then(function (j) { clearTimeout(reloj); resolve(j); }, function (e) { clearTimeout(reloj); reject(e); });
+    });
+  }
+
+  /* Abre WhatsApp con el mensaje ya escrito. Tiene que ejecutarse en el mismo toque del
+     usuario: si se esperara al servidor, el navegador lo bloquearía como ventana emergente. */
+  function abrirWhatsApp(url) {
+    try {
+      var w = window.open(url, '_blank');
+      if (w) { try { w.opener = null; } catch (e) { /* nada */ } return true; }
+    } catch (e) { /* bloqueado */ }
+    return false;
+  }
+
+  function mostrarEnviado(d, urlWa) {
+    abrirModal({
+      tipo: 'success',
+      titulo: '¡Solicitud enviada!',
+      texto: 'Ya avisamos a nuestro equipo y te contactaremos en breve al ' + formatearTelefono(d.telefono) + '.',
+      extra: '¿No se abrió WhatsApp? Toca el botón verde. Si es una emergencia en carretera, llámanos ahora mismo.',
+      acciones: [
+        { texto: 'Abrir WhatsApp', href: urlWa, clase: 'btn--wa', icono: 'i-whatsapp' },
+        { texto: 'Llamar ' + WHATSAPP[0].texto, href: 'tel:+' + WHATSAPP[0].numero, clase: 'btn--danger', icono: 'i-phone' },
+        { texto: 'Cerrar', clase: 'btn--text' }
+      ]
+    });
+  }
+  /* Respaldo: si la alerta automática falla, el cliente puede mandarlo él mismo por WhatsApp. */
+  function mostrarRespaldo(mensaje) {
+    var urls = WHATSAPP.map(function (w) { return urlWhatsApp(w.numero, mensaje); });
+    abrirModal({
+      tipo: 'warning',
+      titulo: 'Un paso más',
+      texto: 'No pudimos avisar a nuestro equipo de forma automática. Si aún no enviaste el mensaje por WhatsApp, toca el botón verde.',
+      extra: 'Si quieres que lo vean más rápido, envíalo también al segundo número. Si es urgente, llámanos al ' + WHATSAPP[0].texto + '.',
+      acciones: [
+        { texto: 'Enviar al ' + WHATSAPP[0].texto, href: urls[0], clase: 'btn--wa', icono: 'i-whatsapp' },
+        { texto: 'Enviar al ' + WHATSAPP[1].texto, href: urls[1], clase: 'btn--ghost', icono: 'i-whatsapp' },
+        { texto: 'Cerrar', clase: 'btn--text' }
+      ]
+    });
+  }
+
+  function enviarSolicitud() {
+    if (enviando) return;
+    var d = leerDatos();
+    if (!validar(d)) return;
+
+    enviando = true; // evita envíos dobles por toques repetidos
+    estadoEnvio(true);
+    d.mensaje = armarMensaje(d);
+    guardarEnNube(d); // Firebase: sin esperar y sin bloquear el envío
+
+    /* 1) Alerta instantánea al segundo celular (ntfy), a través del servidor. */
+    var alerta = enviarAlServidor(d).then(function () { return true; }, function (err) {
+      console.warn('La alerta automática no salió:', err);
+      return false;
+    });
+
+    /* 2) WhatsApp directo al número principal, con el mensaje ya escrito. */
+    var urlPrincipal = urlWhatsApp(WHATSAPP[0].numero, d.mensaje);
+    abrirWhatsApp(urlPrincipal);
+
+    alerta.then(function (alertada) {
+      enviando = false;
+      estadoEnvio(false);
+      if (alertada) {
+        form.reset();
+        quitarGps();
+        mostrarEnviado(d, urlPrincipal);
+      } else {
+        mostrarRespaldo(d.mensaje); // lo escrito se conserva para poder reintentar
+      }
+    });
+  }
+  form.addEventListener('submit', function (e) { e.preventDefault(); enviarSolicitud(); });
+
+  /* ---------- Barra inferior: se oculta mientras se escribe ---------- */
+  var dock = $('#dock');
+  var esCampo = function (el) { return el && el.matches && el.matches('input, select, textarea'); };
+  document.addEventListener('focusin', function (e) { if (esCampo(e.target)) dock.classList.add('is-hidden'); });
+  document.addEventListener('focusout', function () {
+    setTimeout(function () { if (!esCampo(document.activeElement)) dock.classList.remove('is-hidden'); }, 60);
+  });
+})();
+</script>
+
+<!-- Firebase: app.js debe definir window.guardarSolicitudFirebase(datos).
+     datos = { servicio, ubicacion, gps, destino, vehiculo, nombre, telefono, mensaje } -->
+<script type="module" src="app.js"></script>
+</body>
+</html>
